@@ -1,5 +1,6 @@
 import { Header } from "./header"
 import Footer from './footer'
+import { Link } from "react-router-dom";
 
 function Interiores() {
     return (
@@ -11,7 +12,7 @@ function Interiores() {
 
                     <p className="max-w-2xl mx-auto mt-4 text-xl text-gray-600">Selección de muebles para las estancias de tu hogar</p>
                 </div>
-                <div className="max-w-5xl px-4 mx-auto sm:px-6 lg:px-8">
+                <div className="max-w-5xl px-4 mx-auto sm:px-6 lg:px-8 mt-10">
                     <div className="mx-auto text-left md:max-w-lg lg:max-w-2xl md:text-center">
                         <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl lg:leading-tight">
                             Dormitorio
@@ -20,7 +21,9 @@ function Interiores() {
 
                     <div className="grid grid-cols-1 mt-8 md:mt-20 gap-y-6 md:grid-cols-2 gap-x-10">
                         <div>
-                            <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                            <Link to={"/Dormitorios"} title="" >
+                                <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                            </Link>
                         </div>
 
                         <div>
@@ -36,13 +39,15 @@ function Interiores() {
                 <div className="max-w-5xl px-4 mx-auto sm:px-6 lg:px-8 mt-10">
                     <div className="mx-auto text-left md:max-w-lg lg:max-w-2xl md:text-center">
                         <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl lg:leading-tight">
-                            Salon
+                            Salón
                         </h2>
                     </div>
 
                     <div className="grid grid-cols-1 mt-8 md:mt-20 gap-y-6 md:grid-cols-2 gap-x-10">
                         <div>
-                            <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                        <Link to={"/salones"} title="" >
+                                <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                        </Link>
                         </div>
 
                         <div>
@@ -62,9 +67,11 @@ function Interiores() {
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 mt-8 md:mt-20 gap-y-6 md:grid-cols-2 gap-x-10">
+                    <div className="grid grid-cols-1 mt-8 md:mt-20 gap-y-6 md:grid-cols-2 gap-x-10 mb-10">
                         <div>
-                            <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                        <Link to={"/cocinas"} title="" >
+                                <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                        </Link>
                         </div>
 
                         <div>

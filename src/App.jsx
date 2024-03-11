@@ -4,6 +4,9 @@ import  Home from "./paginaPrincipal.jsx"
 import  About from "./about.jsx"
 import Contacto from "./contactanos.jsx"
 import Interores from "./interiores.jsx"
+import Dormitorios from "./Dormitorios.jsx"
+import Cocinas from "./cocinas.jsx"
+import Salones from "./salones.jsx"
 
 function App() {
 
@@ -16,6 +19,9 @@ function App() {
             <Route path="/about" element={<About />}/> 
             <Route path="/contacto" element={<Contacto />}/>
             <Route path="/interiores" element={<Interores />}/>
+            <Route path="/dormitorios" element={<Dormitorios />}/>
+            <Route path="/cocinas" element={<Cocinas />}/>
+            <Route path="/salones" element={<Salones />}/>
         </Routes>
     </div>
     </>
