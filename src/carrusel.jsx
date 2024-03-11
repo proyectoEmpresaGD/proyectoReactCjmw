@@ -1,27 +1,39 @@
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import React from 'react';
+import { Zoom } from 'react-slideshow-image';
+import 'react-slideshow-image/dist/styles.css';
+import "./App.css"
 
-export function Carrusel() {
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1
-  };
 
-  return (
-    <Slider {...settings}>
-      <div>
-        <img src="slide1.jpg" alt="Slide 1" />
-      </div>
-      <div>
-        <img src="slide2.jpg" alt="Slide 2" />
-      </div>
-      <div>
-        <img src="slide3.jpg" alt="Slide 3" />
-      </div>
-    </Slider>
-  );
-}
+const Carrusel = () => {
+    const images = [
+        "slide1.jpg",
+        "slide2.jpg",
+        "slide3.jpg",
+    ];
+
+    return (
+      <>
+        <h1>Muebleria Italiana</h1>
+        <Zoom>
+            <div className="each-slide-effect">
+                <div style={{ 'backgroundImage': `url(${images[0]})` }}>
+                    
+                </div>
+            </div>
+            <div className="each-slide-effect">
+                <div style={{ 'backgroundImage': `url(${images[1]})` }}>
+                    
+                </div>
+            </div>
+            <div className="each-slide-effect">
+                <div style={{ 'backgroundImage': `url(${images[2]})` }}>
+                    
+                </div>
+            </div>
+        </Zoom>
+
+        </>
+    );
+};
+
+export default Carrusel;

@@ -1,4 +1,4 @@
-import  {Carrusel}  from "./carrusel"
+import  Carrusel  from "./carrusel"
 import  {Header}  from "./header"
 
 function Home(){
