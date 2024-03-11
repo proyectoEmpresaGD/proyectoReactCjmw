@@ -8,12 +8,12 @@ function About(){
         <section className="py-10 bg-gray-800 lg:py-0">
     <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div className="grid items-stretch grid-cols-1 lg:grid-cols-2 ">
-            <div className="h-full pr-12 lg:order-2 lg:mb-40">
-                <div className="relative h-full lg:h-auto">
+            <div className="h-full pr-12 lg:order-2 lg:mb-40 mb-20 md:mb-0">
+                <div className="relative h-full lg:h-auto ">
                     <div className="absolute w-full h-full -mb-12 overflow-hidden bg-gradient-to-r from-fuchsia-600 to-blue-600 top-12 left-12 xl:left-16 lg:top-0 lg:scale-y-105 lg:origin-top">
                         <img className="object-cover object-right w-full h-full scale-150" src="https://cdn.rareblocks.xyz/collection/celebration/images/content/2/lines.svg" alt="" />
                     </div>
-                    <div className="relative lg:-top-12 h-full">
+                    <div className="relative lg:-top-12 h-full ">
                         <img className=" mt-20" src="imagenAbout2.jpg" alt="" />
                     </div>
                 </div>
