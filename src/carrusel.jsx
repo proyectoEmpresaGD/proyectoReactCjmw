@@ -12,8 +12,6 @@ const Carrusel = () => {
     ];
 
     return (
-      <>
-        <h1>Muebleria Italiana</h1>
         <Zoom>
             <div className="each-slide-effect">
                 <div style={{ 'backgroundImage': `url(${images[0]})` }}>
@@ -32,7 +30,7 @@ const Carrusel = () => {
             </div>
         </Zoom>
 
-        </>
+        
     );
 };
 
