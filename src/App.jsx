@@ -6,7 +6,7 @@ import Contacto from "./contactanos.jsx"
 import Interores from "./interiores.jsx"
 import Dormitorios from "./Dormitorios.jsx"
 import Cocinas from "./cocinas.jsx"
-import Salones from "./salones.jsx"
+import Salones from "./Salones.jsx"
 
 function App() {
 
