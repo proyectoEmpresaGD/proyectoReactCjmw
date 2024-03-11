@@ -10,9 +10,9 @@ export function Header(){
                             <div className="hidden lg:flex lg:items-center lg:space-x-10">
                                 <Link to={"/interiores"} title="" className="text-base font-medium text-black"> Interiores </Link>
           
-                                <Link to={"/contacto"} title="" className="text-base font-medium text-black"> contacto </Link>
+                                <Link to={"/contacto"} title="" className="text-base font-medium text-black"> Contacto </Link>
           
-                                <Link   to={"/about"} title="" className="text-base font-medium text-black"> sobre nosotros </Link>
+                                <Link   to={"/about"} title="" className="text-base font-medium text-black"> Sobre nosotros </Link>
                             </div>
           
                             <div className="lg:absolute lg:-translate-x-1/2 lg:inset-y-0 lg:left-1/2">
@@ -52,7 +52,7 @@ export function Header(){
                 <nav className="py-4 bg-white lg:hidden">
                     <div className="px-4 mx-auto sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">Menu</p>
+                            <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">Menú</p>
           
                             
                         </div>
@@ -61,9 +61,9 @@ export function Header(){
                             <div className="flex flex-col space-y-2">
                             <Link to={"/interiores"} title="" className="text-base font-medium text-black"> Interiores </Link>
           
-                            <Link to={"/contacto"} title="" className="text-base font-medium text-black"> contacto </Link>
+                            <Link to={"/contacto"} title="" className="text-base font-medium text-black"> Contacto </Link>
 
-                            <Link   to={"/about"} title="" className="text-base font-medium text-black"> sobre nosotros </Link>
+                            <Link   to={"/about"} title="" className="text-base font-medium text-black"> Sobre nosotros </Link>
                         </div>
           
                             <hr className="my-4 border-gray-200" />
