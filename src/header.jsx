@@ -15,10 +15,10 @@ export function Header(){
                                 <Link   to={"/about"} title="" className="text-base font-medium text-black"> sobre nosotros </Link>
                             </div>
           
-                            <div className="lg:absolute lg:-translate-x-1/2 lg:inset-y-5 lg:left-1/2">
-                                <div className="flex-shrink-0">
+                            <div className="lg:absolute lg:-translate-x-1/2 lg:inset-y-0 lg:left-1/2">
+                                <div className="flex-shrink-0 ">
                                     <Link to={"/"} title="" className="flex">
-                                        <img className="w-auto h-14 lg:h-14" src="1.png" alt="" />
+                                        <img className="w-auto h-14 lg:h-24 lg:w-24" src="1.png" alt="" />
                                     </Link>
                                 </div>
                             </div>

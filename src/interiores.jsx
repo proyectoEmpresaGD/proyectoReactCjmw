@@ -11,7 +11,7 @@ function Interiores() {
             
             <p className="max-w-2xl mx-auto mt-4 text-xl text-gray-600">Seleccion de muebles para las estancias de tu hogar</p>
         </div>
-
+        <h1 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl lg:leading-tight">Dormitorios</h1>
         <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
             <div>
                 <img className="w-full" src="dormitorio1.jpg" alt="" />
@@ -26,6 +26,60 @@ function Interiores() {
             </div>
         </div>
 
+        <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
+            <div>
+                <img className="w-full" src="dormitorio1.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio2.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio3.jpg" alt="" />
+            </div>
+        </div>
+        <h1 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl lg:leading-tight">Cocinas</h1>
+        <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
+            <div>
+                <img className="w-full" src="dormitorio1.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio2.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio3.jpg" alt="" />
+            </div>
+        </div>
+        <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
+            <div>
+                <img className="w-full" src="dormitorio1.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio2.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio3.jpg" alt="" />
+            </div>
+        </div>
+        <h1 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl lg:leading-tight">Salon</h1>
+        <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
+            <div>
+                <img className="w-full" src="dormitorio1.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio2.jpg" alt="" />
+            </div>
+
+            <div>
+                <img className="w-full" src="dormitorio3.jpg" alt="" />
+            </div>
+        </div>
         <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
             <div>
                 <img className="w-full" src="dormitorio1.jpg" alt="" />
