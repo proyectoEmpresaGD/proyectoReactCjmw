@@ -23,7 +23,7 @@ function Dormitorios() {
                     <img className="w-full" src="dormitorio3.jpg" alt="" />
                 </div>
             </div>
-            <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
+            <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12 mb-10">
                 <div>
                     <img className="w-full" src="dormitorio4.jpg" alt="" />
                 </div>
