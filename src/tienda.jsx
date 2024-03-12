@@ -8,11 +8,11 @@ export function Tienda() {
                 <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <div className="flex items-end justify-between">
                         <div className="flex-1 text-center lg:text-left">
-                            <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">Catalogo</h2>
+                            <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">Catálogo</h2>
                             <p className="max-w-xl mx-auto mt-4 text-base leading-relaxed text-gray-600 lg:mx-0">si desea alguno de nuestros muebles no dude en contactar o pedir cita para algo mas personalizado</p>
                         </div>
 
-                        
+
                     </div>
 
                     <div className="grid max-w-md grid-cols-1 gap-6 mx-auto mt-8 lg:mt-16 lg:grid-cols-3 lg:max-w-full">
