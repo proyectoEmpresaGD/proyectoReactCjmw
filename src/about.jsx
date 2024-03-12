@@ -27,19 +27,19 @@ function About() {
                                 <p className="text-xl leading-relaxed text-gray-200 mt-9">Sumergete en el mundo de diseño de interiores de lujo con David Sánchez.
                                     Desde magestusosas piezas de mobiliraio hasta accesorios exquisitamente
                                     elaborados. </p>
-                                <p className="mt-6 text-xl leading-relaxed text-gray-200">Nos dedicamos a ofrecer una experiencia de compra unica, donde cada artiuclo
+                                <p className="mt-6 text-xl leading-relaxed text-gray-200">Nos dedicamos a ofrecer una experiencia de compra única, donde cada articulo
                                     refleja la artesania incomparable y la pasión por el diseño que caracteriza
                                     a Italia.</p>
                                 <p className="text-xl leading-relaxed text-gray-200 mt-9">Creemos que el hogar es más que un simple espacio; es un reflejo de estilo y
                                     sofisticación, desde clásicos atemporales hasta creaciones contemporáneas,
-                                    cada pieza está meticulosamente diseñada para insipirar y elevar cualquier
+                                    cada pieza está meticulosamente diseñada para inspirar y elevar cualquier
                                     espacio interior. </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-            <Footer/>
+            <Footer />
         </>
     )
 }

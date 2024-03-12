@@ -27,7 +27,7 @@ function Interiores() {
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900">Una seleccion de nuestros mejores dormitorios italianos.</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">Una selección de nuestros mejores dormitorios italianos.</h3>
                             <p className="mt-4 text-lg text-gray-700">Sumérgete en la elegancia y el confort de nuestros dormitorios italianos de lujo. Cada detalle de estos espacios está diseñado para brindarte una experiencia de descanso incomparable. Desde los muebles cuidadosamente seleccionados hasta los tejidos de alta calidad y los detalles decorativos exquisitos, nuestros dormitorios son un oasis de tranquilidad y sofisticación.</p>
                             <p className="mt-4 text-lg text-gray-700">Disfruta de la armonía entre el diseño moderno y la tradición italiana, creando un ambiente acogedor y relajante que invita al descanso y la serenidad. Con una atención meticulosa a la calidad y el estilo, nuestros dormitorios italianos de lujo ofrecen un refugio perfecto para renovar cuerpo y mente al final de cada día.</p>
 
@@ -49,7 +49,7 @@ function Interiores() {
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900">Una seleccion de nuestros mejores salones italianos.</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">Una selección de nuestros mejores salones italianos.</h3>
                             <p className="mt-4 text-lg text-gray-700">Descubre la elegancia y el encanto italiano en nuestros exclusivos salones de lujo. Sumérgete en un ambiente sofisticado y refinado, donde cada detalle ha sido cuidadosamente seleccionado para ofrecerte una experiencia excepcional.</p>
                             <p className="mt-4 text-lg text-gray-700">Desde la opulenta decoración hasta el impecable servicio, nuestros salones italianos te invitan a vivir momentos inolvidables en un entorno que refleja la pasión y la belleza de Italia. Disfruta de una exquisita gastronomía, una cuidada selección de vinos y un ambiente acogedor que te transportará a la esencia misma del estilo italiano.</p>
                         </div>
@@ -70,7 +70,7 @@ function Interiores() {
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900">Una seleccion de nuestras mejores cocinas italianas.</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">Una selección de nuestras mejores cocinas italianas.</h3>
                             <p className="mt-4 text-lg text-gray-700">Explora el refinamiento y la exquisitez de nuestras cocinas italianas de lujo. Sumérgete en un mundo de sabores auténticos y tradiciones culinarias centenarias. Nuestras cocinas, meticulosamente diseñadas con materiales de alta calidad y tecnología de vanguardia, te invitan a disfrutar de una experiencia gastronómica única.</p>
                             <p className="mt-4 text-lg text-gray-700">Desde los aromas tentadores hasta los platos exquisitamente presentados, cada detalle está cuidadosamente elaborado para deleitar tus sentidos y satisfacer tus más altas expectativas. Descubre el verdadero sabor de Italia en un ambiente elegante y acogedor que te transportará a las regiones más emblemáticas del país.</p>
                         </div>
