@@ -12,28 +12,28 @@ function Cocinas() {
             </div>
             <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12">
                 <div>
-                    <img className="w-full" src="dormitorio1.jpg" alt="" />
+                    <img className="w-full" src="cocina1.jpg" alt="" />
                 </div>
 
                 <div>
-                    <img className="w-full" src="dormitorio2.jpg" alt="" />
+                    <img className="w-full" src="cocina2.jpg" alt="" />
                 </div>
 
                 <div>
-                    <img className="w-full" src="dormitorio3.jpg" alt="" />
+                    <img className="w-full" src="cocina3.jpg" alt="" />
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-3 md:mt-16 lg:gap-x-12 mb-10">
                 <div>
-                    <img className="w-full" src="dormitorio1.jpg" alt="" />
+                    <img className="w-full" src="cocina4.jpg" alt="" />
                 </div>
 
                 <div>
-                    <img className="w-full" src="dormitorio2.jpg" alt="" />
+                    <img className="w-full" src="cocina5.jpg" alt="" />
                 </div>
 
                 <div>
-                    <img className="w-full" src="dormitorio3.jpg" alt="" />
+                    <img className="w-full" src="cocina6.jpg" alt="" />
                 </div>
             </div>
             <Footer />

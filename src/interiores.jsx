@@ -46,7 +46,7 @@ function Interiores() {
                     <div className="grid grid-cols-1 mt-8 md:mt-20 gap-y-6 md:grid-cols-2 gap-x-10">
                         <div>
                         <Link to={"/salones"} title="" >
-                                <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                                <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="salon7.jpg" alt="" />
                         </Link>
                         </div>
 
@@ -70,7 +70,7 @@ function Interiores() {
                     <div className="grid grid-cols-1 mt-8 md:mt-20 gap-y-6 md:grid-cols-2 gap-x-10 mb-10">
                         <div>
                         <Link to={"/cocinas"} title="" >
-                                <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="dormitorio1.jpg" alt="" />
+                                <img className="w-full mx-auto sm:max-w-xs lg:max-w-lg " src="cocina7.jpg" alt="" />
                         </Link>
                         </div>
 

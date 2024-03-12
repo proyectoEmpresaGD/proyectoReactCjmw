@@ -7,6 +7,7 @@ import Interores from "./interiores.jsx"
 import Dormitorios from "./Dormitorios.jsx"
 import Cocinas from "./cocinas.jsx"
 import Salones from "./Salones.jsx"
+import Tienda from "./tienda.jsx"
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/dormitorios" element={<Dormitorios />}/>
             <Route path="/cocinas" element={<Cocinas />}/>
             <Route path="/salones" element={<Salones />}/>
+            <Route path="/tienda" element={<Tienda />}/>
         </Routes>
     </div>
     </>
