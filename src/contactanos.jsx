@@ -117,7 +117,7 @@ function Contacto() {
                                                 <ul className="flex items-center justify-end space-x-3">
                                                     <li>
                                                         <a
-                                                            href="#"
+                                                            href="https://twitter.com/?lang=es"
                                                             title=""
                                                             className="
                                                     flex
@@ -148,7 +148,7 @@ function Contacto() {
 
                                                     <li>
                                                         <a
-                                                            href="#"
+                                                            href="https://www.facebook.com/?locale=es_ES"
                                                             title=""
                                                             className="
                                                     flex
@@ -177,7 +177,7 @@ function Contacto() {
 
                                                     <li>
                                                         <a
-                                                            href="#"
+                                                            href="https://www.instagram.com/"
                                                             title=""
                                                             className="
                                                     flex
@@ -210,7 +210,7 @@ function Contacto() {
 
                                                     <li>
                                                         <a
-                                                            href="#"
+                                                            href="https://github.com/DavidSM14"
                                                             title=""
                                                             className="
                                                     flex

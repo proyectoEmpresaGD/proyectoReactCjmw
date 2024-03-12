@@ -9,6 +9,8 @@ const Carrusel = () => {
         "slide1.jpg",
         "slide2.jpg",
         "slide3.jpg",
+        "slide4.jpg",
+        "slide5.jpg"
     ];
 
     return (
@@ -25,6 +27,11 @@ const Carrusel = () => {
             </div>
             <div className="each-slide-effect">
                 <div style={{ 'backgroundImage': `url(${images[2]})` }}>
+                    
+                </div>
+            </div>
+            <div className="each-slide-effect">
+                <div style={{ 'backgroundImage': `url(${images[3]})` }}>
                     
                 </div>
             </div>
