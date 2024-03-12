@@ -35,6 +35,11 @@ const Carrusel = () => {
                     
                 </div>
             </div>
+            <div className="each-slide-effect">
+                <div style={{ 'backgroundImage': `url(${images[4]})` }}>
+                    
+                </div>
+            </div>
         </Zoom>
 
         
