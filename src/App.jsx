@@ -1,13 +1,13 @@
 import './App.css'
 import {Routes,Route} from "react-router-dom"
-import  Home from "./paginaPrincipal.jsx"
-import  About from "./about.jsx"
-import Contacto from "./contactanos.jsx"
-import Interores from "./interiores.jsx"
-import Dormitorios from "./Dormitorios.jsx"
-import Cocinas from "./cocinas.jsx"
-import Salones from "./Salones.jsx"
-import Tienda from "./tienda.jsx"
+import  Home from "./app/paginaPrincipal.jsx"
+import  About from "./about/about.jsx"
+import Contacto from "./contact/contactanos.jsx"
+import Interores from "./interiores/interiores.jsx"
+import Dormitorios from "./dormitorios/Dormitorios.jsx"
+import Cocinas from "./cocinas/cocinas.jsx"
+import Salones from "./salones/Salones.jsx"
+import Tienda from "./tienda/tienda.jsx"
 
 function App() {
 
