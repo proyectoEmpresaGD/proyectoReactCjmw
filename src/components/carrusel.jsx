@@ -30,19 +30,19 @@ const slideImages = [
 ];
 
 const Carrusel = () => {
-    return (
-      <div className="slide-container">
-        <Slide>
-         {slideImages.map((slideImage, index)=> (
-            <div key={index}>
-              <div style={{ ...divStyle, 'backgroundImage': `url(${slideImage.url})` }}>
-                <span style={spanStyle}>{slideImage.caption}</span>
-              </div>
+  return (
+    <div className="slide-container">
+      <Slide>
+        {slideImages.map((slideImage, index) => (
+          <div key={index}>
+            <div style={{ ...divStyle, 'backgroundImage': `url(${slideImage.url})` }}>
+              <span style={spanStyle}>{slideImage.caption}</span>
             </div>
-          ))} 
-        </Slide>
-      </div>
-    )
+          </div>
+        ))}
+      </Slide>
+    </div>
+  )
 }
 
 export default Carrusel;
