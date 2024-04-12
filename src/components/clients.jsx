@@ -6,33 +6,27 @@ const Clients = () => {
             </h1>
             <div className="flex flex-col md:flex-row items-center flex-wrap gap-20">
                 <img
-                    src="logo1.png"
-                    className="w-40 transition-transform transform hover:scale-105"
+                    src="logoCJM.png"
+                    className="w-20 transition-transform transform hover:scale-105"
                     alt="Client Logo 1"
                 />
                 <img
-                    src="airbnb.png"
+                    src="logoFlamenco.png"
                     className="w-40 transition-transform transform hover:scale-105"
                     alt="Client Logo 2"
                 />
                 <img
-                    src="amazon.png"
+                    src="logoArena.png"
                     className="w-40 transition-transform transform hover:scale-105"
                     alt="Client Logo 3"
                 />
                 <img
-                    src="logo2.webp"
+                    src="logoHarbour.png"
                     className="w-40 transition-transform transform hover:scale-105"
                     alt="Client Logo 4"
-                />
-                <img
-                    src="logo4.png"
-                    className="w-40 transition-transform transform hover:scale-105"
-                    alt="Client Logo 5"
                 />
             </div>
         </div>
     );
 };
-
 export default Clients;
