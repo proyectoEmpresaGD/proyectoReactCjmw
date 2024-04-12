@@ -4,13 +4,20 @@
     font-family: "playfair";    
 }
 .each-slide-effect > div {
-    
     display: flex;
     align-items: center;
     justify-content: center;
     background-size: cover;
-    height: 650px;
+    background-repeat: no-repeat;
+    
   }
+
+  .backgroundImage{
+    justify-items: center;
+    object-fit: cover;
+  }
+
+  
 
   .hideMenuNav {
     display: none;
