@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill } from "react-icons/ri";
 
 export const Header = () => {
@@ -73,4 +73,4 @@ export const Header = () => {
             </div>
         </header>
     );
-};
+};  
