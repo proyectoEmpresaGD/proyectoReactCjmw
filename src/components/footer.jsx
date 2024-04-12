@@ -1,15 +1,98 @@
-function Footer() {
-    return (
-        <section className=" py-3 items-center">
-            <div className="mx-auto sm:px-6  max-w-7xl items-center">
-                <div className="text-center xl:flex xl:items-center ">
-                    <div className="xl:flex xl:items-center ">
-                        <img className="w-auto mx-auto lg:h-16 lg:translate-x-[150%] translate-x-[1/2] h-12  " src="4.png" alt="" />
-                    </div>
-                </div>
-            </div>
-        </section>
+import { RiInstagramLine, RiFacebookLine, RiTwitterLine, RiGithubLine } from "react-icons/ri";
 
-    )
-}
-export default Footer
+const Footer = () => {
+    return (
+        <footer className="bg-gray-300 text-white p-6 xl:p-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-500 pb-6">
+                {/* Logo */}
+                <div className="w-full md:w-1/6 flex justify-center md:justify-start">
+                    <a href="#" className="flex items-center">
+                        <div className="bg-white rounded-full p-2">
+                            <img src="public\Logo.jpg" alt="Logo" className="w-10 h-10" />
+                        </div>
+                    </a>
+                </div>
+                {/* Social media */}
+                <nav className="flex items-center gap-4">
+                    <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
+                        <a href="#" className="block text-white">
+                            <RiInstagramLine size={20} />
+                        </a>
+                    </div>
+                    <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
+                        <a href="#" className="block text-white">
+                            <RiFacebookLine size={20} />
+                        </a>
+                    </div>
+                    <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
+                        <a href="#" className="block text-white">
+                            <RiTwitterLine size={20} />
+                        </a>
+                    </div>
+                    <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
+                        <a href="#" className="block text-white">
+                            <RiGithubLine size={20} />
+                        </a>
+                    </div>
+                </nav>
+            </div>
+            <div className="mt-6">
+                <h3 className="text-lg font-bold text-white text-center md:text-left">
+                    CJM WORLDWIDE
+                </h3>
+                <nav className="mt-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <a
+                        href="#"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                    >
+                        About Us
+                    </a>
+                    <a
+                        href="#"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                    >
+                        Press
+                    </a>
+                    <a
+                        href="#"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                    >
+                        Investors
+                    </a>
+                    <a
+                        href="#"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                    >
+                        Events
+                    </a>
+                    <a
+                        href="#"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                    >
+                        Terms of use
+                    </a>
+                    <a
+                        href="#"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                    >
+                        Privacy policy
+                    </a>
+                    <a
+                        href="/contact"
+                        className="font-semibold rounded-full px-6 py-2 transition-colors hover:bg-gray-700 hover:text-white transform hover:scale-105 inline-block"
+                        style={{ backgroundColor: "#3182CE" }} // Color de fondo del botón
+                    >
+                        Contact Us
+                    </a>
+                </nav>
+            </div>
+            <div className="mt-8">
+                <p className="text-gray-300 text-center">
+                    © CJM WORLDWIDE S.L. 2023 - All Rights Reserved
+                </p>
+            </div>
+        </footer>
+    );
+};
+
+export default Footer;

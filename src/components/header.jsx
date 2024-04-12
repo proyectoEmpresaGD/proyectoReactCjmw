@@ -1,102 +1,76 @@
-import { Link } from "react-router-dom";
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill } from "react-icons/ri";
 
-
-export function Header() {
-    const [isNavOpen, setIsNavOpen] = useState(false);
+export const Header = () => {
+    const [showMenu, setShowMenu] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
 
     const toggleMenu = () => {
-        setMenuVisible(!menuVisible);
+        setShowMenu(!showMenu);
     };
+
+    const toggleUserMenu = () => {
+        setShowUserMenu(!showUserMenu);
+    };
+
+    const toggleSearch = () => {
+        setShowSearch(!showSearch);
+    };
+
     return (
-        <>
-            <header className=''>
-                <div className="bg-gray-100 border-b border-gray-200">
-                    <div className="px-4 mx-auto sm:px-6 lg:px-8">
-                        <nav className="relative flex items-center justify-between h-16 lg:h-20">
-                            <div className="hidden lg:flex lg:items-center lg:space-x-10">
-                                <Link to={"/interiores"} title="" className="text-base font-medium text-black"> Interiores </Link>
-
-                                <Link to={"/contacto"} title="" className="text-base font-medium text-black"> Contacto </Link>
-
-                                <Link to={"/about"} title="" className="text-base font-medium text-black"> Sobre nosotros </Link>
-                            </div>
-
-                            <div className="lg:absolute lg:-translate-x-1/2 lg:inset-y-0 lg:left-1/2">
-                                <div className="flex-shrink-0 ">
-                                    <Link to={"/"} title="" className="flex">
-                                        <img className="w-auto h-14 lg:h-24 lg:w-24" src="1.png" alt="" />
-                                    </Link>
-                                </div>
-                            </div>
-
-
-                            <Link to={"/tienda"} className="flex items-center justify-center ml-auto text-white bg-black rounded-full w-9 h-9 lg:hidden">
-                                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </Link>
-
-
-                            <div className="hidden lg:flex lg:items-center lg:space-x-10">
-
-
-                                <Link to={"/tienda"} title="" className="flex items-center justify-center w-10 h-10 text-white bg-black rounded-full">
-                                    <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                </Link>
-                            </div>
-                        </nav>
-                    </div>
+        <header className="fixed top-0 left-0 w-full bg-transparent z-50">
+            <div className="container mx-auto flex items-center justify-between py-4 px-6 lg:px-8 relative">
+                <div className="flex items-center">
+                    {showUserMenu && (
+                        <div className="absolute top-16 right-4 w-40 bg-white rounded-md shadow-lg z-50">
+                            <button className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => setShowUserMenu(false)}>Sign In</button>
+                            <button className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => setShowUserMenu(false)}>Sign Out</button>
+                        </div>
+                    )}
+                    <button className="text-gray-800 focus:outline-none" onClick={toggleMenu}>
+                        <RiMenu3Fill size={24} />
+                    </button>
                 </div>
 
+                <div className="flex justify-center">
+                    <img className="h-8 lg:h-10" src="public\1300 CJM grupo worldwide rojo.jpg" alt="Logo" />
+                </div>
 
-                <section className="MOBILE-MENU flex lg:hidden">
-                    <div
-                        className="HAMBURGER-ICON space-y-2"
-                        onClick={() => setIsNavOpen((prev) => !prev)}
-                    >
-                        <button type="button" className="inline-flex p-2 ml-5 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100">
-                            <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-                            </svg>
-                        </button>
+                <div className="flex items-center space-x-4 relative">
+                    <button className="text-gray-800 focus:outline-none" onClick={toggleSearch}>
+                        <RiSearchLine size={24} />
+                    </button>
+                    <div className={`absolute top-12 right-0 transition-all duration-500 ease-in-out w-64 ${showSearch ? '' : 'hidden'}`}>
+                        <input
+                            type="text"
+                            className="px-4 py-2 focus:outline-none border border-gray-300 rounded-md"
+                            placeholder="Search..."
+                        />
                     </div>
+                    <button className="text-gray-800 focus:outline-none" onClick={() => { }}>
+                        <RiShoppingCartFill size={24} />
+                    </button>
+                    <button className="text-gray-800 focus:outline-none" onClick={toggleUserMenu}>
+                        <RiUserFill size={24} />
+                    </button>
+                </div>
+            </div>
 
-
-                    <div className={isNavOpen ? "showMenuNav" : "hideMenuNav"}>
-                        <div
-                            className="CROSS-ICON absolute top-0 right-0 px-8 py-8"
-                            onClick={() => setIsNavOpen(false)}
-                        >
-                            <svg
-                                className="h-8 w-8 text-gray-600"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <line x1="18" y1="6" x2="6" y2="18" />
-                                <line x1="6" y1="6" x2="18" y2="18" />
-                            </svg>
-                        </div>
-
-                        <div className="mt-6">
-                            <div className="MENU-LINK-MOBILE-OPEN flex flex-col items-center justify-between min-h-[250px]">
-                                <Link to={"/interiores"} title="" className="text-base font-medium text-black"> Interiores </Link>
-
-                                <Link to={"/contacto"} title="" className="text-base font-medium text-black"> Contacto </Link>
-
-                                <Link to={"/about"} title="" className="text-base font-medium text-black"> Sobre nosotros </Link>
-                            </div>
-                        </div>
+            <div className={`fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-gray-200 to-white rounded-r-lg shadow-lg z-50 flex flex-col items-center justify-center transition-opacity duration-300 ${showMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div className="py-6 px-4">
+                    <div className="flex justify-center items-center mb-6">
+                        <img className="h-8 lg:h-10" src="public\1300 CJM grupo worldwide rojo.jpg" alt="Logo" />
                     </div>
-                </section>
-            </header>
-
-        </>
-    )
-}
+                    <a href="#" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>Home</a>
+                    <a href="#" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>About Us</a>
+                    <a href="#" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>Services</a>
+                    <a href="#" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>Products</a>
+                </div>
+                <button className="absolute top-4 right-4 text-gray-800 focus:outline-none" onClick={toggleMenu}>
+                    <RiMenu3Fill size={24} />
+                </button>
+            </div>
+        </header>
+    );
+};
