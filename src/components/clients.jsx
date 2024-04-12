@@ -1,6 +1,6 @@
 const Clients = () => {
     return (
-        <div className="bg-gradient-to-b from-gray-100 via-gray-300 to-white p-8 flex flex-col items-center justify-center gap-8 mt-20 xl:mt-0">
+        <div className="bg-gradient-to-b from-white  to-gray-300 p-8 flex flex-col items-center justify-center gap-8 mt-20 xl:mt-0">
             <h1 className="text-4xl font-medium text-gray-800 text-center">
                 <strong>Estas son nuestras marcas</strong>
             </h1>
