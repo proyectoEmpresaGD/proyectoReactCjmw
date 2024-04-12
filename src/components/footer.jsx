@@ -2,7 +2,7 @@ import { RiInstagramLine, RiFacebookLine, RiTwitterLine, RiGithubLine } from "re
 
 const Footer = () => {
     return (
-        <footer className="bg-gray-900 text-white p-6 xl:p-12">
+        <footer className="bg-gray-300 text-white p-6 xl:p-12">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-500 pb-6">
                 {/* Logo */}
                 <div className="w-full md:w-1/6 flex justify-center md:justify-start">
@@ -43,37 +43,37 @@ const Footer = () => {
                 <nav className="mt-4 flex flex-col md:flex-row items-center justify-between gap-4">
                     <a
                         href="#"
-                        className="text-gray-300 mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
                         About Us
                     </a>
                     <a
                         href="#"
-                        className="text-gray-300 mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
                         Press
                     </a>
                     <a
                         href="#"
-                        className="text-gray-300 mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
                         Investors
                     </a>
                     <a
                         href="#"
-                        className="text-gray-300 mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
                         Events
                     </a>
                     <a
                         href="#"
-                        className="text-gray-300 mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
                         Terms of use
                     </a>
                     <a
                         href="#"
-                        className="text-gray-300 mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        className="text-black mt-2 md:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
                         Privacy policy
                     </a>
