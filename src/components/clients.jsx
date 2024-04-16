@@ -6,43 +6,23 @@ const Clients = () => {
             </h1>
             <div className="flex flex-col md:flex-row items-center flex-wrap gap-24">
                 <img
-
-                    src="public\Arena negro transparente.png"
-                    className="w-48 h-48 object-contain transition-transform transform hover:scale-105"
+                    src="public\logoCJM.png"
+                    className="w-32 h-32 object-contain transition-transform transform hover:scale-105"
                     alt="Client Logo 1"
                 />
                 <img
-                    src="public\Flamenco gris transparente.png"
+                    src="public\logoFlamenco.png"
                     className="w-48 h-48 object-contain transition-transform transform hover:scale-105"
                     alt="Client Logo 2"
                 />
                 <img
-                    src="public\CJM new transparente.png"
-                    className="w-36 h-36 object-contain transition-transform transform hover:scale-105" // Tercer logo reducido a w-36 h-36
+                    src="public\logoHarbour.png"
+                    className="w-48 h-48 object-contain transition-transform transform hover:scale-105" // Tercer logo reducido a w-36 h-36
                     alt="Client Logo 3"
                 />
                 <img
-                    src="public\Harbour negro transparente.png"
+                    src="public\logoArena.png"
                     className="w-48 h-48 object-contain transition-transform transform hover:scale-105"
-
-                    src="logoCJM.png"
-                    className="w-20 transition-transform transform hover:scale-105"
-                    alt="Client Logo 1"
-                />
-                <img
-                    src="logoFlamenco.png"
-                    className="w-40 transition-transform transform hover:scale-105"
-                    alt="Client Logo 2"
-                />
-                <img
-                    src="logoArena.png"
-                    className="w-40 transition-transform transform hover:scale-105"
-                    alt="Client Logo 3"
-                />
-                <img
-                    src="logoHarbour.png"
-                    className="w-40 transition-transform transform hover:scale-105"
-
                     alt="Client Logo 4"
                 />
             </div>
