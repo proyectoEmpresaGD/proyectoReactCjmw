@@ -9,8 +9,8 @@ function Home() {
         <>
             <Header />
             <Carrusel />
-            <Works/>
-            <Clients/>
+            <Works />
+            <Clients />
             <Footer />
         </>
     )
