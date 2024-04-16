@@ -1,3 +1,5 @@
+// Código del componente Header con ajustes para pantallas muy grandes
+
 import { useState, useRef, useEffect } from "react";
 import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill } from "react-icons/ri";
 
@@ -235,8 +237,6 @@ export const Header = () => {
                     )}
                 </div>
             </div>
-
-
         </header>
     );
 };
