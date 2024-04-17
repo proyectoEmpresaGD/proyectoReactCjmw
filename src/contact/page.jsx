@@ -1,5 +1,6 @@
 import { Header } from '../components/header'
 import Footer from '../components/footer'
+import Contacts from "../components/contacts"
 
 function Contact() {
     return (
@@ -48,7 +49,7 @@ function Contact() {
                     </div>
                 </div>
             </section>
-
+            <Contacts/>
             <Footer />
         </>
     )
