@@ -10,7 +10,7 @@ const Carrusel = () => {
         onChange={() => { }} // Corregido el valor de onChange
         onStart={() => { }} // Corregido el valor de onStart
       >
-        <div className="each-fade-effect lg:h-screen sm:h-[50vh]">
+        <div className="each-fade-effect lg:h-[100vh] sm:h-[50vh]">
           <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
             <img src="showroom2.jpg" alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
           </div>
