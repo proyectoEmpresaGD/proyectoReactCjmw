@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill, RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
+import { FaGlobe } from "react-icons/fa";
 
 export const Header = () => {
     const [showMenu, setShowMenu] = useState(false);
@@ -8,6 +9,45 @@ export const Header = () => {
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showSearchBar, setShowSearchBar] = useState(false);
+    const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+    const [languages, setLanguages] = useState([]);
+    const [selectedLanguage, setSelectedLanguage] = useState(null);
+    const [translationMap, setTranslationMap] = useState({});
+    const [otherMenuOpen, setOtherMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const exampleLanguages = [
+            { code: "en", name: "English" },
+            { code: "es", name: "Spanish" },
+            { code: "fr", name: "French" },
+            { code: "de", name: "German" },
+            { code: "it", name: "Italian" }
+        ];
+        setLanguages(exampleLanguages);
+    }, []);
+
+    const changeLanguage = (languageCode) => {
+        setSelectedLanguage(languageCode);
+        if (!translationMap[languageCode]) {
+            fetchTranslation(languageCode);
+        }
+    };
+
+    const fetchTranslation = (languageCode) => {
+        const apiKey = 'YOUR_API_KEY';
+        const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}&q=Hello&target=${languageCode}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const translatedText = data.data.translations[0].translatedText;
+                setTranslationMap(prevMap => ({
+                    ...prevMap,
+                    [languageCode]: translatedText
+                }));
+            })
+            .catch(error => console.error("Error fetching translation:", error));
+    };
 
     const toggleMenu = () => {
         setShowMenu(!showMenu);
@@ -15,37 +55,59 @@ export const Header = () => {
 
     const toggleBrandsDropdown = () => {
         setShowBrandsDropdown(!showBrandsDropdown);
-        // Cerrar el menú de usuario si está abierto
         if (showUserDropdown) {
             setShowUserDropdown(false);
         }
-        // Cerrar el cuadro de búsqueda si está abierto
         if (showSearchBar) {
             setShowSearchBar(false);
         }
+        // Cerrar menú de idiomas si está abierto
+        if (showLanguageDropdown) {
+            setShowLanguageDropdown(false);
+        }
+        setOtherMenuOpen(false); // Cerrar otros menús si están abiertos
     };
 
     const toggleUserDropdown = () => {
         setShowUserDropdown(!showUserDropdown);
-        // Cerrar el menú desplegable de marcas si está abierto
         if (showBrandsDropdown) {
             setShowBrandsDropdown(false);
         }
-        // Cerrar el cuadro de búsqueda si está abierto
         if (showSearchBar) {
             setShowSearchBar(false);
         }
+        // Cerrar menú de idiomas si está abierto
+        if (showLanguageDropdown) {
+            setShowLanguageDropdown(false);
+        }
+        setOtherMenuOpen(false); // Cerrar otros menús si están abiertos
     };
 
     const toggleSearchBar = () => {
         setShowSearchBar(!showSearchBar);
-        // Cerrar el menú desplegable de marcas si está abierto
         if (showBrandsDropdown) {
             setShowBrandsDropdown(false);
         }
-        // Cerrar el menú de usuario si está abierto
         if (showUserDropdown) {
             setShowUserDropdown(false);
+        }
+        // Cerrar menú de idiomas si está abierto
+        if (showLanguageDropdown) {
+            setShowLanguageDropdown(false);
+        }
+        setOtherMenuOpen(false); // Cerrar otros menús si están abiertos
+    };
+
+    const toggleLanguageDropdown = () => {
+        setShowLanguageDropdown(!showLanguageDropdown);
+        // Cerrar otros menús si están abiertos
+        if (showBrandsDropdown || showUserDropdown || showSearchBar) {
+            setShowBrandsDropdown(false);
+            setShowUserDropdown(false);
+            setShowSearchBar(false);
+            setOtherMenuOpen(true);
+        } else {
+            setOtherMenuOpen(false);
         }
     };
 
@@ -80,7 +142,6 @@ export const Header = () => {
                         <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</Link>
                         <Link to="/services" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Services</Link>
                         <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Products</Link>
-                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contact</Link>
                         <div className="relative">
                             <button className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none" onClick={toggleBrandsDropdown}>
                                 Brands {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}
@@ -125,6 +186,18 @@ export const Header = () => {
                                         <RiSearchLine size={24} />
                                     </button>
                                 </form>
+                            </div>
+                        )}
+                    </div>
+                    <div className="relative">
+                        <button className="text-gray-800 focus:outline-none" onClick={toggleLanguageDropdown}>
+                            <FaGlobe size={24} />
+                        </button>
+                        {showLanguageDropdown && (
+                            <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40">
+                                {languages.map((language, index) => (
+                                    <button key={index} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => changeLanguage(language.code)}>{language.name}</button>
+                                ))}
                             </div>
                         )}
                     </div>

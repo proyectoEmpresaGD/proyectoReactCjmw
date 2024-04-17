@@ -7,7 +7,7 @@ function About() {
             <Header />
 
             {/* Gradiente en todo el cuerpo */}
-            <div className="min-h-screen bg-gradient-to-r from-gray-300 via-teal-300 to-yellow-300">
+            <div className="min-h-screen bg-gradient-to-r from-gray-300 via-teal-300 to-yellow-300" style={{ background: 'linear-gradient(to right, #ebdecf, #8a7862)' }}>
 
                 {/* Sección "At a glance" */}
                 <section className="py-20 lg:py-12 bg-ivory font-Corinthia">
