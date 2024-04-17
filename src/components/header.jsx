@@ -101,7 +101,7 @@ export const Header = () => {
                     </div>
 
                     <div className="flex justify-center">
-                        <img className="h-8 lg:h-10" src="public\logoCJM.png" alt="Logo" />
+                        <img className="h-8 lg:h-10" src="logoCJM.png" alt="Logo" />
                     </div>
 
                     <div className="flex items-center space-x-4 relative" ref={ref}>
@@ -140,11 +140,11 @@ export const Header = () => {
                 <div className={`fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-gray-200 to-white rounded-r-lg shadow-lg z-50 flex flex-col items-center justify-center transition-opacity duration-300 ${showMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <div className="py-6 px-4">
                         <div className="flex justify-center items-center mb-6">
-                            <img className="h-6 lg:h-8" src="public\logoCJM.png" alt="Logo" />
+                            <img className="h-6 lg:h-8" src="logoCJM.png" alt="Logo"/>
                         </div>
                         <a href="/" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>Home</a>
                         <a href="/about" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>About Us</a>
-                        <a href="#" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>Services</a>
+                        <a href="/contact" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>Services</a>
                         <a href="#" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg" onClick={toggleMenu}>Products</a>
                         {/* Enlace a las marcas con dropdown */}
                         <div className="relative mt-4">
@@ -182,14 +182,14 @@ export const Header = () => {
             {/* Navbar para pantallas grandes */}
             <div className="hidden lg:flex items-center justify-between container mx-auto py-4 px-6 lg:px-8">
                 <div className="flex items-center space-x-4">
-                    <img className="h-8 lg:h-10" src="public\logoCJM.png" alt="Logo" />
+                    <img className="h-8 lg:h-10" src="logoCJM.png" alt="Logo" />
                 </div>
 
                 <div className="flex-grow flex justify-center">
                     <div className="flex items-center space-x-4">
                         <a href="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Home</a>
                         <a href="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</a>
-                        <a href="#" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Services</a>
+                        <a href="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Services</a>
                         <a href="#" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Products</a>
                         {/* Enlace a las marcas con dropdown */}
                         <div className="relative">
