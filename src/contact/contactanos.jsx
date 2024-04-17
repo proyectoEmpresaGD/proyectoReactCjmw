@@ -1,6 +1,8 @@
 import { Header } from '../components/header'
 import Footer from '../components/footer'
 import Contacts from "../components/contacts"
+import Map from "../components/map"
+
 
 function Contacto() {
     return (
@@ -8,66 +10,15 @@ function Contacto() {
             <Header />
             <section className="py-10 bg-gradient-to-r from-[#ebdecf] to-[#8a7862] sm:py-16 lg:py-24">
                 <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">Contactanos</h2>
+                    <div className="max-w-2xl mx-auto text-center lg:mt-8 mt-14">
+                        <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">Contáctanos</h2>
                     </div>
 
                     <div className="max-w-6xl mx-auto mt-12 overflow-hidden bg-white rounded-md shadow-md lg:mt-20">
                         <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
                             <div className="lg:col-span-3">
-                                <div className="p-6 sm:p-10">
-                                    <h3 className="text-2xl font-semibold text-black">Mandanos un mensaje</h3>
-
-                                    <form action="#" method="POST" className="mt-8">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-                                            <div>
-                                                <label htmlFor="" className="text-base font-medium text-gray-900"> Tu nombre </label>
-                                                <div className="mt-2.5 relative">
-                                                    <input type="text" name="" id="" placeholder="Introduzca su nombre completo" className="block w-full px-4 py-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600" />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label htmlFor="" className="text-base font-medium text-gray-900"> Correo electrónico </label>
-                                                <div className="mt-2.5 relative">
-                                                    <input type="email" name="" id="" placeholder="ejemplo@gmail.com" className="block w-full px-4 py-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600" />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label htmlFor="" className="text-base font-medium text-gray-900"> Numero de telefono </label>
-                                                <div className="mt-2.5 relative">
-                                                    <input type="tel" name="" id="" placeholder="Introduzca su número de telefono" className="block w-full px-4 py-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600" />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label htmlFor="" className="text-base font-medium text-gray-900"> Nombre de compañia </label>
-                                                <div className="mt-2.5 relative">
-                                                    <input type="text" name="" id="" placeholder="nombre completo de la compañia" className="block w-full px-4 py-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600" />
-                                                </div>
-                                            </div>
-
-                                            <div className="sm:col-span-2">
-                                                <label htmlFor="" className="text-base font-medium text-gray-900"> Mensaje </label>
-                                                <div className="mt-2.5 relative">
-                                                    <textarea
-                                                        name=""
-                                                        id=""
-                                                        placeholder=""
-                                                        className="block w-full px-4 py-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md resize-y bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
-                                                        rows="4"
-                                                    ></textarea>
-                                                </div>
-                                            </div>
-
-                                            <div className="sm:col-span-2">
-                                                <button type="submit" className="inline-flex items-center justify-center w-full px-4 py-4 mt-2 text-base font-semibold text-white transition-all duration-200 bg-[#b59174] border border-transparent rounded-md focus:outline-none hover:bg-[#ebdecf] focus:bg-[#ebdecf]">
-                                                    Enviar
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
+                                <div className="p-6 sm:p-10 bg-cover lg:h-[110vh]">
+                                    <img className=" object-cover lg:h-[100vh] rounded-lg" src="khloe-arledge-8Rz_RIyp5FM-unsplash.jpg" alt="" />
                                 </div>
                             </div>
 
@@ -78,6 +29,8 @@ function Contacto() {
                                             <h4 className="text-2xl font-semibold text-black">Informacion de contacto</h4>
 
                                             <div className="mt-8 space-y-7">
+                                                
+
                                                 <div className="flex items-start">
                                                     <svg className="flex-shrink-0 text-blue-600 w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -250,11 +203,18 @@ function Contacto() {
                         </div>
                     </div>
                 </div>
+                <div className="max-w-2xl mx-auto text-center mt-10">
+                <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">Encuéntranos cerca de tí</h2>
+                </div>
             </section>
             
+            <Map />
             <Footer />
         </>
     )
 }
 
 export default Contacto
+
+
+                

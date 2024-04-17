@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 *{
-    font-family: "playfair";    
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;    
 }
-
 
 .each-fade-effect {
   display: flex;
@@ -22,7 +21,7 @@
 }
 
 
-@media  (max-width: 600px min-width: 320px) {
+@media  (max-width: 500px min-width: 320px) {
   .each-fade-effect {
     display: flex;
     width: 100%;
