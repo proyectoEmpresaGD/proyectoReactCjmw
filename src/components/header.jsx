@@ -1,9 +1,32 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill, RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { FaGlobe } from "react-icons/fa";
 
 export const Header = () => {
+    const location = useLocation();
+    const [logoSrc, setLogoSrc] = useState('public\\logoCJM.png');
+
+    useEffect(() => {
+        // Verifica la ruta actual y establece el logo del Navbar en consecuencia
+        switch (location.pathname) {
+            case '/harbourHome':
+                setLogoSrc('public\\logoHarbour.png');
+                break;
+            case '/arenaHome':
+                setLogoSrc('public\\logoArena.png');
+                break;
+            case '/cjmHome':
+                setLogoSrc('public\\logoCJM.png');
+                break;
+            case '/flamencoHome':
+                setLogoSrc('public\\logoFlamenco.png');
+                break;
+            default:
+                setLogoSrc('public\\logoCJM.png');
+        }
+    }, [location.pathname]);
+
     const [showMenu, setShowMenu] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
@@ -154,7 +177,7 @@ export const Header = () => {
                         )}
                     </button>
                     <Link to="/" className="flex items-center space-x-2 text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
-                        <img className="h-8 lg:h-10" src="public\logoCJM.png" alt="Logo" />
+                        <img className="h-8 lg:h-10" src={logoSrc} alt="Logo" />
                         <span className="hidden lg:block">Home</span>
                     </Link>
                 </div>
@@ -240,10 +263,10 @@ export const Header = () => {
                             Brands {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}
                         </button>
                         <div className={`bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 ${showBrandsDropdown ? '' : 'hidden'}`}>
-                            <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 1</Link>
-                            <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 2</Link>
-                            <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 3</Link>
-                            <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 4</Link>
+                            <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
+                            <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
+                            <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
+                            <Link to="/flamencoHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</Link>
                         </div>
                     </div>
                 </div>

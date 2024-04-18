@@ -5,9 +5,9 @@ function CjmHome() {
 
     return (
         <>
-            <Header/>
+            <Header />
             <h1>Probando</h1>
-            <Footer/>
+            <Footer />
         </>
     )
 }
