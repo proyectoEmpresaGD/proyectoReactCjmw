@@ -1,13 +1,13 @@
 import { Header } from "../../components/header"
-import { Footer } from "../../components/footer"
+import Footer from "../../components/footer"
 
 function HarbourHome() {
 
     return (
         <>
-            <Header/>
+            <Header />
             <h1>Probando</h1>
-            <Footer/>
+            <Footer />
         </>
     )
 }
