@@ -1,7 +1,7 @@
 import { Fade } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 
-const Carrusel = () => {
+const CarruselArena = () => {
   return (
     <div className='lg:h-[100vh] sm:h-[50vh] sm:bg-cover lg:bg-cover'>
       <Fade
@@ -32,4 +32,4 @@ const Carrusel = () => {
   );
 };
 
-export default Carrusel;
+export default CarruselArena;

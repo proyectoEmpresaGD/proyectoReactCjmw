@@ -1,12 +1,12 @@
 import { Fade } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 
-const Carrusel = () => {
+const CarruselHarbour = () => {
   return (
     <div className='lg:h-[100vh] sm:h-[50vh] sm:bg-cover lg:bg-cover'>
       <Fade
         duration={6000}
-        indicators={false}
+        indicators={false} // Corregido el valor de indicators
         autoplay={true}
         pauseOnHover={false}
         onChange={() => { }} // Corregido el valor de onChange
@@ -32,4 +32,4 @@ const Carrusel = () => {
   );
 };
 
-export default Carrusel;
+export default CarruselHarbour;
