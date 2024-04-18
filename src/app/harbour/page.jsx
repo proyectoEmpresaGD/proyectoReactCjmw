@@ -13,7 +13,6 @@ function HarbourHome() {
                 <img src="/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full "/>
             </div>
             </body>        
-            <h1>Probando</h1>
             <Footer/>
         </>
     )
