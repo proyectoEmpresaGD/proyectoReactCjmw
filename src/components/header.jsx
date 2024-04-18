@@ -11,9 +11,7 @@ export const Header = () => {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
     const [languages, setLanguages] = useState([]);
-    const [selectedLanguage, setSelectedLanguage] = useState(null);
     const [translationMap, setTranslationMap] = useState({});
-    const [otherMenuOpen, setOtherMenuOpen] = useState(false);
 
     useEffect(() => {
         const exampleLanguages = [
@@ -27,24 +25,54 @@ export const Header = () => {
     }, []);
 
     const changeLanguage = (languageCode) => {
-        setSelectedLanguage(languageCode);
         if (!translationMap[languageCode]) {
             fetchTranslation(languageCode);
         }
     };
 
     const fetchTranslation = (languageCode) => {
-        const apiKey = 'YOUR_API_KEY';
-        const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}&q=Hello&target=${languageCode}`;
+        const textToTranslate = document.documentElement.innerHTML;
+        const apiKey = 'TU_CLAVE_DE_API';
+        const maxCharacters = 5000; // Máximo de caracteres permitidos por solicitud
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const translatedText = data.data.translations[0].translatedText;
+        // Divide el texto en partes más pequeñas
+        const chunks = [];
+        for (let i = 0; i < textToTranslate.length; i += maxCharacters) {
+            chunks.push(textToTranslate.substring(i, i + maxCharacters));
+        }
+
+        // Realiza una solicitud de traducción para cada parte
+        Promise.all(chunks.map(chunk => {
+            const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}&q=${encodeURIComponent(chunk)}&target=${languageCode}`;
+
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const translatedText = data.data.translations[0].translatedText;
+                    return translatedText;
+                });
+        }))
+            .then(translations => {
+                // Une las traducciones en un solo texto
+                const translatedText = translations.join('');
+                // Actualiza el estado con la traducción completa
                 setTranslationMap(prevMap => ({
                     ...prevMap,
                     [languageCode]: translatedText
                 }));
+                // Reemplaza solo el texto en el DOM
+                document.querySelectorAll('*').forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE && node.parentElement && node.parentElement.tagName !== 'SCRIPT') {
+                        const translatedNode = document.createElement('span');
+                        translatedNode.innerHTML = translatedText;
+                        node.parentElement.replaceChild(translatedNode, node);
+                    }
+                });
             })
             .catch(error => console.error("Error fetching translation:", error));
     };
@@ -65,7 +93,6 @@ export const Header = () => {
         if (showLanguageDropdown) {
             setShowLanguageDropdown(false);
         }
-        setOtherMenuOpen(false); // Cerrar otros menús si están abiertos
     };
 
     const toggleUserDropdown = () => {
@@ -80,7 +107,6 @@ export const Header = () => {
         if (showLanguageDropdown) {
             setShowLanguageDropdown(false);
         }
-        setOtherMenuOpen(false); // Cerrar otros menús si están abiertos
     };
 
     const toggleSearchBar = () => {
@@ -95,7 +121,6 @@ export const Header = () => {
         if (showLanguageDropdown) {
             setShowLanguageDropdown(false);
         }
-        setOtherMenuOpen(false); // Cerrar otros menús si están abiertos
     };
 
     const toggleLanguageDropdown = () => {
@@ -105,9 +130,6 @@ export const Header = () => {
             setShowBrandsDropdown(false);
             setShowUserDropdown(false);
             setShowSearchBar(false);
-            setOtherMenuOpen(true);
-        } else {
-            setOtherMenuOpen(false);
         }
     };
 
@@ -142,16 +164,16 @@ export const Header = () => {
                         <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</Link>
                         <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contact Us</Link>
                         <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Products</Link>
-                        
+
                         <div className="relative">
                             <button className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none" onClick={toggleBrandsDropdown}>
                                 Brands {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}
                             </button>
                             <div className={`bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 ${showBrandsDropdown ? '' : 'hidden'}`}>
-                                <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 1</Link>
-                                <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 2</Link>
-                                <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 3</Link>
-                                <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Brand 4</Link>
+                                <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
+                                <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
+                                <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
+                                <Link to="/flamencoHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</Link>
                             </div>
                         </div>
                     </div>
@@ -212,7 +234,7 @@ export const Header = () => {
                     <Link to="/about" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">About Us</Link>
                     <Link to="/contact" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Contact Us</Link>
                     <Link to="/products" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Products</Link>
-                    
+
                     <div className="relative">
                         <button className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg focus:outline-none" onClick={toggleBrandsDropdown}>
                             Brands {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}
