@@ -10,8 +10,8 @@ function Contacts() {
                     <div className="max-w-6xl mx-auto mt-12 overflow-hidden bg-white rounded-md shadow-md lg:mt-20">
                         <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
                             <div className="lg:col-span-3">
-                                <div className="p-6 sm:p-10 bg-cover lg:h-[110vh]">
-                                    <img className=" object-cover lg:h-[100vh] rounded-lg" src="khloe-arledge-8Rz_RIyp5FM-unsplash.jpg" alt="" />
+                                <div className="p-6 sm:p-10 bg-cover lg:h-[130vh]">
+                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="khloe-arledge-8Rz_RIyp5FM-unsplash.jpg" alt="" />
                                 </div>
                             </div>
 
@@ -19,13 +19,13 @@ function Contacts() {
                                 <div className="h-full p-6 sm:p-10">
                                     <div className="flex flex-col justify-between h-full">
                                         <div>
-                                            <h4 className="text-2xl font-semibold text-black">Informacion de contacto</h4>
+                                            <h4 className="relative text-2xl   font-semibold text-black">Visita nuestros showrooms</h4>
 
-                                            <div className=' mt-8 space-y-7'>
-                                                <div className='block justify-center '>
-                                                    <h2 className=' relative lg:left-[16%] lg:text-3xl'><strong>MADRID</strong></h2>
+                                            <div className=' mt-8 space-y-5 '>
+                                            <div className='block relative md:max-lg:left-[25%] sm:max-lg:left-[25%] justify-center  '>
+                                                    <h2 className=' relative md:left-[20%] sm:left-[20%] left-[37%] lg:left-[20%] lg:text-3xl'><strong>MONTILLA</strong></h2>
                                                     <div className=' block items-start mt-5 '>
-                                                        <div className="mt-5 space-y-7">
+                                                        <div className="mt-4 space-y-5">
                                                             <div className="flex items-start">
                                                                 <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -45,19 +45,49 @@ function Contacts() {
                                                                 </svg>
                                                                 <div className="ml-3">
                                                                     <span className="block text-base text-gray-900"> +34-111-222-333 </span>
-                                                                    <span className="block mt-1 text-base text-gray-900"> +34-444-555-666 </span>
+                                                                    
                                                                 </div>
                                                             </div>
-                                                            <button className="group relative lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='block relative md:max-lg:left-[25%] sm:max-lg:left-[25%] justify-center '>
+                                                    <h2 className=' relative md:left-[20%] sm:left-[20%] left-[40%] lg:left-[27%] lg:text-3xl'><strong>MADRID</strong></h2>
+                                                    <div className=' block items-start mt-4 '>
+                                                        <div className="mt-5 space-y-5">
+                                                            <div className="flex items-start">
+                                                                <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                </svg>
+                                                                <span className="block ml-3 text-base text-gray-900"> Calle Marqués de Larios nº58, Málaga Spain </span>
+                                                            </div>
+
+                                                            <div className="flex items-start">
+                                                                <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth="1.5"
+                                                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                                                    />
+                                                                </svg>
+                                                                <div className="ml-3">
+                                                                    <span className="flex text-base text-gray-900"> +34-111-222-333 </span>
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className=' mt-8 space-y-7'>
-                                                <div className='block justify-center '>
-                                                    <h2 className=' relative left-[16%] lg:text-3xl'><strong>BARCELONA</strong></h2>
+                                                <div className='block relative md:max-lg:left-[25%] sm:max-lg:left-[25%] justify-center '>
+                                                    <h2 className=' relative md:left-[18%] sm:left-[18%] left-[36%] lg:left-[17%] xl:left-[16%] lg:text-3xl'><strong>BARCELONA</strong></h2>
                                                     <div className=' block items-start mt-5 '>
-                                                        <div className="mt-5 space-y-7">
+                                                        <div className="mt-4 space-y-5">
                                                             <div className="flex items-start">
                                                                 <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -77,19 +107,19 @@ function Contacts() {
                                                                 </svg>
                                                                 <div className="ml-3">
                                                                     <span className="block text-base text-gray-900"> +34-111-222-333 </span>
-                                                                    <span className="block mt-1 text-base text-gray-900"> +34-444-555-666 </span>
+                                                                    
                                                                 </div>
                                                             </div>
-                                                            <button className="group relative lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className=' mt-8 space-y-7'>
-                                                <div className='block justify-center '>
-                                                    <h2 className=' relative left-[16%] lg:text-3xl'><strong>HOLANDA</strong></h2>
+                                                <div className='block relative md:max-lg:left-[25%] sm:max-lg:left-[25%] justify-center '>
+                                                    <h2 className=' relative md:left-[20%] sm:left-[20%] left-[39%] lg:left-[22%] lg:text-3xl xl:left-[22%]'><strong>HOLANDA</strong></h2>
                                                     <div className=' block items-start mt-5 '>
-                                                        <div className="mt-5 space-y-7">
+                                                        <div className="mt-4 space-y-5">
                                                             <div className="flex items-start">
                                                                 <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -109,17 +139,17 @@ function Contacts() {
                                                                 </svg>
                                                                 <div className="ml-3">
                                                                     <span className="block text-base text-gray-900"> +34-111-222-333 </span>
-                                                                    <span className="block mt-1 text-base text-gray-900"> +34-444-555-666 </span>
+                                                                    
                                                                 </div>
                                                             </div>
-                                                            <button className="group relative lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="mt-8 lg:mt-auto">
+                                        <div className="mt-8 lg:mt-3">
                                             <hr className="border-gray-200" />
                                             <div className="flex items-center justify-between mt-7">
                                                 <p className="text-lg font-semibold text-black">Siguenos en</p>
@@ -127,7 +157,7 @@ function Contacts() {
                                                 <ul className="flex items-center justify-end space-x-3">
                                                     <li>
                                                         <a
-                                                            href="https://twitter.com/?lang=es"
+                                                            href="https://twitter.com/CJMW_Official"
                                                             title=""
                                                             className="
                                                     flex
@@ -158,7 +188,7 @@ function Contacts() {
 
                                                     <li>
                                                         <a
-                                                            href="https://www.facebook.com/?locale=es_ES"
+                                                            href="www.facebook.com/cjmwfabrics"
                                                             title=""
                                                             className="
                                                     flex
@@ -187,7 +217,7 @@ function Contacts() {
 
                                                     <li>
                                                         <a
-                                                            href="https://www.instagram.com/"
+                                                            href="https://www.instagram.com/cjmwfabrics/"
                                                             title=""
                                                             className="
                                                     flex

@@ -1,6 +1,7 @@
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 
 
+
 const Map = () => {
     const mapStyles = {
         height: "55vh",
@@ -11,6 +12,7 @@ const Map = () => {
         borderRadius: "6px"
     };
 
+    
     const containerStyles = {
         height: "60vh",
         width: "100%", 
