@@ -1,7 +1,7 @@
 import { Header } from '../components/header'
 import Footer from '../components/footer'
 import Contacts from "../components/contacts"
-import Map from "../components/map"
+import GeocodingService from "../components/map"
 
 
 function Contacto() {
@@ -9,7 +9,7 @@ function Contacto() {
         <>
             <Header />
             <Contacts/>
-            <Map />
+            <GeocodingService />
             <Footer />
         </>
     )
