@@ -8,6 +8,7 @@ import HarbourHome from './app/harbour/page.jsx'
 import ArenaHome from "./app/arena/page.jsx"
 import CjmHome from "./app/cjm/page.jsx"
 import FlamencoHome from './app/flamenco/page.jsx'
+import BlogHome from './app/blog/page.jsx'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/cjmHome" element={<CjmHome />} />
           <Route path="/arenaHome" element={<ArenaHome />} />
           <Route path="/flamencoHome" element={<FlamencoHome />} />
+          <Route path="/BlogHome" element={<BlogHome />} />
         </Routes>
       </div>
     </>
