@@ -15,8 +15,7 @@ function App() {
 
 
   return (
-    <>
-        
+    <>  
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -29,7 +28,6 @@ function App() {
             <Route path="/flamencoHome" element={<FlamencoHome />} />
             <Route path="/BlogHome" element={<BlogHome />} />
           </Routes>
-        
     </>
   )
 }
