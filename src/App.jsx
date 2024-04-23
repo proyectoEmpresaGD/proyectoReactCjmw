@@ -25,7 +25,7 @@ function App() {
           <Route path="/cjmHome" element={<CjmHome />} />
           <Route path="/arenaHome" element={<ArenaHome />} />
           <Route path="/flamencoHome" element={<FlamencoHome />} />
-          <Route path="/BlogHome" element={<BlogHome />} />
+          <Route path="/BlogHome/:newsId" element={<BlogHome />} />
         </Routes>
       </div>
     </>

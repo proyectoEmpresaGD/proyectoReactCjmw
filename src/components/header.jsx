@@ -5,25 +5,25 @@ import { FaGlobe } from "react-icons/fa";
 
 export const Header = () => {
     const location = useLocation();
-    const [logoSrc, setLogoSrc] = useState('public\\logoCJM.png');
+    const [logoSrc, setLogoSrc] = useState('/logoCJM.png');
 
     useEffect(() => {
         // Verifica la ruta actual y establece el logo del Navbar en consecuencia
         switch (location.pathname) {
             case '/harbourHome':
-                setLogoSrc('public\\logoHarbour.png');
+                setLogoSrc('/logoHarbour.png');
                 break;
             case '/arenaHome':
-                setLogoSrc('public\\logoArena.png');
+                setLogoSrc('/logoArena.png');
                 break;
             case '/cjmHome':
-                setLogoSrc('public\\logoCJM.png');
+                setLogoSrc('/logoCJM.png');
                 break;
             case '/flamencoHome':
-                setLogoSrc('public\\logoFlamenco.png');
+                setLogoSrc('/logoFlamenco.png');
                 break;
             default:
-                setLogoSrc('public\\logoCJM.png');
+                setLogoSrc('/logoCJM.png');
         }
     }, [location.pathname]);
 
