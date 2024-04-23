@@ -1,5 +1,5 @@
+import  { useEffect } from "react";
 
-import React, { useEffect } from "react";
 
 const GeocodingService = () => {
   useEffect(() => {
@@ -8,11 +8,12 @@ const GeocodingService = () => {
     let geocoder;
     let directionsService;
     let directionsRenderer;
+    let response; // Declarar variable response
 
     function initMap() {
       map = new window.google.maps.Map(document.getElementById("map"), {
         zoom: 3,
-        center: { lat: -34.397, lng: 150.644 },
+        center: { lat: 40.436437195598145, lng: -3.693919201706416 },
         mapTypeControl: false,
       });
       geocoder = new window.google.maps.Geocoder();
@@ -30,11 +31,12 @@ const GeocodingService = () => {
       submitButton.value = "Geocode";
 
       const clearButton = document.createElement("input");
-      clearButton.className = "bg-white text-blue-500 border border-blue-500 rounded shadow p-2 m-4 hover:bg-blue-100";
+      clearButton.className = "bg-white text-blue-500 border border-blue-500 rounded shadow p-2 m-4 hover:bg-blue-100 duration:200";
       clearButton.type = "button";
       clearButton.value = "Clear";
 
-      const response = document.createElement("pre");
+      // Crear el elemento "response"
+      response = document.createElement("pre");
       response.id = "response";
       response.innerText = "";
 
@@ -45,15 +47,11 @@ const GeocodingService = () => {
       const instructionsElement = document.createElement("p");
       instructionsElement.className = "bg-white border rounded shadow p-4 m-4";
       instructionsElement.id = "instructions";
-      instructionsElement.innerHTML =
-        "<strong>Instructions</strong>: Enter an address in the textbox to geocode or click on the map to reverse geocode.";
 
       map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(inputText);
       map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(submitButton);
       map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(clearButton);
-
       marker = new window.google.maps.Marker({ map });
-
       map.addListener("click", (e) => {
         geocode({ location: e.latLng });
       });
@@ -65,14 +63,18 @@ const GeocodingService = () => {
       const puntos = [
         { lat: -34.397, lng: 150.644, title: "Sydney" },
         { lat: 40.712776, lng: -74.005974, title: "New York" },
+        { lat: 37.586784324249166, lng: -4.658694292094171, title:"CJMW Montilla"},
+        { lat:40.43679156325075 , lng: -3.70976152688625, title:"showroom Madrid"}
         // Agrega más puntos aquí según sea necesario
       ];
-
+      
       puntos.forEach((punto) => {
+        
         const marker = new window.google.maps.Marker({
           position: punto,
           map: map,
           title: punto.title,
+          
         });
 
         marker.addListener("click", () => {
@@ -98,7 +100,10 @@ const GeocodingService = () => {
           map.setCenter(results[0].geometry.location);
           marker.setPosition(results[0].geometry.location);
           marker.setMap(map);
-          document.getElementById("response").innerText = JSON.stringify(result, null, 2);
+
+          // Acceder al elemento "response" y establecer su contenido
+          response.innerText = JSON.stringify(result, null, 2);
+
           return results;
         })
         .catch((e) => {
@@ -113,7 +118,11 @@ const GeocodingService = () => {
       // Calcular la distancia a cada punto y encontrar el más cercano
       const puntos = [
         { lat: -34.397, lng: 150.644, title: "Sydney" },
-        { lat: 40.712776, lng: -74.005974, title: "New York" },
+        { lat: 40.712776, lng: -74.005974, title: "New York" }, 
+        { lat: 37.58663949629884,lng: -4.658668668908988, title:"CJMW Montilla"},
+        { lat:40.43679156325075 , lng: -3.70976152688625, title:"showroom Madrid"}
+        
+
         // Agrega más puntos aquí según sea necesario
       ];
 
@@ -152,7 +161,7 @@ const GeocodingService = () => {
     window.initMap = initMap;
 
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly&solution_channel=GMP_CCS_geocodingservice_v1&libraries=geometry`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly&libraries=marker&solution_channel=GMP_CCS_geocodingservice_v1&libraries=geometry`;
     script.defer = true;
     document.body.appendChild(script);
 
@@ -161,7 +170,7 @@ const GeocodingService = () => {
     };
   }, []);
 
-  return <div id="map" className="h-[65vh] w-screem mx-auto"></div>;
+  return <div id="map" className="h-[65vh] w-screen mx-auto"></div>;
 };
 
 export default GeocodingService;
