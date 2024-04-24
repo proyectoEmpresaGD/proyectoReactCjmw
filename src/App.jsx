@@ -10,6 +10,7 @@ import CjmHome from "./app/cjm/page.jsx"
 import FlamencoHome from './app/flamenco/page.jsx'
 import BlogHome from './app/blog/page.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
+import Products from "./app/products/products.jsx"
 
 function App() {
 
@@ -26,7 +27,8 @@ function App() {
             <Route path="/cjmHome" element={<CjmHome />} />
             <Route path="/arenaHome" element={<ArenaHome />} />
             <Route path="/flamencoHome" element={<FlamencoHome />} />
-            <Route path="/BlogHome" element={<BlogHome />} />
+            <Route path="/BlogHome/:newsId" element={<BlogHome/>}/>
+            <Route path="/products" element={<Products/>}/>
           </Routes>
     </>
   )
