@@ -1,121 +1,65 @@
-import bcrypt from 'bcryptjs'
-import { signIn, signOut } from '@/auth';
-import { getUserByEmail } from '@/lib/data';
-import { redirect } from 'next/navigation';
+import bcrypt from 'bcryptjs';
+import { signIn, signOut } from './auth';
+import db from './db';  // Importamos la conexión a la base de datos que hemos creado
 
-
-// REGISTER
-/*export async function register(formData) {
-    const name = formData.get('name')
-    const email = formData.get('email')
-    const password = formData.get('password')
-
-    // Comprobamos si el usuario ya está registrado
-    const user = await getUserByEmail(email);
-
-    if (user) {
-        return { error: 'El email ya está registrado' }
-    }
-
-    // Encriptamos password 
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-    // Guardamos credenciales en base datos
-    await BaseDatos.user.create({
-        data: {
-            name,
-            email,
-            password: hashedPassword
-        }
-    })
-
-    return { success: "Registro correcto" }
-}
-*/
-
-
-//LOGIN con credenciales
+// LOGIN con credenciales
 export async function login(formData) {
-    const email = formData.get('email')
-    const password = formData.get('password')
+    const email = formData.get('email');
+    const password = formData.get('password');
 
     // Comprobamos si el usuario está registrado
-    const user = await getUserByEmail(email);
+    const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
 
-    if (!user) {
-        return { error: 'Usuario no registrado.' }
+    if (!user.rows.length) {
+        return { error: 'Usuario no registrado.' };
     }
 
     // Comparamos password 
-    const matchPassword = await bcrypt.compare(password, user.password)
+    const matchPassword = await bcrypt.compare(password, user.rows[0].password);
 
-    if (user && matchPassword) {  // && user.emailVerified
-        await signIn('credentials', { email, password, redirectTo: '/' })
-        // return { success: "Inicio de sesión correcto" }
+    if (matchPassword) {
+        await signIn('credentials', { email, password, redirectTo: '/' });
     } else {
-        return { error: 'Credenciales incorrectas.' }
+        return { error: 'Credenciales incorrectas.' };
     }
-
 }
 
-//LOGIN con google
+// LOGIN con Google
 export async function loginGoogle() {
-    await signIn('google', { redirectTo: '/' })
+    await signIn('google', { redirectTo: '/' });
 }
 
 // LOGOUT
 export async function logout() {
-    await signOut({ redirectTo: '/' })
+    await signOut({ redirectTo: '/' });
 }
 
-
-
-//Recoger los ids de los productos
-
-async function getProductosIds() {
-
-    const CodProducto = await db.CodProducto.findMany({
-        select: { id: true }
-    })
-    return CodProducto.map(p => p.id)
+// Recoger los ids de los productos
+export async function getProductosIds() {
+    const response = await db.query('SELECT id FROM productos');
+    return response.rows.map(p => p.id);
 }
 
-
-
-
-//Recoger todos los productos 
-
+// Recoger todos los productos
 export async function getProductos() {
-    const producto = await db.producto.findMany()
-    return producto
+    const response = await db.query('SELECT * FROM productos');
+    return response.rows;
 }
 
-
-
-//Recoger un solo producto por su id
+// Recoger un solo producto por su id
 export async function getProducto(CodProdu) {
-    const producto = await db.producto.findUnique({
-        where: { CodProdu },
-        include: {
-            colecciones: true
-        }
-    })
-    return producto
+    const response = await db.query('SELECT * FROM productos WHERE CodProdu = $1', [CodProdu]);
+    return response.rows[0];
 }
 
-
-
-//Recoger productos los cuales tengan una marca en concreto
+// Recoger productos los cuales tengan una marca en concreto
 export async function getProductosPorMarca(CodMarca) {
-    const producto = await db.producto.findMany({
-        where: {CodMarca}
-    })
+    const response = await db.query('SELECT * FROM productos WHERE CodMarca = $1', [CodMarca]);
+    return response.rows;
 }
 
-
-//Recoger productos los cuales tengan una coleccion en concreto
+// Recoger productos los cuales tengan una coleccion en concreto
 export async function getProductosPorColeccion(coleccion) {
-    const producto = await db.producto.findMany({
-        where: { coleccion }
-    })
+    const response = await db.query('SELECT * FROM productos WHERE coleccion = $1', [coleccion]);
+    return response.rows;
 }
