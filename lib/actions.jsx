@@ -74,7 +74,7 @@ export async function logout() {
 
 async function getProductosIds() {
 
-    const CodProducto = await /*BaseDeDatosImportada.*/CodProducto.findMany({
+    const CodProducto = await db.CodProducto.findMany({
         select: { id: true }
     })
     return CodProducto.map(p => p.id)
@@ -86,7 +86,7 @@ async function getProductosIds() {
 //Recoger todos los productos 
 
 export async function getProductos() {
-    const producto = await /*BaseDeDatosImportada.*/producto.findMany()
+    const producto = await db.producto.findMany()
     return producto
 }
 
@@ -94,7 +94,7 @@ export async function getProductos() {
 
 //Recoger un solo producto por su id
 export async function getProducto(CodProdu) {
-    const producto = await /*BaseDeDatosImportada.*/producto.findUnique({
+    const producto = await db.producto.findUnique({
         where: { CodProdu },
         include: {
             colecciones: true
@@ -107,7 +107,7 @@ export async function getProducto(CodProdu) {
 
 //Recoger productos los cuales tengan una marca en concreto
 export async function getProductosPorMarca(CodMarca) {
-    const producto = await /*BaseDeDatosImportada.*/producto.findMany({
+    const producto = await db.producto.findMany({
         where: {CodMarca}
     })
 }
@@ -115,7 +115,7 @@ export async function getProductosPorMarca(CodMarca) {
 
 //Recoger productos los cuales tengan una coleccion en concreto
 export async function getProductosPorColeccion(coleccion) {
-    const producto = await /*BaseDeDatosImportada.*/producto.findMany({
+    const producto = await db.producto.findMany({
         where: { coleccion }
     })
 }
