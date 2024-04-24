@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const NewCollection = () => {
+const NewCollection = ( { images, titles } ) => {
     const [hoveredItem, setHoveredItem] = useState(null);
 
     const handleMouseEnter = (index) => {
@@ -10,6 +10,8 @@ const NewCollection = () => {
     const handleMouseLeave = () => {
         setHoveredItem(null);
     };
+
+    
 
     return (
         <section>
@@ -31,14 +33,14 @@ const NewCollection = () => {
                     >
                         <a href="#" className="block">
                             <img
-                                src="https://images.unsplash.com/photo-1618898909019-010e4e234c55?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"
+                                src={images[3]}
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 0 ? 'scale-105' : 'scale-100'
                                     } transition duration-500`}
                             />
 
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
-                                <h3 className="text-xl font-medium text-white">Casual Trainers</h3>
+                                <h3 className="text-xl font-medium text-white">{titles[3]}</h3>
                                 <span className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white">
                                     Shop Now
                                 </span>
@@ -54,14 +56,14 @@ const NewCollection = () => {
                     >
                         <a href="#" className="block">
                             <img
-                                src="https://images.unsplash.com/photo-1624623278313-a930126a11c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"
+                                src={images[1]}
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 1 ? 'scale-105' : 'scale-100'
                                     } transition duration-500`}
                             />
 
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
-                                <h3 className="text-xl font-medium text-white">Winter Jumpers</h3>
+                                <h3 className="text-xl font-medium text-white">{titles[1]}</h3>
                                 <span className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white">
                                     Shop Now
                                 </span>
@@ -77,14 +79,14 @@ const NewCollection = () => {
                     >
                         <a href="#" className="block">
                             <img
-                                src="https://images.unsplash.com/photo-1593795899768-947c4929449d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2672&q=80"
+                                src={images[2]}
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 2 ? 'scale-105' : 'scale-100'
                                     } transition duration-500`}
                             />
 
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
-                                <h3 className="text-xl font-medium text-white">Skinny Jeans Blue</h3>
+                                <h3 className="text-xl font-medium text-white">{titles[2]}</h3>
                                 <span className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white">
                                     Shop Now
                                 </span>

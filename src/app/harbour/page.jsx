@@ -4,19 +4,32 @@ import Carrusel from "../../components/carrusel"
 import NewCollection from "../../components/cardNewCollection"
 import CardAllProducts from "../../components/cardAllProducts"
 
+const images = [
+    "ArenaCarrusel3.webp",
+    "ArenaCarrusel1.webp",
+    "ArenaCarrusel2.webp",
+    "1200ARENADUNE01.jpg",
+]
+
+const titles = [
+    "1200ARENADUNE01.jpg",
+    "ArenaCarrusel1.webp",
+    "ArenaCarrusel2.webp",
+    "ArenaCarrusel3.webp"
+]
 
 function HarbourHome() {
 
     return (
         <>
             <Header />
-            <Carrusel />
+            <Carrusel images={images}/>
             <body className=" bg-gradient-to-b-from">
                 <div className=" flex items-center justify-center h-full">
                     <img src="/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                 </div>
             </body>
-            <NewCollection />
+            <NewCollection images={images} titles={titles}/>
             <CardAllProducts />
             <Footer />
         </>
