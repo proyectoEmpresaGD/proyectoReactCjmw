@@ -1,9 +1,9 @@
 import './App.css'
 import {  BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import Home from "./app/paginaPrincipal.jsx"
-import About from "./about/about.jsx"
-import Contacto from "./contact/contactanos.jsx"
-import Interores from "./interiores/interiores.jsx"
+import About from "./app/about/about.jsx"
+import Contacto from "./app/contact/contactanos.jsx"
+import Interores from "./app/interiores/interiores.jsx"
 import HarbourHome from './app/harbour/page.jsx'
 import ArenaHome from "./app/arena/page.jsx"
 import CjmHome from "./app/cjm/page.jsx"
