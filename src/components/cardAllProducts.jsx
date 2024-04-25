@@ -21,7 +21,7 @@ const CardAllProducts = () => {
                             <img className="object-cover w-full h-full" src={selectedColor ? `https://example.com/${selectedColor}-image.jpg` : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff'} alt="Product" />
                             <div className="absolute inset-0 bg-black opacity-40"></div>
                             <div className="absolute inset-0 flex items-center justify-center">
-                                
+
                             </div>
                         </div>
                         <div className="flex justify-center space-x-4 mt-4">
@@ -42,7 +42,7 @@ const CardAllProducts = () => {
                             <img className="object-cover w-full h-full" src={selectedColor ? `https://example.com/${selectedColor}-image.jpg` : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff'} alt="Product" />
                             <div className="absolute inset-0 bg-black opacity-40"></div>
                             <div className="absolute inset-0 flex items-center justify-center">
-                                
+
                             </div>
                         </div>
                         <div className="flex justify-center space-x-4 mt-4">
@@ -63,7 +63,7 @@ const CardAllProducts = () => {
                             <img className="object-cover w-full h-full" src={selectedColor ? `https://example.com/${selectedColor}-image.jpg` : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff'} alt="Product" />
                             <div className="absolute inset-0 bg-black opacity-40"></div>
                             <div className="absolute inset-0 flex items-center justify-center">
-                                
+
                             </div>
                         </div>
                         <div className="flex justify-center space-x-4 mt-4">
