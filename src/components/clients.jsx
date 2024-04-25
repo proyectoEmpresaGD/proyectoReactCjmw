@@ -10,7 +10,7 @@ const Clients = () => {
                 <a href="/cjmHome" rel="noopener noreferrer">
                     <img
                         src="public\logoCJM.png"
-                        className="w-32 h-32 object-contain transition-transform transform hover:scale-105"
+                        className="w-20 h-20 object-contain transition-transform transform hover:scale-105"
                         alt="Client Logo 1"
                     />
                 </a>
