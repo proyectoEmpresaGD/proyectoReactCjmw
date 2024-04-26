@@ -1,39 +1,17 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
 import CardProduct from "../../components/cardProduct"
+import Filtro from "./filtro"
 
-function Product() {
-
+function Product (){
     return (
         <>
             <Header />
-            <div className="mx-auto">
-            <h1 className=" mx-auto mt-[10%]">PRODUCTS</h1>
+            <div className="max-w-2xl mx-auto text-center ">
+                <h1 className="text-3xl font-bold leading-tight text-black sm:text-4xl mt-[24%] xl:mt-[18%] md:mt-[18%] lg:text-5xl">PRODUCTS</h1>
             </div>
-            
-            <div className="sticky xl:top-[30%] lg:top-[30%] h-[70%] overflow-y-auto w-64 bg-white border-slate-400 border-2 p-4">
-                <div className="mb-4">
-                    <p className="text-sm font-semibold mb-2">BRAND</p>
-                    <div className="flex flex-col space-y-2">
-                        <label className="flex items-center">
-                            <input type="checkbox" className="form-checkbox"/>ALL BRANDS
-                        </label>
-                        <label className="flex items-center">
-                            <input type="checkbox" className="form-checkbox"/>ALL BRANDS
-                        </label>
-                        <label className="flex items-center">
-                            <input type="checkbox" className="form-checkbox"/>ALL BRANDS
-                        </label>
-                        <label className="flex items-center">
-                            <input type="checkbox" className="form-checkbox"/>ALL BRANDS
-                        </label>
-                        <label className="flex items-center">
-                            <input type="checkbox" className="form-checkbox"/>ALL BRANDS
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div className="flex flex-wrap">
+            <Filtro/>
+            <div className="flex flex-wrap mx-auto justify-center items-center">
                 <CardProduct />
                 <CardProduct />
                 <CardProduct />
@@ -42,8 +20,6 @@ function Product() {
                 <CardProduct />
                 <CardProduct />
             </div>
-
-
             <Footer />
         </>
     )
