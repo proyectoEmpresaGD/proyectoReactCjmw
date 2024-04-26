@@ -10,15 +10,10 @@ const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Usa la variable de entorno DATABASE_URL para la conexión
 const pool = new Pool({
-  host: process.env.PGHOST,
-  user: process.env.PGUSER,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT || 5432,  // Asegúrate de que el puerto está correcto
-  ssl: {
-    rejectUnauthorized: process.env.NODE_ENV === "production"  // Solo rechaza conexiones no autorizadas en producción
-  }
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
 export const createApp = () => {

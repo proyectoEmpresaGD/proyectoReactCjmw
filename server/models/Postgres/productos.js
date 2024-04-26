@@ -3,42 +3,38 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-console.log(process.env.PGHOST); // Debería mostrar el valor configurado en .env para PGHOST
-
-const { Pool } = pg;
+// Imprime la variable de entorno para verificar que se está leyendo correctamente
+console.log(process.env.DATABASE_URL); // Debería mostrar la URL de la base de datos completa
 
 // Configuración de la conexión a la base de datos PostgreSQL
-const pool = new Pool({
-  host: process.env.PGHOST,
-  user: process.env.PGUSER,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT || 1234,
-  ssl: false // Configura SSL a false
-
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  // Si se requiere SSL y estás usando un certificado autofirmado (como en Heroku)
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
 export class ProductModel {
   // Obtener todos los productos, opcionalmente filtrados por familia y subfamilia
+
   static async getAll({ CodFamil, CodSubFamil }) {
     console.log('getAll');
     let query = 'SELECT * FROM productos';
     let params = [];
-
-    if (CodFamil) {
-      query += ' WHERE "CodFamil" = $1';
-      params.push(CodFamil);
-    }
-
-    if (CodSubFamil) {
-      if (params.length > 0) {
-        query += ' AND "CodSubFamil" = $2';
-      } else {
-        query += ' WHERE "CodSubFamil" = $1';
+    
+      if (CodFamil) {
+        query += ' WHERE "codfamil" = $1';
+        params.push(CodFamil);
       }
-      params.push(CodSubFamil);
-    }
 
+      if (CodSubFamil) {
+        if (params.length > 0) {
+          query += ' AND "codsubfamil" = $2';
+        } else {
+          query += ' WHERE "codsubfamil" = $1';
+        }
+        params.push(CodSubFamil);
+      }
+    
     try {
       const { rows } = await pool.query(query, params);
       return rows;
@@ -51,16 +47,12 @@ export class ProductModel {
 
   // Obtener un producto específico por su código
   static async getById({ id }) {
-    try {
+    
       const { rows } = await pool.query(
-        'SELECT * FROM productos WHERE "CodProdu" = $1;',
+        'SELECT * FROM productos WHERE "codprodu" = $1;',
         [id]
       );
-
       return rows.length > 0 ? rows[0] : null;
-    } catch (error) {
-      console.log(error)
-    }
 
   }
 
@@ -75,7 +67,7 @@ export class ProductModel {
     } = input;
 
     const { rows } = await pool.query(
-      `INSERT INTO productos ("CodProdu", "DesProdu", "CodFamil", "Comentario")
+      `INSERT INTO productos ("codprodu", "desprodu", "codfamil", "comentario")
        VALUES ($1, $2, $3, $4)
        RETURNING *;`,
       [CodProdu, DesProdu, CodFamil, Comentario]
@@ -90,7 +82,7 @@ export class ProductModel {
     const values = Object.values(input);
 
     const { rows } = await pool.query(
-      `UPDATE productos SET ${fields} WHERE "CodProdu" = $1 RETURNING *;`,
+      `UPDATE productos SET ${fields} WHERE "codprodu" = $1 RETURNING *;`,
       [id, ...values]
     );
 
@@ -100,7 +92,7 @@ export class ProductModel {
   // Eliminar un producto
   static async delete({ id }) {
     const { rows } = await pool.query(
-      'DELETE FROM productos WHERE "CodProdu" = $1 RETURNING *;',
+      'DELETE FROM productos WHERE "codprodu" = $1 RETURNING *;',
       [id]
     );
 
