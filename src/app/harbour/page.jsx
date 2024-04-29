@@ -2,7 +2,7 @@ import { Header } from "../../components/header"
 import Footer from "../../components/footer"
 import Carrusel from "../../components/carrusel"
 import NewCollection from "../../components/cardNewCollection"
-import CardAllProducts from "../../components/cardAllProducts"
+
 
 const images = [
     "ArenaCarrusel3.webp",
@@ -30,7 +30,7 @@ function HarbourHome() {
                 </div>
             </body>
             <NewCollection images={images} titles={titles}/>
-            <CardAllProducts/>
+            
             <Footer />
         </>
     )
