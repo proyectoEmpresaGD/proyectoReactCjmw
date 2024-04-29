@@ -30,7 +30,7 @@ function HarbourHome() {
                 </div>
             </body>
             <NewCollection images={images} titles={titles}/>
-            <CardAllProducts />
+            <CardAllProducts/>
             <Footer />
         </>
     )
