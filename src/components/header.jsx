@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill, RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { FaGlobe } from "react-icons/fa";
+import ShoppingCart from "../components/shoppingCart "; // Importar el componente del carrito
 
 export const Header = () => {
     const location = useLocation();
     const [logoSrc, setLogoSrc] = useState('/logoCJM.png');
+    // Estado para mostrar el componente del carrito
+    const [showCart, setShowCart] = useState(false);
+
 
     useEffect(() => {
         // Verifica la ruta actual y establece el logo del Navbar en consecuencia
@@ -247,7 +251,7 @@ export const Header = () => {
                             </div>
                         )}
                     </div>
-                    <button className="text-gray-800 focus:outline-none" onClick={() => { }}>
+                    <button className="text-gray-800 focus:outline-none" onClick={() => setShowCart(!showCart)}> {/* Toggle del componente del carrito */}
                         <RiShoppingCartFill size={24} />
                     </button>
                 </div>
@@ -271,6 +275,9 @@ export const Header = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Componente del carrito */}
+            {showCart && <ShoppingCart onClose={() => setShowCart(false)} />}
         </header>
     );
 };
