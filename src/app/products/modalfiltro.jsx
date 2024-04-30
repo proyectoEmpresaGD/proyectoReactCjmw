@@ -69,10 +69,10 @@ function FiltroModal({ isOpen, close, applyFilters, marcas, coleccionesPorMarca 
 
     if (!isOpen) return null;
     const colors = [
-        { name: 'Rojo', hex: '#ef4444' },
-        { name: 'Azul', hex: '#3b82f6' },
-        { name: 'Verde', hex: '#22c55e' },
-        { name: 'Amarillo', hex: '#eab308' },
+        { name: 'Rojo', src: '#ef4444' },
+        { name: 'Azul', src: '#3b82f6' },
+        { name: 'Verde', src: '#22c55e' },
+        { name: 'Amarillo', src: '#eab308' },
     ];
 
     return (
