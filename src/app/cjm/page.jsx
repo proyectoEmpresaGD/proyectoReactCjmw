@@ -30,7 +30,9 @@ function CjmHome() {
                     <img src="/logoCJM.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[30%] h-[30%] max-w-full max-h-full " />
                 </div>
             </body>
+
             <NewCollection images={images} titles={titles} />
+
             <Footer />
         </>
     )
