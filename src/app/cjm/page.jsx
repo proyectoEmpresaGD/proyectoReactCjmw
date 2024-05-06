@@ -1,7 +1,8 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
-import Carrusel from "../../components/carrusel"
-import NewCollection from "../../components/cardNewCollection"
+import Carrusel from "../../components/ComponentesHome/carrusel"
+import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
+
 
 function CjmHome() {
 

@@ -1,7 +1,7 @@
 
 //AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 
 const GeocodingService = () => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import SkeletonLoader from "./skeletonLoader";  // Verifica que el nombre del archivo coincida exactamente
-import Modal from "./modal";
+import SkeletonLoader from "../ComponentesProductos/skeletonLoader";
+import Modal from "../ComponentesProductos/modal";
 
 const CardProduct = () => {
     const [selectedColor, setSelectedColor] = useState(null);
@@ -27,8 +27,8 @@ const CardProduct = () => {
                     return;
                 }
 
-               
-                
+
+
                 const seenFirstWords = new Set();
                 const filteredProducts = products.filter(product => {
                     // Excluir productos con palabras específicas al principio o que comiencen con números
@@ -104,4 +104,3 @@ const CardProduct = () => {
 };
 
 export default CardProduct;
-

@@ -1,8 +1,8 @@
-import Carrusel from "../components/carrusel"
+import Carrusel from "../components/ComponentesHome/carrusel"
 import { Header } from "../components/header"
 import Footer from "../components/footer"
-import Works from "../components/pinesNoticias"
-import Clients from "../components/clients"
+import Works from "../components/ComponentesHome/pinesNoticias"
+import Clients from "../components/ComponentesHome/clients"
 
 const images = [
     "showroom1.jpg",
@@ -14,7 +14,7 @@ function Home() {
     return (
         <>
             <Header />
-            <Carrusel images={images}/>
+            <Carrusel images={images} />
             <Works />
             <Clients />
             <Footer />

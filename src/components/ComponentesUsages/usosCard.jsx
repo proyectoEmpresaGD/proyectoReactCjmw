@@ -174,7 +174,7 @@ const CareInstructions = () => {
 
     return (
         <div className="mt-16 mb-8 px-4">
-            <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Cares</h1>
+            <h1 className="text-2xl font-bold text-center text-gray-800 mb-6 pt-16 sm:pt-24">Cares</h1>
 
             <h2 className="text-xl font-semibold text-center text-gray-700 mb-4">Usage Instructions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

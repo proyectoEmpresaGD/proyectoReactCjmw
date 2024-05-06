@@ -1,7 +1,7 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
-import CardProduct from "../../components/cardProduct"
-import Filtro from "./filtro"
+import CardProduct from "../../components/ComponentesProductos/cardProduct"
+import Filtro from "../products/filtro"
 
 
 function Product() {
@@ -12,7 +12,7 @@ function Product() {
                 <h1 className="text-3xl font-bold leading-tight text-black sm:text-4xl mt-[24%] xl:mt-[18%] md:mt-[18%] lg:text-5xl">PRODUCTS</h1>
             </div>
             <Filtro />
-            <CardProduct/>
+            <CardProduct />
             <Footer />
         </>
     )
