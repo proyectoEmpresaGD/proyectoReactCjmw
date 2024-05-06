@@ -1,6 +1,6 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
-import CareUsages from "../../components/usosCard"
+import CareUsages from "../../components/ComponentesUsages/usosCard"
 
 
 

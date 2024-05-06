@@ -1,7 +1,8 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
-import Carrusel from "../../components/carrusel"
-import NewCollection from "../../components/cardNewCollection"
+import Carrusel from "../../components/ComponentesHome/carrusel"
+import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
+
 
 function ArenaHome() {
 
@@ -28,8 +29,8 @@ function ArenaHome() {
                     <img src="/logoArena.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                 </div>
             </body>
-            <NewCollection images={images} titles={titles}/>
-            
+            <NewCollection images={images} titles={titles} />
+
             <Footer />
         </>
     )
