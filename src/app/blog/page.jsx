@@ -61,34 +61,36 @@ const BlogHome = () => {
     if (!newsItem) {
         return (
             <>
-                <CartProvider>
-                    <Header />
-                    <div className="flex items-center justify-center min-h-screen">
-                        <div className="text-center p-4">
-                            <h2 className="text-3xl font-bold text-gray-800">Noticia no encontrada</h2>
-                            <p className="text-lg text-gray-500">Lo sentimos, la noticia que buscas no está disponible.</p>
-                        </div>
+
+                <Header />
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-center p-4">
+                        <h2 className="text-3xl font-bold text-gray-800">Noticia no encontrada</h2>
+                        <p className="text-lg text-gray-500">Lo sentimos, la noticia que buscas no está disponible.</p>
                     </div>
-                    <Footer />
-                </CartProvider>
+                </div>
+                <Footer />
+
             </>
         );
     }
 
     return (
         <>
-            <Header />
-            <div className="container mx-auto px-4 py-16 lg:py-24">
-                <h1 className="text-4xl lg:text-5xl font-bold text-center text-gray-800 mb-8 mt-4 lg:mt-0">{newsItem.title}</h1>
-                <div className="flex justify-center">
-                    <img src={newsItem.image} alt={newsItem.title} className="max-w-full lg:max-w-4xl h-auto object-cover rounded-lg shadow-xl" />
+            <CartProvider>
+                <Header />
+                <div className="container mx-auto px-4 py-16 lg:py-24">
+                    <h1 className="text-4xl lg:text-5xl font-bold text-center text-gray-800 mb-8 mt-4 lg:mt-0">{newsItem.title}</h1>
+                    <div className="flex justify-center">
+                        <img src={newsItem.image} alt={newsItem.title} className="max-w-full lg:max-w-4xl h-auto object-cover rounded-lg shadow-xl" />
+                    </div>
+                    <div className="text-md lg:text-lg text-gray-600 mt-4 text-center">{newsItem.date}</div>
+                    <article className="prose lg:prose-xl mx-auto text-gray-700 leading-relaxed mt-6">
+                        <p>{newsItem.content}</p>
+                    </article>
                 </div>
-                <div className="text-md lg:text-lg text-gray-600 mt-4 text-center">{newsItem.date}</div>
-                <article className="prose lg:prose-xl mx-auto text-gray-700 leading-relaxed mt-6">
-                    <p>{newsItem.content}</p>
-                </article>
-            </div>
-            <Footer />
+                <Footer />
+            </CartProvider>
         </>
     );
 };
