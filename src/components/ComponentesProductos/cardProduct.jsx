@@ -65,7 +65,7 @@ const CardProduct = () => {
                         </div>
                     ))}
                     {showAddedMessage && (
-                        <div className="fixed top-20 right-2 bg-green-200 text-green-800 p-2 rounded">
+                        <div className="fixed top-20 right-2 bg-green-500 text-white p-3 rounded-lg shadow-lg" style={{ animation: 'fadeIn 0.3s' }}>
                             Producto agregado correctamente
                         </div>
                     )}
