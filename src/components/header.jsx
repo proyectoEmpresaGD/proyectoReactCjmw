@@ -3,13 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill, RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { FaGlobe } from "react-icons/fa";
 import ShoppingCart from "../components/shoppingCart "; // Importar el componente del carrito
+import { useCart } from '../components/CartContext'; // Ajusta esta ruta según tu estructura
 
 export const Header = () => {
     const location = useLocation();
     const [logoSrc, setLogoSrc] = useState('/logoCJM.png');
     // Estado para mostrar el componente del carrito
     const [showCart, setShowCart] = useState(false);
-
+    const { itemCount } = useCart(); //
 
     useEffect(() => {
         // Verifica la ruta actual y establece el logo del Navbar en consecuencia
