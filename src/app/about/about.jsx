@@ -10,8 +10,6 @@ function About() {
                 <Header />
                 {/* Gradiente en todo el cuerpo */}
                 <div className="min-h-screen" style={{ background: 'linear-gradient(to right, #ebdecf, #a78d6e)' }}>
-
-                    {/* Sección "At a glance" */}
                     <section className="py-20 lg:py-12 bg-ivory font-Corinthia">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">

@@ -33,7 +33,7 @@ const NewCollection = ( { images, titles } ) => {
                     >
                         <a href="#" className="block">
                             <img
-                                src={images[3]}
+                                src={images[0]}
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 0 ? 'scale-105' : 'scale-100'
                                     } transition duration-500`}

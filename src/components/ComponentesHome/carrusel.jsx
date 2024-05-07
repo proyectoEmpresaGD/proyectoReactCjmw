@@ -27,6 +27,31 @@ const Carrusel = ( { images } ) => {
             <img src={images[2]} alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
           </div>
         </div>
+        <div className="each-fade-effect lg:h-[100vh] sm:h-[50vh]">
+          <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
+            <img src={images[3]} alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
+          </div>
+        </div>
+        <div className="each-fade-effect lg:h-[100vh] sm:h-[50vh]">
+          <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
+            <img src={images[4]} alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
+          </div>
+        </div>
+        <div className="each-fade-effect lg:h-[100vh] sm:h-[50vh]">
+          <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
+            <img src={images[5]} alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
+          </div>
+        </div>
+        <div className="each-fade-effect lg:h-[100vh] sm:h-[50vh]">
+          <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
+            <img src={images[6]} alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
+          </div>
+        </div>
+        <div className="each-fade-effect lg:h-[100vh] sm:h-[50vh]">
+          <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
+            <img src={images[7]} alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
+          </div>
+        </div>
       </Fade>
     </div>
   );
