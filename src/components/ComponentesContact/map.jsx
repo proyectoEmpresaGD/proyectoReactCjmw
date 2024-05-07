@@ -125,18 +125,18 @@ const GeocodingService = () => {
   }, []);
 
   return (
-    <div className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862]">
+    <div className="  bg-gradient-to-r from-[#ebdecf] to-[#8a7862] px-2 mx-auto">
       <input
         type="text"
         value={postalCode}
         onChange={(e) => setPostalCode(e.target.value)}
-        placeholder="Escribe aquí tu código postal"
-        style={{ margin: "10px" }}
+        placeholder="Escribe aquí tu ciudad"
+        className=" xl:ml-[3px] mb-6 w-10% xl:w-[12%] border-b-2 border-black bg-transparent text-[110%] focus:border-b focus:border-black focus:bg-transparent focus:w-[50%] xl:focus:w-[16%] duration-150"
       />
-      <button className=" m-3 bg-slate-500 border-black hover:bg-slate-600 duration-150 rounded-md py-2 pr-1 pl-1" onClick={() => findStores(postalCode)}>
-        tu tienda más cercana
+      <button className=" m-3 bg-slate-400 border-black hover:bg-slate-200 duration-150 rounded-md py-2 pr-1 pl-1" onClick={() => findStores(postalCode)}>
+        Tienda más cercana
       </button>
-      <div id="map" style={{ height: "65vh", width: "100%" }}></div>
+      <div id="map" style={{ height: "65vh", width: "100%", margin: "auto" }} className=" h:-[65vh] w-[100%] bg-transparent"></div>
     </div>
   );
 };

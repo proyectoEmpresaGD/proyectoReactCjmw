@@ -15,7 +15,7 @@ function About() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                                 <div className="flex items-center justify-center lg:justify-start">
                                     <div className="max-w-lg border rounded-lg overflow-hidden">
-                                        <img src="public\khloe-arledge-8Rz_RIyp5FM-unsplash.jpg" alt="Tu imagen" className="w-full h-auto" />
+                                        <img src="https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BUCLE%2008.jpg" alt="Tu imagen" className="w-full h-auto" />
                                     </div>
                                 </div>
                                 <div className="lg:pl-10">

@@ -6,9 +6,15 @@ import Clients from "../components/ComponentesHome/clients"
 import { CartProvider } from '../components/CartContext';
 
 const images = [
-    "showroom1.jpg",
-    "showroom2.jpg",
-    "4.jpg"
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+    
 ]
 
 function Home() {
