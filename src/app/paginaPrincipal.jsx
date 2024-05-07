@@ -3,6 +3,7 @@ import { Header } from "../components/header"
 import Footer from "../components/footer"
 import Works from "../components/ComponentesHome/pinesNoticias"
 import Clients from "../components/ComponentesHome/clients"
+import { CartProvider } from '../components/CartContext';
 
 const images = [
     "showroom1.jpg",
@@ -13,11 +14,13 @@ const images = [
 function Home() {
     return (
         <>
-            <Header />
-            <Carrusel images={images} />
-            <Works />
-            <Clients />
-            <Footer />
+            <CartProvider>
+                <Header />
+                <Carrusel images={images} />
+                <Works />
+                <Clients />
+                <Footer />
+            </CartProvider>
         </>
     )
 }

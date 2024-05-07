@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { Header } from '../../components/header';
 import Footer from '../../components/footer';
+import { CartProvider } from '../../components/CartContext';
 
 // Datos de las noticias para el ejemplo
 const newsData = [
@@ -60,14 +61,16 @@ const BlogHome = () => {
     if (!newsItem) {
         return (
             <>
-                <Header />
-                <div className="flex items-center justify-center min-h-screen">
-                    <div className="text-center p-4">
-                        <h2 className="text-3xl font-bold text-gray-800">Noticia no encontrada</h2>
-                        <p className="text-lg text-gray-500">Lo sentimos, la noticia que buscas no está disponible.</p>
+                <CartProvider>
+                    <Header />
+                    <div className="flex items-center justify-center min-h-screen">
+                        <div className="text-center p-4">
+                            <h2 className="text-3xl font-bold text-gray-800">Noticia no encontrada</h2>
+                            <p className="text-lg text-gray-500">Lo sentimos, la noticia que buscas no está disponible.</p>
+                        </div>
                     </div>
-                </div>
-                <Footer />
+                    <Footer />
+                </CartProvider>
             </>
         );
     }
