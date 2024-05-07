@@ -4,7 +4,7 @@ const CareInstructions = () => {
     const careInstructions = [
         {
             id: 1,
-            iconPath: 'washing.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/washing.svg',  // Cambia esta ruta por la de tu icono
             title: "Lavable a máquina",
             details: [
                 "Apto para lavar a 30° en lavadora.",
@@ -14,7 +14,7 @@ const CareInstructions = () => {
         },
         {
             id: 2,
-            iconPath: 'do-not-wash.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/do-not-wash.svg',  // Cambia esta ruta por la de tu icono
             title: "No lavable a máquina",
             details: [
                 "Si se indica, recomendamos limpiar la tela a mano o en seco siguiendo las instrucciones especificadas en cada caso.",
@@ -23,25 +23,25 @@ const CareInstructions = () => {
         },
         {
             id: 3,
-            iconPath: 'iron-1.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/iron-1.svg',  // Cambia esta ruta por la de tu icono
             title: "Planchar a 120°",
             details: ["Se recomienda planchar la tela siempre por el reverso hasta 120 grados."],
         },
         {
             id: 4,
-            iconPath: 'iron-2.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/iron-2.svg',  // Cambia esta ruta por la de tu icono
             title: "Planchar a 160°",
             details: ["Se recomienda planchar la tela siempre por el reverso hasta 160 grados."],
         },
         {
             id: 5,
-            iconPath: 'iron-3.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/iron-3.svg',  // Cambia esta ruta por la de tu icono
             title: "Planchar a 210°",
             details: ["Se recomienda planchar la tela siempre por el reverso hasta 210 grados."],
         },
         {
             id: 6,
-            iconPath: 'iron-disable.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/iron-disable.svg',  // Cambia esta ruta por la de tu icono
             title: "No planchar",
             details: [
                 "Se usan fibras especiales para hacer la tela indicada.",
@@ -50,7 +50,7 @@ const CareInstructions = () => {
         },
         {
             id: 7,
-            iconPath: 'hand-wash.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/hand-wash.svg',  // Cambia esta ruta por la de tu icono
             title: "Lavar a mano",
             details: [
                 "Apto para lavar a mano en agua tibia.",
@@ -61,7 +61,7 @@ const CareInstructions = () => {
         },
         {
             id: 8,
-            iconPath: 'noun-no-bleach.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/noun-no-bleach.svg',  // Cambia esta ruta por la de tu icono
             title: "No usar blanqueador",
             details: [
                 "Ninguna de nuestras telas puede ser tratada con blanqueador.",
@@ -70,7 +70,7 @@ const CareInstructions = () => {
         },
         {
             id: 9,
-            iconPath: 'dry-Clening.webp',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/dry-Clening.webp',  // Cambia esta ruta por la de tu icono
             title: "Limpieza en seco",
             details: [
                 "Apto para ser limpiado en seco sin usar percloroetileno.",
@@ -79,7 +79,7 @@ const CareInstructions = () => {
         },
         {
             id: 10,
-            iconPath: 'noun-do.svg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/noun-do.svg',  // Cambia esta ruta por la de tu icono
             title: "No usar secadora",
             details: [
                 "Después de lavar las telas en la lavadora, se recomienda dejarlas colgadas en un tendedero para secar.",
@@ -91,7 +91,7 @@ const CareInstructions = () => {
     const usageInstructions = [
         {
             id: 1,
-            iconPath: 'Upholstery for decoration.webp',
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/Upholstery%20for%20decoration.webp',
             title: "Upholstery for decoration",
             details: [
                 "Suitable for upholstery for decoration.",
@@ -101,7 +101,7 @@ const CareInstructions = () => {
         },
         {
             id: 2,
-            iconPath: 'Upholstery.webp',
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/Upholstery.webp',
             title: "Upholstery",
             details: [
                 "Suitable for upholstery.",
@@ -111,7 +111,7 @@ const CareInstructions = () => {
         },
         {
             id: 3,
-            iconPath: 'courtains.svg',
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/courtains.svg',
             title: "Curtains",
             details: [
                 "Suitable for curtains.",
@@ -121,7 +121,7 @@ const CareInstructions = () => {
         },
         {
             id: 4,
-            iconPath: 'window-blind.svg',
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/window-blind.svg',
             title: "Blinds",
             details: [
                 "Suitable for blinds.",
@@ -131,7 +131,7 @@ const CareInstructions = () => {
         },
         {
             id: 5,
-            iconPath: 'bedspreads.webp',
+            iconPath: 'https://cjmw.eu/CarpetaPaginaWebCjmw/Iconos/bedspreads.webp',
             title: "Bedspreads",
             details: [
                 "Suitable for bedspreads.",

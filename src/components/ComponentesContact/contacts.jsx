@@ -11,7 +11,7 @@ function Contacts() {
                         <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
                             <div className="lg:col-span-3">
                                 <div className="p-6 sm:p-10 bg-cover lg:h-[130vh]">
-                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="khloe-arledge-8Rz_RIyp5FM-unsplash.jpg" alt="" />
+                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="https://cjmw.eu/CarpetaPaginaWebCjmw/ABOUT/CortinasSmoke.jpg" alt="" />
                                 </div>
                             </div>
 

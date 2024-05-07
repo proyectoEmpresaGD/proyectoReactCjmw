@@ -5,15 +5,26 @@ import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 
 
 const images = [
-    "ArenaCarrusel3.webp",
-    "ArenaCarrusel1.webp",
-    "ArenaCarrusel2.webp",
-    "1200ARENADUNE01.jpg",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
+        "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/HARBOUR/HarbourCarrusel2.webp",
 ]
 
+const imagesCollection = [
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
+    "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
+]
+
+
 const titles = [
-    "1200ARENADUNE01.jpg",
-    "ArenaCarrusel1.webp",
+    "ARENA DUNE",
+    "ARENA DUNE",
     "ArenaCarrusel2.webp",
     "ArenaCarrusel3.webp"
 ]
@@ -29,7 +40,7 @@ function HarbourHome() {
                     <img src="/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                 </div>
             </body>
-            <NewCollection images={images} titles={titles} />
+            <NewCollection images={imagesCollection} titles={titles} />
 
             <Footer />
         </>
