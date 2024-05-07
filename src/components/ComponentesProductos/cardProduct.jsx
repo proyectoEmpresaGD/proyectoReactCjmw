@@ -12,6 +12,7 @@ const CardProduct = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showAddedMessage, setShowAddedMessage] = useState(false);
 
+    //Fetch de todos los productos con filtros para quitar todos los productos que no sirven o que no corresponden a productos reales
     useEffect(() => {
         fetch('http://localhost:1234/products')
             .then(response => response.json())
@@ -27,7 +28,7 @@ const CardProduct = () => {
                 setLoading(false);
             });
     }, []);
-
+    //Funcion que añade los productos al carro
     const handleAddToCart = (product) => {
         addToCart({
             id: product.codprodu,
@@ -38,6 +39,11 @@ const CardProduct = () => {
         });
         setShowAddedMessage(true);
         setTimeout(() => setShowAddedMessage(false), 2000); // La notificación desaparece después de 2 segundos
+    };
+    //Funcion para abrir la ventana modal de los productos
+    const handleProductClick = (product) => {
+        setSelectedProduct(product);
+        setModalOpen(true);
     };
 
     return (

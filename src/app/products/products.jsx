@@ -1,7 +1,7 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
 import CardProduct from "../../components/ComponentesProductos/cardProduct"
-import Filtro from "../products/filtro"
+import Filtro from "../products/buttonFiltro"
 import { CartProvider } from '../../components/CartContext';
 
 function Product() {

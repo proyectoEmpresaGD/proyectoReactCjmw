@@ -1,7 +1,15 @@
+
+
 function Contacts() {
+    const enviarCorreo = () => {
+        window.open('https://mail.google.com/mail/?view=cm&fs=1&to=pedidos@cjmw.eu'); //Reemplaza el destinatario por el correo al que le quieras enviar el gmail
+    };
+    const llamarNumero = () => {
+        window.open('tel:+123456789'); // Reemplaza +123456789 con el número al que deseas llamar
+    };
     return (
         <>
-            <section className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862] sm:py-16 lg:py-24">
+            <section className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862] sm:py-16 lg:py-24 mt-[20%] xl:mt-[0%] lg:mt-[0%]">
                 <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <div className="max-w-2xl mx-auto text-center lg:mt-8 mt-14">
                         <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">Contáctanos</h2>
@@ -11,7 +19,7 @@ function Contacts() {
                         <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
                             <div className="lg:col-span-3">
                                 <div className="p-6 sm:p-10 bg-cover lg:h-[130vh]">
-                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="https://cjmw.eu/CarpetaPaginaWebCjmw/ABOUT/CortinasSmoke.jpg" alt="" />
+                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BUCLE%2008.jpg" alt="" />
                                 </div>
                             </div>
 
@@ -35,6 +43,7 @@ function Contacts() {
                                                             </div>
 
                                                             <div className="flex items-start">
+                                                                <button onClick={llamarNumero}>
                                                                 <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path
                                                                         strokeLinecap="round"
@@ -43,12 +52,12 @@ function Contacts() {
                                                                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                                                                     />
                                                                 </svg>
+                                                                </button>
                                                                 <div className="ml-3">
                                                                     <span className="block text-base text-gray-900"> +34-111-222-333 </span>
-                                                                    
                                                                 </div>
                                                             </div>
-                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button onClick={enviarCorreo} className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -65,6 +74,7 @@ function Contacts() {
                                                             </div>
 
                                                             <div className="flex items-start">
+                                                            <button onClick={llamarNumero}>
                                                                 <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path
                                                                         strokeLinecap="round"
@@ -73,12 +83,13 @@ function Contacts() {
                                                                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                                                                     />
                                                                 </svg>
+                                                                </button>
                                                                 <div className="ml-3">
                                                                     <span className="flex text-base text-gray-900"> +34-111-222-333 </span>
                                                                     
                                                                 </div>
                                                             </div>
-                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button onClick={enviarCorreo} className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -96,7 +107,8 @@ function Contacts() {
                                                                 <span className="block ml-3 text-base text-gray-900"> Calle Marqués de Larios nº58, Málaga Spain </span>
                                                             </div>
 
-                                                            <div className="flex items-start">
+                                                            <div className="flex items-start"> 
+                                                            <button onClick={llamarNumero}>
                                                                 <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path
                                                                         strokeLinecap="round"
@@ -105,12 +117,13 @@ function Contacts() {
                                                                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                                                                     />
                                                                 </svg>
+                                                                </button>
                                                                 <div className="ml-3">
                                                                     <span className="block text-base text-gray-900"> +34-111-222-333 </span>
                                                                     
                                                                 </div>
                                                             </div>
-                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button onClick={enviarCorreo} className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -129,6 +142,7 @@ function Contacts() {
                                                             </div>
 
                                                             <div className="flex items-start">
+                                                            <button onClick={llamarNumero}>
                                                                 <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path
                                                                         strokeLinecap="round"
@@ -137,12 +151,13 @@ function Contacts() {
                                                                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                                                                     />
                                                                 </svg>
+                                                                </button>
                                                                 <div className="ml-3">
                                                                     <span className="block text-base text-gray-900"> +34-111-222-333 </span>
                                                                     
                                                                 </div>
                                                             </div>
-                                                            <button className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button onClick={enviarCorreo} className="group relative md:max-lg:left-[16%] sm:max-lg:left-[16%] lg:left-[25%] left-[30%] h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contact Us</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
                                                         </div>
                                                     </div>
                                                 </div>
