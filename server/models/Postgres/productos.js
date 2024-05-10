@@ -20,21 +20,21 @@ export class ProductModel {
     console.log('getAll');
     let query = 'SELECT * FROM productos';
     let params = [];
-    
-      if (CodFamil) {
-        query += ' WHERE "codfamil" = $1';
-        params.push(CodFamil);
-      }
 
-      if (CodSubFamil) {
-        if (params.length > 0) {
-          query += ' AND "codsubfamil" = $2';
-        } else {
-          query += ' WHERE "codsubfamil" = $1';
-        }
-        params.push(CodSubFamil);
+    if (CodFamil) {
+      query += ' WHERE "codfamil" = $1';
+      params.push(CodFamil);
+    }
+
+    if (CodSubFamil) {
+      if (params.length > 0) {
+        query += ' AND "codsubfamil" = $2';
+      } else {
+        query += ' WHERE "codsubfamil" = $1';
       }
-    
+      params.push(CodSubFamil);
+    }
+
     try {
       const { rows } = await pool.query(query, params);
       return rows;
@@ -47,12 +47,12 @@ export class ProductModel {
 
   // Obtener un producto específico por su código
   static async getById({ id }) {
-    
-      const { rows } = await pool.query(
-        'SELECT * FROM productos WHERE "codprodu" = $1;',
-        [id]
-      );
-      return rows.length > 0 ? rows[0] : null;
+
+    const { rows } = await pool.query(
+      'SELECT * FROM productos WHERE "codprodu" = $1;',
+      [id]
+    );
+    return rows.length > 0 ? rows[0] : null;
 
   }
 
@@ -98,5 +98,23 @@ export class ProductModel {
 
     return rows[0];
   }
+
+  // Buscar productos por un término de búsqueda general
+  static async search({ query }) {
+    const searchQuery = `
+    SELECT * FROM productos
+    WHERE "desprodu" ILIKE $1
+    ORDER BY "desprodu";
+  `;
+    try {
+      const { rows } = await pool.query(searchQuery, [`%${query}%`]); // Utiliza ILIKE para búsqueda insensible a mayúsculas/minúsculas
+      return rows;
+    } catch (error) {
+      console.error('Error searching products:', error);
+      throw new Error('Error searching products');
+    }
+  }
+
+
 }
 

@@ -63,4 +63,18 @@ export class ProductController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async search(req, res) {
+    try {
+      const { query } = req.query;
+      if (!query) {
+        return res.status(400).json({ message: 'Query parameter is required' });
+      }
+      const products = await ProductModel.search({ query });
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
 }
