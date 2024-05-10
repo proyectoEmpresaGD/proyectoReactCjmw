@@ -12,6 +12,8 @@ import BlogHome from './app/blog/page.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
 import Products from "./app/products/products.jsx"
 import Usages from './app/usages/page.jsx'
+import GeocodingService from "./components/ComponentesContact/map.jsx"
+
 
 function App() {
 
@@ -31,6 +33,7 @@ function App() {
         <Route path="/BlogHome/:newsId" element={<BlogHome />} />
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
+        <Route path="/map/:direccion" component={<GeocodingService />} />
       </Routes>
     </>
   )

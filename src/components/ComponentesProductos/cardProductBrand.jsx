@@ -1,10 +1,11 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useCart } from '../CartContext';
-import SkeletonLoader from "../ComponentesProductos/skeletonLoader";
 import Modal from "../ComponentesProductos/modal";
+import SkeletonLoader from "../ComponentesProductos/skeletonLoader"
 
-const CardProduct = () => {
-    const { addToCart, itemCount } = useCart();
+const CardProductBrand = ({ brand }) => {
+    const { addToCart } = useCart();
     const [selectedColor, setSelectedColor] = useState(null);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -12,35 +13,47 @@ const CardProduct = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showAddedMessage, setShowAddedMessage] = useState(false);
 
-    //Fetch de todos los productos con filtros para quitar todos los productos que no sirven o que no corresponden a productos reales
     useEffect(() => {
-        fetch('http://localhost:1234/products')
-            .then(response => response.json())
-            .then(data => {
-                const filteredProducts = data.filter(product => {
-                    return !/^(LIBRO|QUALITY SAMPLE|PERCHA|ALQUILER|ACCESORIOS MUESTRARIOS|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu);
-                }).sort((a, b) => a.desprodu.localeCompare(b.desprodu));
-                setProducts(filteredProducts);
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`http://localhost:1234/products?codMarca=${brand}`);
+                console.log(response.data); 
+                const brandProducts = response.data.filter(item => item.marca === brand); // Filtrar por marca
+                randomizeAndSetProducts(brandProducts);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
                 setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching products:', error);
-                setLoading(false);
-            });
-    }, []);
-    //Funcion que añade los productos al carro
+            }
+        };
+
+        fetchData();
+        const intervalId = setInterval(fetchData, 15000); // Actualizar los productos cada 15 segundos
+        return () => clearInterval(intervalId);
+    }, [brand]);
+
+    const randomizeAndSetProducts = (products) => {
+        if (products.length > 4) {
+            const shuffled = products.sort(() => 0.5 - Math.random());
+            setProducts(shuffled.slice(0, 4)); // Selecciona 4 productos de manera aleatoria
+        } else {
+            setProducts(products);
+        }
+    };
+
     const handleAddToCart = (product) => {
         addToCart({
             id: product.codprodu,
             name: product.desprodu,
-            price: 3, // Define el precio aquí o extrae de product
+            price: 3, // Precio fijo por ahora
             image: selectedColor ? `https://example.com/${selectedColor}-image.jpg` : product.imageUrl,
             quantity: 1
         });
         setShowAddedMessage(true);
-        setTimeout(() => setShowAddedMessage(false), 2000); // La notificación desaparece después de 2 segundos
+        setTimeout(() => setShowAddedMessage(false), 2000);
     };
-    //Funcion para abrir la ventana modal de los productos
+
     const handleProductClick = (product) => {
         setSelectedProduct(product);
         setModalOpen(true);
@@ -49,7 +62,7 @@ const CardProduct = () => {
     return (
         <div>
             {loading ? (
-                <SkeletonLoader repeticiones={(12)}/>
+                <SkeletonLoader repeticiones={(4)}/>
             ) : (
                 <div className="flex flex-wrap justify-center items-center">
                     {products.map(product => (
@@ -84,4 +97,4 @@ const CardProduct = () => {
     );
 };
 
-export default CardProduct;
+export default CardProductBrand;
