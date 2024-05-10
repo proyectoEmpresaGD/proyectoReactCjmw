@@ -5,139 +5,166 @@ import { useEffect, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 
 const GeocodingService = () => {
-  const [postalCode, setPostalCode] = useState("");
+  const [cityName, setCityName] = useState("");
+  const [map, setMap] = useState(null);
+  const [geocoder, setGeocoder] = useState(null);
+  const [directionsRenderer, setDirectionsRenderer] = useState(null);
+  const [currentMarker, setCurrentMarker] = useState(null);
+  const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
     const loader = new Loader({
-      apiKey: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg", // Asegúrate de usar tu clave de API válida
+      apiKey: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg", // Replace with your API key
       version: "weekly",
       libraries: ["places", "geometry"]
     });
 
-    let map;
-    let geocoder;
-    let directionsService;
-    let directionsRenderer;
-    let infoWindow;
-
     loader.load().then(() => {
-      map = new window.google.maps.Map(document.getElementById("map"), {
+      const initialMap = new window.google.maps.Map(document.getElementById("map"), {
         zoom: 10,
         center: { lat: 40.436437195598145, lng: -3.693919201706416 },
-        styles: [
-          { elementType: 'geometry', stylers: [{ color: '' }] },
-          { elementType: 'labels.text.stroke', stylers: [{ color: '' }] },
-          { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
-        ]
       });
-      geocoder = new window.google.maps.Geocoder();
-      directionsService = new window.google.maps.DirectionsService();
-      directionsRenderer = new window.google.maps.DirectionsRenderer({
-        map: map,
+      setMap(initialMap);
+      setGeocoder(new window.google.maps.Geocoder());
+      const renderer = new window.google.maps.DirectionsRenderer({
+        map: initialMap
       });
-      infoWindow = new window.google.maps.InfoWindow();
-
-      
-      addMarkers();
+      setDirectionsRenderer(renderer);
+      initializeMarkers(initialMap);
     });
-
-    const addMarkers = () => {
-      const puntos = [
-        { lat: -34.397, lng: 150.644, title: "Sydney" },
-        { lat: 40.712776, lng: -74.005974, title: "New York" },
-        { lat: 37.586784324249166, lng: -4.658694292094171, title: "CJMW Montilla" },
-        { lat: 40.43679156325075, lng: -3.70976152688625, title: "showroom Madrid" }
-      ];
-
-      puntos.forEach(punto => {
-        const position = new window.google.maps.LatLng(punto.lat, punto.lng);
-        const marker = new window.google.maps.Marker({
-          position,
-          map,
-          title: punto.title
-        });
-
-        marker.addListener('click', () => {
-          infoWindow.setContent(punto.title);
-          infoWindow.open(map, marker);
-        });
-      });
-    };
-
-    const findStores = (postalCode) => {
-      geocoder.geocode({ address: postalCode }, (results, status) => {
-        if (status === 'OK') {
-          const location = results[0].geometry.location;
-          map.setCenter(location);
-          calculateNearestPointAndDisplayRoute(location);
-        } else {
-          alert('Geocode was not successful for the following reason: ' + status);
-        }
-      });
-    };
-
-    function calculateNearestPointAndDisplayRoute(origin) {
-      let shortestDistance = Infinity;
-      let nearestPoint = null;
-
-      const puntos = [
-        { lat: -34.397, lng: 150.644, title: "Sydney" },
-        { lat: 40.712776, lng: -74.005974, title: "New York" },
-        { lat: 37.586784324249166, lng: -4.658694292094171, title: "CJMW Montilla" },
-        { lat: 40.43679156325075, lng: -3.70976152688625, title: "showroom Madrid" }
-      ];
-
-      puntos.forEach(punto => {
-        const distancia = window.google.maps.geometry.spherical.computeDistanceBetween(
-          new window.google.maps.LatLng(origin.lat(), origin.lng()),
-          new window.google.maps.LatLng(punto.lat, punto.lng)
-        );
-
-        if (distancia < shortestDistance) {
-          shortestDistance = distancia;
-          nearestPoint = punto;
-        }
-      });
-
-      if (nearestPoint) {
-        const request = {
-          origin: origin,
-          destination: new window.google.maps.LatLng(nearestPoint.lat, nearestPoint.lng),
-          travelMode: window.google.maps.TravelMode.DRIVING,
-        };
-
-        directionsService.route(request, (result, status) => {
-          if (status === window.google.maps.DirectionsStatus.OK) {
-            directionsRenderer.setDirections(result);
-            infoWindow.setContent(nearestPoint.title);
-            infoWindow.setPosition(nearestPoint);
-            infoWindow.open(map);
-          } else {
-            alert("Directions request failed due to " + status);
-          }
-        });
-      }
-    }
-
-    return () => {
-      // Cleanup
-    };
   }, []);
 
+  const initializeMarkers = (map) => {
+    const puntos = [
+      { lat: -34.397, lng: 150.644, title: "Sydney", description: "Tienda de cortinas y más en Sydney.", imageUrl: "https://ruta/a/imagen-sydney.jpg" },
+      { lat: 40.712776, lng: -74.005974, title: "New York", description: "Lo último en decoración de interiores.", imageUrl: "https://ruta/a/imagen-newyork.jpg" },
+      { lat: 37.586784324249166, lng: -4.658694292094171, title: "CJMW Montilla", description: "Especialistas en cortinas y decoración.", imageUrl: "https://ruta/a/imagen-montilla.jpg" },
+      { lat: 40.43679156325075, lng: -3.70976152688625, title: "showroom Madrid", description: "Showroom exclusivo con las últimas tendencias.", imageUrl: "https://ruta/a/imagen-madrid.jpg" }
+    ];
+
+    const localMarkers = puntos.map(punto => {
+      const position = new window.google.maps.LatLng(punto.lat, punto.lng);
+      const marker = new window.google.maps.Marker({
+        position,
+        map,
+        title: punto.title
+      });
+
+      // Contenido del InfoWindow incluyendo una imagen
+      const infoWindowContent = `
+        <div>
+          <h2>${punto.title}</h2>
+          <p>${punto.description}</p>
+          <img src="${punto.imageUrl}" alt="${punto.title}" style="width:100%;max-width:300px;">
+        </div>
+      `;
+
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: infoWindowContent
+      });
+
+      marker.addListener('click', () => {
+        infoWindow.open({
+          anchor: marker,
+          map,
+          shouldFocus: false
+        });
+      });
+
+      return marker;
+    });
+
+    setMarkers(localMarkers);
+};
+
+  const findCity = (cityName) => {
+    if (!geocoder || !map) return;
+
+    // Clear existing marker and directions before searching for new location
+    if (currentMarker) {
+      currentMarker.setMap(null);
+      setCurrentMarker(null);
+    }
+    directionsRenderer.setMap(null);
+    directionsRenderer.setMap(map);
+
+    geocoder.geocode({ address: cityName }, (results, status) => {
+      if (status === 'OK') {
+        const location = results[0].geometry.location;
+        map.setCenter(location);
+
+        const marker = new window.google.maps.Marker({
+          position: location,
+          map: map,
+          title: cityName
+        });
+        setCurrentMarker(marker);
+
+        findNearestMarkerAndRoute(location);
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  };
+
+  const findNearestMarkerAndRoute = (origin) => {
+    const directionsService = new window.google.maps.DirectionsService();
+    let minDistance = Infinity;
+    let nearestMarker = null;
+
+    markers.forEach(marker => {
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(origin, marker.getPosition());
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestMarker = marker;
+      }
+    });
+
+   
+
+    if (nearestMarker) {
+      const request = {
+        origin: origin,
+        destination: nearestMarker.getPosition(),
+        travelMode: google.maps.TravelMode.DRIVING
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result);
+        } else {
+          alert("Directions request failed due to " + status);
+        }
+      });
+    }
+  };
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    findCity(cityName);
+  };
+
   return (
-    <div className="  bg-gradient-to-r from-[#ebdecf] to-[#8a7862] px-2 mx-auto">
-      <input
-        type="text"
-        value={postalCode}
-        onChange={(e) => setPostalCode(e.target.value)}
-        placeholder="Escribe aquí tu ciudad"
-        className=" xl:ml-[3px] mb-6 w-10% xl:w-[12%] border-b-2 border-black bg-transparent text-[110%] focus:border-b focus:border-black focus:bg-transparent focus:w-[50%] xl:focus:w-[16%] duration-150"
-      />
-      <button className=" m-3 bg-slate-400 border-black hover:bg-slate-200 duration-150 rounded-md py-2 pr-1 pl-1" onClick={() => findStores(postalCode)}>
-        Tienda más cercana
-      </button>
-      <div id="map" style={{ height: "65vh", width: "100%", margin: "auto" }} className=" h:-[65vh] w-[100%] bg-transparent"></div>
+    <>
+    <div className="bg-gradient-to-r from-[#ebdecf] to-[#8a7862] xl:py-[5%] py-8 lg:px-[16%] mx-auto">
+    <div className="max-w-2xl mx-auto text-center py-[5%] xl:pb-[5%]">
+      <h2 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">Encuéntranos cerca de tí</h2>
     </div>
+      <form onSubmit={handleFormSubmit} className="relative mx-auto text-center justify-center">
+        <input
+          type="text"
+          value={cityName}
+          onChange={(e) => setCityName(e.target.value)}
+          placeholder="nombre de tu ciudad"
+          className="relative mx-auto ml-2 mb-6 w-[55%] md:w-[30%] text-center py-3 px-3 xl:w-[22%] xl:hover:w-[24%] lg:w-[25%] lg:hover:w-[30%] border-b-2 text-[110%] bg-white hover:bg-gray-200 text-black duration-200 hover:rounded-xl rounded "
+        />
+        <button type="submit" className="relative mx-auto xl:ml-2 lg:ml-2 md:ml-2 ml-4 px-3 py-3 xl:px-6 lg:px-6 w-35%  xl:w-[13%] text-center bg-black hover:bg-white text-white hover:text-black duration-200 border-2 border-black hover:border-gray-400 hover:rounded-xl rounded">
+          Buscar
+        </button>
+      </form>
+      <div id="map" style={{ height: "65vh", width: "100%" }}></div>
+    </div>
+    </>
   );
 };
 

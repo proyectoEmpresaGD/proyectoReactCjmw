@@ -33,24 +33,34 @@ function About() {
 
                     {/* Sección "Made in Spain" */}
                     <section className="py-20 bg-ivory font-Corinthia">
-                        <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                            <div className="text-center font-semibold text-gray-600 text-lg my-10">Made in Spain</div>
+                        <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             <div className="text-[#000806] text-lg text-justify">
-                                <p className="mb-4">From Andalusia to the world</p>
+                                <div className="text-center font-semibold text-gray-600 text-lg my-10">Made in Spain</div>
+                                <p className="mb-4 text-center">From Andalusia to the world</p>
                                 <p className="mb-4">CJM WORLDWIDE LTD. designs and manufactures all its fabrics and wallpapers in Spain.</p>
                                 <p className="mb-4">Our production philosophy involves including our suppliers as an intrinsic value of our company and thus obtaining products of high qualitative value.</p>
                                 <p className="mb-4">Of course, as our name indicates, we are a WORLDWIDE company and we believe in the integration of peoples and in the mixture of cultures; therefore, to obtain ideas and fabrics that evolve over time, we have suppliers from different countries that provide us with constant sap.</p>
                                 <p className="mb-4">We are an open company and for the development of our four brands we collect the personality and influences of each culture for each new collection. We like the difference, we like to investigate and we like to walk our own path.</p>
                                 <p>We firmly believe in the personality of CJMW, HARBOUR, ARENA and FLAMENCO. We believe in design and innovation.</p>
                             </div>
+                            <div className="flex items-center justify-center lg:justify-start">
+                                <div className="max-w-lg border rounded-lg overflow-hidden">
+                                    <img src="https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BORNEO.jpg" alt="Tu imagen" className="w-full h-auto" />
+                                </div>
+                            </div>
                         </div>
                     </section>
 
                     {/* Sección "Headquarters" */}
                     <section className="py-20 lg:py-12 bg-ivory font-Corinthia">
-                        <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                            <div className="text-center font-semibold text-gray-600 text-lg my-10">Headquarters</div>
+                        <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            <div className="flex items-center justify-center lg:justify-start">
+                                <div className="max-w-lg border rounded-lg overflow-hidden">
+                                    <img src="https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20ZAHARA%2001.jpg" alt="Tu imagen" className="w-full h-auto" />
+                                </div>
+                            </div>
                             <div className="text-[#000806] text-lg text-justify">
+                                <div className="text-center font-semibold text-gray-600 text-lg my-10">Headquarters</div>
                                 <p className="mb-4">Montilla - Córdoba - Andalusia - Spain</p>
                                 <p className="mb-4">Our company, along its life, has been developing different areas of action. We rely on different platforms to reach a stable manufacturing and distribution process.</p>
                                 <p className="mb-4">CJMW headquarters is settled down in Montilla, Cordoba, Spain, where we do the design, the storage and the holdsale of our fabrics.</p>

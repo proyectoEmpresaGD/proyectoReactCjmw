@@ -64,7 +64,7 @@ const CardProduct = () => {
     return (
         <div>
             {loading ? (
-                <SkeletonLoader />
+                <SkeletonLoader repeticiones={(12)}/>
             ) : (
                 <div className="flex flex-wrap justify-center items-center">
                     {filteredProducts.map(product => (
