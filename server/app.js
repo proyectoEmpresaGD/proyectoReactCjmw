@@ -26,6 +26,7 @@ export const createApp = () => {
 
   // Asegúrate de pasar el pool de conexiones a tu router
   app.use('/products', createProductRouter({ pool }));
+  app.use('/products/search', createProductRouter({ pool }));
 
   const PORT = process.env.PORT || 1234;
   app.listen(PORT, () => {

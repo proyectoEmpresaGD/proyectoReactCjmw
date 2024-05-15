@@ -1,16 +1,18 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
 import CareUsages from "../../components/ComponentesUsages/usosCard"
-
+import { CartProvider } from '../../components/CartContext';
 
 
 function Usages() {
 
     return (
         <>
-            <Header />
-            <CareUsages />
-            <Footer />
+            <CartProvider >
+                <Header />
+                <CareUsages />
+                <Footer />
+            </CartProvider>
         </>
     )
 }

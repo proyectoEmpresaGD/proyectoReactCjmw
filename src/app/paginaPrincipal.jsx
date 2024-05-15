@@ -14,7 +14,7 @@ const images = [
     "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
     "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
     "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-    
+
 ]
 
 function Home() {
