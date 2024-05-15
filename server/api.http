@@ -1,42 +1,37 @@
+### Obtener todos los productos
+GET http://localhost:3000/products
+Accept: application/json
 
-### Recuperar todos los productos
-GET http://localhost:1234/products/CP0002
-
-###Para filtrar los productos por familia y subfamilia:
-GET http://localhost:1234/products?CodFamil=F123&CodSubFamil=SF123
-
-### Recuperar un producto por ID
-
-GET http://localhost:1234/products?CodFamil=F123&CodSubFamil=SF123
-
-### Crear un producto con POST
-POST http://localhost:1234/products
+### Crear un producto
+POST http://localhost:3000/products
 Content-Type: application/json
+Accept: application/json
 
 {
-  "input":{
-  "CodProdu": "CP0002",
-  "DesProdu": "Electric Drill",
-  "CodFamil": "Tools",
-  "CodSubFamil": "Power Tools",
-  "CodMarca": "DrillMaster",
-  "CodTipo": "Drill",
-  "Comentario": "Powerful and reliable drill, perfect for home and professional use.",
-  "FecAlta": 1672020300,
-  "StockSN": "Y",
-  "PreCosto": 89.99
-  }
+  "CodProdu": "001",
+  "DesProdu": "Producto Nuevo",
+  "CodFamil": "Familia01",
+  "Comentario": "Descripción del producto nuevo"
 }
 
-###  Borrar un producto
+### Obtener producto por ID
+GET http://localhost:3000/products/001
+Accept: application/json
 
-DELETE http://localhost:1234/products/CP0002
-
-###  Actualizar un producto
-PATCH http://localhost:1234/products/CP0002
+### Actualizar un producto
+PATCH http://localhost:3000/products/001
 Content-Type: application/json
+Accept: application/json
 
 {
-  "precosto": 79.99,
-  "comentario": "Discounted price for clearance."
+  "DesProdu": "Producto Actualizado",
+  "Comentario": "Descripción actualizada del producto"
 }
+
+### Eliminar un producto
+DELETE http://localhost:3000/products/001
+Accept: application/json
+
+### Buscar productos
+GET http://localhost:3000/products/search?query=teclado
+Accept: application/json

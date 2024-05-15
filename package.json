@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.17.1",
+    "@algolia/autocomplete-theme-classic": "^1.17.1",
     "@heroicons/react": "^1.0.6",
     "@material-tailwind/react": "^2.1.9",
     "@react-google-maps/api": "^2.19.3",

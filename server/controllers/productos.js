@@ -1,13 +1,11 @@
-import { ProductModel } from '../models/Postgres/productos.js'; // Asegúrate de que la ruta es correcta
+import { ProductModel } from '../models/Postgres/productos.js';
 
 export class ProductController {
-
   async getAll(req, res) {
     try {
       const { CodFamil, CodSubFamil } = req.query;
       const products = await ProductModel.getAll({ CodFamil, CodSubFamil });
       res.json(products);
-      console.log(products)
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -66,15 +64,18 @@ export class ProductController {
 
   async search(req, res) {
     try {
-      const { query } = req.query;
+      const { query, page, limit } = req.query;
       if (!query) {
         return res.status(400).json({ message: 'Query parameter is required' });
       }
-      const products = await ProductModel.search({ query });
+      const products = await ProductModel.search({
+        query,
+        limit: parseInt(limit, 10) || 10,
+        page: parseInt(page, 10) || 1
+      });
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
-
 }
