@@ -12,7 +12,9 @@ import BlogHome from './app/blog/page.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
 import Products from "./app/products/products.jsx"
 import Usages from './app/usages/page.jsx'
+import HarbourColecciones from './app/colecciones/harbourColeccion.jsx'
 import GeocodingService from "./components/ComponentesContact/map.jsx"
+
 
 
 function App() {
@@ -34,6 +36,7 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
         <Route path="/map/:direccion" component={<GeocodingService />} />
+        <Route path="/harbourColecciones" element={<HarbourColecciones />} />
       </Routes>
     </>
   )

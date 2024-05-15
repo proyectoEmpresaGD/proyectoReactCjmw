@@ -14,7 +14,7 @@ const images = [
     "https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/HARBOUR/HarbourCarrusel2.webp",
 ]
 
-function FlamencoColecciones() {
+function HarbourColecciones() {
 
     return (
         <>
@@ -70,4 +70,4 @@ function FlamencoColecciones() {
         </>
     )
 }
-export default FlamencoColecciones
+export default HarbourColecciones
