@@ -12,40 +12,57 @@ const GeocodingService = () => {
   const [markers, setMarkers] = useState([]);
   const [nearbyStores, setNearbyStores] = useState([]);
   const [centerMarker, setCenterMarker] = useState(null);
+  const [directionsService, setDirectionsService] = useState(null);
+  const [directionsRenderer, setDirectionsRenderer] = useState(null);
+  const [routeActive, setRouteActive] = useState(false);
+  const [searchLocation, setSearchLocation] = useState(null);
 
-  
+  const puntos = [
+    { lat: -34.397, lng: 150.644, title: "Sydney", description: "Tienda de cortinas y más en Sydney." },
+    { lat: 40.712776, lng: -74.005974, title: "New York", description: "Lo último en decoración de interiores." },
+    { lat: 37.586784, lng: -4.658694, title: "CJMW Montilla", description: "Especialistas en cortinas y decoración." },
+    { lat: 37.46784, lng: -4.658694, title: "Prueba", description: "Especialistas en cortinas y decoración." },
+    { lat: 40.436792, lng: -3.709762, title: "Showroom Madrid", description: "Showroom exclusivo con las últimas tendencias." }
+  ];
 
   useEffect(() => {
     const loader = new Loader({
-      apiKey: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg", // Reemplaza con tu clave API real
+      apiKey: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg",
       version: "weekly",
       libraries: ["places", "geometry"]
     });
 
     loader.load().then(() => {
       const savedCenter = JSON.parse(localStorage.getItem('mapCenter'));
-      const initialCenter = savedCenter ? new window.google.maps.LatLng(savedCenter.lat, savedCenter.lng) : new window.google.maps.LatLng(40.436437195598145, -3.693919201706416);
+      const defaultCenter = savedCenter ? new window.google.maps.LatLng(savedCenter.lat, savedCenter.lng) : new window.google.maps.LatLng(40.436437195598145, -3.693919201706416);
 
       const initialMap = new window.google.maps.Map(document.getElementById("map"), {
-          zoom: 10,
-          center: initialCenter,
+        zoom: 8,
+        center: defaultCenter,
       });
       setMap(initialMap);
       setGeocoder(new window.google.maps.Geocoder());
 
       const centerMarker = new window.google.maps.Marker({
-          position: initialCenter,
-          map: initialMap,
-          icon: {
-              url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-              scaledSize: new window.google.maps.Size(32, 32)
-          }
+        position: defaultCenter,
+        map: initialMap,
+        icon: {
+          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+          scaledSize: new window.google.maps.Size(32, 32)
+        }
       });
       setCenterMarker(centerMarker);
 
-      // Restaurar y configurar los marcadores desde el localStorage
-      const savedMarkers = JSON.parse(localStorage.getItem('markers')) || [];
-      const loadedMarkers = savedMarkers.map(punto => {
+      const directionsService = new window.google.maps.DirectionsService();
+      const directionsRenderer = new window.google.maps.DirectionsRenderer({
+        map: initialMap,
+        suppressMarkers: true,
+        preserveViewport: true
+      });
+      setDirectionsService(directionsService);
+      setDirectionsRenderer(directionsRenderer);
+
+      const loadedMarkers = puntos.map(punto => {
         const position = new window.google.maps.LatLng(punto.lat, punto.lng);
         const marker = new window.google.maps.Marker({
           position,
@@ -72,7 +89,7 @@ const GeocodingService = () => {
       });
 
       setMarkers(loadedMarkers);
-      updateNearbyStores(initialCenter, loadedMarkers);
+      updateNearbyStores(defaultCenter, loadedMarkers, directionsService, directionsRenderer, true);
 
       let debounceTimer;
       const centerChangedListener = initialMap.addListener('center_changed', () => {
@@ -81,9 +98,10 @@ const GeocodingService = () => {
           const newCenter = initialMap.getCenter();
           localStorage.setItem('mapCenter', JSON.stringify({ lat: newCenter.lat(), lng: newCenter.lng() }));
           centerMarker.setPosition(newCenter);
-          updateNearbyStores(newCenter, loadedMarkers);
+          setSearchLocation(null);
+          updateNearbyStores(newCenter, loadedMarkers, directionsService, directionsRenderer, false);
           console.log("Guardado en localStorage:", { lat: newCenter.lat(), lng: newCenter.lng() });
-        },);  
+        }, );
       });
 
       if (navigator.geolocation) {
@@ -94,14 +112,14 @@ const GeocodingService = () => {
           };
           initialMap.setCenter(pos);
           centerMarker.setPosition(pos);
-          updateNearbyStores(new window.google.maps.LatLng(pos.lat, pos.lng), loadedMarkers);
+          updateNearbyStores(new window.google.maps.LatLng(pos.lat, pos.lng), loadedMarkers, directionsService, directionsRenderer, true);
         }, () => {
           handleLocationError(true, initialMap.getCenter());
         });
       } else {
         handleLocationError(false, initialMap.getCenter());
       }
-  
+
       return () => {
         clearTimeout(debounceTimer);
         google.maps.event.removeListener(centerChangedListener);
@@ -115,24 +133,61 @@ const GeocodingService = () => {
       "Error: Your browser doesn't support geolocation.");
   };
 
-  const updateNearbyStores = (center, loadedMarkers) => {
+  const updateNearbyStores = (center, loadedMarkers, directionsService, directionsRenderer, shouldRenderRoute) => {
     console.log("Centro actual:", center);
     if (!loadedMarkers || loadedMarkers.length === 0) {
       console.log("No hay marcadores disponibles.");
       return;
     }
 
-    const newNearbyStores = loadedMarkers.filter(marker => {
-      const distance = google.maps.geometry.spherical.computeDistanceBetween(center, marker.position);
-      console.log(`Distancia a ${marker.title}: ${distance}`);
-      return distance < 10000; // Distancia en metros (10 kilómetros)
-    }).map(marker => ({
-      title: marker.title,
-      description: marker.description
-    }));
+    if (!directionsService || !directionsRenderer) {
+      console.error("Directions service or renderer not initialized");
+      return;
+    }
 
-    console.log("Tiendas cercanas actualizadas:", newNearbyStores);
-    setNearbyStores(newNearbyStores);
+    let closestStore = null;
+    let minDistance = Infinity;
+    const nearbyStores = [];
+
+    loadedMarkers.forEach(marker => {
+      const distance = window.google.maps.geometry.spherical.computeDistanceBetween(center, marker.position);
+      if (distance < 10000) {
+        nearbyStores.push({
+          title: marker.title,
+          description: marker.description
+        });
+      }
+      if (distance < minDistance) {
+        closestStore = { marker, distance };
+        minDistance = distance;
+      }
+    });
+
+    if (closestStore && shouldRenderRoute) {
+      console.log("Tienda más cercana:", closestStore.marker.title, closestStore.distance);
+
+      directionsService.route({
+        origin: center,
+        destination: closestStore.marker.position,
+        travelMode: window.google.maps.TravelMode.DRIVING
+      }, (result, status) => {
+        if (status === 'OK') {
+          directionsRenderer.setDirections(result);
+          setRouteActive(true);
+          // Agregar la tienda más cercana a las tiendas cercanas
+          setNearbyStores([{
+            title: closestStore.marker.title,
+            description: closestStore.marker.description
+          }]);
+        } else {
+          console.error('Error al obtener las direcciones:', status);
+        }
+      });
+    } else {
+      directionsRenderer.set('directions', null);
+      setRouteActive(false);
+      setNearbyStores(nearbyStores);
+    }
   };
 
   const handleFormSubmit = (event) => {
@@ -143,7 +198,8 @@ const GeocodingService = () => {
           const location = results[0].geometry.location;
           map.setCenter(location);
           centerMarker.setPosition(location);
-          updateNearbyStores(location, markers);
+          setSearchLocation(location);
+          updateNearbyStores(location, markers, directionsService, directionsRenderer, true);
         } else {
           alert('Geocode was not successful for the following reason: ' + status);
         }
@@ -151,12 +207,14 @@ const GeocodingService = () => {
     }
   };
 
+  
+
   return (
     <div className="bg-gradient-to-r from-[#ebdecf] to-[#8a7862] pb-[10%] xl:pb-[5%] lg:px-[5%] mx-auto">
       <div className="max-w-2xl mx-auto text-center py-[5%] xl:pb-[5%]">
         <h2 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">Encuéntranos cerca de ti</h2>
       </div>
-      <div className="grid xl:grid-cols-4">
+      <div className="grid xl:grid-cols-4 lg:grid-cols-4">
         <div className="col-span-3">
           <form onSubmit={handleFormSubmit} className="relative mx-auto text-center justify-center">
             <input
@@ -172,13 +230,15 @@ const GeocodingService = () => {
           </form>
           <div id="map" style={{ height: "65vh", width: "100%", borderRadius: "2%" }}></div>
         </div>
-        <div className="col-span-1 text-center mx-auto overflow-auto max-h-96">
-          <h1>Tus Tiendas más cercanas</h1>
-          <ul>
-            {nearbyStores.map(store => (
-              <li key={store.title}>{store.title} - {store.description}</li>
-            ))}
-          </ul>
+          <div className="col-span-1">
+          <div className="mx-auto text-center justify-center overflow-auto max-h-96">
+            <h1 className="py-[5%] text-3xl text-white font-bold">Tus Tiendas más cercanas</h1>
+            <ul>
+              {nearbyStores.map(store => (
+                <li className="" key={store.title}>{store.title} - {store.description}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
