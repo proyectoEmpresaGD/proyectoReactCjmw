@@ -6,10 +6,10 @@
             "use": "@vercel/node"
         },
         {
-            "src": "src/package.json",
+            "src": "src/**/*",
             "use": "@vercel/static-build",
             "config": {
-                "distDir": "build"
+                "distDir": "public"
             }
         }
     ],
@@ -20,7 +20,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "/src/$1"
+            "dest": "/src/index.html"
         }
     ]
 }
