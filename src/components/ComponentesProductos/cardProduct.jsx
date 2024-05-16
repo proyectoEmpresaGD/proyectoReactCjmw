@@ -73,7 +73,7 @@ const CardProduct = () => {
             <div>
                 {searchQuery && (
                     <div className="fixed top-1/4 right-5 z-40">
-                        <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center" style={{ width: '100px' }}>
+                        <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
                             Mostrar<br />productos
                         </button>
                     </div>
@@ -83,7 +83,7 @@ const CardProduct = () => {
                 ) : (
                     <div className="flex flex-wrap justify-center items-center">
                         {filteredProducts.map(product => (
-                            <div key={product.codprodu} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%] mx-2 mb-7">
+                            <div key={product.codprodu} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%]">
                                 <div className="relative overflow-hidden" onClick={() => handleProductClick(product)}>
                                     <img className="object-cover w-full h-full" src={product.imageUrl} alt={product.desprodu} />
                                     <div className="absolute inset-0 bg-black opacity-40"></div>

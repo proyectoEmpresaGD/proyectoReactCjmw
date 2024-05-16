@@ -35,3 +35,6 @@ Accept: application/json
 ### Buscar productos
 GET http://localhost:3000/products/search?query=teclado
 Accept: application/json
+
+### Buscar productos
+GET http://localhost:1234/products/search?query=al

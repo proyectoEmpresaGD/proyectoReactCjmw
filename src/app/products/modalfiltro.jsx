@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from 'react';
 // Importa aquí tus otros componentes como Header, Footer, CardProduct, etc.
 
