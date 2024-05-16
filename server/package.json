@@ -5,9 +5,11 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
+    "start": "node server/app.js",
     "start:mysql": "node --watch server-with-mysql.js",
     "start:local": "node --watch server-with-local.js",
     "start:postgre": "node --watch server-with-postgre.js",
+    "build": "echo 'No build script defined for backend'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
