@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill, RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
-import { FaGlobe } from 'react-icons/fa';
+import {
+    RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill,
+    RiArrowDropDownLine, RiArrowDropUpLine
+} from 'react-icons/ri';
+import { FaGlobe } from 'react-icons/fa'; // Icono del globo
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import ShoppingCart from './shoppingCart ';
+import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
 import ScrollToTop from './ScrollToTop';
-import { autocomplete } from '@algolia/autocomplete-js';
-import '@algolia/autocomplete-theme-classic';
+import 'tailwindcss/tailwind.css';
 
 export const Header = () => {
     const location = useLocation();
@@ -17,12 +19,12 @@ export const Header = () => {
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
-    const [showSearchBar, setShowSearchBar] = useState(false);
     const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+    const [showSearchBar, setShowSearchBar] = useState(false);
     const [languages, setLanguages] = useState([]);
     const [searchHistory, setSearchHistory] = useState([]);
-    const searchContainerRef = useRef(null);
-    const autocompleteRef = useRef(null);
+    const [suggestions, setSuggestions] = useState([]);
+    const searchInputRef = useRef(null);
 
     useEffect(() => {
         setLanguages([
@@ -46,10 +48,46 @@ export const Header = () => {
         window.scrollTo(0, 0);
     }, [location]);
 
+    useEffect(() => {
+        const addGoogleTranslateScript = () => {
+            const script = document.createElement('script');
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            script.async = true;
+            document.body.appendChild(script);
+            window.googleTranslateElementInit = googleTranslateElementInit;
+        };
+
+        const googleTranslateElementInit = () => {
+            new window.google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,it',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        };
+
+        addGoogleTranslateScript();
+    }, []);
+
+    useEffect(() => {
+        const savedLanguage = localStorage.getItem('selectedLanguage');
+        if (savedLanguage) {
+            changeLanguage(savedLanguage);
+        }
+    }, []);
+
+    const changeLanguage = (lang) => {
+        const googleTranslateElement = document.querySelector('.goog-te-combo');
+        if (googleTranslateElement) {
+            googleTranslateElement.value = lang;
+            googleTranslateElement.dispatchEvent(new Event('change'));
+            localStorage.setItem('selectedLanguage', lang); // Guardar el idioma seleccionado en localStorage
+            setShowLanguageDropdown(false); // Cerrar el menú de idiomas
+        }
+    };
+
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);
         setShowUserDropdown(false);
-        setShowSearchBar(false);
         setShowLanguageDropdown(false);
     };
 
@@ -71,8 +109,8 @@ export const Header = () => {
             case 'search':
                 setShowSearchBar(!showSearchBar);
                 setTimeout(() => {
-                    if (searchContainerRef.current) {
-                        searchContainerRef.current.querySelector('input').focus();
+                    if (searchInputRef.current) {
+                        searchInputRef.current.focus();
                     }
                 }, 100);
                 break;
@@ -81,70 +119,47 @@ export const Header = () => {
         }
     };
 
-    useEffect(() => {
-        if (showSearchBar && searchContainerRef.current) {
-            autocomplete({
-                container: searchContainerRef.current,
-                placeholder: 'Search...',
-                openOnFocus: true,
-                getSources({ query }) {
-                    return [
-                        {
-                            sourceId: 'products',
-                            getItems() {
-                                return fetch(`http://localhost:3000/products/search?query=${query}`)
-                                    .then(response => response.json())
-                                    .catch(error => {
-                                        console.error('Error fetching suggestions:', error);
-                                        return [];
-                                    });
-                            },
-                            templates: {
-                                item({ item }) {
-                                    return (
-                                        <div className="aa-ItemWrapper p-2 hover:bg-gray-200 cursor-pointer">
-                                            <div className="aa-ItemContent">
-                                                <div className="aa-ItemTitle text-gray-800">{item.desprodu}</div>
-                                            </div>
-                                        </div>
-                                    );
-                                },
-                                noResults() {
-                                    return <div className="p-2 text-gray-800">No products found</div>;
-                                },
-                                header() {
-                                    return (
-                                        <div className="aa-Header p-2 text-gray-800">
-                                            <strong>Recent Searches:</strong>
-                                            <ul>
-                                                {searchHistory.map((search, index) => (
-                                                    <li key={index} className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => navigate(`/products?search=${search}`)}>
-                                                        {search}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    );
-                                }
-                            }
-                        }
-                    ];
-                },
-                onSubmit({ state }) {
-                    const newHistory = [state.query, ...searchHistory].slice(0, 2);
-                    setSearchHistory(newHistory);
-                    navigate(`/products?search=${state.query}`);
-                    setShowSearchBar(false);
-                },
-                onSelect({ item }) {
-                    const newHistory = [item.desprodu, ...searchHistory].slice(0, 2);
-                    setSearchHistory(newHistory);
-                    navigate(`/products/${item.codprodu}`);
-                    setShowSearchBar(false);
+    const handleSearchInputChange = async (event) => {
+        const query = event.target.value;
+        if (query.length >= 3) {
+            try {
+                const response = await fetch(`http://localhost:1234/products/search?query=${query}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            });
+                const results = await response.json();
+                setSuggestions(results.slice(0, 3));
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+                setSuggestions([]);
+            }
+        } else {
+            setSuggestions([]);
         }
-    }, [showSearchBar, navigate, searchHistory]);
+    };
+
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        const query = searchInputRef.current.value;
+        if (query.length > 0) {
+            const newHistory = [query, ...searchHistory].slice(0, 2);
+            setSearchHistory(newHistory);
+            setShowSearchBar(false);
+            navigate(`/products?search=${query}`);
+        }
+    };
+
+    const handleRecentSearchClick = (search) => {
+        setShowSearchBar(false);
+        navigate(`/products?search=${search}`);
+    };
+
+    const handleSuggestionClick = (item) => {
+        const newHistory = [item.desprodu, ...searchHistory].slice(0, 2);
+        setSearchHistory(newHistory);
+        setShowSearchBar(false);
+        navigate(`/products?search=${item.desprodu}`);
+    };
 
     return (
         <>
@@ -160,31 +175,29 @@ export const Header = () => {
                             <span className="hidden lg:block">Home</span>
                         </Link>
                     </div>
-                    <div className="hidden lg:flex flex-grow justify-center">
-                        <div className="flex items-center space-x-4">
-                            <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</Link>
-                            <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contact Us</Link>
-                            <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Products</Link>
-                            <div className="relative">
-                                <button
-                                    className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
-                                    onClick={() => toggleDropdown('brands')}>
-                                    <span>Brands</span>
-                                    {showBrandsDropdown ?
-                                        <RiArrowDropUpLine size={16} className="ml-2" /> :
-                                        <RiArrowDropDownLine size={16} className="ml-2" />
-                                    }
-                                </button>
+                    <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
+                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</Link>
+                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contact Us</Link>
+                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Products</Link>
+                        <div className="relative">
+                            <button
+                                className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
+                                onClick={() => toggleDropdown('brands')}>
+                                <span>Brands</span>
+                                {showBrandsDropdown ?
+                                    <RiArrowDropUpLine size={16} className="ml-2" /> :
+                                    <RiArrowDropDownLine size={16} className="ml-2" />
+                                }
+                            </button>
 
-                                {showBrandsDropdown && (
-                                    <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40">
-                                        <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
-                                        <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
-                                        <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
-                                        <Link to="/flamencoHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</Link>
-                                    </div>
-                                )}
-                            </div>
+                            {showBrandsDropdown && (
+                                <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
+                                    <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
+                                    <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
+                                    <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
+                                    <Link to="/flamencoHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</Link>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="flex items-center space-x-4">
@@ -193,7 +206,7 @@ export const Header = () => {
                                 <RiUserFill size={24} />
                             </button>
                             {showUserDropdown && (
-                                <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40">
+                                <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
                                     <button className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => setShowUserDropdown(false)}>Sign In</button>
                                     <button className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => setShowUserDropdown(false)}>Sign Out</button>
                                 </div>
@@ -203,20 +216,17 @@ export const Header = () => {
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('search')}>
                                 <RiSearchLine size={24} />
                             </button>
-                            {showSearchBar && (
-                                <div className="absolute top-16 right-0 transition-all duration-500 ease-in-out w-60">
-                                    <div ref={searchContainerRef} className="autocomplete-container"></div>
-                                </div>
-                            )}
                         </div>
                         <div className="relative">
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
                                 <FaGlobe size={24} />
                             </button>
                             {showLanguageDropdown && (
-                                <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40">
+                                <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
                                     {languages.map((language, index) => (
-                                        <button key={index} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => changeLanguage(language.code)}>{language.name}</button>
+                                        <button key={index} className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => changeLanguage(language.code)}>
+                                            <span className="ml-2">{language.name}</span>
+                                        </button>
                                     ))}
                                 </div>
                             )}
@@ -243,7 +253,7 @@ export const Header = () => {
                                 Brands {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}
                             </button>
                             {showBrandsDropdown && (
-                                <div className={`bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40`}>
+                                <div className={`bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50`}>
                                     <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
                                     <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
                                     <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
@@ -256,6 +266,73 @@ export const Header = () => {
 
                 {showCart && <ShoppingCart onClose={() => setShowCart(false)} />}
             </header>
+
+            {showSearchBar && (
+                <div className="fixed top-20 left-0 w-full bg-white z-50 px-6 py-2 shadow-lg transition duration-300 ease-in-out">
+                    <div className="container mx-auto">
+                        <form onSubmit={handleSearchSubmit}>
+                            <input
+                                ref={searchInputRef}
+                                type="text"
+                                placeholder="Search..."
+                                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none"
+                                onChange={handleSearchInputChange}
+                            />
+                        </form>
+                        {(searchHistory.length > 0 || suggestions.length > 0) && (
+                            <div className="mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                {searchHistory.length > 0 && (
+                                    <div>
+                                        <div className="p-2 border-b border-gray-300 text-gray-800">
+                                            <strong>Recent Searches:</strong>
+                                        </div>
+                                        <ul>
+                                            {searchHistory.map((search, index) => (
+                                                <li key={index} className="p-1 cursor-pointer hover:bg-gray-200" onClick={() => handleRecentSearchClick(search)}>
+                                                    {search}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                {suggestions.length > 0 && (
+                                    <div>
+                                        <div className="p-2 border-b border-gray-300 text-gray-800">
+                                            <strong>Suggestions:</strong>
+                                        </div>
+                                        {suggestions.map((item, index) => (
+                                            <div key={index} className="p-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleSuggestionClick(item)}>
+                                                {item.desprodu}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+            <div id="google_translate_element" className="hidden"></div>
+            <style>
+                {`
+                    .goog-logo-link, .goog-te-gadget, .goog-te-banner-frame.skiptranslate, .goog-te-balloon-frame.skiptranslate {
+                        display: none !important;
+                    }
+                    .goog-te-banner-frame {
+                        display: none !important;
+                    }
+                    .goog-te-balloon-frame {
+                        display: none !important;
+                    }
+                    .goog-te-banner-frame.skiptranslate,
+                    .goog-te-balloon-frame.skiptranslate {
+                        display: none !important;
+                    }
+                    body {
+                        top: 0 !important;
+                    }
+                `}
+            </style>
         </>
     );
 };

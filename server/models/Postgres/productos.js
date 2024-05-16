@@ -83,7 +83,7 @@ export class ProductModel {
     const offset = (page - 1) * limit;
 
     try {
-      const { rows } = await pool.query(searchQuery, [`%${query}%`, limit, offset]);
+      const { rows } = await pool.query(searchQuery, [`${query}%`, limit, offset]);
       return rows;
     } catch (error) {
       console.error('Error searching products:', error);
