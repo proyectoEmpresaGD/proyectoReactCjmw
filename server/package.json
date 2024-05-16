@@ -5,11 +5,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node server/app.js",
-    "start:mysql": "node server-with-mysql.js",
-    "start:local": "node server-with-local.js",
-    "start:postgre": "node server-with-postgre.js",
-    "build": "echo 'No build script defined for backend'",
+    "start:mysql": "node --watch server-with-mysql.js",
+    "start:local": "node --watch server-with-local.js",
+    "start:postgre": "node --watch server-with-postgre.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
+    "cors": "2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",

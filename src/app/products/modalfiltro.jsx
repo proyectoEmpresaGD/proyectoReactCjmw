@@ -115,9 +115,9 @@ function FiltroModal({ isOpen, close, applyFilters }) {
             <div className="bg-white p-6 rounded-lg max-w-[60%] h-[60%] w-full m-4 overflow-y-auto ">
                 <h2 className="text-center text-2xl font-bold">FILTROS</h2>
                 <div className="flex justify-end">
-                    <button className="relative overflow-hidden m-4" onClick={close}>
-                        <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200 justify-end' />
-                    </button>
+                <button className="relative overflow-hidden m-4" onClick={close}>
+                    <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200 justify-end' />
+                </button>
                 </div>
                 <div className='grid xl:grid-cols-3 md:grid-cols gap-3 gap-y-6'>
                     <div className=''>
@@ -200,9 +200,9 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                             <span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span>
                         </span>
                     </button>
-
+                    
                 </div>
-
+                
             </div>
         </div>
     );
