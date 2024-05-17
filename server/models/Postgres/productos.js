@@ -42,13 +42,13 @@ export class ProductModel {
   }
 
   static async create({ input }) {
-    const { CodProdu, DesProdu, CodFamil, Comentario } = input;
+    const { CodProdu, DesProdu, CodFamil, Comentario, UrlImagen } = input;
 
     const { rows } = await pool.query(
-      `INSERT INTO productos ("codprodu", "desprodu", "codfamil", "comentario")
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO productos ("codprodu", "desprodu", "codfamil", "comentario", "urlimagen")
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING *;`,
-      [CodProdu, DesProdu, CodFamil, Comentario]
+      [CodProdu, DesProdu, CodFamil, Comentario, UrlImagen]
     );
 
     return rows[0];
