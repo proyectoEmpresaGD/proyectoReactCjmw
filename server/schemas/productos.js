@@ -1,7 +1,4 @@
-import z from 'zod'
-
-
-
+import z from 'zod';
 
 const productSchema = z.object({
     CodProdu: z.string({
@@ -48,12 +45,16 @@ const productSchema = z.object({
     UltFecActPRC: z.number().int().optional(),
     UltPreCompraNetoImput: z.number().optional(),
     PUFCNetoImput: z.number().optional(),
-})
+    urlimagen: z.string().url({
+        required_error: 'Product image URL is required.',
+        invalid_type_error: 'Product image URL must be a valid URL.'
+    }).optional()  // Si no es obligatorio, se puede dejar como opcional
+});
 
 export function validateProduct(input) {
-    return productSchema.safeParse(input)
+    return productSchema.safeParse(input);
 }
 
 export function validatePartialProduct(input) {
-    return productSchema.partial().safeParse(input)
+    return productSchema.partial().safeParse(input);
 }
