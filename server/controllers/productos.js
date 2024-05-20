@@ -3,8 +3,11 @@ import { ProductModel } from '../models/Postgres/productos.js';
 export class ProductController {
   async getAll(req, res) {
     try {
-      const { CodFamil, CodSubFamil } = req.query;
-      const products = await ProductModel.getAll({ CodFamil, CodSubFamil });
+      const { CodFamil, CodSubFamil, limit, page } = req.query;
+      const limitParsed = parseInt(limit, 10) || 12;
+      const pageParsed = parseInt(page, 10) || 1;
+      const offset = (pageParsed - 1) * limitParsed;
+      const products = await ProductModel.getAll({ CodFamil, CodSubFamil, limit: limitParsed, offset });
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -27,7 +30,7 @@ export class ProductController {
 
   async create(req, res) {
     try {
-      const newProduct = await ProductModel.create(req.body);
+      const newProduct = await ProductModel.create({ input: req.body });
       res.status(201).json(newProduct);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -64,14 +67,17 @@ export class ProductController {
 
   async search(req, res) {
     try {
-      const { query, page, limit } = req.query;
+      const { query, limit, page } = req.query;
       if (!query) {
         return res.status(400).json({ message: 'Query parameter is required' });
       }
+      const limitParsed = parseInt(limit, 10) || 12;
+      const pageParsed = parseInt(page, 10) || 1;
+      const offset = (pageParsed - 1) * limitParsed;
       const products = await ProductModel.search({
         query,
-        limit: parseInt(limit, 10) || 10,
-        page: parseInt(page, 10) || 1
+        limit: limitParsed,
+        offset
       });
       res.json(products);
     } catch (error) {

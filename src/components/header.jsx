@@ -3,7 +3,7 @@ import {
     RiMenu3Fill, RiSearchLine, RiShoppingCartFill, RiUserFill,
     RiArrowDropDownLine, RiArrowDropUpLine
 } from 'react-icons/ri';
-import { FaGlobe } from 'react-icons/fa'; // Icono del globo
+import { FaGlobe } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
@@ -80,8 +80,8 @@ export const Header = () => {
         if (googleTranslateElement) {
             googleTranslateElement.value = lang;
             googleTranslateElement.dispatchEvent(new Event('change'));
-            localStorage.setItem('selectedLanguage', lang); // Guardar el idioma seleccionado en localStorage
-            setShowLanguageDropdown(false); // Cerrar el menú de idiomas
+            localStorage.setItem('selectedLanguage', lang);
+            setShowLanguageDropdown(false);
         }
     };
 
@@ -128,7 +128,10 @@ export const Header = () => {
                     throw new Error('Network response was not ok');
                 }
                 const results = await response.json();
-                setSuggestions(results.slice(0, 3));
+                const filteredResults = results.filter(result =>
+                    !searchHistory.some(historyItem => historyItem.codprodu === result.codprodu)
+                );
+                setSuggestions(filteredResults.slice(0, 3));
             } catch (error) {
                 console.error('Error fetching suggestions:', error);
                 setSuggestions([]);
@@ -158,7 +161,7 @@ export const Header = () => {
         const newHistory = [item.desprodu, ...searchHistory].slice(0, 2);
         setSearchHistory(newHistory);
         setShowSearchBar(false);
-        navigate(`/products?search=${item.desprodu}`);
+        navigate(`/products?productId=${item.codprodu}`);
     };
 
     return (
