@@ -23,8 +23,13 @@ const CardProduct = () => {
             .then(response => response.json())
             .then(data => {
                 const validProducts = data.filter(product => (
-                    !/^(LIBRO|QUALITY SAMPLE|PERCHA|ALQUILER|ACCESORIOS MUESTRARIOS|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
+                    !/^(LIBRO|PORTADA|KIT|COMPOSICION ESPECIAL|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
+                    !/(PERCHAS Y LIBROS)/i.test(product.desprodu) &&
                     !/CUTTING/i.test(product.desprodu) &&
+                    !/(LIBROS)/i.test(product.desprodu) &&
+                    !/PERCHA/i.test(product.desprodu) &&
+                    !/(PERCHAS)/i.test(product.desprodu) &&
+                    !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
                     ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
                 ));
                 setProducts(validProducts);

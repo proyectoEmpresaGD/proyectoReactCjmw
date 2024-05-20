@@ -10,7 +10,13 @@ const ModalMapa = ({ isOpen, close }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center overflow-auto max-h-[100%] items-center z-40 py-[7%]">
-            <div className="bg-white rounded-lg w-[90%]  my-auto gap-3">
+            
+            <div className="bg-gradient-to-r from-[#ebdecf] to-[#8a7862] rounded-lg w-[90%]  my-auto gap-3">
+            <div className="flex justify-end z-20">
+                <button className="relative overflow-hidden m-4" onClick={close}>
+                    <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200 justify-end' />
+                </button>
+                </div>
                 <GeocodingService/>
             </div>
         </div>

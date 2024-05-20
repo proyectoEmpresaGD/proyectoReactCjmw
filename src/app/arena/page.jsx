@@ -3,6 +3,7 @@ import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
+import CardProductBrand from "../../components/ComponentesProductos/cardProductBrand"
 
 function ArenaHome() {
 
@@ -35,7 +36,7 @@ function ArenaHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-
+                <CardProductBrand brand="ARE" />
                 <Footer />
             </CartProvider>
         </>
