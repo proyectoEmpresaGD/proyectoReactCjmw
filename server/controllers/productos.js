@@ -84,4 +84,16 @@ export class ProductController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async getByCodFamil(req, res) {
+    try {
+      const { codfamil } = req.params;
+      const products = await ProductModel.getByCodFamil(codfamil);
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+
 }

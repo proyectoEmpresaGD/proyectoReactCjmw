@@ -90,4 +90,15 @@ export class ProductModel {
       throw new Error('Error searching products');
     }
   }
+  static async getByCodFamil(codfamil) {
+    try {
+      const { rows } = await pool.query('SELECT * FROM productos WHERE "codfamil" = $1;', [codfamil]);
+      return rows;
+    } catch (error) {
+      console.error('Error fetching products by codfamil:', error);
+      throw new Error('Error fetching products by codfamil');
+    }
+  }
+
+
 }
