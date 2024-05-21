@@ -51,12 +51,13 @@ const Modal = ({ isOpen, close, product, src, alt }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-4">
             <div className="bg-white p-6 rounded-lg max-w-full w-full md:max-w-4xl m-4 h-auto">
-                <h2 className="text-center text-2xl font-bold mb-4">{product.desprodu}</h2>
-                <div className="flex justify-end">
+            <div className="flex justify-end">
                     <button className="relative overflow-hidden m-4" onClick={close}>
                         <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200' alt="Close" />
                     </button>
                 </div>
+                <h2 className="text-center text-2xl font-bold mb-4">{product.desprodu}</h2>
+                
                 
                 <div className="grid md:grid-cols-2 grid-cols-1 gap-3" onClick={e => e.stopPropagation()}>
                     {/* Columna del contenido */}
@@ -64,7 +65,7 @@ const Modal = ({ isOpen, close, product, src, alt }) => {
                         <img 
                             src={product.urlimagen} 
                             alt={alt} 
-                            className="w-full h-full rounded-md" 
+                            className="w-full h-full object-cover rounded-md" 
                             onLoad={handleImageLoad}
                             onError={handleImageError}
                             onMouseMove={moveLens}
@@ -72,7 +73,7 @@ const Modal = ({ isOpen, close, product, src, alt }) => {
                         {imageLoaded && (
                             <>
                                 <div 
-                                    ref={lensRef} 
+                                    ref={lensRef}
                                     className="absolute hidden group-hover:block w-24 h-24 border border-black opacity-40 bg-white pointer-events-none"
                                 ></div>
                                 <div 
@@ -80,7 +81,7 @@ const Modal = ({ isOpen, close, product, src, alt }) => {
                                     className="absolute hidden group-hover:block top-0 left-0 w-full h-full bg-white bg-cover pointer-events-none"
                                     style={{
                                         backgroundImage: `url(${product.urlimagen})`,
-                                        backgroundSize: `${zoomFactor * 100}%`
+                                        backgroundSize: `${zoomFactor * 128}%`
                                     }}
                                 ></div>
                             </>
@@ -100,7 +101,7 @@ const Modal = ({ isOpen, close, product, src, alt }) => {
             </div>
             {modalMapaOpen && (
                 <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
-            )}
+            )} 
         </div>
     );
 }
