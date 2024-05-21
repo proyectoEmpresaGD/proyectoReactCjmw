@@ -24,6 +24,15 @@ const CardProduct = () => {
     const [searchHistory, setSearchHistory] = useState([]);
     const [showClearButton, setShowClearButton] = useState(false);
 
+    const isValidProduct = (product) => {
+        const desprodu = product.desprodu;
+        return (
+            /^C1/.test(desprodu) || // Include "C1"
+            /^C01/.test(desprodu) || // Include "C01"
+            !/C(0?[2-9]|[1-7][0-9]|80)\b/.test(desprodu) // Exclude "C" followed by 02-09, 10-79, or 80
+        );
+    };
+
     // Function to fetch all products
     const fetchProducts = async () => {
         setLoading(true);
@@ -35,15 +44,16 @@ const CardProduct = () => {
             }
             const data = await response.json();
             const validProducts = data.filter(product => (
-                    !/^(LIBRO|PORTADA|KIT|COMPOSICION ESPECIAL|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
-                    !/(PERCHAS Y LIBROS)/i.test(product.desprodu) &&
-                    !/CUTTING/i.test(product.desprodu) &&
-                    !/(LIBROS)/i.test(product.desprodu) &&
-                    !/PERCHA/i.test(product.desprodu) &&
-                    !/(PERCHAS)/i.test(product.desprodu) &&
-                    !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
-                    ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
-                ));
+                isValidProduct(product) &&
+                !/^(LIBRO|PORTADA|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
+                !/(PERCHAS Y LIBROS)/i.test(product.desprodu) &&
+                !/CUTTING/i.test(product.desprodu) &&
+                !/(LIBROS)/i.test(product.desprodu) &&
+                !/PERCHA/i.test(product.desprodu) &&
+                !/(PERCHAS)/i.test(product.desprodu) &&
+                !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
+                ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
+            ));
             setProducts(prevProducts => [...prevProducts, ...validProducts]);
         } catch (error) {
             setError('Error fetching products');
@@ -71,6 +81,7 @@ const CardProduct = () => {
                     }
                     const data = await response.json();
                     const filteredData = data.filter(product =>
+                        isValidProduct(product) &&
                         !searchHistory.some(historyItem => historyItem.codprodu === product.codprodu)
                     );
                     if (filteredData.length === 0) {
@@ -170,8 +181,8 @@ const CardProduct = () => {
                 <div className="flex flex-wrap justify-center items-center">
                     {products.map(product => (
                         <div key={product.codprodu} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%]">
-                            <div className="relative overflow-hidden" onClick={() => handleProductClick(product)}>
-                                <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} style={{ objectFit: 'cover', height: '200px', width: '100%' }} />
+                            <div className="relative overflow-hidden w-full h-full" onClick={() => handleProductClick(product)}>
+                                <img className="object-cover " src={product.urlimagen} alt={product.desprodu} style={{ objectFit: 'cover', height: '200px', width: '100%' }} />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
                             </div>
                             <h3 className="text-center text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
