@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
+import { FiLoader, FiShoppingCart } from 'react-icons/fi';
 
 const CardProduct = () => {
     const location = useLocation();
@@ -15,6 +16,7 @@ const CardProduct = () => {
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -33,12 +35,15 @@ const CardProduct = () => {
         );
     };
 
-    // Function to fetch all products
-    const fetchProducts = async () => {
-        setLoading(true);
+    const fetchProducts = async (pageNumber = 1, append = false) => {
+        if (!append) {
+            setLoading(true);
+        } else {
+            setLoadingMore(true);
+        }
         setError(null);
         try {
-            const response = await fetch(`http://localhost:1234/products?limit=12&page=${page}`);
+            const response = await fetch(`http://localhost:1234/products?limit=8&page=${pageNumber}`);
             if (!response.ok) {
                 throw new Error('Error fetching products');
             }
@@ -54,19 +59,20 @@ const CardProduct = () => {
                 !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
                 ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
             ));
-            setProducts(prevProducts => [...prevProducts, ...validProducts]);
+            setProducts(prevProducts => append ? [...prevProducts, ...validProducts] : validProducts);
         } catch (error) {
             setError('Error fetching products');
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
     };
 
     useEffect(() => {
         if (!searchQuery && !productId) {
-            fetchProducts();
+            fetchProducts(1, false);
         }
-    }, [page, searchQuery, productId]);
+    }, [searchQuery, productId]);
 
     useEffect(() => {
         if (searchQuery) {
@@ -146,14 +152,18 @@ const CardProduct = () => {
         setProducts([]);
         setPage(1);
         setShowClearButton(false); // Hide the clear button when clearing the search
-        fetchProducts(); // Fetch all products when clearing the search
+        fetchProducts(1, false); // Fetch all products when clearing the search
     };
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting && !searchQuery && !productId) {
-                    setPage((prevPage) => prevPage + 1);
+                    setPage((prevPage) => {
+                        const nextPage = prevPage + 1;
+                        fetchProducts(nextPage, true);
+                        return nextPage;
+                    });
                 }
             },
             { threshold: 1 }
@@ -179,8 +189,8 @@ const CardProduct = () => {
                     </div>
                 )}
                 <div className="flex flex-wrap justify-center items-center">
-                    {products.map(product => (
-                        <div key={product.codprodu} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%]">
+                    {products.map((product, index) => (
+                        <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%]">
                             <div className="relative overflow-hidden w-full h-full" onClick={() => handleProductClick(product)}>
                                 <img className="object-cover " src={product.urlimagen} alt={product.desprodu} style={{ objectFit: 'cover', height: '200px', width: '100%' }} />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
@@ -188,19 +198,27 @@ const CardProduct = () => {
                             <h3 className="text-center text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
                             <div className="flex items-center justify-between mt-4">
                                 <span className="text-gray-900 font-bold text-lg">€3</span>
-                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">Adquirir muestra</button>
+                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
+                                    <FiShoppingCart className="text-2xl" />
+                                </button>
                             </div>
                         </div>
                     ))}
                 </div>
-                {loading && <SkeletonLoader repeticiones={12} />}
+                {loading && !loadingMore && <SkeletonLoader repeticiones={8} />}
+                {loadingMore && (
+                    <div className="flex flex-col items-center justify-center w-full py-4">
+                        <FiLoader className="animate-spin text-6xl text-gray-500" />
+                        <span className="text-gray-500 text-2xl mt-4">Cargando más productos...</span>
+                    </div>
+                )}
                 {!loading && products.length === 0 && !error && (
                     <div className="text-center text-gray-500">No products found</div>
                 )}
                 {!loading && error && (
                     <div className="text-center text-red-500">{error}</div>
                 )}
-                {!searchQuery && !productId && <div ref={loader}></div>}
+                <div ref={loader}></div>
                 {modalOpen && (
                     <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
                 )}

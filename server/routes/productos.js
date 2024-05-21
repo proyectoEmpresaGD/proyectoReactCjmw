@@ -11,6 +11,7 @@ export const createProductRouter = () => {
 
     // Ruta de búsqueda debe ir antes de las rutas que capturan parámetros como 'id'
     productsRouter.get('/search', productController.search.bind(productController));
+    productsRouter.get('/codfamil/:codfamil', productController.getByCodFamil.bind(productController)); // Nueva ruta
 
     // Rutas para operaciones específicas de un producto
     productsRouter.get('/:id', productController.getById.bind(productController));

@@ -1,12 +1,33 @@
 import ModalMapa from "./modalMapa";
 import { useState, useRef, useEffect } from 'react';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-const Modal = ({ isOpen, close, product, src, alt }) => {
+const Modal = ({ isOpen, close, product, alt }) => {
     const [modalMapaOpen, setModalMapaOpen] = useState(false); // Estado para controlar la apertura de ModalMapa
     const [imageLoaded, setImageLoaded] = useState(false); // Estado para controlar la carga de la imagen
+    const [selectedImage, setSelectedImage] = useState(product.urlimagen); // Estado para la imagen seleccionada
+    const [selectedName, setSelectedName] = useState(product.desprodu); // Estado para el nombre del producto seleccionado
+    const [relatedProducts, setRelatedProducts] = useState([]); // Estado para los productos relacionados
     const lensRef = useRef(null);
     const resultRef = useRef(null);
-    const zoomFactor = 2; // Factor de zoom
+    const [zoomFactor, setZoomFactor] = useState(2); // Factor de zoom
+
+    useEffect(() => {
+        // Fetch related products by codfamil
+        const fetchRelatedProducts = async () => {
+            try {
+                const response = await fetch(`http://localhost:1234/products/codfamil/${product.codfamil}`);
+                const data = await response.json();
+                setRelatedProducts(data);
+            } catch (error) {
+                console.error('Error fetching related products:', error);
+            }
+        };
+
+        fetchRelatedProducts();
+    }, [product.codfamil]);
 
     const handleMapClick = () => {
         setModalMapaOpen(true); // Abre ModalMapa cuando se cliquea el botón
@@ -14,6 +35,12 @@ const Modal = ({ isOpen, close, product, src, alt }) => {
 
     const handleImageLoad = () => {
         setImageLoaded(true); // Marca la imagen como cargada
+
+        // Ajusta el factor de zoom según el tamaño de la imagen
+        const img = lensRef.current.previousSibling;
+        const { width, height } = img;
+        const factor = Math.max(2, (width > 300 || height > 300) ? 2 : 3);
+        setZoomFactor(factor);
     };
 
     const handleImageError = () => {
@@ -45,63 +72,112 @@ const Modal = ({ isOpen, close, product, src, alt }) => {
         result.style.backgroundPosition = `-${boundedPosX * zoomFactor}px -${boundedPosY * zoomFactor}px`;
     };
 
+    const handleColorClick = (image, name) => {
+        setSelectedImage(image);
+        setSelectedName(name);
+        setImageLoaded(false); // Reset image loaded state to show lens only after image is loaded
+    };
+
+    // Configuración del carrusel
+    const settings = {
+        dots: false,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        nextArrow: <div className="slick-next text-2xl text-gray-600">→</div>,
+        prevArrow: <div className="slick-prev text-2xl text-gray-600">←</div>,
+        responsive: [
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                }
+            }
+        ]
+    };
+
     // Si `isOpen` es falso, no se muestra nada
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-4">
-            <div className="bg-white p-6 rounded-lg max-w-full w-full md:max-w-4xl m-4 h-auto">
-            <div className="flex justify-end">
-                    <button className="relative overflow-hidden m-4" onClick={close}>
-                        <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200' alt="Close" />
+            <div className="bg-white p-6 rounded-lg max-w-full w-full md:max-w-3xl m-4 h-auto overflow-y-auto shadow-lg relative max-h-[90vh]">
+                <div className="flex justify-end absolute top-4 right-4">
+                    <button className="relative overflow-hidden" onClick={close}>
+                        <img src="close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                     </button>
                 </div>
-                <h2 className="text-center text-2xl font-bold mb-4">{product.desprodu}</h2>
-                
-                
+                <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedName}</h2>
+
                 <div className="grid md:grid-cols-2 grid-cols-1 gap-3" onClick={e => e.stopPropagation()}>
                     {/* Columna del contenido */}
-                    <div className="relative group">
-                        <img 
-                            src={product.urlimagen} 
-                            alt={alt} 
-                            className="w-full h-full object-cover rounded-md" 
+                    <div className="relative group w-full h-64 md:h-96">
+                        <img
+                            src={selectedImage}
+                            alt={alt}
+                            className="w-full h-full object-contain rounded-md"
                             onLoad={handleImageLoad}
                             onError={handleImageError}
                             onMouseMove={moveLens}
                         />
                         {imageLoaded && (
                             <>
-                                <div 
+                                <div
                                     ref={lensRef}
-                                    className="absolute hidden group-hover:block w-24 h-24 border border-black opacity-40 bg-white pointer-events-none"
+                                    className="absolute hidden group-hover:block w-24 h-24 border border-gray-300 opacity-50 bg-white pointer-events-none rounded-full"
                                 ></div>
-                                <div 
-                                    ref={resultRef} 
+                                <div
+                                    ref={resultRef}
                                     className="absolute hidden group-hover:block top-0 left-0 w-full h-full bg-white bg-cover pointer-events-none"
                                     style={{
-                                        backgroundImage: `url(${product.urlimagen})`,
-                                        backgroundSize: `${zoomFactor * 128}%`
+                                        backgroundImage: `url(${selectedImage})`,
+                                        backgroundSize: `${zoomFactor * 100}%`,
+                                        borderRadius: '0.5rem'
                                     }}
                                 ></div>
                             </>
                         )}
                     </div>
-                    <div className="flex flex-col justify-between">
+                    <div className="flex flex-col justify-between p-4">
                         <div>
-                            <p className="mb-4">Descripción o detalles adicionales del producto podrían ir aquí.</p>
+                            <p className="mb-4 text-gray-600">Aquí puede agregar una descripción detallada del producto, incluyendo características, materiales y cualquier otra información relevante.</p>
                         </div>
                         <div className="flex justify-between mt-4">
-                            <button className="bg-black hover:bg-gray-400 duration-200 text-white font-bold py-2 px-4 rounded" 
-                                    onClick={handleMapClick}>Dónde comprar</button>
-                            <button className="bg-black hover:bg-gray-400 duration-200 text-white font-bold py-2 px-4 rounded">Adquirir muestra</button>
+                            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-200"
+                                onClick={handleMapClick}>Dónde comprar</button>
+                            <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-200">Adquirir muestra</button>
                         </div>
                     </div>
+                </div>
+
+                {/* Carrusel de imágenes de colores */}
+                <div className="mt-6">
+                    <Slider {...settings}>
+                        {relatedProducts.map((colorProduct, index) => (
+                            <div key={index} className="px-2">
+                                <img
+                                    src={colorProduct.urlimagen}
+                                    alt={colorProduct.desprodu}
+                                    className="w-full h-16 object-cover rounded-full cursor-pointer"
+                                    onClick={() => handleColorClick(colorProduct.urlimagen, colorProduct.desprodu)}
+                                />
+                            </div>
+                        ))}
+                    </Slider>
                 </div>
             </div>
             {modalMapaOpen && (
                 <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
-            )} 
+            )}
         </div>
     );
 }
