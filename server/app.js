@@ -10,7 +10,6 @@ const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Usa la variable de entorno DATABASE_URL para la conexión
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
@@ -24,7 +23,6 @@ export const createApp = () => {
 
   app.use(express.static(join(__dirname, 'web')));
 
-  // Asegúrate de pasar el pool de conexiones a tu router
   app.use('/products', createProductRouter({ pool }));
   app.use('/products/search', createProductRouter({ pool }));
 

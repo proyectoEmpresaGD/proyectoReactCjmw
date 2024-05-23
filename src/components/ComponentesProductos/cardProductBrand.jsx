@@ -16,9 +16,9 @@ const CardProductBrand = ({ brand }) => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`http://localhost:1234/products?codMarca=${brand}`);
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?codMarca=${brand}`);
                 const brandProducts = response.data.filter(item => item.codmarca === brand); // Filtrar por marca
-    
+
                 // Filtrar por los criterios adicionales
                 const validProducts = brandProducts.filter(product => (
                     !/^(LIBRO|PORTADA|KIT|COMPOSICION ESPECIAL|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
@@ -30,7 +30,7 @@ const CardProductBrand = ({ brand }) => {
                     !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
                     ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
                 ));
-    
+
                 randomizeAndSetProducts(validProducts); // Aplicar la función randomizeAndSetProducts con los productos válidos
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -38,7 +38,7 @@ const CardProductBrand = ({ brand }) => {
                 setLoading(false);
             }
         };
-    
+
         fetchData();
     }, [brand]);
 
@@ -47,8 +47,8 @@ const CardProductBrand = ({ brand }) => {
             const shuffled = products.sort(() => 0.5 - Math.random());
             setProducts(shuffled.slice(0, 4)); // Selecciona 4 productos de manera aleatoria
         } else {
-            
-            
+
+
 
             setProducts(products);
         }

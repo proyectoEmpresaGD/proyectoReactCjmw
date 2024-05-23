@@ -43,7 +43,7 @@ const CardProduct = () => {
         }
         setError(null);
         try {
-            const response = await fetch(`http://localhost:1234/products?limit=8&page=${pageNumber}`);
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/products?limit=8&page=${pageNumber}`);
             if (!response.ok) {
                 throw new Error('Error fetching products');
             }
@@ -81,7 +81,7 @@ const CardProduct = () => {
                 setError(null);
                 setProducts([]); // Clear products before a new search
                 try {
-                    const response = await fetch(`http://localhost:1234/products/search?query=${searchQuery}`);
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/products/search?query=${searchQuery}`);
                     if (!response.ok) {
                         throw new Error('Error fetching search results');
                     }
@@ -114,7 +114,7 @@ const CardProduct = () => {
                 setError(null);
                 setProducts([]); // Clear products before fetching a specific product
                 try {
-                    const response = await fetch(`http://localhost:1234/products/${productId}`);
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/products/${productId}`);
                     if (!response.ok) {
                         throw new Error('Error fetching product by ID');
                     }
