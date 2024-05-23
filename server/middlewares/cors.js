@@ -7,7 +7,9 @@ const ACCEPTED_ORIGINS = [
   'https://midu.dev',
   'http://localhost:5173',
   'https://translate.google.com',
-  'https://proyecto-react-cjmw-despliegue-backend.vercel.app' // Agregado para permitir solicitudes desde Google Translate
+  'https://proyecto-react-cjmw-despliegue-backend.vercel.app',
+  'https://proyecto-react-cjmw-despliegue.vercel.app'
+  // Agregado para permitir solicitudes desde Google Translate
 ];
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
