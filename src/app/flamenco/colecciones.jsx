@@ -64,7 +64,7 @@ function FlamencoColecciones() {
                         </div>
                     </div>
                 </body>
-
+                <CardProductBrand brand="FLA" />
                 <Footer />
             </CartProvider>
         </>

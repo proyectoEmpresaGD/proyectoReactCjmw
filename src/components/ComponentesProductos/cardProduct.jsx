@@ -137,7 +137,7 @@ const CardProduct = () => {
             id: product.codprodu,
             name: product.desprodu,
             price: 3,
-            image: product.urlimagen,
+            image: product.imagepreview,
             quantity: 1
         });
     };
