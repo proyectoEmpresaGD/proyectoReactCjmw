@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { TiChevronLeft } from "react-icons/ti";
+import { TiChevronRight } from "react-icons/ti";
 
 const Modal = ({ isOpen, close, product, alt }) => {
     const [modalMapaOpen, setModalMapaOpen] = useState(false); // Estado para controlar la apertura de ModalMapa
@@ -79,14 +81,39 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     // Configuración del carrusel
+
+    const SampleNextArrow = ({ className, style, onClick }) => {
+        return (
+            <div
+                className={`${className} `}
+                style={{ ...style, display: 'block' }}
+                onClick={onClick}
+            >
+                <TiChevronRight className="text-black text-3xl hover:text-gray-500 flex items-center justify-center cursor-pointer absolute top-1/2 transform -translate-y-[120%] lg:transform lg:-translate-y-[60%] xl:transform xl:-translate-y-[60%] md:transform md:-translate-y-[70%]" />
+            </div>
+        );
+    };
+
+    const SamplePrevArrow = ({ className, style, onClick }) => {
+        return (
+            <div
+                className={`${className} `}
+                style={{ ...style, display: 'block', }}
+                onClick={onClick}
+            >
+                <TiChevronLeft className="text-black text-3xl hover:text-gray-500 flex items-center justify-center cursor-pointer absolute top-1/2 transform -translate-y-[120%] lg:transform lg:-translate-y-[60%] xl:transform xl:-translate-y-[60%] md:transform md:-translate-y-[70%]" />
+            </div>
+        );
+    };
+
     const settings = {
         dots: false,
         infinite: true,
         speed: 500,
         slidesToShow: 4,
         slidesToScroll: 4,
-        nextArrow: <div className="slick-next text-2xl text-gray-600">→</div>,
-        prevArrow: <div className="slick-prev text-2xl text-gray-600">←</div>,
+        nextArrow: <SampleNextArrow />,
+        prevArrow: <SamplePrevArrow />,
         responsive: [
             {
                 breakpoint: 768,
@@ -110,10 +137,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-4">
-            <div className="bg-white p-6 rounded-lg max-w-full w-full md:max-w-3xl m-4 h-auto overflow-y-auto shadow-lg relative max-h-[90vh]">
+            <div className="bg-white p-7 lg:mt-[5%] xl:mt-[5%] md:mt-[5%] mt-[30%] rounded-lg xl:max-w-4xl w-full md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[80vh]">
                 <div className="flex justify-end absolute top-4 right-4">
-                    <button className="relative overflow-hidden" onClick={close}>
-                        <img src="close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
+                    <button className="relative " onClick={close}>
+                        <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                     </button>
                 </div>
                 <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedName}</h2>
@@ -140,7 +167,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     className="absolute hidden group-hover:block top-0 left-0 w-full h-full bg-white bg-cover pointer-events-none"
                                     style={{
                                         backgroundImage: `url(${selectedImage})`,
-                                        backgroundSize: `${zoomFactor * 100}%`,
+                                        backgroundSize: `${zoomFactor * 136}%`,
                                         borderRadius: '0.5rem'
                                     }}
                                 ></div>
