@@ -23,8 +23,8 @@ export const createApp = () => {
 
   app.use(express.static(join(__dirname, 'web')));
 
-  app.use('/products', createProductRouter({ pool }));
-  app.use('/products/search', createProductRouter({ pool }));
+  app.use('/api/products', createProductRouter({ pool }));
+
 
   const PORT = process.env.PORT || 1234;
   app.listen(PORT, () => {

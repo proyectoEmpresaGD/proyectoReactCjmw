@@ -16,7 +16,7 @@ const CardProductBrand = ({ brand }) => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?codMarca=${brand}`);
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products?codMarca=${brand}`);
                 const brandProducts = response.data.filter(item => item.codmarca === brand); // Filtrar por marca
 
                 // Filtrar por los criterios adicionales
