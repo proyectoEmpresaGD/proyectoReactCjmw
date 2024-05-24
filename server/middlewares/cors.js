@@ -6,7 +6,11 @@ const ACCEPTED_ORIGINS = [
   'https://movies.com',
   'https://midu.dev',
   'http://localhost:5173',
-  'https://translate.google.com' // Agregado para permitir solicitudes desde Google Translate
+  'https://translate.google.com',
+  'https://proyecto-react-cjmw-despliegue-backend.vercel.app',
+  'https://proyecto-react-cjmw-despliegue-backend.vercel.app/products',
+  'https://cjmw.vercel.app'
+  // Agregado para permitir solicitudes desde Google Translate
 ];
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({

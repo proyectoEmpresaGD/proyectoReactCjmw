@@ -31,7 +31,7 @@ const GeocodingService = () => {
 
   useEffect(() => {
     const loader = new Loader({
-      apiKey: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg",
+      apiKey: "AIzaSyAtnktr-IqG1RseoruDMk7ZpLIrzdtPgbg",
       version: "weekly",
       libraries: ["places", "geometry"]
     });
@@ -124,7 +124,7 @@ const GeocodingService = () => {
           setSearchLocation(null);
           updateNearbyStores(newCenter, loadedMarkers, directionsService, directionsRenderer, false);
           console.log("Guardado en localStorage:", { lat: newCenter.lat(), lng: newCenter.lng() });
-        }, );
+        },);
       });
 
       return () => {

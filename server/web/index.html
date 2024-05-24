@@ -2,51 +2,60 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Probar API Rest de Productos</title>
-  <style>
-    article {
-      border: 1px solid #ccc;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-  </style>
-  <script type="module">
-    fetch('http://localhost:5173/products')
-      .then(res => res.json())
-      .then(products => {
-        // Verificación para asegurarse de que products es un array
-        if (!Array.isArray(products)) {
-          console.error('Expected an array of products, but received:', products);
-          return; // Termina la ejecución si no es un array
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probar API Rest</title>
+    <style>
+        article {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
-        const html = products.map(product => {
-          return `
-            <article data-id="${product.CodProdu}">
-              <h2>${product.DesProdu}</h2>
-              <p>Código de Producto: ${product.CodProdu}</p>
-              <p>Familia: ${product.CodFamil}</p>
-              <p>Subfamilia: ${product.CodSubFamil}</p>
-              <p>Marca: ${product.CodMarca}</p>
-              <p>Tipo: ${product.CodTipo}</p>
-              <p>Comentario: ${product.Comentario || 'Sin comentarios'}</p>
+
+        img {
+            height: auto;
+            width: 320px;
+            max-width: 100%;
+        }
+    </style>
+    <script type="module">
+        fetch('/api/products')
+            .then(res => res.json())
+            .then(products => {
+                const html = products.map(product => {
+                    return `
+            <article data-id="${product.codprodu}">
+              <h2>${product.desprodu}</h2>
+              <img src="${product.urlimagen}" alt="${product.desprodu}">
+              <p>${product.codfamil}</p>
               <button>Eliminar</button>
             </article>
           `;
-        }).join('');
-        document.querySelector('main').innerHTML = html;
-      })
-      .catch(error => {
-        console.error('Error fetching products:', error);
-        document.querySelector('main').innerHTML = `<p>Error loading products.</p>`;
-      });
-  </script>
+                }).join('');
 
+                document.querySelector('main').innerHTML = html;
+
+                document.addEventListener('click', e => {
+                    if (e.target.matches('button')) {
+                        const article = e.target.closest('article');
+                        const id = article.dataset.id;
+
+                        fetch(`/api/products/${id}`, {
+                            method: 'DELETE'
+                        })
+                            .then(res => {
+                                if (res.ok) {
+                                    article.remove();
+                                }
+                            });
+                    }
+                });
+            });
+    </script>
 </head>
 
 <body>
-  <main></main>
+    <main></main>
 </body>
 
 </html>

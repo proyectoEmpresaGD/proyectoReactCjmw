@@ -2,9 +2,10 @@
   "name": "clase-3",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node server/index.js",
     "start:mysql": "node --watch server-with-mysql.js",
     "start:local": "node --watch server-with-local.js",
     "start:postgre": "node --watch server-with-postgre.js",

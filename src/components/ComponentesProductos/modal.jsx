@@ -20,7 +20,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
         // Fetch related products by codfamil
         const fetchRelatedProducts = async () => {
             try {
-                const response = await fetch(`http://localhost:1234/products/codfamil/${product.codfamil}`);
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${product.codfamil}`);
                 const data = await response.json();
                 setRelatedProducts(data);
             } catch (error) {
