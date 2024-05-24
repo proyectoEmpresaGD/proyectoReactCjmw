@@ -27,14 +27,16 @@ app.use(express.static(join(__dirname, 'web')));
 
 app.use('/api/products', createProductRouter({ pool }));
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 const PORT = process.env.PORT || 1234;
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Serving static files from ${join(__dirname, 'web')}`);
 });
 
-export const createApp = () => app;
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  createApp();
-}
+export default app;
