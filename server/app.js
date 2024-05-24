@@ -12,27 +12,20 @@ const __dirname = dirname(__filename);
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
-export const createApp = () => {
-  const app = express();
-  app.use(json());
-  app.use(corsMiddleware());
-  app.disable('x-powered-by');
+const app = express();
+app.use(json());
+app.use(corsMiddleware());
+app.disable('x-powered-by');
 
-  app.use(express.static(join(__dirname, 'web')));
+app.use(express.static(join(__dirname, '.'))); // Sirve los archivos estáticos desde el directorio actual
 
-  app.use('/api/products', createProductRouter({ pool }));
+app.use('/api/products', createProductRouter({ pool }));
 
-
-  const PORT = process.env.PORT || 1234;
-  app.listen(PORT, () => {
-    console.log(`Server listening on port http://localhost:${PORT}`);
-    console.log(`Serving static files from ${join(__dirname, 'web')}`);
-  });
-};
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  createApp();
-}
+const PORT = process.env.PORT || 1234;
+app.listen(PORT, () => {
+  console.log(`Server listening on port http://localhost:${PORT}`);
+  console.log(`Serving static files from ${join(__dirname, '.')}`);
+});
