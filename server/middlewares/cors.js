@@ -9,7 +9,7 @@ const ACCEPTED_ORIGINS = [
   'https://translate.google.com',
   'https://proyecto-react-cjmw-despliegue-backend.vercel.app',
   'https://proyecto-react-cjmw-despliegue-backend.vercel.app/products',
-  'https://proyecto-react-cjmw-despliegue.vercel.app'
+  'https://cjmw.vercel.app'
   // Agregado para permitir solicitudes desde Google Translate
 ];
 
