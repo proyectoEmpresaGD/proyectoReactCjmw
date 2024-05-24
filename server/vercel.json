@@ -12,7 +12,7 @@
         },
         {
             "source": "/(.*)",
-            "destination": "/server/web/index.html"
+            "destination": "/server/index.html"
         }
     ],
     "headers": [
