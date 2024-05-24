@@ -5,14 +5,14 @@
             "use": "@vercel/node"
         }
     ],
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/(.*)",
-            "dest": "/server/app.js"
+            "source": "/api/(.*)",
+            "destination": "/server/app.js"
         },
         {
-            "src": "/(.*)",
-            "dest": "/server/index.html"
+            "source": "/(.*)",
+            "destination": "/server/web/index.html"
         }
     ],
     "headers": [
