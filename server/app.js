@@ -15,23 +15,23 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
-export const createApp = () => {
-  const app = express();
-  app.use(json());
-  app.use(corsMiddleware());
-  app.disable('x-powered-by');
+const app = express();
+app.use(json());
+app.use(corsMiddleware());
+app.disable('x-powered-by');
 
-  app.use(express.static(join(__dirname, 'web')));
+// Sirve archivos estáticos desde el directorio 'web'
+app.use(express.static(join(__dirname, 'web')));
 
-  app.use('/api/products', createProductRouter({ pool }));
+app.use('/api/products', createProductRouter({ pool }));
 
+const PORT = process.env.PORT || 1234;
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+  console.log(`Serving static files from ${join(__dirname, 'web')}`);
+});
 
-  const PORT = process.env.PORT || 1234;
-  app.listen(PORT, () => {
-    console.log(`Server listening on port http://localhost:${PORT}`);
-    console.log(`Serving static files from ${join(__dirname, 'web')}`);
-  });
-};
+export const createApp = () => app;
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   createApp();
