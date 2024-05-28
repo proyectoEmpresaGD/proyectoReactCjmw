@@ -9,7 +9,7 @@ const pool = new pg.Pool({
 });
 
 export class ProductModel {
-  static async getAll({ CodFamil, CodSubFamil }) {
+  static async getAll({ CodFamil, CodSubFamil, limit = 10, offset = 0 }) {
     let query = 'SELECT * FROM productos';
     let params = [];
 
@@ -26,6 +26,9 @@ export class ProductModel {
       }
       params.push(CodSubFamil);
     }
+
+    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(limit, offset);
 
     try {
       const { rows } = await pool.query(query, params);
