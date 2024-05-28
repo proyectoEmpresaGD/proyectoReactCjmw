@@ -11,7 +11,6 @@ const CardProduct = () => {
     const searchParams = new URLSearchParams(location.search);
     const searchQuery = searchParams.get('search');
     const productId = searchParams.get('productId');
-    const pageQuery = searchParams.get('page') || 1;
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
@@ -20,7 +19,7 @@ const CardProduct = () => {
     const [error, setError] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [page, setPage] = useState(parseInt(pageQuery, 10));
+    const [page, setPage] = useState(1);
     const loader = useRef(null);
 
     const [searchHistory, setSearchHistory] = useState([]);
@@ -43,7 +42,7 @@ const CardProduct = () => {
         }
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=8&page=${pageNumber}`);
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${append ? 8 : 10}&page=${pageNumber}`);
             if (!response.ok) {
                 throw new Error('Error fetching products');
             }
@@ -81,7 +80,7 @@ const CardProduct = () => {
                 setError(null);
                 setProducts([]); // Clear products before a new search
                 try {
-                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}`);
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=10`);
                     if (!response.ok) {
                         throw new Error('Error fetching search results');
                     }
@@ -148,7 +147,7 @@ const CardProduct = () => {
     };
 
     const handleClearSearch = () => {
-        navigate(location.pathname);
+        navigate('/products');
         setProducts([]);
         setPage(1);
         setShowClearButton(false); // Hide the clear button when clearing the search
