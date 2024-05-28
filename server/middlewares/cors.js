@@ -7,9 +7,8 @@ const ACCEPTED_ORIGINS = [
   'https://midu.dev',
   'http://localhost:5173',
   'https://translate.google.com',
-  'https://proyecto-react-cjmw-despliegue-backend.vercel.app',
-  'https://proyecto-react-cjmw-despliegue-backend.vercel.app/products',
-  'https://cjmw.vercel.app'
+  'https://proyecto-react-cjmw-neon.vercel.app',
+  'https://cjmw-worldwide.vercel.app'
   // Agregado para permitir solicitudes desde Google Translate
 ];
 

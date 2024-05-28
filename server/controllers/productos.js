@@ -4,7 +4,7 @@ export class ProductController {
   async getAll(req, res) {
     try {
       const { CodFamil, CodSubFamil, limit, page } = req.query;
-      const limitParsed = parseInt(limit, 10) || 12;
+      const limitParsed = parseInt(limit, 10) || 10;
       const pageParsed = parseInt(page, 10) || 1;
       const offset = (pageParsed - 1) * limitParsed;
       const products = await ProductModel.getAll({ CodFamil, CodSubFamil, limit: limitParsed, offset });
