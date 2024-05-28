@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
@@ -25,16 +25,16 @@ const CardProduct = () => {
     const [searchHistory, setSearchHistory] = useState([]);
     const [showClearButton, setShowClearButton] = useState(false);
 
-    const isValidProduct = (product) => {
+    const isValidProduct = useCallback((product) => {
         const desprodu = product.desprodu;
         return (
             /^C1/.test(desprodu) || // Include "C1"
             /^C01/.test(desprodu) || // Include "C01"
             !/C(0?[2-9]|[1-7][0-9]|80)\b/.test(desprodu) // Exclude "C" followed by 02-09, 10-79, or 80
         );
-    };
+    }, []);
 
-    const fetchProducts = async (pageNumber = 1, append = false) => {
+    const fetchProducts = useCallback(async (pageNumber = 1, append = false) => {
         if (!append) {
             setLoading(true);
         } else {
@@ -42,7 +42,7 @@ const CardProduct = () => {
         }
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${append ? 8 : 10}&page=${pageNumber}`);
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=10&page=${pageNumber}`);
             if (!response.ok) {
                 throw new Error('Error fetching products');
             }
@@ -65,13 +65,13 @@ const CardProduct = () => {
             setLoading(false);
             setLoadingMore(false);
         }
-    };
+    }, [isValidProduct]);
 
     useEffect(() => {
         if (!searchQuery && !productId) {
             fetchProducts(1, false);
         }
-    }, [searchQuery, productId]);
+    }, [fetchProducts, searchQuery, productId]);
 
     useEffect(() => {
         if (searchQuery) {
@@ -104,7 +104,7 @@ const CardProduct = () => {
             };
             fetchSearchedProducts();
         }
-    }, [searchQuery]);
+    }, [fetchProducts, searchQuery, searchHistory, isValidProduct]);
 
     useEffect(() => {
         if (productId) {
@@ -131,7 +131,7 @@ const CardProduct = () => {
         }
     }, [productId]);
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = useCallback((product) => {
         addToCart({
             id: product.codprodu,
             name: product.desprodu,
@@ -139,20 +139,20 @@ const CardProduct = () => {
             image: product.imagepreview,
             quantity: 1
         });
-    };
+    }, [addToCart]);
 
-    const handleProductClick = (product) => {
+    const handleProductClick = useCallback((product) => {
         setSelectedProduct(product);
         setModalOpen(true);
-    };
+    }, []);
 
-    const handleClearSearch = () => {
+    const handleClearSearch = useCallback(() => {
         navigate('/products');
         setProducts([]);
         setPage(1);
         setShowClearButton(false); // Hide the clear button when clearing the search
         fetchProducts(1, false); // Fetch all products when clearing the search
-    };
+    }, [navigate, fetchProducts]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -175,54 +175,52 @@ const CardProduct = () => {
                 observer.unobserve(loader.current);
             }
         };
-    }, [searchQuery, productId]);
+    }, [fetchProducts, searchQuery, productId]);
 
     return (
-        <>
-            <div>
-                {showClearButton && (
-                    <div className="fixed top-1/4 right-5 z-40">
-                        <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
-                            Mostrar<br />productos
-                        </button>
-                    </div>
-                )}
-                <div className="flex flex-wrap justify-center items-center">
-                    {products.map((product, index) => (
-                        <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%]">
-                            <div className="relative overflow-hidden w-full h-full" onClick={() => handleProductClick(product)}>
-                                <img className="object-cover " src={product.urlimagen} alt={product.desprodu} style={{ objectFit: 'cover', height: '200px', width: '100%' }} />
-                                <div className="absolute inset-0 bg-black opacity-40"></div>
-                            </div>
-                            <h3 className="text-center text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
-                            <div className="flex items-center justify-between mt-4">
-                                <span className="text-gray-900 font-bold text-lg">€3</span>
-                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
-                                    <FiShoppingCart className="text-2xl" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+        <div className="flex flex-col items-center">
+            {showClearButton && (
+                <div className="fixed top-1/4 right-5 z-40">
+                    <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
+                        Mostrar<br />productos
+                    </button>
                 </div>
-                {loading && !loadingMore && <SkeletonLoader repeticiones={10} />}
-                {loadingMore && (
-                    <div className="flex flex-col items-center justify-center w-full py-4">
-                        <FiLoader className="animate-spin text-6xl text-gray-500" />
-                        <span className="text-gray-500 text-2xl mt-4">Cargando más productos...</span>
+            )}
+            <div className="flex flex-wrap justify-center items-center w-full">
+                {products.map((product, index) => (
+                    <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-80">
+                        <div className="relative overflow-hidden w-full h-48 sm:h-56 md:h-64" onClick={() => handleProductClick(product)}>
+                            <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} />
+                            <div className="absolute inset-0 bg-black opacity-40"></div>
+                        </div>
+                        <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
+                        <div className="flex items-center justify-between mt-4">
+                            <span className="text-gray-900 font-bold text-md sm:text-lg">€3</span>
+                            <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
+                                <FiShoppingCart className="text-2xl" />
+                            </button>
+                        </div>
                     </div>
-                )}
-                {!loading && products.length === 0 && !error && (
-                    <div className="text-center text-gray-500">No products found</div>
-                )}
-                {!loading && error && (
-                    <div className="w-full h-full"><NotFoundPage/></div>
-                )}
-                <div ref={loader}></div>
-                {modalOpen && (
-                    <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
-                )}
+                ))}
             </div>
-        </>
+            {loading && !loadingMore && <SkeletonLoader repeticiones={10} />}
+            {loadingMore && (
+                <div className="flex flex-col items-center justify-center w-full py-4">
+                    <FiLoader className="animate-spin text-6xl text-gray-500" />
+                    <span className="text-gray-500 text-2xl mt-4">Cargando más productos...</span>
+                </div>
+            )}
+            {!loading && products.length === 0 && !error && (
+                <div className="text-center text-gray-500">No products found</div>
+            )}
+            {!loading && error && (
+                <div className="text-center text-red-500">{error}</div>
+            )}
+            <div ref={loader}></div>
+            {modalOpen && (
+                <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
+            )}
+        </div>
     );
 };
 
