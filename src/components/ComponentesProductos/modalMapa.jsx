@@ -9,7 +9,7 @@ const ModalMapa = ({ isOpen, close }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center overflow-auto max-h-[100%] items-center z-40 py-[7%]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center overflow-auto max-h-[100%] items-center mt z-40 xl:py-[7%] lg:py-[7%] py-[25%]">
             
             <div className="bg-gradient-to-r from-[#ebdecf] to-[#8a7862] rounded-lg w-[90%]  my-auto gap-3">
             <div className="flex justify-end z-20">
