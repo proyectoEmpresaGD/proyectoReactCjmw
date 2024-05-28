@@ -4,7 +4,7 @@ import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
 import { FiLoader, FiShoppingCart } from 'react-icons/fi';
-
+import NotFoundPage from "../notFoundPage"
 const CardProduct = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -136,7 +136,7 @@ const CardProduct = () => {
         addToCart({
             id: product.codprodu,
             name: product.desprodu,
-            price: 3,
+            price: 0.80,
             image: product.imagepreview,
             quantity: 1
         });
@@ -182,7 +182,7 @@ const CardProduct = () => {
         <>
             <div>
                 {showClearButton && (
-                    <div className="fixed top-1/4 right-5 z-40">
+                    <div className="fixed top-1/4 right-5 z-10">
                         <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
                             Mostrar<br />productos
                         </button>
@@ -192,31 +192,28 @@ const CardProduct = () => {
                     {products.map((product, index) => (
                         <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%]">
                             <div className="relative overflow-hidden w-full h-full" onClick={() => handleProductClick(product)}>
-                                <img className="object-cover " src={product.urlimagen} alt={product.desprodu} style={{ objectFit: 'cover', height: '200px', width: '100%' }} />
+                                <img className="object-cover " src={product.imagepreview} alt={product.desprodu} style={{ objectFit: 'cover', height: '200px', width: '100%' }} />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
                             </div>
-                            <h3 className="text-center text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
+                            <h3 className="text-center text-xl text-gray-900 mt-4">{product.desprodu}</h3>
                             <div className="flex items-center justify-between mt-4">
-                                <span className="text-gray-900 font-bold text-lg">€3</span>
-                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
+                                
+                                <button onClick={() => handleAddToCart(product)} className=" text-white bg-black py-2 px-2 rounded-full font-bold hover:scale-125 duration-200">
                                     <FiShoppingCart className="text-2xl" />
                                 </button>
                             </div>
                         </div>
                     ))}
                 </div>
-                {loading && !loadingMore && <SkeletonLoader repeticiones={8} />}
                 {loadingMore && (
-                    <div className="flex flex-col items-center justify-center w-full py-4">
+                    <div className="flex flex-col items-center justify-center w-full xl:py-[12%] md:py-[30%] ">
                         <FiLoader className="animate-spin text-6xl text-gray-500" />
-                        <span className="text-gray-500 text-2xl mt-4">Cargando más productos...</span>
+                        <span className="text-gray-500 text-2xl mt-4  ">Cargando más productos...</span>
                     </div>
                 )}
-                {!loading && products.length === 0 && !error && (
-                    <div className="text-center text-gray-500">No products found</div>
-                )}
+                
                 {!loading && error && (
-                    <div className="text-center text-red-500">{error}</div>
+                    <div className="w-full h-full"><NotFoundPage/></div>
                 )}
                 <div ref={loader}></div>
                 {modalOpen && (

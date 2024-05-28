@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useCart } from '../CartContext';
 import Modal from "../ComponentesProductos/modal";
 import SkeletonLoader from "../ComponentesProductos/skeletonLoader";
+import { FiLoader, FiShoppingCart } from 'react-icons/fi';
 
 const CardProductBrand = ({ brand }) => {
     const { addToCart } = useCart();
@@ -76,9 +77,9 @@ const CardProductBrand = ({ brand }) => {
             {loading ? (
                 <SkeletonLoader repeticiones={4} />
             ) : (
-                <div className="flex justify-center items-center space-x-4">
+                <div className="flex justify-center flex-wrap items-center space-x-4">
                     {products.map(product => (
-                        <div key={product.codprodu} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7">
+                        <div key={product.codprodu} className="bg-white rounded-lg shadow-lg p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 max-h-[20%] xl:max-w-[20%] min-h-[70%] max-w-[80%] sm:max-w-[40%] md:max-h-[30%] xl:min-h-[20%] xl:min-w-[20%]">
                             <div className="relative overflow-hidden" onClick={() => handleProductClick(product)}>
                                 <img className="object-cover w-full h-full" src={product.imageUrl} alt={product.desprodu} />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
@@ -86,7 +87,9 @@ const CardProductBrand = ({ brand }) => {
                             <h3 className="text-center text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
                             <div className="flex items-center justify-between mt-4">
                                 <span className="text-gray-900 font-bold text-lg">€3</span>
-                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">Adquirir muestra</button>
+                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
+                                    <FiShoppingCart className="text-2xl" />
+                                </button>
                             </div>
                         </div>
                     ))}

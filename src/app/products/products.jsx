@@ -7,6 +7,7 @@ import { CartProvider } from '../../components/CartContext';
 function Product() {
     return (
         <>
+        <div className=" min-h-[100%]">
             <CartProvider>
                 <Header />
                 <div className="max-w-2xl mx-auto text-center ">
@@ -16,6 +17,7 @@ function Product() {
                 <CardProduct />
                 <Footer />
             </CartProvider>
+        </div>
         </>
     )
 }

@@ -2,15 +2,19 @@ import ModalMapa from "./modalMapa";
 import { useState, useRef, useEffect } from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
+import { useCart } from '../CartContext';
 import "slick-carousel/slick/slick-theme.css";
-import { TiChevronLeft } from "react-icons/ti";
-import { TiChevronRight } from "react-icons/ti";
+import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
+import { CartProvider } from "../CartContext"; // Importa CartProvider correctamente
 
 const Modal = ({ isOpen, close, product, alt }) => {
+    const { addToCart } = useCart();
     const [modalMapaOpen, setModalMapaOpen] = useState(false); // Estado para controlar la apertura de ModalMapa
     const [imageLoaded, setImageLoaded] = useState(false); // Estado para controlar la carga de la imagen
     const [selectedImage, setSelectedImage] = useState(product.urlimagen); // Estado para la imagen seleccionada
-    const [selectedName, setSelectedName] = useState(product.desprodu); // Estado para el nombre del producto seleccionado
+    const [selectedName, setSelectedName] = useState(product.desprodu);
+    const [selectedCod, setSelectedCod] = useState(product.codprodu); // Estado para el nombre del producto seleccionado
+    const [selectedProduct, setSelectedProduct] = useState(product); // Estado para el producto seleccionado
     const [relatedProducts, setRelatedProducts] = useState([]); // Estado para los productos relacionados
     const lensRef = useRef(null);
     const resultRef = useRef(null);
@@ -74,9 +78,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
         result.style.backgroundPosition = `-${boundedPosX * zoomFactor}px -${boundedPosY * zoomFactor}px`;
     };
 
-    const handleColorClick = (image, name) => {
-        setSelectedImage(image);
-        setSelectedName(name);
+    const handleColorClick = (colorProduct) => {
+        setSelectedImage(colorProduct.urlimagen);
+        setSelectedName(colorProduct.desprodu);
+        setSelectedCod(colorProduct.codprodu);
+        setSelectedProduct(colorProduct); // Actualiza el producto seleccionado
         setImageLoaded(false); // Reset image loaded state to show lens only after image is loaded
     };
 
@@ -92,6 +98,18 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 <TiChevronRight className="text-black text-3xl hover:text-gray-500 flex items-center justify-center cursor-pointer absolute top-1/2 transform -translate-y-[120%] lg:transform lg:-translate-y-[60%] xl:transform xl:-translate-y-[60%] md:transform md:-translate-y-[70%]" />
             </div>
         );
+    };
+
+    const handleAddToCart = () => {
+        addToCart({
+            id: selectedProduct.codprodu,
+            name: selectedProduct.desprodu,
+            price: 3, // Precio fijo por ahora
+            image: selectedProduct.urlimagen,
+            quantity: 1
+        });
+        setShowAddedMessage(true);
+        setTimeout(() => setShowAddedMessage(false), 2000);
     };
 
     const SamplePrevArrow = ({ className, style, onClick }) => {
@@ -136,6 +154,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     if (!isOpen) return null;
 
     return (
+        <CartProvider>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-4">
             <div className="bg-white p-7 lg:mt-[5%] xl:mt-[5%] md:mt-[5%] mt-[30%] rounded-lg xl:max-w-4xl w-full md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[80vh]">
                 <div className="flex justify-end absolute top-4 right-4">
@@ -170,18 +189,28 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         backgroundSize: `${zoomFactor * 136}%`,
                                         borderRadius: '0.5rem'
                                     }}
-                                ></div>
+                                >
+
+                                </div>
                             </>
                         )}
                     </div>
-                    <div className="flex flex-col justify-between p-4">
-                        <div>
-                            <p className="mb-4 text-gray-600">Aquí puede agregar una descripción detallada del producto, incluyendo características, materiales y cualquier otra información relevante.</p>
+                    <div className="flex flex-col justify-between p-4 mx-auto">
+                        <h1 className="font-bold text-black mx-auto">Descripción</h1>
+                        <div className=" grid grid-cols-3 grid-rows-4 justify-center gap-10">
+                            <p>Marca</p>
+                            <p>Coleccion</p>
+                            <p>Color principal</p>
+                            <p className=" rounded-[100%] bg-slate-500"> </p>
+                            <p>Tipo</p>
+                            <p>Estilo</p>
+                            <p>Martindale</p>
+
                         </div>
-                        <div className="flex justify-between mt-4">
-                            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-200"
+                        <div className="flex justify-between mt-4 ">
+                            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-200 mx-1"
                                 onClick={handleMapClick}>Dónde comprar</button>
-                            <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-200">Adquirir muestra</button>
+                            <button onClick={handleAddToCart} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-200">Adquirir muestra</button>
                         </div>
                     </div>
                 </div>
@@ -192,10 +221,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         {relatedProducts.map((colorProduct, index) => (
                             <div key={index} className="px-2">
                                 <img
-                                    src={colorProduct.urlimagen}
+                                    src={colorProduct.imagepreview}
                                     alt={colorProduct.desprodu}
                                     className="w-full h-16 object-cover rounded-full cursor-pointer"
-                                    onClick={() => handleColorClick(colorProduct.urlimagen, colorProduct.desprodu)}
+                                    onClick={() => handleColorClick(colorProduct)}
                                 />
                             </div>
                         ))}
@@ -206,6 +235,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
             )}
         </div>
+        </CartProvider>
     );
 }
 
