@@ -26,7 +26,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
         'FLA': { 'Primavera Flamenco': '8', 'Colección PrimaveraFLAMENCO': '9', 'Colección Verano FLAMENCO': '10' }
     };
 
-    const tiposDeTela = ['Algodón', 'Seda', 'Lino', 'Poliéster'];
+    const tiposDeTela = ['Lana', 'Jacquard', 'Liso', 'Estampado', 'Tejido', 'Terciopelo', 'Rayas', 'Bucle', 'Espiga', 'Falso liso', 'Visillo', 'Papel pared', 'Lino', 'Liso;Visillo', 'Bordado' ];
     const dibujosDeTela = ['Liso', 'Rayas', 'Cuadros', 'Floral'];
     const martindaleValues = ['20000', '30000', '40000'];
     const mantenimientoValues = ['Lavado a mano', 'Lavado a máquina', 'No usar lejía'];
@@ -263,7 +263,8 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                     </div>
                     
                     <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Tipo de Tela:</h3>
+                        <h3 className="font-semibold mx-auto py-3">Tipo de Tela</h3>
+                        <div className=' grid grid-cols-2 gap-1'>
                         {tiposDeTela.map((type) => (
                             <label key={type} className="block">
                                 <input
@@ -274,6 +275,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                                 {type}
                             </label>
                         ))}
+                        </div>
                     </div>
 
                     <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
