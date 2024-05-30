@@ -17,7 +17,7 @@ const Works = () => {
                 <div className="flex flex-col gap-4">
                     <div className="relative">
                         <img
-                            src="https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel4.webp"
+                            src="https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp"
                             alt="Últimas tendencias en telas naturales"
                             className="w-full h-[400px] object-cover rounded-3xl transition-transform transform hover:scale-105"
                         />
@@ -35,7 +35,7 @@ const Works = () => {
                 <div className="flex flex-col gap-4">
                     <div className="relative">
                         <img
-                            src="https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp"
+                            src="https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp"
                             alt="Innovaciones tecnológicas en la fabricación textil"
                             className="w-full h-[400px] object-cover rounded-3xl transition-transform transform hover:scale-105"
                         />
@@ -53,7 +53,7 @@ const Works = () => {
                 <div className="flex flex-col gap-4">
                     <div className="relative">
                         <img
-                            src="https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel2.webp"
+                            src="https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp"
                             alt="Impacto ambiental de la industria textil"
                             className="w-full h-[400px] object-cover rounded-3xl transition-transform transform hover:scale-105"
                         />
@@ -71,7 +71,7 @@ const Works = () => {
                 <div className="flex flex-col gap-4">
                     <div className="relative">
                         <img
-                            src="https://cjmw.eu/CarpetaPaginaWebCjmw/Carruseles/ARENA/ArenaCarrusel3.webp"
+                            src="https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp"
                             alt="Nuevas técnicas de teñido y estampado"
                             className="w-full h-[400px] object-cover rounded-3xl transition-transform transform hover:scale-105"
                         />

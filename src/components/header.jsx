@@ -24,6 +24,7 @@ export const Header = () => {
     const [languages, setLanguages] = useState([]);
     const [searchHistory, setSearchHistory] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
+    const [translatedText, setTranslatedText] = useState('Welcome to our website!');
     const searchInputRef = useRef(null);
 
     useEffect(() => {
@@ -49,39 +50,39 @@ export const Header = () => {
     }, [location]);
 
     useEffect(() => {
-        const addGoogleTranslateScript = () => {
-            const script = document.createElement('script');
-            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            script.async = true;
-            document.body.appendChild(script);
-            window.googleTranslateElementInit = googleTranslateElementInit;
-        };
-
-        const googleTranslateElementInit = () => {
-            new window.google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,es,fr,de,it',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-        };
-
-        addGoogleTranslateScript();
+        const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+        changeLanguage(savedLanguage);
     }, []);
 
-    useEffect(() => {
-        const savedLanguage = localStorage.getItem('selectedLanguage');
-        if (savedLanguage) {
-            changeLanguage(savedLanguage);
-        }
-    }, []);
+    const changeLanguage = async (lang) => {
+        const apiKey = 'AIzaSyBEFFDik11kmsKfW1pelqJ1k1_UbakEzvo';  // Reemplaza con tu clave API de Google Translate
+        const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
 
-    const changeLanguage = (lang) => {
-        const googleTranslateElement = document.querySelector('.goog-te-combo');
-        if (googleTranslateElement) {
-            googleTranslateElement.value = lang;
-            googleTranslateElement.dispatchEvent(new Event('change'));
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    q: 'Welcome to our website!',
+                    target: lang
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            if (data && data.data && data.data.translations) {
+                setTranslatedText(data.data.translations[0].translatedText);
+            }
+
             localStorage.setItem('selectedLanguage', lang);
             setShowLanguageDropdown(false);
+        } catch (error) {
+            console.error('Error translating text:', error);
         }
     };
 
@@ -316,6 +317,7 @@ export const Header = () => {
                 </div>
             )}
             <div id="google_translate_element" className="hidden"></div>
+            <p>Translated Text: {translatedText}</p>
             <style>
                 {`
                     .goog-logo-link, .goog-te-gadget, .goog-te-banner-frame.skiptranslate, .goog-te-balloon-frame.skiptranslate {
