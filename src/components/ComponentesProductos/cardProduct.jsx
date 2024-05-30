@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
@@ -25,16 +25,16 @@ const CardProduct = () => {
     const [searchHistory, setSearchHistory] = useState([]);
     const [showClearButton, setShowClearButton] = useState(false);
 
-    const isValidProduct = (product) => {
+    const isValidProduct = useCallback((product) => {
         const desprodu = product.desprodu;
         return (
             /^C1/.test(desprodu) || // Include "C1"
             /^C01/.test(desprodu) || // Include "C01"
             !/C(0?[2-9]|[1-7][0-9]|80)\b/.test(desprodu) // Exclude "C" followed by 02-09, 10-79, or 80
         );
-    };
+    }, []);
 
-    const fetchProducts = async (pageNumber = 1, append = false) => {
+    const fetchProducts = useCallback(async (pageNumber = 1, append = false) => {
         if (!append) {
             setLoading(true);
         } else {
@@ -65,13 +65,13 @@ const CardProduct = () => {
             setLoading(false);
             setLoadingMore(false);
         }
-    };
+    }, [isValidProduct]);
 
     useEffect(() => {
         if (!searchQuery && !productId) {
             fetchProducts(1, false);
         }
-    }, [searchQuery, productId]);
+    }, [fetchProducts, searchQuery, productId]);
 
     useEffect(() => {
         if (searchQuery) {
@@ -104,7 +104,7 @@ const CardProduct = () => {
             };
             fetchSearchedProducts();
         }
-    }, [searchQuery]);
+    }, [fetchProducts, searchQuery, searchHistory, isValidProduct]);
 
     useEffect(() => {
         if (productId) {
@@ -131,7 +131,7 @@ const CardProduct = () => {
         }
     }, [productId]);
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = useCallback((product) => {
         addToCart({
             id: product.codprodu,
             name: product.desprodu,
@@ -139,20 +139,20 @@ const CardProduct = () => {
             image: product.imagepreview,
             quantity: 1
         });
-    };
+    }, [addToCart]);
 
-    const handleProductClick = (product) => {
+    const handleProductClick = useCallback((product) => {
         setSelectedProduct(product);
         setModalOpen(true);
-    };
+    }, []);
 
-    const handleClearSearch = () => {
+    const handleClearSearch = useCallback(() => {
         navigate('/products');
         setProducts([]);
         setPage(1);
         setShowClearButton(false); // Hide the clear button when clearing the search
         fetchProducts(1, false); // Fetch all products when clearing the search
-    };
+    }, [navigate, fetchProducts]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -175,9 +175,10 @@ const CardProduct = () => {
                 observer.unobserve(loader.current);
             }
         };
-    }, [searchQuery, productId]);
+    }, [fetchProducts, searchQuery, productId]);
 
     return (
+
         <>
              <div>
             {showClearButton && (
@@ -190,6 +191,7 @@ const CardProduct = () => {
                     </button>
                 </div>
             )}
+
             <div className="flex flex-wrap justify-center items-center">
                 {products.map((product, index) => (
                     <div
@@ -203,6 +205,7 @@ const CardProduct = () => {
                         <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
                         <div className="flex items-center justify-between mt-4">
                             <span className="text-gray-900 font-bold text-md sm:text-lg">€3</span>
+
                             <button
                                 onClick={() => handleAddToCart(product)}
                                 className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800"
@@ -231,6 +234,7 @@ const CardProduct = () => {
                 <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
             )}
         </div>
+
         </>
     );
 };
