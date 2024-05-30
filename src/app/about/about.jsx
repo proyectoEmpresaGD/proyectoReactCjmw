@@ -15,7 +15,7 @@ function About() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                                 <div className="flex items-center justify-center lg:justify-start">
                                     <div className="max-w-lg border rounded-lg overflow-hidden">
-                                        <img src="https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BUCLE%2008.jpg" alt="Tu imagen" className="w-full h-auto" />
+                                        <img src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BUCLE%2008.jpg" alt="Tu imagen" className="w-full h-auto" />
                                     </div>
                                 </div>
                                 <div className="lg:pl-10">
@@ -45,7 +45,7 @@ function About() {
                             </div>
                             <div className="flex items-center justify-center lg:justify-start">
                                 <div className="max-w-lg border rounded-lg overflow-hidden">
-                                    <img src="https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BORNEO.jpg" alt="Tu imagen" className="w-full h-auto" />
+                                    <img src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BORNEO.jpg" alt="Tu imagen" className="w-full h-auto" />
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@ function About() {
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             <div className="flex items-center justify-center lg:justify-start">
                                 <div className="max-w-lg border rounded-lg overflow-hidden">
-                                    <img src="https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20ZAHARA%2001.jpg" alt="Tu imagen" className="w-full h-auto" />
+                                    <img src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20ZAHARA%2001.jpg" alt="Tu imagen" className="w-full h-auto" />
                                 </div>
                             </div>
                             <div className="text-[#000806] text-lg text-justify">
