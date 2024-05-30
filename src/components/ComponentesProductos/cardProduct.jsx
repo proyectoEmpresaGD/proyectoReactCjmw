@@ -180,60 +180,60 @@ const CardProduct = () => {
     return (
 
         <>
-             <div>
-            {showClearButton && (
-                <div className="fixed top-1/4 right-5 z-40">
-                    <button
-                        onClick={handleClearSearch}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30"
-                    >
-                        Mostrar<br />productos
-                    </button>
-                </div>
-            )}
-
-            <div className="flex flex-wrap justify-center items-center">
-                {products.map((product, index) => (
-                    <div
-                        key={`${product.codprodu}-${index}`}
-                        className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-full sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%] h-[50%] sm:h-[50%] md:h-[80%] lg:h-[22%] xl:h-[22%] 2xl:h-[20%]"
-                    >
-                        <div className="relative overflow-hidden w-full h-48 sm:h-56 md:h-64" onClick={() => handleProductClick(product)}>
-                            <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} />
-                            <div className="absolute inset-0 bg-black opacity-40"></div>
-                        </div>
-                        <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
-                        <div className="flex items-center justify-between mt-4">
-                            <span className="text-gray-900 font-bold text-md sm:text-lg">€3</span>
-
-                            <button
-                                onClick={() => handleAddToCart(product)}
-                                className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800"
-                            >
-                                <FiShoppingCart className="text-2xl" />
-                            </button>
-                        </div>
+            <div>
+                {showClearButton && (
+                    <div className="fixed top-1/4 right-5 z-40">
+                        <button
+                            onClick={handleClearSearch}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30"
+                        >
+                            Mostrar<br />productos
+                        </button>
                     </div>
-                ))}
-            </div>
-            {loading && !loadingMore && <SkeletonLoader repeticiones={10} />}
-            {loadingMore && (
-                <div className="flex flex-col items-center justify-center w-full py-4">
-                    <FiLoader className="animate-spin text-6xl text-gray-500" />
-                    <span className="text-gray-500 text-2xl mt-4">Cargando más productos...</span>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 justify-center items-center">
+                    {products.map((product, index) => (
+                        <div
+                            key={`${product.codprodu}-${index}`}
+                            className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 w-[100%] h-[120%] md:min-w[50%] md:min-h-[100%] lg:w-full lg:h-full my-6"
+                        >
+                            <div className="relative overflow-hidden w-full h-64 sm:h-64 md:h-64" onClick={() => handleProductClick(product)}>
+                                <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} />
+                                <div className="absolute inset-0 bg-black opacity-40"></div>
+                            </div>
+                            <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
+                            <div className="flex items-center justify-between mt-4">
+                                <span className="text-gray-900 font-bold text-md sm:text-lg">€3</span>
+
+                                <button
+                                    onClick={() => handleAddToCart(product)}
+                                    className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800"
+                                >
+                                    <FiShoppingCart className="text-2xl" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            )}
-            {!loading && products.length === 0 && !error && (
-                <div className="text-center text-gray-500">No products found</div>
-            )}
-            {!loading && error && (
-                <div className="text-center text-red-500">{error}</div>
-            )}
-            <div ref={loader}></div>
-            {modalOpen && (
-                <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
-            )}
-        </div>
+                {loading && !loadingMore && <SkeletonLoader repeticiones={10} />}
+                {loadingMore && (
+                    <div className="flex flex-col items-center justify-center w-full py-4">
+                        <FiLoader className="animate-spin text-6xl text-gray-500" />
+                        <span className="text-gray-500 text-2xl mt-4">Cargando más productos...</span>
+                    </div>
+                )}
+                {!loading && products.length === 0 && !error && (
+                    <div className="text-center text-gray-500">No products found</div>
+                )}
+                {!loading && error && (
+                    <div className="text-center text-red-500">{error}</div>
+                )}
+                <div ref={loader}></div>
+                {modalOpen && (
+                    <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
+                )}
+            </div>
 
         </>
     );
