@@ -36,7 +36,6 @@ function ArenaHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <CardProductBrand brand="ARE" />
                 <Footer />
             </CartProvider>
         </>

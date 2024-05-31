@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
@@ -25,16 +25,16 @@ const CardProduct = () => {
     const [searchHistory, setSearchHistory] = useState([]);
     const [showClearButton, setShowClearButton] = useState(false);
 
-    const isValidProduct = useCallback((product) => {
+    const isValidProduct = (product) => {
         const desprodu = product.desprodu;
         return (
             /^C1/.test(desprodu) || // Include "C1"
             /^C01/.test(desprodu) || // Include "C01"
             !/C(0?[2-9]|[1-7][0-9]|80)\b/.test(desprodu) // Exclude "C" followed by 02-09, 10-79, or 80
         );
-    }, []);
+    };
 
-    const fetchProducts = useCallback(async (pageNumber = 1, append = false) => {
+    const fetchProducts = async (pageNumber = 1, append = false) => {
         if (!append) {
             setLoading(true);
         } else {
@@ -65,13 +65,13 @@ const CardProduct = () => {
             setLoading(false);
             setLoadingMore(false);
         }
-    }, [isValidProduct]);
+    };
 
     useEffect(() => {
         if (!searchQuery && !productId) {
             fetchProducts(1, false);
         }
-    }, [fetchProducts, searchQuery, productId]);
+    }, [searchQuery, productId]);
 
     useEffect(() => {
         if (searchQuery) {
@@ -104,7 +104,7 @@ const CardProduct = () => {
             };
             fetchSearchedProducts();
         }
-    }, [fetchProducts, searchQuery, searchHistory, isValidProduct]);
+    }, [searchQuery]);
 
     useEffect(() => {
         if (productId) {
@@ -131,28 +131,28 @@ const CardProduct = () => {
         }
     }, [productId]);
 
-    const handleAddToCart = useCallback((product) => {
+    const handleAddToCart = (product) => {
         addToCart({
             id: product.codprodu,
             name: product.desprodu,
-            price: 3,
+            price: 0.8,
             image: product.imagepreview,
             quantity: 1
         });
-    }, [addToCart]);
+    };
 
-    const handleProductClick = useCallback((product) => {
+    const handleProductClick = (product) => {
         setSelectedProduct(product);
         setModalOpen(true);
-    }, []);
+    };
 
-    const handleClearSearch = useCallback(() => {
+    const handleClearSearch = () => {
         navigate('/products');
         setProducts([]);
         setPage(1);
         setShowClearButton(false); // Hide the clear button when clearing the search
         fetchProducts(1, false); // Fetch all products when clearing the search
-    }, [navigate, fetchProducts]);
+    };
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -175,41 +175,28 @@ const CardProduct = () => {
                 observer.unobserve(loader.current);
             }
         };
-    }, [fetchProducts, searchQuery, productId]);
+    }, [searchQuery, productId]);
 
     return (
-
         <>
             <div>
                 {showClearButton && (
                     <div className="fixed top-1/4 right-5 z-40">
-                        <button
-                            onClick={handleClearSearch}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30"
-                        >
+                        <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
                             Mostrar<br />productos
                         </button>
                     </div>
                 )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 justify-center items-center">
+                <div className="flex flex-wrap justify-center items-center">
                     {products.map((product, index) => (
-                        <div
-                            key={`${product.codprodu}-${index}`}
-                            className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 w-[100%] h-[120%] md:min-w[50%] md:min-h-[100%] lg:w-full lg:h-full my-6"
-                        >
-                            <div className="relative overflow-hidden w-full h-64 sm:h-64 md:h-64" onClick={() => handleProductClick(product)}>
+                        <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-full sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
+                            <div className="relative overflow-hidden w-full h-48 sm:h-56 md:h-64" onClick={() => handleProductClick(product)}>
                                 <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
                             </div>
                             <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
                             <div className="flex items-center justify-between mt-4">
-                                <span className="text-gray-900 font-bold text-md sm:text-lg">€3</span>
-
-                                <button
-                                    onClick={() => handleAddToCart(product)}
-                                    className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800"
-                                >
+                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
                                     <FiShoppingCart className="text-2xl" />
                                 </button>
                             </div>
@@ -234,7 +221,6 @@ const CardProduct = () => {
                     <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
                 )}
             </div>
-
         </>
     );
 };

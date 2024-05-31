@@ -37,9 +37,7 @@ function CjmHome() {
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoCJM.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[30%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
-
                 <NewCollection images={images} titles={titles} />
-                <CardProductBrand brand="CJM" />
                 <Footer />
             </CartProvider>
         </>

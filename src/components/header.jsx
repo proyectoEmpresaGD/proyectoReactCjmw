@@ -8,7 +8,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
 import ScrollToTop from './ScrollToTop';
+import Select from 'react-select';
 import 'tailwindcss/tailwind.css';
+
+const API_KEY = 'AIzaSyBEFFDik11kmsKfW1pelqJ1k1_UbakEzvo';
 
 export const Header = () => {
     const location = useLocation();
@@ -24,17 +27,48 @@ export const Header = () => {
     const [languages, setLanguages] = useState([]);
     const [searchHistory, setSearchHistory] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
-    const [translatedText, setTranslatedText] = useState('Welcome to our website!');
+    const [translatedText, setTranslatedText] = useState('');
     const searchInputRef = useRef(null);
+    const [inputText, setInputText] = useState('');
+    const [selectedLanguage, setSelectedLanguage] = useState({ value: 'es', label: 'Spanish' });
+
+    const languageOptions = [
+        { value: 'en', label: 'English' },
+        { value: 'es', label: 'Spanish' },
+        { value: 'fr', label: 'French' },
+        { value: 'de', label: 'German' },
+        { value: 'it', label: 'Italian' }
+    ];
+
+    const translateText = async (text, targetLanguage) => {
+        try {
+            const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    q: text,
+                    target: targetLanguage
+                })
+            });
+            const data = await response.json();
+            return data.data.translations[0].translatedText;
+        } catch (error) {
+            console.error('Error translating text:', error);
+            return '';
+        }
+    };
+
+    const handleTranslate = async () => {
+        if (inputText) {
+            const translated = await translateText(inputText, selectedLanguage.value);
+            setTranslatedText(translated);
+        }
+    };
 
     useEffect(() => {
-        setLanguages([
-            { code: "en", name: "English" },
-            { code: "es", name: "Spanish" },
-            { code: "fr", name: "French" },
-            { code: "de", name: "German" },
-            { code: "it", name: "Italian" }
-        ]);
+        setLanguages(languageOptions);
 
         switch (location.pathname) {
             case '/harbourHome': setLogoSrc('/logoHarbour.png'); break;
@@ -48,43 +82,6 @@ export const Header = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [location]);
-
-    useEffect(() => {
-        const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-        changeLanguage(savedLanguage);
-    }, []);
-
-    const changeLanguage = async (lang) => {
-        const apiKey = 'AIzaSyBEFFDik11kmsKfW1pelqJ1k1_UbakEzvo';  // Reemplaza con tu clave API de Google Translate
-        const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    q: 'Welcome to our website!',
-                    target: lang
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            if (data && data.data && data.data.translations) {
-                setTranslatedText(data.data.translations[0].translatedText);
-            }
-
-            localStorage.setItem('selectedLanguage', lang);
-            setShowLanguageDropdown(false);
-        } catch (error) {
-            console.error('Error translating text:', error);
-        }
-    };
 
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);
@@ -165,6 +162,11 @@ export const Header = () => {
         navigate(`/products?productId=${item.codprodu}`);
     };
 
+    const handleLanguageChange = (selectedOption) => {
+        setSelectedLanguage(selectedOption);
+        handleTranslate();
+    };
+
     return (
         <>
             <ScrollToTop />
@@ -180,20 +182,17 @@ export const Header = () => {
                         </Link>
                     </div>
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
-                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</Link>
-                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contact Us</Link>
-                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Products</Link>
+                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Telas</Link>
                         <div className="relative">
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
                                 onClick={() => toggleDropdown('brands')}>
-                                <span>Brands</span>
+                                <span>Marcas & Colecciones</span>
                                 {showBrandsDropdown ?
                                     <RiArrowDropUpLine size={16} className="ml-2" /> :
                                     <RiArrowDropDownLine size={16} className="ml-2" />
                                 }
                             </button>
-
                             {showBrandsDropdown && (
                                 <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
                                     <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
@@ -203,6 +202,8 @@ export const Header = () => {
                                 </div>
                             )}
                         </div>
+                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</Link>
+                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contact Us</Link>
                     </div>
                     <div className="flex items-center space-x-4">
                         <div className="relative">
@@ -226,12 +227,23 @@ export const Header = () => {
                                 <FaGlobe size={24} />
                             </button>
                             {showLanguageDropdown && (
-                                <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
-                                    {languages.map((language, index) => (
-                                        <button key={index} className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => changeLanguage(language.code)}>
-                                            <span className="ml-2">{language.name}</span>
-                                        </button>
-                                    ))}
+                                <div className="absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
+                                    <Select
+                                        options={languageOptions}
+                                        value={selectedLanguage}
+                                        onChange={handleLanguageChange}
+                                        menuPlacement="auto"
+                                        styles={{
+                                            control: (provided) => ({
+                                                ...provided,
+                                                cursor: 'pointer',
+                                            }),
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                zIndex: 9999,
+                                            }),
+                                        }}
+                                    />
                                 </div>
                             )}
                         </div>
@@ -317,27 +329,28 @@ export const Header = () => {
                 </div>
             )}
             <div id="google_translate_element" className="hidden"></div>
-            <p>Translated Text: {translatedText}</p>
             <style>
                 {`
-                    .goog-logo-link, .goog-te-gadget, .goog-te-banner-frame.skiptranslate, .goog-te-balloon-frame.skiptranslate {
-                        display: none !important;
-                    }
-                    .goog-te-banner-frame {
-                        display: none !important;
-                    }
-                    .goog-te-balloon-frame {
-                        display: none !important;
-                    }
-                    .goog-te-banner-frame.skiptranslate,
-                    .goog-te-balloon-frame.skiptranslate {
-                        display: none !important;
-                    }
-                    body {
-                        top: 0 !important;
-                    }
-                `}
+                        .goog-logo-link, .goog-te-gadget, .goog-te-banner-frame.skiptranslate, .goog-te-balloon-frame.skiptranslate {
+                            display: none !important;
+                        }
+                        .goog-te-banner-frame {
+                            display: none !important;
+                        }
+                        .goog-te-balloon-frame {
+                            display: none !important;
+                        }
+                        .goog-te-banner-frame.skiptranslate,
+                        .goog-te-balloon-frame.skiptranslate {
+                            display: none !important;
+                        }
+                        body {
+                            top: 0 !important;
+                        }
+                    `}
             </style>
         </>
     );
 };
+
+export default Header;
