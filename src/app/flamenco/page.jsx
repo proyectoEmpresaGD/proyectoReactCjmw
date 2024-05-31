@@ -36,7 +36,6 @@ function FlamencoHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <CardProductBrand brand="FLA" />
                 <Footer />
             </CartProvider>
         </>

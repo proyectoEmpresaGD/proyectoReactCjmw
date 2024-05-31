@@ -20,12 +20,11 @@ function HarbourColecciones() {
     return (
         <>
             <CartProvider>
-                <Header />
-                <body className="xl:mt-[5%] mt-[20%] md:mt-[10%]">
+                <body className="xl:mt-[3%] mt-[20%] md:mt-[10%]">
                     <div className="flex items-center justify-center h-full">
-                        <img src="/logoHarbour.png" alt="" className="lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full" />
+                        <h1 className=" text-3xl font-bold text-black mx-auto">Descubre las colecciones de HARBOUR </h1>
                     </div>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2">
                         <div>
                             <div className="flex items-center justify-center py-[3%] ">
                                 <h1 className="text-3xl py-[1%]">Nombre coleccion</h1>
@@ -65,7 +64,6 @@ function HarbourColecciones() {
                         </div>
                     </div>
                 </body>
-               
                 <Footer />
             </CartProvider>
         </>
