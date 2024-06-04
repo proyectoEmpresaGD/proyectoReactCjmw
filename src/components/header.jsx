@@ -27,7 +27,6 @@ export const Header = () => {
     const [languages, setLanguages] = useState([]);
     const [searchHistory, setSearchHistory] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
-    const [translatedText, setTranslatedText] = useState('');
     const searchInputRef = useRef(null);
     const [inputText, setInputText] = useState('');
     const [selectedLanguage, setSelectedLanguage] = useState({ value: 'es', label: 'Spanish' });
@@ -40,6 +39,7 @@ export const Header = () => {
         { value: 'it', label: 'Italian' }
     ];
 
+    // Función para traducir texto utilizando la API de Google Translate
     const translateText = async (text, targetLanguage) => {
         try {
             const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`, {
@@ -60,10 +60,54 @@ export const Header = () => {
         }
     };
 
-    const handleTranslate = async () => {
-        if (inputText) {
-            const translated = await translateText(inputText, selectedLanguage.value);
-            setTranslatedText(translated);
+    // Función para decodificar entidades HTML
+    const decodeHTMLEntities = (text) => {
+        const textArea = document.createElement('textarea');
+        textArea.innerHTML = text;
+        return textArea.value;
+    };
+
+    // Función para aplicar traducciones personalizadas
+    const customTranslations = (text, targetLanguage) => {
+        const customTerms = {
+            "telas": { "en": "Fabrics", "fr": "Tissu", "it": "Tessuto", "de": "Stoff", "es": "Telas" }
+        };
+
+        Object.keys(customTerms).forEach(term => {
+            const translation = customTerms[term][targetLanguage];
+            if (translation) {
+                const regex = new RegExp(`\\b${term}\\b`, 'gi');
+                text = text.replace(regex, translation);
+            }
+        });
+
+        return text;
+    };
+
+    // Función para traducir la página
+    const translatePage = async (targetLanguage) => {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        const nodes = [];
+        while (walker.nextNode()) {
+            nodes.push(walker.currentNode);
+        }
+
+        for (const node of nodes) {
+            const originalText = node.nodeValue;
+            if (originalText && originalText.trim()) {
+                let translatedText = await translateText(originalText.trim(), targetLanguage);
+                translatedText = decodeHTMLEntities(translatedText); // Decodificar entidades HTML
+                translatedText = customTranslations(translatedText, targetLanguage); // Aplicar traducciones personalizadas
+                node.nodeValue = translatedText;
+            }
+        }
+    };
+
+    // Función para aplicar el idioma guardado
+    const applySavedLanguage = async () => {
+        const savedLanguage = localStorage.getItem('preferredLanguage');
+        if (savedLanguage) {
+            await translatePage(savedLanguage);
         }
     };
 
@@ -77,6 +121,8 @@ export const Header = () => {
             case '/flamencoHome': setLogoSrc('/logoFlamenco.png'); break;
             default: setLogoSrc('/logoCJM.png'); break;
         }
+
+        applySavedLanguage();
     }, [location.pathname]);
 
     useEffect(() => {
@@ -164,7 +210,8 @@ export const Header = () => {
 
     const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
-        handleTranslate();
+        localStorage.setItem('preferredLanguage', selectedOption.value);
+        translatePage(selectedOption.value);
     };
 
     return (
@@ -182,7 +229,7 @@ export const Header = () => {
                         </Link>
                     </div>
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
-                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Telas</Link>
+                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Productos</Link>
                         <div className="relative">
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
@@ -328,27 +375,6 @@ export const Header = () => {
                     </div>
                 </div>
             )}
-            <div id="google_translate_element" className="hidden"></div>
-            <style>
-                {`
-                        .goog-logo-link, .goog-te-gadget, .goog-te-banner-frame.skiptranslate, .goog-te-balloon-frame.skiptranslate {
-                            display: none !important;
-                        }
-                        .goog-te-banner-frame {
-                            display: none !important;
-                        }
-                        .goog-te-balloon-frame {
-                            display: none !important;
-                        }
-                        .goog-te-banner-frame.skiptranslate,
-                        .goog-te-balloon-frame.skiptranslate {
-                            display: none !important;
-                        }
-                        body {
-                            top: 0 !important;
-                        }
-                    `}
-            </style>
         </>
     );
 };
