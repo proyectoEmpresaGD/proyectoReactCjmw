@@ -4,6 +4,7 @@ import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
 import { FiLoader, FiShoppingCart } from 'react-icons/fi';
+import PullToRefreshComponent from "./flecha"
 
 const CardProduct = () => {
     const location = useLocation();
@@ -189,7 +190,7 @@ const CardProduct = () => {
                 )}
                 <div className="flex flex-wrap justify-center items-center">
                     {products.map((product, index) => (
-                        <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-full sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
+                        <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[100%] h-[60%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
                             <div className="relative overflow-hidden w-full h-48 sm:h-56 md:h-64" onClick={() => handleProductClick(product)}>
                                 <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
