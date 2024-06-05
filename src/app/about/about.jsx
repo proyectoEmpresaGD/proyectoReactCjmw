@@ -5,7 +5,6 @@ import { CartProvider } from '../../components/CartContext';
 function About() {
     return (
         <>
-
             <CartProvider>
                 <Header />
                 {/* Gradiente en todo el cuerpo */}
@@ -20,11 +19,11 @@ function About() {
                                 </div>
                                 <div className="lg:pl-10">
                                     <div className="text-center lg:text-left">
-                                        <p className="text-sm font-semibold tracking-widest text-gray-800 uppercase">At a glance</p>
-                                        <h2 className="mt-8 text-3xl font-bold leading-tight text-gray-800 sm:text-4xl lg:text-5xl lg:leading-tight">CJM: Transforming Spaces with Quality Fabrics</h2>
-                                        <p className="text-lg leading-relaxed text-[#000806] mt-6">CJM is responsible for the global business of CJM, HARBOUR, ARENA and FLAMENCO, our four decorative textiles brands. Founded on November 23rd 2000 by the Caracuel Jiménez Marqués family, the company focuses on the development, production and sale of fabrics for furnishings indoors and outdoors used domestically or for contract use. In addition, the company aspires to be a leader in the fields of comfort, connectivity and development of new technology that creates fabrics that are designed to be both smart and ecological.</p>
-                                        <p className="text-lg leading-relaxed text-[#000806] mt-6">At CJM, manufacturing and designing quality fabrics come together. Our two business divisions: The sale of fabrics to designers for residential homes and to the contract market, are continuously expanding globally, being present in more than 30 countries on four continents. Whilst complying with ecological requirements, sustainability is important to both business divisions.</p>
-                                        <p className="text-lg leading-relaxed text-[#000806] mt-6">For the company, ecology and sustainability means creating lasting value for our customers, employees and society as a whole. The basis for CJM's sustainable business strategy is the company’s responsibility of the effects to the environment in the development of its fabrics and decorative installations. We look for natural beauty whilst creating smart quality fabrics.</p>
+                                        <p className="text-sm font-semibold tracking-widest text-gray-800 uppercase">De un vistazo</p>
+                                        <h2 className="mt-8 text-3xl font-bold leading-tight text-gray-800 sm:text-4xl lg:text-5xl lg:leading-tight">CJM: Transformando espacios con telas de calidad</h2>
+                                        <p className="text-lg leading-relaxed text-[#000806] mt-6">CJM es responsable del negocio global de CJM, HARBOUR, ARENA y FLAMENCO, nuestras cuatro marcas de textiles decorativos. Fundada el 23 de noviembre de 2000 por la familia Caracuel Jiménez Marqués, la empresa se centra en el desarrollo, producción y venta de telas para mobiliario interior y exterior de uso doméstico o para el mercado contract. Además, la empresa aspira a ser líder en los campos del confort, la conectividad y el desarrollo de nuevas tecnologías que creen telas diseñadas para ser tanto inteligentes como ecológicas.</p>
+                                        <p className="text-lg leading-relaxed text-[#000806] mt-6">En CJM, la fabricación y el diseño de telas de calidad van de la mano. Nuestras dos divisiones comerciales: la venta de telas a diseñadores para hogares residenciales y al mercado contract, están en constante expansión global, estando presentes en más de 30 países en cuatro continentes. Cumpliendo con los requisitos ecológicos, la sostenibilidad es importante para ambas divisiones comerciales.</p>
+                                        <p className="text-lg leading-relaxed text-[#000806] mt-6">Para la empresa, ecología y sostenibilidad significa crear valor duradero para nuestros clientes, empleados y la sociedad en su conjunto. La base de la estrategia empresarial sostenible de CJM es la responsabilidad de la empresa respecto a los efectos en el medio ambiente en el desarrollo de sus telas e instalaciones decorativas. Buscamos la belleza natural mientras creamos telas de calidad inteligente.</p>
                                     </div>
                                 </div>
                             </div>
@@ -35,13 +34,13 @@ function About() {
                     <section className="py-20 bg-ivory font-Corinthia">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             <div className="text-[#000806] text-lg text-justify">
-                                <div className="text-center font-semibold text-gray-600 text-lg my-10">Made in Spain</div>
-                                <p className="mb-4 text-center">From Andalusia to the world</p>
-                                <p className="mb-4">CJM WORLDWIDE LTD. designs and manufactures all its fabrics and wallpapers in Spain.</p>
-                                <p className="mb-4">Our production philosophy involves including our suppliers as an intrinsic value of our company and thus obtaining products of high qualitative value.</p>
-                                <p className="mb-4">Of course, as our name indicates, we are a WORLDWIDE company and we believe in the integration of peoples and in the mixture of cultures; therefore, to obtain ideas and fabrics that evolve over time, we have suppliers from different countries that provide us with constant sap.</p>
-                                <p className="mb-4">We are an open company and for the development of our four brands we collect the personality and influences of each culture for each new collection. We like the difference, we like to investigate and we like to walk our own path.</p>
-                                <p>We firmly believe in the personality of CJMW, HARBOUR, ARENA and FLAMENCO. We believe in design and innovation.</p>
+                                <div className="text-center font-semibold text-gray-600 text-lg my-10">Hecho en España</div>
+                                <p className="mb-4 text-center">Desde Andalucía para el mundo</p>
+                                <p className="mb-4">CJM WORLDWIDE LTD. diseña y fabrica todas sus telas y papeles pintados en España.</p>
+                                <p className="mb-4">Nuestra filosofía de producción implica incluir a nuestros proveedores como un valor intrínseco de nuestra empresa y así obtener productos de alto valor cualitativo.</p>
+                                <p className="mb-4">Por supuesto, como nuestro nombre indica, somos una empresa MUNDIAL y creemos en la integración de los pueblos y en la mezcla de culturas; por lo tanto, para obtener ideas y telas que evolucionen con el tiempo, tenemos proveedores de diferentes países que nos proporcionan savia constante.</p>
+                                <p className="mb-4">Somos una empresa abierta y para el desarrollo de nuestras cuatro marcas recogemos la personalidad e influencias de cada cultura para cada nueva colección. Nos gusta la diferencia, nos gusta investigar y nos gusta caminar nuestro propio camino.</p>
+                                <p>Cremos firmemente en la personalidad de CJMW, HARBOUR, ARENA y FLAMENCO. Creemos en el diseño y la innovación.</p>
                             </div>
                             <div className="flex items-center justify-center lg:justify-start">
                                 <div className="max-w-lg border rounded-lg overflow-hidden">
@@ -60,19 +59,17 @@ function About() {
                                 </div>
                             </div>
                             <div className="text-[#000806] text-lg text-justify">
-                                <div className="text-center font-semibold text-gray-600 text-lg my-10">Headquarters</div>
-                                <p className="mb-4">Montilla - Córdoba - Andalusia - Spain</p>
-                                <p className="mb-4">Our company, along its life, has been developing different areas of action. We rely on different platforms to reach a stable manufacturing and distribution process.</p>
-                                <p className="mb-4">CJMW headquarters is settled down in Montilla, Cordoba, Spain, where we do the design, the storage and the holdsale of our fabrics.</p>
-                                <p className="mb-4">Manufacturing process is made applying strategies Supply Chain Management Solutions. CJMW coordinates all its suppliers, making its logistic operations out and developing its own creations inside of the company.</p>
-                                <p>Using external servicies make easy the just-in-time delivery and therefore, our Official Selling Point can offer an immediate service to the final customer, becoming a straight branch of our enterprise.</p>
+                                <div className="text-center font-semibold text-gray-600 text-lg my-10">Sede</div>
+                                <p className="mb-4">Montilla - Córdoba - Andalucía - España</p>
+                                <p className="mb-4">Nuestra empresa, a lo largo de su vida, ha desarrollado diferentes áreas de acción. Contamos con diferentes plataformas para alcanzar un proceso de fabricación y distribución estable.</p>
+                                <p className="mb-4">La sede de CJMW se encuentra en Montilla, Córdoba, España, donde realizamos el diseño, el almacenamiento y la venta al por mayor de nuestras telas.</p>
+                                <p className="mb-4">El proceso de fabricación se lleva a cabo aplicando estrategias de soluciones de gestión de la cadena de suministro. CJMW coordina a todos sus proveedores, externaliza sus operaciones logísticas y desarrolla sus propias creaciones dentro de la empresa.</p>
+                                <p>Utilizar servicios externos facilita la entrega justo a tiempo y, por lo tanto, nuestro punto de venta oficial puede ofrecer un servicio inmediato al cliente final, convirtiéndose en una rama directa de nuestra empresa.</p>
                             </div>
                         </div>
                     </section>
-
-                    <Footer />
-
                 </div>
+                <Footer />
             </CartProvider>
         </>
     );

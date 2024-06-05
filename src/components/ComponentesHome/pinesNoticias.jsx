@@ -5,10 +5,10 @@ const Works = () => {
         <div id="aboutUs" className="p-8 xl:p-20">
             <div className="mb-8">
                 <h1 className="text-[40px] font-black text-center">
-                    We create world-class digital products
+                    Innovación y Sostenibilidad en la Industria Textil: Noticias y Tendencias
                 </h1>
                 <p className="text-xl text-gray-500 text-center">
-                    By providing information about design to the world's best instructors, we help others to create amazing products.
+                    Bienvenido a nuestro blog, donde exploramos las últimas tendencias y avances en la industria textil. Desde innovaciones tecnológicas y nuevas técnicas de teñido y estampado, hasta el impacto ambiental de la producción textil y el uso de telas naturales, nuestro objetivo es mantenerte informado y al día. Aprende de expertos y descubre cómo la industria está evolucionando hacia prácticas más sostenibles y eficientes. Únete a nosotros en este viaje de descubrimiento e innovación.
                 </p>
             </div>
             {/* Works */}
