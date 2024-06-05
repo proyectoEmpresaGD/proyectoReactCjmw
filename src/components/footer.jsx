@@ -8,7 +8,7 @@ const Footer = () => {
                 <div className="w-full lg:w-1/6 flex justify-center lg:justify-start">
                     <a href="#" className="flex items-center">
                         <div className="bg-white rounded-full p-2">
-                            <img src="/Logo.png" alt="Logo" className="w-12 h-12" />
+                            <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/Logo.png" alt="Logo" className="w-12 h-12" />
                         </div>
                     </a>
                 </div>
