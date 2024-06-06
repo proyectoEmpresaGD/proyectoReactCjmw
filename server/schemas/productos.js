@@ -45,10 +45,6 @@ const productSchema = z.object({
     UltFecActPRC: z.number().int().optional(),
     UltPreCompraNetoImput: z.number().optional(),
     PUFCNetoImput: z.number().optional(),
-    urlimagen: z.string().url({
-        required_error: 'Product image URL is required.',
-        invalid_type_error: 'Product image URL must be a valid URL.'
-    }).optional()  // Si no es obligatorio, se puede dejar como opcional
 });
 
 export function validateProduct(input) {

@@ -1,4 +1,5 @@
 import { RiInstagramLine, RiFacebookLine, RiTwitterLine, RiGithubLine } from "react-icons/ri";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
@@ -12,7 +13,7 @@ const Footer = () => {
                         </div>
                     </a>
                 </div>
-                {/* Social media */}
+                {/* Redes sociales */}
                 <nav className="flex items-center gap-4">
                     <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
                         <a href="#" className="block text-white">
@@ -41,54 +42,68 @@ const Footer = () => {
                     CJM WORLDWIDE
                 </h3>
                 <nav className="mt-4 flex flex-col lg:flex-row items-center justify-between gap-4">
+
+                    <Link to="/about" className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300">
+                        Sobre Nosotros
+                    </Link>
+
                     <a
                         href="#"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
-                        About Us
+                        Prensa
                     </a>
                     <a
                         href="#"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
-                        Press
+                        Inversores
                     </a>
                     <a
                         href="#"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
-                        Investors
+                        Eventos
                     </a>
                     <a
-                        href="#"
+                        href="/pdfs/LSSI_TÉRMINOS_Y_CONDICIONES_DE_COMPRA_CJM_WORLDWIDE_S.L..pdf"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download="LSSI_TÉRMINOS_Y_CONDICIONES_DE_COMPRA_CJM_WORLDWIDE_S.L..pdf"
                     >
-                        Events
+                        Términos de Compra
                     </a>
                     <a
-                        href="#"
+                        href="/pdfs/LSSI_POLITICA_DE_COOKIES_CJM_WORLDWIDE_S.L..pdf"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download="LSSI_POLITICA_DE_COOKIES_CJM_WORLDWIDE_S.L..pdf"
                     >
-                        Terms of use
+                        Política de Cookies
                     </a>
                     <a
-                        href="#"
+                        href="/pdfs/LSSI_POLITICA_DE_PRIVACIDAD_CJM_WORLDWIDE_S.L..pdf"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download="LSSI_POLITICA_DE_PRIVACIDAD_CJM_WORLDWIDE_S.L..pdf"
                     >
-                        Privacy policy
+                        Política de Privacidad
                     </a>
-                    <a
-                        href="/contact"
+                    <Link
+                        to="/contact"
                         className="font-semibold rounded-full px-6 py-2 transition-colors hover:bg-gray-700 hover:text-white transform hover:scale-105 inline-block"
                         style={{ backgroundColor: "#3182CE" }} // Color de fondo del botón
                     >
-                        Contact Us
-                    </a>
+                        Contáctanos
+                    </Link>
                 </nav>
             </div>
             <div className="mt-8">
                 <p className="text-gray-600 text-center">
-                    © CJM WORLDWIDE S.L. 2023 - All Rights Reserved
+                    © CJM WORLDWIDE S.L. 2023 - Todos los Derechos Reservados
                 </p>
             </div>
         </footer>
