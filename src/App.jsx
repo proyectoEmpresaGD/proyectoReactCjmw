@@ -14,7 +14,7 @@ import Products from "./app/products/products.jsx"
 import Usages from './app/usages/page.jsx'
 import HarbourColecciones from './app/colecciones/harbourColeccion.jsx'
 import GeocodingService from "./components/ComponentesContact/map.jsx"
-
+import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
 
 
 function App() {
@@ -23,6 +23,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <CookieConsent />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
