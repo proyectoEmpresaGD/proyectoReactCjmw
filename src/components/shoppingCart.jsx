@@ -15,7 +15,7 @@ const ShoppingCart = ({ onClose }) => {
         return () => clearTimeout(timer);
     }, []);
 
-    const totalPrice = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0);
+    const totalPrice = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0).toFixed(2);
 
     return (
         <div className={`fixed top-0 right-0 z-50 w-full max-w-md h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${showCart ? 'translate-x-0' : 'translate-x-full'}`}>

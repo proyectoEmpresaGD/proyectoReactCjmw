@@ -1,8 +1,6 @@
-import { Header } from "../../components/header"
-import Footer from "../../components/footer"
+
 import { CartProvider } from '../../components/CartContext';
 import CarruselColecciones from "../../components/ComponentesBrands/CarruselColecciones"
-import CardProductBrand from "../../components/ComponentesProductos/cardProductBrand"
 
 const images = [
     "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
@@ -64,7 +62,7 @@ function HarbourColecciones() {
                         </div>
                     </div>
                 </body>
-                <Footer />
+                
             </CartProvider>
         </>
     )
