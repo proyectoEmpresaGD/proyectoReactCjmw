@@ -96,4 +96,61 @@ export class ProductController {
   }
 
 
+  async getFilters(req, res) {
+    try {
+      console.log('Fetching filters');
+      const filters = await ProductModel.getFilters();
+      console.log('Filters fetched:', filters);
+      res.json(filters);
+    } catch (error) {
+      console.error('Error fetching filters:', error);
+      res.status(500).send({ error: 'Error fetching filters', details: error.message });
+    }
+  }
+
+  async filterProducts(req, res) {
+    const filters = req.body;
+    try {
+      const products = await ProductModel.filter(filters);
+      const validProducts = products.filter(product => (
+        !/^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
+        !/(PERCHAS Y LIBROS)/i.test(product.desprodu) &&
+        !/CUTTING/i.test(product.desprodu) &&
+        !/(LIBROS)/i.test(product.desprodu) &&
+        !/PERCHA/i.test(product.desprodu) &&
+        !/(FUERA DE COLECCIÓN)/i.test(product.desprodu) &&
+        !/(PERCHAS)/i.test(product.desprodu) &&
+        !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
+        ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
+      ));
+      res.json(validProducts);
+    } catch (error) {
+      console.error('Error filtering products:', error);
+      res.status(500).json({ error: 'Error filtering products' });
+    }
+  }
+
+  static async getByCodFamil(req, res) {
+    const { codfamil } = req.params;
+    try {
+      const products = await ProductModel.getByCodFamil(codfamil);
+      res.json(products);
+    } catch (error) {
+      console.error('Error fetching products by codfamil:', error);
+      res.status(500).send({ error: 'Error fetching products by codfamil' });
+    }
+  }
+
+  static async filter(req, res) {
+    const filters = req.body;
+    try {
+      const products = await ProductModel.getProductsWithFilters(filters);
+      res.json(products);
+    } catch (error) {
+      console.error('Error filtering products:', error);
+      res.status(500).send({ error: 'Error filtering products' });
+    }
+  }
+
+
 }
