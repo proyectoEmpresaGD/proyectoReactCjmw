@@ -133,9 +133,7 @@ export const Header = () => {
             default: setLogoSrc('/logoCJM.png'); break;
         }
 
-        // Llamar solo al inicio para aplicar el idioma guardado
         applySavedLanguage();
-        
     }, [location.pathname]);
 
     useEffect(() => {

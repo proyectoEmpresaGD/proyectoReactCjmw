@@ -19,10 +19,6 @@ export class ProductController {
       const { id } = req.params;
       const product = await ProductModel.getById({ id });
       if (product) {
-        const goodImages = await ProductModel.getProductImages(id, 'Buena');
-        const badImages = await ProductModel.getProductImages(id, 'Baja');
-        product.goodImages = goodImages;
-        product.badImages = badImages;
         res.json(product);
       } else {
         res.status(404).json({ message: 'Product not found' });
@@ -156,18 +152,18 @@ export class ProductController {
   }
 
   async getProductImages(req, res) {
-    const { id } = req.params;
+    const { codprodu } = req.params;
     const { quality } = req.query;
 
-    console.log('Received request for product images with ID:', id, 'and quality:', quality);
+    console.log('Received request for product images with ID:', codprodu, 'and quality:', quality);
 
     try {
-      const images = await ProductModel.getProductImages(id, quality);
+      const images = await ProductModel.getProductImages(codprodu, quality);
       if (images.length === 0) {
-        console.log('No images found for product ID:', id, 'with quality:', quality);
+        console.log('No images found for product codprodu:', codprodu, 'with quality:', quality);
         return res.status(404).json({ error: 'No images found' });
       }
-      console.log('Fetched images for product ID:', id, 'with quality:', quality, images);
+      console.log('Fetched images for product codprodu:', codprodu, 'with quality:', quality, images);
       res.json(images);
     } catch (error) {
       console.error('Error fetching product images:', error);
