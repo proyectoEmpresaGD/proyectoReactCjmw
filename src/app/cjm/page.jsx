@@ -3,7 +3,7 @@ import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
-import CJMColecciones from "../colecciones/cjmColecciones"
+import CardProductBrand from "../../components/ComponentesProductos/cardProductBrand"
 
 function CjmHome() {
 
@@ -38,7 +38,6 @@ function CjmHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <CJMColecciones/>
                 <Footer />
             </CartProvider>
         </>

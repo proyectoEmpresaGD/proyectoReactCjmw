@@ -39,9 +39,6 @@ export const Header = () => {
         { value: 'it', label: 'Italian' }
     ];
 
-    // Palabras que no deseas traducir
-    const nonTranslatableWords = ["CJM", "Harbour", "Arena", "Flamenco", "Home "];
-
     // Función para traducir texto utilizando la API de Google Translate
     const translateText = async (text, targetLanguage) => {
         try {
@@ -98,16 +95,9 @@ export const Header = () => {
         for (const node of nodes) {
             const originalText = node.nodeValue;
             if (originalText && originalText.trim()) {
-                let nonTranslatablePattern = new RegExp(`\\b(${nonTranslatableWords.join('|')})\\b`, 'gi');
-                let textToTranslate = originalText.replace(nonTranslatablePattern, match => `{{${match}}}`);
-
-                let translatedText = await translateText(textToTranslate.trim(), targetLanguage);
+                let translatedText = await translateText(originalText.trim(), targetLanguage);
                 translatedText = decodeHTMLEntities(translatedText); // Decodificar entidades HTML
                 translatedText = customTranslations(translatedText, targetLanguage); // Aplicar traducciones personalizadas
-                
-                nonTranslatablePattern = new RegExp(`\\{\\{(${nonTranslatableWords.join('|')})\\}\\}`, 'gi');
-                translatedText = translatedText.replace(nonTranslatablePattern, match => match.replace(/[{}]/g, ''));
-
                 node.nodeValue = translatedText;
             }
         }
@@ -117,7 +107,6 @@ export const Header = () => {
     const applySavedLanguage = async () => {
         const savedLanguage = localStorage.getItem('preferredLanguage');
         if (savedLanguage) {
-            setSelectedLanguage(languageOptions.find(lang => lang.value === savedLanguage));
             await translatePage(savedLanguage);
         }
     };
@@ -219,10 +208,10 @@ export const Header = () => {
         navigate(`/products?productId=${item.codprodu}`);
     };
 
-    const handleLanguageChange = async (selectedOption) => {
+    const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
         localStorage.setItem('preferredLanguage', selectedOption.value);
-        await translatePage(selectedOption.value);
+        translatePage(selectedOption.value);
     };
 
     return (
@@ -260,8 +249,8 @@ export const Header = () => {
                                 </div>
                             )}
                         </div>
-                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Sobre nosotros</Link>
-                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contáctenos</Link>
+                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">About Us</Link>
+                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contact Us</Link>
                     </div>
                     <div className="flex items-center space-x-4">
                         <div className="relative">
@@ -319,9 +308,9 @@ export const Header = () => {
                 </div>
                 <div className={`bg-white lg:hidden ${showMenu ? '' : 'hidden'}`}>
                     <div className="bg-ivory py-2 px-4">
-                        <Link to="/about" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Sobre nosotros</Link>
-                        <Link to="/contact" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Contáctenos</Link>
-                        <Link to="/products" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Productos</Link>
+                        <Link to="/about" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">About Us</Link>
+                        <Link to="/contact" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Contact Us</Link>
+                        <Link to="/products" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Products</Link>
                         <div className="relative">
                             <button className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg focus:outline-none" onClick={() => toggleDropdown('brands')}>
                                 Brands {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}

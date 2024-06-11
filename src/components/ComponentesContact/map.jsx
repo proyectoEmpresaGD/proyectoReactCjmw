@@ -272,7 +272,7 @@ const GeocodingService = () => {
           <div id="map" className="w-full" style={{ height: "65vh", borderRadius: "2%" }}></div>
         </div>
         <div className="justify-center items-center mx-auto xl:col-span-1 lg:col-span-1 col-span-4">
-          <div className="mx-auto text-center justify-center overflow-auto max-h-[90%]">
+          <div className="mx-auto text-center justify-center overflow-auto max-h-96">
             <h1 className="py-[5%] text-3xl text-white font-bold">Tus Tiendas más cercanas</h1>
             <ul>
               {nearbyStores.map(store => (
