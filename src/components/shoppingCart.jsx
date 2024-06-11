@@ -5,17 +5,17 @@ const ShoppingCart = ({ onClose }) => {
     const { cartItems, addToCart, removeFromCart } = useCart();
     const [showCart, setShowCart] = useState(false);
 
-
     useEffect(() => {
-        
+        // Cuando el componente se monta, esperamos un pequeño tiempo y luego mostramos el carrito
         const timer = setTimeout(() => {
             setShowCart(true);
         }, 100);
 
+        // Limpiamos el temporizador en caso de que el componente se desmonte antes de que se muestre el carrito
         return () => clearTimeout(timer);
     }, []);
 
-    const totalPrice = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0).toFixed(2);
+    const totalPrice = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0);
 
     return (
         <div className={`fixed top-0 right-0 z-50 w-full max-w-md h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${showCart ? 'translate-x-0' : 'translate-x-full'}`}>

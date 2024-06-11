@@ -4,7 +4,7 @@ import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import CardProductBrand from "../../components/ComponentesProductos/cardProductBrand"
-import FlamencoColecciones from "../colecciones/flamencoColecciones"
+
 function FlamencoHome() {
 
     const images = [
@@ -36,7 +36,6 @@ function FlamencoHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <FlamencoColecciones/>
                 <Footer />
             </CartProvider>
         </>

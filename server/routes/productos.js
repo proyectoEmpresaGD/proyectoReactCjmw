@@ -13,14 +13,10 @@ export const createProductRouter = () => {
     productsRouter.get('/search', productController.search.bind(productController));
     productsRouter.get('/codfamil/:codfamil', productController.getByCodFamil.bind(productController)); // Nueva ruta
 
-    productsRouter.get('/filters', productController.getFilters.bind(productController));
-    productsRouter.post('/filter', productController.filterProducts.bind(productController));
     // Rutas para operaciones específicas de un producto
     productsRouter.get('/:id', productController.getById.bind(productController));
     productsRouter.patch('/:id', productController.update.bind(productController));
     productsRouter.delete('/:id', productController.delete.bind(productController));
-
-    productsRouter.get('/images/:id', productController.getProductImages.bind(productController));
 
     return productsRouter;
 }

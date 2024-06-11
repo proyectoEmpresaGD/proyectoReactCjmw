@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 const NotFoundPage = () => {
     return (
         <div
-            className="min-h-screen flex flex-col items-center justify-center text-white z-80"
+            className="min-h-screen flex flex-col items-center justify-center text-white z-50"
             style={{
-                backgroundImage: `url(https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20PERRAULT.jpg)`,
+                backgroundImage: `url(https://cjmw.eu/CarpetaPaginaWebCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20PERRAULT.jpg)`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
             }}

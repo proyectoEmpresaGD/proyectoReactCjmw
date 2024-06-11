@@ -4,8 +4,7 @@ import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
 import { FiLoader, FiShoppingCart } from 'react-icons/fi';
-import NotFoundPage from "../notFoundPage";
-import Filtro from '../../app/products/buttonFiltro';
+import PullToRefreshComponent from "./flecha"
 
 const CardProduct = () => {
     const location = useLocation();
@@ -16,7 +15,6 @@ const CardProduct = () => {
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
-    const [productImages, setProductImages] = useState({});
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState(null);
@@ -31,9 +29,9 @@ const CardProduct = () => {
     const isValidProduct = (product) => {
         const desprodu = product.desprodu;
         return (
-            /^C1/.test(desprodu) || 
-            /^C01/.test(desprodu) || 
-            !/C(0?[2-9]|[1-7][0-9]|80)\b/.test(desprodu) 
+            /^C1/.test(desprodu) || // Include "C1"
+            /^C01/.test(desprodu) || // Include "C01"
+            !/C(0?[2-9]|[1-7][0-9]|80)\b/.test(desprodu) // Exclude "C" followed by 02-09, 10-79, or 80
         );
     };
 
@@ -45,7 +43,6 @@ const CardProduct = () => {
         }
         setError(null);
         try {
-            console.log(`Fetching products page ${pageNumber}`);
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=10&page=${pageNumber}`);
             if (!response.ok) {
                 throw new Error('Error fetching products');
@@ -53,21 +50,18 @@ const CardProduct = () => {
             const data = await response.json();
             const validProducts = data.filter(product => (
                 isValidProduct(product) &&
-                !/^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRAS|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
+                !/^(LIBRO|PORTADA|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
                 !/(PERCHAS Y LIBROS)/i.test(product.desprodu) &&
                 !/CUTTING/i.test(product.desprodu) &&
                 !/(LIBROS)/i.test(product.desprodu) &&
                 !/PERCHA/i.test(product.desprodu) &&
-                !/(FUERA DE COLECCIÓN)/i.test(product.desprodu) &&
                 !/(PERCHAS)/i.test(product.desprodu) &&
                 !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
                 ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
             ));
             setProducts(prevProducts => append ? [...prevProducts, ...validProducts] : validProducts);
-            console.log('Fetched products:', validProducts);
         } catch (error) {
             setError('Error fetching products');
-            console.error(error);
         } finally {
             setLoading(false);
             setLoadingMore(false);
@@ -85,9 +79,8 @@ const CardProduct = () => {
             const fetchSearchedProducts = async () => {
                 setLoading(true);
                 setError(null);
-                setProducts([]);
+                setProducts([]); // Clear products before a new search
                 try {
-                    console.log(`Searching products for query: ${searchQuery}`);
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=10`);
                     if (!response.ok) {
                         throw new Error('Error fetching search results');
@@ -102,12 +95,10 @@ const CardProduct = () => {
                     }
                     setProducts(filteredData);
                     setSearchHistory(prevHistory => [...prevHistory, ...filteredData]);
-                    setShowClearButton(true);
-                    console.log('Searched products:', filteredData);
+                    setShowClearButton(true); // Show the clear button after a search
                 } catch (error) {
                     setError('Error fetching search results');
-                    setShowClearButton(true);
-                    console.error(error);
+                    setShowClearButton(true); // Show the clear button even if there's an error
                 } finally {
                     setLoading(false);
                 }
@@ -121,41 +112,18 @@ const CardProduct = () => {
             const fetchProductById = async () => {
                 setLoading(true);
                 setError(null);
-                setProducts([]);
+                setProducts([]); // Clear products before fetching a specific product
                 try {
-                    console.log(`Fetching product by ID: ${productId}`);
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${productId}`);
                     if (!response.ok) {
                         throw new Error('Error fetching product by ID');
                     }
                     const data = await response.json();
-
-                    const goodImageResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/images/${productId}?quality=Buena`);
-                    const badImageResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/images/${productId}?quality=Mala`);
-
-                    if (!goodImageResponse.ok) {
-                        throw new Error('Error fetching good image');
-                    }
-                    if (!badImageResponse.ok) {
-                        throw new Error('Error fetching bad image');
-                    }
-
-                    const goodImage = await goodImageResponse.text();
-                    const badImage = await badImageResponse.text();
-
-                    console.log('goodImage:', goodImage);
-                    console.log('badImage:', badImage);
-
-                    setProductImages(prevImages => ({
-                        ...prevImages,
-                        [productId]: { goodImage, badImage }
-                    }));
-
                     setProducts([data]);
-                    console.log('Fetched product by ID:', data);
+                    setShowClearButton(true); // Show the clear button after fetching a specific product
                 } catch (error) {
-                    console.error('Error fetching product by ID:', error);
-                    setError(error.message);
+                    setError('Error fetching product by ID');
+                    setShowClearButton(true); // Show the clear button even if there's an error
                 } finally {
                     setLoading(false);
                 }
@@ -165,12 +133,11 @@ const CardProduct = () => {
     }, [productId]);
 
     const handleAddToCart = (product) => {
-        const images = productImages[product.codprodu] || {};
         addToCart({
             id: product.codprodu,
             name: product.desprodu,
             price: 0.8,
-            image: images.goodImage, // Use the good image directly
+            image: product.imagepreview,
             quantity: 1
         });
     };
@@ -221,21 +188,14 @@ const CardProduct = () => {
                         </button>
                     </div>
                 )}
-                <Filtro setFilteredProducts={setProducts} />
                 <div className="flex flex-wrap justify-center items-center">
                     {products.map((product, index) => (
                         <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
-                            <div className="relative overflow-hidden w-full h-64 xl:h-64 lg:h-64 sm:h-64 md:h-64" onClick={() => handleProductClick(product)}>
-                                {productImages[product.codprodu]?.badImage ? (
-                                    <img className="object-cover w-full h-full" src={productImages[product.codprodu].badImage} alt={product.desprodu} />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                                        <span className="text-gray-500">No image</span>
-                                    </div>
-                                )}
+                            <div className="relative overflow-hidden w-full h-48 sm:h-56 md:h-64" onClick={() => handleProductClick(product)}>
+                                <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
                             </div>
-                            <h3 className="text-center text-md sm:text-xl font-semibold text-gray-900 mt-4">{product.desprodu}</h3>
+                            <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
                             <div className="flex items-center justify-between mt-4">
                                 <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
                                     <FiShoppingCart className="text-2xl" />
@@ -252,10 +212,10 @@ const CardProduct = () => {
                     </div>
                 )}
                 {!loading && products.length === 0 && !error && (
-                    <div className="text-center text-gray-500"></div>
+                    <div className="text-center text-gray-500">No products found</div>
                 )}
                 {!loading && error && (
-                    <div className="w-full h-full"><NotFoundPage /></div>
+                    <div className="text-center text-red-500">{error}</div>
                 )}
                 <div ref={loader}></div>
                 {modalOpen && (
