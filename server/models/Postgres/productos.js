@@ -49,8 +49,8 @@ export class ProductModel {
 
     const { rows } = await pool.query(
       `INSERT INTO productos ("codprodu", "desprodu", "codfamil", "comentario", "urlimagen")
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING *;`,
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;`,
       [CodProdu, DesProdu, CodFamil, Comentario, UrlImagen]
     );
 
