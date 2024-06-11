@@ -4,7 +4,6 @@
     font-family: Poppins;    
 }
 
-
 .each-fade-effect {
   display: flex;
   width: 100%;
@@ -20,7 +19,6 @@
   height: 100%;
   object-fit: cover;
 }
-
 
 @media  (max-width: 500px min-width: 320px) {
   .each-fade-effect {
@@ -45,4 +43,15 @@
     object-fit: cover;
 }
 
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
 
+.animate-slide-down {
+  animation: slide-down 0.5s ease-out;
+}
