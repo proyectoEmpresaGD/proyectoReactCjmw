@@ -103,5 +103,109 @@ export class ProductModel {
     }
   }
 
+  static async getFilters() {
+    try {
+      console.log('Fetching brands');
+      const { rows: brands } = await pool.query('SELECT DISTINCT codmarca FROM productos');
+      console.log('Fetched brands:', brands);
+
+      console.log('Fetching collections');
+      const { rows: collections } = await pool.query('SELECT DISTINCT coleccion, codmarca FROM productos');
+      console.log('Fetched collections:', collections);
+
+      console.log('Fetching fabric types');
+      const { rows: fabricTypes } = await pool.query('SELECT DISTINCT tipo FROM productos');
+      console.log('Fetched fabric types:', fabricTypes);
+
+      console.log('Fetching fabric patterns');
+      const { rows: fabricPatterns } = await pool.query('SELECT DISTINCT estilo FROM productos');
+      console.log('Fetched fabric patterns:', fabricPatterns);
+
+      console.log('Fetching martindale values');
+      const { rows: martindaleValues } = await pool.query('SELECT DISTINCT martindale FROM productos');
+      console.log('Fetched martindale values:', martindaleValues);
+
+      console.log('Fetching uso values');
+      const { rows: usoValues } = await pool.query('SELECT DISTINCT uso FROM productos');
+      console.log('Fetched uso values:', usoValues);
+
+      console.log('Fetching colors');
+      const { rows: colors } = await pool.query('SELECT DISTINCT colorprincipal FROM productos');
+      console.log('Fetched colors:', colors);
+
+      console.log('Fetching tonalidades');
+      const { rows: tonalidades } = await pool.query('SELECT DISTINCT tonalidad FROM productos');
+      console.log('Fetched tonalidades:', tonalidades);
+
+      return {
+        brands: brands.map(b => b.codmarca),
+        collections: collections.map(c => c.coleccion),
+        fabricTypes: fabricTypes.map(f => f.tipo),
+        fabricPatterns: fabricPatterns.map(f => f.estilo),
+        martindaleValues: martindaleValues.map(m => m.martindale),
+        usoValues: usoValues.map(u => u.uso),
+        colors: colors.map(c => c.colorprincipal),
+        tonalidades: tonalidades.map(t => t.tonalidad)
+      };
+    } catch (error) {
+      console.error('Error fetching filters:', error);
+      throw new Error('Error fetching filters');
+    }
+  }
+
+
+  static async filter(filters) {
+    let query = 'SELECT * FROM productos WHERE 1=1';
+    let params = [];
+    let index = 1;
+
+    if (filters.brand && filters.brand.length > 0) {
+      query += ` AND "codmarca" = ANY($${index++})`;
+      params.push(filters.brand);
+    }
+
+    if (filters.color && filters.color.length > 0) {
+      query += ` AND "colorprincipal" = ANY($${index++})`;
+      params.push(filters.color);
+    }
+
+    if (filters.collection && filters.collection.length > 0) {
+      query += ` AND "coleccion" = ANY($${index++})`;
+      params.push(filters.collection);
+    }
+
+    if (filters.fabricType && filters.fabricType.length > 0) {
+      query += ` AND "tipo" = ANY($${index++})`;
+      params.push(filters.fabricType);
+    }
+
+    if (filters.fabricPattern && filters.fabricPattern.length > 0) {
+      query += ` AND "estilo" = ANY($${index++})`;
+      params.push(filters.fabricPattern);
+    }
+
+    if (filters.tonalidad && filters.tonalidad.length > 0) {
+      query += ` AND "tonalidad" = ANY($${index++})`;
+      params.push(filters.tonalidad);
+    }
+
+    if (filters.martindale && filters.martindale.length > 0) {
+      query += ` AND "martindale" = ANY($${index++})`;
+      params.push(filters.martindale);
+    }
+
+    if (filters.uso && filters.uso.length > 0) {
+      query += ` AND "uso" = ANY($${index++})`;
+      params.push(filters.uso);
+    }
+
+    try {
+      const { rows } = await pool.query(query, params);
+      return rows;
+    } catch (error) {
+      console.error('Error filtering products:', error);
+      throw new Error('Error filtering products');
+    }
+  }
 
 }
