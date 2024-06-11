@@ -4,10 +4,10 @@ const Works = () => {
     return (
         <div id="aboutUs" className="p-8 xl:p-20">
             <div className="mb-8">
-                <h1 className="text-[40px] font-black text-center">
+                <h1 className="xl:text-[40px] lg:text-[40px] md:text-[40px] text-[20px] font-black text-center pb-4">
                     Innovación y Sostenibilidad en la Industria Textil: Noticias y Tendencias
                 </h1>
-                <p className="text-xl text-gray-500 text-center">
+                <p className="xl:text-xl lg:text-xl md:text-xl text-md text-gray-500 text-center">
                     Bienvenido a nuestro blog, donde exploramos las últimas tendencias y avances en la industria textil. Desde innovaciones tecnológicas y nuevas técnicas de teñido y estampado, hasta el impacto ambiental de la producción textil y el uso de telas naturales, nuestro objetivo es mantenerte informado y al día. Aprende de expertos y descubre cómo la industria está evolucionando hacia prácticas más sostenibles y eficientes. Únete a nosotros en este viaje de descubrimiento e innovación.
                 </p>
             </div>

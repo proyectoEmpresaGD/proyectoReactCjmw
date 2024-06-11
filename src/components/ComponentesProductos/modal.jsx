@@ -5,22 +5,21 @@ import "slick-carousel/slick/slick.css";
 import { useCart } from '../CartContext';
 import "slick-carousel/slick/slick-theme.css";
 import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
-import { CartProvider } from "../CartContext"; // Importa CartProvider correctamente
-import { Link } from "react-router-dom"
-
+import { CartProvider } from "../CartContext";
+import { Link } from "react-router-dom";
 
 const Modal = ({ isOpen, close, product, alt }) => {
     const { addToCart } = useCart();
-    const [modalMapaOpen, setModalMapaOpen] = useState(false); // Estado para controlar la apertura de ModalMapa
-    const [imageLoaded, setImageLoaded] = useState(false); // Estado para controlar la carga de la imagen
-    const [selectedImage, setSelectedImage] = useState(product.urlimagen); // Estado para la imagen seleccionada
+    const [modalMapaOpen, setModalMapaOpen] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(product.goodImage);
     const [selectedName, setSelectedName] = useState(product.desprodu);
-    const [selectedCod, setSelectedCod] = useState(product.codprodu); // Estado para el nombre del producto seleccionado
-    const [selectedProduct, setSelectedProduct] = useState(product); // Estado para el producto seleccionado
-    const [relatedProducts, setRelatedProducts] = useState([]); // Estado para los productos relacionados
+    const [selectedCod, setSelectedCod] = useState(product.codprodu);
+    const [selectedProduct, setSelectedProduct] = useState(product);
+    const [relatedProducts, setRelatedProducts] = useState([]);
     const lensRef = useRef(null);
     const resultRef = useRef(null);
-    const [zoomFactor, setZoomFactor] = useState(2); // Factor de zoom
+    const [zoomFactor, setZoomFactor] = useState(2);
 
     useEffect(() => {
         // Fetch related products by codfamil
@@ -38,13 +37,13 @@ const Modal = ({ isOpen, close, product, alt }) => {
     }, [product.codfamil]);
 
     const handleMapClick = () => {
-        setModalMapaOpen(true); // Abre ModalMapa cuando se cliquea el botón
+        setModalMapaOpen(true);
     };
 
     const handleImageLoad = () => {
-        setImageLoaded(true); // Marca la imagen como cargada
+        setImageLoaded(true);
 
-        // Ajusta el factor de zoom según el tamaño de la imagen
+        // Adjust the zoom factor based on the image size
         const img = lensRef.current.previousSibling;
         const { width, height } = img;
         const factor = Math.max(2, (width > 300 || height > 300) ? 2 : 3);
@@ -52,7 +51,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const handleImageError = () => {
-        console.error('Error loading image'); // Maneja el error de carga de la imagen
+        console.error('Error loading image');
     };
 
     const moveLens = (e) => {
@@ -81,11 +80,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const handleColorClick = (colorProduct) => {
-        setSelectedImage(colorProduct.urlimagen);
+        setSelectedImage(colorProduct.goodImage);
         setSelectedName(colorProduct.desprodu);
         setSelectedCod(colorProduct.codprodu);
-        setSelectedProduct(colorProduct); // Actualiza el producto seleccionado
-        setImageLoaded(false); // Reset image loaded state to show lens only after image is loaded
+        setSelectedProduct(colorProduct);
+        setImageLoaded(false);
     };
 
     const mantenimientoImages = {
@@ -97,16 +96,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
         "No planchar": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-disable.svg',
         "Lavar a mano": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/hand-wash.svg',
         "No usar blanqueador": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-no-bleach.svg',
-        "Limpieza en seco": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/dry-Clening.webp',  // Cambia esta ruta por la de tu icono
-        "No usar secadora": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-do.svg',  // Cambia esta ruta por la de tu icono
-    }
+        "Limpieza en seco": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/dry-Clening.webp',
+        "No usar secadora": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-do.svg',
+    };
 
     const getMantenimientoImages = (mantenimientos) => {
-        if (!mantenimientos) return "?";  // Verifica si mantenimientos es null o undefined y devuelve null
+        if (!mantenimientos) return "?";
 
         const mantenimientoList = mantenimientos.split(';').map(mantenimiento => mantenimiento.trim());
         return mantenimientoList
-            .filter(mantenimiento => mantenimientoImages[mantenimiento])  // Filtra los mantenimientos que no tienen mapeo
+            .filter(mantenimiento => mantenimientoImages[mantenimiento])
             .map((mantenimiento, index) => (
                 <img
                     key={index}
@@ -131,14 +130,12 @@ const Modal = ({ isOpen, close, product, alt }) => {
         return usoList.map((uso, index) => (
             <img
                 key={index}
-                src={`${usoImages[uso]}`}  // Reemplaza con una imagen por defecto si no hay mapeo
+                src={`${usoImages[uso]}`}
                 alt={uso}
                 className="w-6 h-6 mx-1"
             />
         ));
     };
-
-    // Configuración del carrusel
 
     const SampleNextArrow = ({ className, style, onClick }) => {
         return (
@@ -157,7 +154,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
             id: selectedProduct.codprodu,
             name: selectedProduct.desprodu,
             price: 3, // Precio fijo por ahora
-            image: selectedProduct.urlimagen,
+            image: selectedProduct.goodImage,
             quantity: 1
         });
         setShowAddedMessage(true);
@@ -202,7 +199,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
         ]
     };
 
-    // Si `isOpen` es falso, no se muestra nada
     if (!isOpen) return null;
 
     return (
@@ -248,8 +244,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             )}
                         </div>
                         <div className="flex flex-col justify-between xl:p-8 lg:p-8 md:p-8 mx-auto text-start">
-                            <h1 className="font-bold text-black mx-auto text-start">Descripción</h1>
-                            <div className="">
+                            <h1 className="font-bold text-black mx-auto text-start pb-4">Descripción</h1>
+                            <div className=" py-4">
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                 <p className="">Marca:</p>
                                 <p className="">{product.codmarca}</p>
@@ -285,7 +281,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 <div className="justify-center text-start text-base">    
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 mx-2 text-center">
+                            <div className="grid grid-cols-2 xl:gap-10 lg:gap-10 md:gap-10 gap-8 text-center py-2">
                                 <div>
                                     <h3 className=" justify-center mx-auto text-center">Usos</h3>
                                     <Link to="/usages">
@@ -317,7 +313,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             {relatedProducts.map((colorProduct, index) => (
                                 <div key={index} className="px-2">
                                     <img
-                                        src={colorProduct.imagepreview}
+                                        src={colorProduct.badImage}
                                         alt={colorProduct.desprodu}
                                         className="w-full h-16 object-cover rounded-full cursor-pointer"
                                         onClick={() => handleColorClick(colorProduct)}

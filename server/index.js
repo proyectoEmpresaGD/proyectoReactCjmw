@@ -3,6 +3,7 @@ import { createProductRouter } from './routes/productos.js';
 import { corsMiddleware } from './middlewares/cors.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import bodyParser from 'body-parser';
 import pg from 'pg';
 import 'dotenv/config';
 
@@ -24,6 +25,11 @@ app.disable('x-powered-by');
 
 // Sirve archivos estáticos desde el directorio 'web'
 app.use(express.static(join(__dirname, 'web')));
+
+// Middleware para parsear cuerpos JSON y urlencoded con un límite mayor
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
 app.use('/api/products', createProductRouter({ pool }));
 

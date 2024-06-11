@@ -6,190 +6,103 @@ function FiltroModal({ isOpen, close, applyFilters }) {
     const [selectedCollections, setSelectedCollections] = useState([]);
     const [selectedFabricTypes, setSelectedFabricTypes] = useState([]);
     const [selectedFabricPatterns, setSelectedFabricPatterns] = useState([]);
-    const [availableCollections, setAvailableCollections] = useState([]);
-    const [selectedTonalidad, setSelectedTonalidad] = useState([]);
+    const [selectedTonalidades, setSelectedTonalidades] = useState([]);
     const [selectedMartindale, setSelectedMartindale] = useState([]);
-    const [selectedMantenimiento, setSelectedMantenimiento] = useState([]);
     const [selectedUso, setSelectedUso] = useState([]);
 
-    const marcas = ['ARENA', 'HARBOUR', 'CJM', 'FLAMENCO'];
-    const marcasAbreviadas = {
-        'ARENA': 'ARE',
-        'HARBOUR': 'HAR',
-        'CJM': 'CJM',
-        'FLAMENCO': 'FLA'
-    };
-    const coleccionesPorMarca = {
-        'ARE': { 'Colección Deportiva': '1', 'Colección Casual': '2',   },
-        'HAR': { 'Primavera Harbour': '3', 'Colección Primavera HARBOUR': '4', 'Colección Verano HARBOUR': '5' },
-        'CJM': { 'Colección Primavera': '6', 'Colección Verano': '7' },
-        'FLA': { 'Primavera Flamenco': '8', 'Colección PrimaveraFLAMENCO': '9', 'Colección Verano FLAMENCO': '10' }
-    };
-
-    const tiposDeTela = ['Lana', 'Jacquard', 'Liso', 'Estampado', 'Tejido', 'Terciopelo', 'Rayas', 'Bucle', 'Espiga', 'Falso liso', 'Visillo', 'Papel pared', 'Lino', 'Liso;Visillo', 'Bordado' ];
-    const dibujosDeTela = ['Liso', 'Rayas', 'Cuadros', 'Floral'];
-    const martindaleValues = ['20000', '30000', '40000'];
-    const mantenimientoValues = ['Lavado a mano', 'Lavado a máquina', 'No usar lejía'];
-    const usoValues = ['Interior', 'Exterior', 'Uso diario'];
+    const [brands, setBrands] = useState([]);
+    const [collections, setCollections] = useState([]);
+    const [fabricTypes, setFabricTypes] = useState([]);
+    const [fabricPatterns, setFabricPatterns] = useState([]);
+    const [martindaleValues, setMartindaleValues] = useState([]);
+    const [usoValues, setUsoValues] = useState([]);
+    const [colors, setColors] = useState([]);
+    const [tonalidades, setTonalidades] = useState([]);
 
     useEffect(() => {
-        if (selectedBrands.includes("All Brands")) {
-            const allCollections = Object.values(coleccionesPorMarca).flatMap(collections => Object.keys(collections));
-            setAvailableCollections([...new Set(allCollections)]);
-        } else if (selectedBrands.length) {
-            const updatedCollections = selectedBrands.flatMap(brand => Object.keys(coleccionesPorMarca[marcasAbreviadas[brand]] || {}));
-            setAvailableCollections([...new Set(updatedCollections)]);
-        } else {
-            setAvailableCollections([]);
-        }
-    }, [selectedBrands]);
-
-    const handleBrandChange = (brand) => {
-        if (brand === "All Brands") {
-            setSelectedBrands(["All Brands"]);
-        } else {
-            const newSelectedBrands = selectedBrands.filter(b => b !== "All Brands");
-            setSelectedBrands(prevBrands =>
-                prevBrands.includes(brand)
-                    ? newSelectedBrands.filter(b => b !== brand)
-                    : [...newSelectedBrands, brand]
-            );
-        }
-    };
-
-    const handleCollectionChange = (collection) => {
-        setSelectedCollections(prevCollections =>
-            prevCollections.includes(collection)
-                ? prevCollections.filter(c => c !== collection)
-                : [...prevCollections, collection]
-        );
-    };
-
-    const handleColorChange = (color) => {
-        setSelectedColors(prevColors =>
-            prevColors.includes(color)
-                ? prevColors.filter(c => c !== color)
-                : [...prevColors, color]
-        );
-    };
-
-    const handleTonalidadChange = (tonalidad) => {
-        setSelectedTonalidad(prevTonalidad =>
-            prevTonalidad.includes(tonalidad)
-                ? prevTonalidad.filter(c => c !== tonalidad)
-                : [...prevTonalidad, tonalidad]
-        );
-    };
-
-    const handleFabricTypeChange = (type) => {
-        setSelectedFabricTypes(prevTypes =>
-            prevTypes.includes(type)
-                ? prevTypes.filter(t => t !== type)
-                : [...prevTypes, type]
-        );
-    };
-
-    const handleFabricPatternChange = (pattern) => {
-        setSelectedFabricPatterns(prevPatterns =>
-            prevPatterns.includes(pattern)
-                ? prevPatterns.filter(p => p !== pattern)
-                : [...prevPatterns, pattern]
-        );
-    };
-
-    const handleMartindaleChange = (value) => {
-        setSelectedMartindale(prevValues =>
-            prevValues.includes(value)
-                ? prevValues.filter(v => v !== value)
-                : [...prevValues, value]
-        );
-    };
-
-    const handleMantenimientoChange = (value) => {
-        setSelectedMantenimiento(prevValues =>
-            prevValues.includes(value)
-                ? prevValues.filter(v => v !== value)
-                : [...prevValues, value]
-        );
-    };
-
-    const handleUsoChange = (value) => {
-        setSelectedUso(prevValues =>
-            prevValues.includes(value)
-                ? prevValues.filter(v => v !== value)
-                : [...prevValues, value]
-        );
-    };
-
-    const handleApplyFilters = async () => {
-        const filtersToApply = {
-            brands: selectedBrands.map(brand => marcasAbreviadas[brand]),
-            colors: selectedColors,
-            collections: selectedCollections.map(collection => {
-                for (const marca in coleccionesPorMarca) {
-                    if (coleccionesPorMarca[marca][collection]) {
-                        return coleccionesPorMarca[marca][collection];
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filters`, {
+                    headers: {
+                        'Accept': 'application/json'
                     }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                return collection;
-            }),
-            fabricTypes: selectedFabricTypes,
-            fabricPatterns: selectedFabricPatterns,
-            tonalidad: selectedTonalidad,
+
+                const data = await response.json();
+                console.log('Fetched data:', data);
+
+                const filteredBrands = data.brands.filter(brand => brand && ["ARE", "HAR", "FLA", "CJM"].includes(brand));
+                const filteredCollections = data.collections.filter(collection => collection);
+                const filteredFabricTypes = data.fabricTypes.filter(type => type);
+                const filteredFabricPatterns = data.fabricPatterns.filter(pattern => pattern);
+                const sortedMartindaleValues = data.martindaleValues.filter(value => value).sort((a, b) => b - a);
+                const filteredUsoValues = data.usoValues.filter(uso => uso);
+                const filteredColors = data.colors.filter(color => color);
+                const filteredTonalidades = data.tonalidades.filter(tonalidad => tonalidad);
+
+                setBrands(processData(filteredBrands));
+                setCollections(processData(filteredCollections));
+                setFabricTypes(processData(filteredFabricTypes));
+                setFabricPatterns(processData(filteredFabricPatterns));
+                setMartindaleValues(sortedMartindaleValues);
+                setUsoValues(filteredUsoValues);
+                setColors(processData(filteredColors));
+                setTonalidades(processData(filteredTonalidades));
+            } catch (error) {
+                console.error('Error fetching data:', error.message);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const processData = (data) => {
+        const processedData = [];
+        const seenValues = new Set();
+
+        data.forEach(item => {
+            const value = item.split(';')[0].trim();
+            if (!seenValues.has(value)) {
+                seenValues.add(value);
+                processedData.push(value);
+            }
+        });
+
+        return processedData;
+    };
+
+    const handleApplyFilters = () => {
+        const filtersToApply = {
+            brand: selectedBrands,
+            color: selectedColors,
+            collection: selectedCollections,
+            fabricType: selectedFabricTypes,
+            fabricPattern: selectedFabricPatterns,
+            tonalidad: selectedTonalidades,
             martindale: selectedMartindale,
-            mantenimiento: selectedMantenimiento,
             uso: selectedUso
         };
 
-        try {
-            const response = await fetch('/api/products', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(filtersToApply)
-            });
-
-            if (response.ok) {
-                const filteredProducts = await response.json();
-                applyFilters(filteredProducts);
-            } else {
-                console.error('Failed to fetch filtered products');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-
+        applyFilters(filtersToApply);
         close();
+    };
+
+    const handleCheckboxChange = (setSelected, selected, value) => {
+        if (selected.includes(value)) {
+            setSelected(selected.filter(item => item !== value));
+        } else {
+            setSelected([...selected, value]);
+        }
     };
 
     if (!isOpen) return null;
 
-    const colors = [
-        { name: 'Rojo', hex: '#ef4444' },
-        { name: 'Azul', hex: '#3b82f6' },
-        { name: 'Verde', hex: '#22c55e' },
-        { name: 'Amarillo', hex: '#eab308' },
-        { name: 'Rojo', hex: '#ef4444' },
-        { name: 'Azul', hex: '#3b82f6' },
-        { name: 'Verde', hex: '#22c55e' },
-        { name: 'Amarillo', hex: '#eab308' },
-    ];
-
-    const tonalidades = [
-        { name: 'Claro', hex: '#f8f8f8' },
-        { name: 'Medio', hex: '#cccccc' },
-        { name: 'Oscuro', hex: '#333333' },
-        { name: 'Muy Oscuro', hex: '#000000' },
-        { name: 'Pastel', hex: '#ffd1dc' },
-        { name: 'Vibrante', hex: '#ff007f' },
-        { name: 'Suave', hex: '#aaffc3' },
-        { name: 'Intenso', hex: '#0033cc' },
-    ];
-
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg xl:max-w-[70%] max-w-[80%] h-[80%] w-full m-4 overflow-y-auto ">
+            <div className="bg-white p-6 rounded-lg xl:max-w-[70%] max-w-[90%] h-[80%] w-full m-4 overflow-y-auto ">
                 <h2 className="text-center text-2xl font-bold">FILTROS</h2>
                 <div className="flex justify-end">
                     <button className="relative overflow-hidden m-4" onClick={close}>
@@ -199,135 +112,133 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                 <div className='grid xl:grid-cols-4 md:grid-cols-2 gap-3 gap-y-6'>
                     <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
                         <h3 className="font-semibold mx-auto">Marcas</h3>
-                        {['All Brands', ...marcas].map((brand) => (
-                            <label key={brand} className="block">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedBrands.includes(brand)}
-                                    onChange={() => handleBrandChange(brand)}
-                                />
-                                {brand}
-                            </label>
-                        ))}
-                    </div>
-
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Tonalidad</h3>
-                        <div className="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-5 grid-cols-3 gap-2 mx-auto">
-                            {tonalidades.map((tonalidad) => (
-                                <div
-                                    key={tonalidad.name}
-                                    className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedTonalidad.includes(tonalidad.name) ? 'ring-2 ring-white' : ''}`}
-                                    style={{ backgroundColor: tonalidad.hex }}
-                                    onClick={() => handleTonalidadChange(tonalidad.name)}
-                                >
-                                    {selectedTonalidad.includes(tonalidad.name) && (
-                                        <div className="w-10 h-10 border-2 border-black"></div>
-                                    )}
-                                </div>
+                        <div className='grid grid-cols-2'>
+                            {brands.map((brand) => (
+                                <label key={brand} className="block">
+                                    <input
+                                        type="checkbox"
+                                        name="brand"
+                                        checked={selectedBrands.includes(brand)}
+                                        onChange={() => handleCheckboxChange(setSelectedBrands, selectedBrands, brand)}
+                                    />
+                                    {brand}
+                                </label>
                             ))}
                         </div>
                     </div>
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Colores principal</h3>
-                        <div className="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-5 grid-cols-3 gap-2 mx-auto">
-                            {colors.map((color) => (
-                                <div
-                                    key={color.name}
-                                    className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedColors.includes(color.name) ? 'ring-2 ring-white' : ''}`}
-                                    style={{ backgroundColor: color.hex }}
-                                    onClick={() => handleColorChange(color.name)}
-                                >
-                                    {selectedColors.includes(color.name) && (
-                                        <div className="w-10 h-10 border-2 border-black"></div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
                         <h3 className="font-semibold mx-auto">Colecciones</h3>
                         <input type="text" id="input-group-search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Buscar Colección" />
-                        {availableCollections.map((collection) => (
+                        {collections.map((collection) => (
                             <label key={collection} className="block">
                                 <input
                                     type="checkbox"
+                                    name="collection"
                                     checked={selectedCollections.includes(collection)}
-                                    onChange={() => handleCollectionChange(collection)}
+                                    onChange={() => handleCheckboxChange(setSelectedCollections, selectedCollections, collection)}
                                 />
                                 {collection}
                             </label>
                         ))}
                     </div>
-                    
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto py-3">Tipo de Tela</h3>
-                        <div className=' grid grid-cols-2 gap-1'>
-                        {tiposDeTela.map((type) => (
-                            <label key={type} className="block">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedFabricTypes.includes(type)}
-                                    onChange={() => handleFabricTypeChange(type)}
-                                />
-                                {type}
-                            </label>
-                        ))}
+
+                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+                        <h3 className="font-semibold mx-auto">Tonalidad</h3>
+                        <div className="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-5 grid-cols-3 gap-2 mx-auto">
+                            {tonalidades.map((tonalidad) => (
+                                <div
+                                    key={tonalidad}
+                                    className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedTonalidades.includes(tonalidad) ? 'ring-2 ring-white' : ''}`}
+                                    style={{ backgroundColor: tonalidad }}
+                                    onClick={() => handleCheckboxChange(setSelectedTonalidades, selectedTonalidades, tonalidad)}
+                                >
+                                    {selectedTonalidades.includes(tonalidad) && (
+                                        <div className="w-10 h-10 border-2 border-black"></div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+                        <h3 className="font-semibold mx-auto">Colores principal</h3>
+                        <div className="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-5 grid-cols-3 gap-2 mx-auto">
+                            {colors.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedColors.includes(color) ? 'ring-2 ring-white' : ''}`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={() => handleCheckboxChange(setSelectedColors, selectedColors, color)}
+                                >
+                                    {selectedColors.includes(color) && (
+                                        <div className="w-10 h-10 border-2 border-black"></div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+                        <h3 className="font-semibold mx-auto">Tipo de Tela</h3>
+                        <div className='grid grid-cols-2'>
+                            {fabricTypes.map((type) => (
+                                <label key={type} className="block">
+                                    <input
+                                        type="checkbox"
+                                        name="fabricType"
+                                        checked={selectedFabricTypes.includes(type)}
+                                        onChange={() => handleCheckboxChange(setSelectedFabricTypes, selectedFabricTypes, type)}
+                                    />
+                                    {type}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
                         <h3 className="font-semibold mx-auto">Dibujo de la Tela</h3>
-                        {dibujosDeTela.map((pattern) => (
-                            <label key={pattern} className="block">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedFabricPatterns.includes(pattern)}
-                                    onChange={() => handleFabricPatternChange(pattern)}
-                                />
-                                {pattern}
-                            </label>
-                        ))}
+                        <div className='grid grid-cols-2'>
+                            {fabricPatterns.map((pattern) => (
+                                <label key={pattern} className="block">
+                                    <input
+                                        type="checkbox"
+                                        name="fabricPattern"
+                                        checked={selectedFabricPatterns.includes(pattern)}
+                                        onChange={() => handleCheckboxChange(setSelectedFabricPatterns, selectedFabricPatterns, pattern)}
+                                    />
+                                    {pattern}
+                                </label>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
                         <h3 className='font-semibold mx-auto'>Martindale</h3>
-                        {martindaleValues.map((value) => (
-                            <label key={value} className="block">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedMartindale.includes(value)}
-                                    onChange={() => handleMartindaleChange(value)}
-                                />
-                                {value}
-                            </label>
-                        ))}
+                        <div className='grid grid-cols-2'>
+                            {martindaleValues.map((value) => (
+                                <label key={value} className="block">
+                                    <input
+                                        type="checkbox"
+                                        name="martindale"
+                                        checked={selectedMartindale.includes(value)}
+                                        onChange={() => handleCheckboxChange(setSelectedMartindale, selectedMartindale, value)}
+                                    />
+                                    {value}
+                                </label>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Mantenimiento</h3>
-                        {mantenimientoValues.map((value) => (
-                            <label key={value} className="block">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedMantenimiento.includes(value)}
-                                    onChange={() => handleMantenimientoChange(value)}
-                                />
-                                {value}
-                            </label>
-                        ))}
-                    </div>
-
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
                         <h3 className="font-semibold mx-auto">Uso</h3>
                         {usoValues.map((value) => (
                             <label key={value} className="block">
                                 <input
                                     type="checkbox"
+                                    name="uso"
                                     checked={selectedUso.includes(value)}
-                                    onChange={() => handleUsoChange(value)}
+                                    onChange={() => handleCheckboxChange(setSelectedUso, selectedUso, value)}
                                 />
                                 {value}
                             </label>
