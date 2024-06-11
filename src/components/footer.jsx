@@ -1,4 +1,4 @@
-import { RiInstagramLine, RiFacebookLine, RiTwitterLine, RiGithubLine } from "react-icons/ri";
+import { RiInstagramLine, RiFacebookLine, RiTwitterXFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -27,7 +27,7 @@ const Footer = () => {
                     </div>
                     <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
                         <a href="#" className="block text-white">
-                            <RiTwitterLine size={20} />
+                            <RiTwitterXFill size={20} />
                         </a>
                     </div>
                 </nav>
@@ -54,14 +54,12 @@ const Footer = () => {
                     >
                         Inversores
                     </a>
-                    <a
-                        href="#"
-                        className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
-                    >
+                    <Link
+                        to="/contact" className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300">
                         Eventos
-                    </a>
+                    </Link>
                     <a
-                        href="/pdfs/LSSI_TÉRMINOS_Y_CONDICIONES_DE_COMPRA_CJM_WORLDWIDE_S.L..pdf"
+                        href="public\pdfs\LSSI TÉRMINOS Y CONDICIONES DE COMPRA, CJM WORLDWIDE S.L..pdf"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -70,7 +68,7 @@ const Footer = () => {
                         Términos de Compra
                     </a>
                     <a
-                        href="/pdfs/LSSI_POLITICA_DE_COOKIES_CJM_WORLDWIDE_S.L..pdf"
+                        href="public\pdfs\LSSI POLITICA DE COOKIES, CJM WORLDWIDE S.L..pdf"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -79,7 +77,7 @@ const Footer = () => {
                         Política de Cookies
                     </a>
                     <a
-                        href="/pdfs/LSSI_POLITICA_DE_PRIVACIDAD_CJM_WORLDWIDE_S.L..pdf"
+                        href="public\pdfs\LSSI POLITICA DE PRIVACIDAD, CJM WORLDWIDE S.L..pdf"
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                         target="_blank"
                         rel="noopener noreferrer"
