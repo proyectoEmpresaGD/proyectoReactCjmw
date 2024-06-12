@@ -6,40 +6,47 @@ import { useCart } from '../CartContext';
 import "slick-carousel/slick/slick-theme.css";
 import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
 import { CartProvider } from "../CartContext"; // Importa CartProvider correctamente
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 const Modal = ({ isOpen, close, product, alt }) => {
     const { addToCart } = useCart();
     const [modalMapaOpen, setModalMapaOpen] = useState(false); // Estado para controlar la apertura de ModalMapa
     const [imageLoaded, setImageLoaded] = useState(false); // Estado para controlar la carga de la imagen
     const [selectedImage, setSelectedImage] = useState(''); // Estado para la imagen seleccionada
-    const [selectedName, setSelectedName] = useState(product.desprodu);
-    const [selectedCod, setSelectedCod] = useState(product.codprodu); // Estado para el nombre del producto seleccionado
     const [selectedProduct, setSelectedProduct] = useState(product); // Estado para el producto seleccionado
     const [relatedProducts, setRelatedProducts] = useState([]); // Estado para los productos relacionados
-    const [imageBuena, setImageBuena] = useState(''); // Estado para la imagen de alta calidad
-    const [imageBaja, setImageBaja] = useState(''); // Estado para la imagen de baja calidad
     const lensRef = useRef(null);
     const resultRef = useRef(null);
     const [zoomFactor, setZoomFactor] = useState(2); // Factor de zoom
 
     useEffect(() => {
-        // Fetch related products by codfamil
         const fetchRelatedProducts = async () => {
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${product.codfamil}`);
                 const data = await response.json();
-                setRelatedProducts(data);
+                const productsWithImages = await Promise.all(
+                    data.map(async (product) => {
+                        const [imageBuena, imageBaja] = await Promise.all([
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                        ]);
+
+                        return {
+                            ...product,
+                            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
+                            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                        };
+                    })
+                );
+                setRelatedProducts(productsWithImages);
             } catch (error) {
                 console.error('Error fetching related products:', error);
             }
         };
-
         fetchRelatedProducts();
     }, [product.codfamil]);
 
     useEffect(() => {
-        // Fetch images for the selected product
         const fetchImages = async () => {
             try {
                 const [buenaResponse, bajaResponse] = await Promise.all([
@@ -50,14 +57,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
                 const bajaImage = bajaResponse.ok ? await bajaResponse.json() : null;
 
-                setImageBuena(buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url');
-                setImageBaja(bajaImage ? `https://${bajaImage.ficadjunto}` : 'default_baja_image_url');
+                setSelectedProduct({
+                    ...product,
+                    imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url',
+                    imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : 'default_baja_image_url'
+                });
                 setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url');
             } catch (error) {
                 console.error('Error fetching images:', error);
             }
         };
-
         fetchImages();
     }, [product.codprodu]);
 
@@ -67,8 +76,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     const handleImageLoad = () => {
         setImageLoaded(true); // Marca la imagen como cargada
-
-        // Ajusta el factor de zoom según el tamaño de la imagen
         const img = lensRef.current.previousSibling;
         const { width, height } = img;
         const factor = Math.max(2, (width > 300 || height > 300) ? 2 : 3);
@@ -105,10 +112,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const handleColorClick = (colorProduct) => {
-        setSelectedImage(colorProduct.urlimagen);
-        setSelectedName(colorProduct.desprodu);
-        setSelectedCod(colorProduct.codprodu);
         setSelectedProduct(colorProduct); // Actualiza el producto seleccionado
+        setSelectedImage(colorProduct.imageBuena || colorProduct.imageBaja);
         setImageLoaded(false); // Reset image loaded state to show lens only after image is loaded
     };
 
@@ -121,16 +126,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
         "No planchar": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-disable.svg',
         "Lavar a mano": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/hand-wash.svg',
         "No usar blanqueador": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-no-bleach.svg',
-        "Limpieza en seco": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/dry-Clening.webp',  // Cambia esta ruta por la de tu icono
-        "No usar secadora": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-do.svg',  // Cambia esta ruta por la de tu icono
-    }
+        "Limpieza en seco": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/dry-Clening.webp',
+        "No usar secadora": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-do.svg',
+    };
 
     const getMantenimientoImages = (mantenimientos) => {
-        if (!mantenimientos) return "?";  // Verifica si mantenimientos es null o undefined y devuelve null
+        if (!mantenimientos) return "?"; 
 
         const mantenimientoList = mantenimientos.split(';').map(mantenimiento => mantenimiento.trim());
         return mantenimientoList
-            .filter(mantenimiento => mantenimientoImages[mantenimiento])  // Filtra los mantenimientos que no tienen mapeo
+            .filter(mantenimiento => mantenimientoImages[mantenimiento])
             .map((mantenimiento, index) => (
                 <img
                     key={index}
@@ -155,14 +160,12 @@ const Modal = ({ isOpen, close, product, alt }) => {
         return usoList.map((uso, index) => (
             <img
                 key={index}
-                src={`${usoImages[uso]}`}  // Reemplaza con una imagen por defecto si no hay mapeo
+                src={`${usoImages[uso]}`}
                 alt={uso}
                 className="w-6 h-6 mx-1"
             />
         ));
     };
-
-    // Configuración del carrusel
 
     const SampleNextArrow = ({ className, style, onClick }) => {
         return (
@@ -180,8 +183,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
         addToCart({
             id: selectedProduct.codprodu,
             name: selectedProduct.desprodu,
-            price: 3, // Precio fijo por ahora
-            image: imageBaja, // Usa la imagen de baja calidad para el carrito
+            price: 0.80, // Precio fijo por ahora
+            image: selectedProduct.imageBaja,
             quantity: 1
         });
         setShowAddedMessage(true);
@@ -226,7 +229,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
         ]
     };
 
-    // Si `isOpen` es falso, no se muestra nada
     if (!isOpen) return null;
 
     return (
@@ -238,36 +240,45 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                         </button>
                     </div>
-                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedName}</h2>
+                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.desprodu}</h2>
 
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-3" onClick={e => e.stopPropagation()}>
-                        {/* Columna del contenido */}
                         <div className="relative group w-full h-64 md:h-96">
                             <img
                                 src={selectedImage}
                                 alt={alt}
                                 className="w-full h-full object-contain rounded-md"
                                 onLoad={handleImageLoad}
-                                onError={(e) => { e.target.src = 'default_buena_image_url'; }}
+                                onError={handleImageError}
                                 onMouseMove={moveLens}
+                                onMouseEnter={() => {
+                                    if (lensRef.current && resultRef.current) {
+                                        lensRef.current.style.display = 'block';
+                                        resultRef.current.style.display = 'block';
+                                    }
+                                }}
+                                onMouseLeave={() => {
+                                    if (lensRef.current && resultRef.current) {
+                                        lensRef.current.style.display = 'none';
+                                        resultRef.current.style.display = 'none';
+                                    }
+                                }}
                             />
                             {imageLoaded && (
                                 <>
                                     <div
                                         ref={lensRef}
-                                        className="absolute hidden group-hover:block w-24 h-24 border border-gray-300 opacity-50 bg-white pointer-events-none rounded-full"
+                                        className="absolute hidden w-24 h-24 border border-gray-300 opacity-50 bg-white pointer-events-none rounded-full"
                                     ></div>
                                     <div
                                         ref={resultRef}
-                                        className="absolute hidden group-hover:block top-0 left-0 w-full h-full bg-white bg-cover pointer-events-none"
+                                        className="absolute hidden top-0 left-0 w-full h-full bg-white bg-cover pointer-events-none"
                                         style={{
                                             backgroundImage: `url(${selectedImage})`,
                                             backgroundSize: `${zoomFactor * 136}%`,
                                             borderRadius: '0.5rem'
                                         }}
-                                    >
-
-                                    </div>
+                                    ></div>
                                 </>
                             )}
                         </div>
@@ -276,35 +287,35 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             <div className="">
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="">Marca:</p>
-                                    <p className="">{product.codmarca}</p>
+                                    <p className="">{selectedProduct.codmarca}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
-                                    <p className="my-2">Coleccion:</p>
-                                    <p className="my-2">{product.coleccion}</p>
+                                    <p className="my-2">Colección:</p>
+                                    <p className="my-2">{selectedProduct.coleccion}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="">Color:</p>
-                                    <p className="">{product.colorprincipal}</p>
+                                    <p className="">{selectedProduct.colorprincipal}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="my-2">Tipo:</p>
-                                    <p className="my-2">{product.tipo}</p>
+                                    <p className="my-2">{selectedProduct.tipo}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="">Estilo:</p>
-                                    <p className="">{product.estilo}</p>
+                                    <p className="">{selectedProduct.estilo}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="my-2">Martindale:</p>
-                                    <p className="my-2">{product.martindale}</p>
+                                    <p className="my-2">{selectedProduct.martindale}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="">Gramaje:</p>
-                                    <p>{product.gramaje}</p>
+                                    <p>{selectedProduct.gramaje}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base ">
-                                    <p className="my-2">Composicion:</p>
-                                    <p className="my-2">{product.composicion}</p>
+                                    <p className="my-2">Composición:</p>
+                                    <p className="my-2">{selectedProduct.composicion}</p>
                                 </div>
                                 <div className="justify-center text-start text-base">
                                 </div>
@@ -314,7 +325,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <h3 className=" justify-center mx-auto text-center">Usos</h3>
                                     <Link to="/usages">
                                         <div className="justify-center items-center mx-auto mt-2 flex ">
-                                            {getUsoImages(product.uso)}
+                                            {getUsoImages(selectedProduct.uso)}
                                         </div>
                                     </Link>
                                 </div>
@@ -322,7 +333,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <h3>Mantenimiento</h3>
                                     <Link to="/usages">
                                         <div className="flex justify-center mt-2">
-                                            {getMantenimientoImages(product.mantenimiento)}
+                                            {getMantenimientoImages(selectedProduct.mantenimiento)}
                                         </div>
                                     </Link>
                                 </div>
@@ -341,7 +352,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             {relatedProducts.map((colorProduct, index) => (
                                 <div key={index} className="px-2">
                                     <img
-                                        src={colorProduct.imagepreview}
+                                        src={colorProduct.imageBuena || colorProduct.imageBaja}
                                         alt={colorProduct.desprodu}
                                         className="w-full h-16 object-cover rounded-full cursor-pointer"
                                         onClick={() => handleColorClick(colorProduct)}
@@ -358,6 +369,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
             </div>
         </CartProvider>
     );
-}
+};
 
 export default Modal;

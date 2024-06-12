@@ -35,7 +35,7 @@ const ShoppingCart = ({ onClose }) => {
                             <div>
                                 <h5 className="text-md font-semibold">{item.name}</h5>
                                 <p className="text-sm text-gray-600">{`Size: ${item.size}, Color: ${item.color}`}</p>
-                                <p className="text-sm font-semibold">${item.price}</p>
+                                <p className="text-sm font-semibold">€{item.price}</p>
                             </div>
                         </div>
                         <div className="flex items-center">
@@ -54,7 +54,7 @@ const ShoppingCart = ({ onClose }) => {
             <div className="p-4 border-t border-gray-200">
                 <div className="flex justify-between items-center">
                     <span className="text-base text-gray-600">Total:</span>
-                    <span className="text-lg font-semibold">${totalPrice}</span>
+                    <span className="text-lg font-semibold">€{totalPrice}</span>
                 </div>
                 <button onClick={() => console.log("Proceeding to checkout...")} className="w-full mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Proceed to Checkout
