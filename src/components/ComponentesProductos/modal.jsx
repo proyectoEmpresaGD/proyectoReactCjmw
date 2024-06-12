@@ -8,16 +8,17 @@ import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
 import { CartProvider } from "../CartContext"; // Importa CartProvider correctamente
 import { Link } from "react-router-dom"
 
-
 const Modal = ({ isOpen, close, product, alt }) => {
     const { addToCart } = useCart();
     const [modalMapaOpen, setModalMapaOpen] = useState(false); // Estado para controlar la apertura de ModalMapa
     const [imageLoaded, setImageLoaded] = useState(false); // Estado para controlar la carga de la imagen
-    const [selectedImage, setSelectedImage] = useState(product.urlimagen); // Estado para la imagen seleccionada
+    const [selectedImage, setSelectedImage] = useState(''); // Estado para la imagen seleccionada
     const [selectedName, setSelectedName] = useState(product.desprodu);
     const [selectedCod, setSelectedCod] = useState(product.codprodu); // Estado para el nombre del producto seleccionado
     const [selectedProduct, setSelectedProduct] = useState(product); // Estado para el producto seleccionado
     const [relatedProducts, setRelatedProducts] = useState([]); // Estado para los productos relacionados
+    const [imageBuena, setImageBuena] = useState(''); // Estado para la imagen de alta calidad
+    const [imageBaja, setImageBaja] = useState(''); // Estado para la imagen de baja calidad
     const lensRef = useRef(null);
     const resultRef = useRef(null);
     const [zoomFactor, setZoomFactor] = useState(2); // Factor de zoom
@@ -36,6 +37,29 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
         fetchRelatedProducts();
     }, [product.codfamil]);
+
+    useEffect(() => {
+        // Fetch images for the selected product
+        const fetchImages = async () => {
+            try {
+                const [buenaResponse, bajaResponse] = await Promise.all([
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`),
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`)
+                ]);
+
+                const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
+                const bajaImage = bajaResponse.ok ? await bajaResponse.json() : null;
+
+                setImageBuena(buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url');
+                setImageBaja(bajaImage ? `https://${bajaImage.ficadjunto}` : 'default_baja_image_url');
+                setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url');
+            } catch (error) {
+                console.error('Error fetching images:', error);
+            }
+        };
+
+        fetchImages();
+    }, [product.codprodu]);
 
     const handleMapClick = () => {
         setModalMapaOpen(true); // Abre ModalMapa cuando se cliquea el botón
@@ -157,7 +181,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
             id: selectedProduct.codprodu,
             name: selectedProduct.desprodu,
             price: 3, // Precio fijo por ahora
-            image: selectedProduct.urlimagen,
+            image: imageBaja, // Usa la imagen de baja calidad para el carrito
             quantity: 1
         });
         setShowAddedMessage(true);
@@ -224,7 +248,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 alt={alt}
                                 className="w-full h-full object-contain rounded-md"
                                 onLoad={handleImageLoad}
-                                onError={handleImageError}
+                                onError={(e) => { e.target.src = 'default_buena_image_url'; }}
                                 onMouseMove={moveLens}
                             />
                             {imageLoaded && (
@@ -251,38 +275,38 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             <h1 className="font-bold text-black mx-auto text-start">Descripción</h1>
                             <div className="">
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
-                                <p className="">Marca:</p>
-                                <p className="">{product.codmarca}</p>
+                                    <p className="">Marca:</p>
+                                    <p className="">{product.codmarca}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
-                                <p className="my-2">Coleccion:</p>
-                                <p className="my-2">{product.coleccion}</p>
+                                    <p className="my-2">Coleccion:</p>
+                                    <p className="my-2">{product.coleccion}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="">Color:</p>
                                     <p className="">{product.colorprincipal}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
-                                <p className="my-2">Tipo:</p>
-                                <p className="my-2">{product.tipo}</p>
+                                    <p className="my-2">Tipo:</p>
+                                    <p className="my-2">{product.tipo}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
-                                <p className="">Estilo:</p>
-                                <p className="">{product.estilo}</p>
+                                    <p className="">Estilo:</p>
+                                    <p className="">{product.estilo}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
-                                <p className="my-2">Martindale:</p>
-                                <p className="my-2">{product.martindale}</p>
+                                    <p className="my-2">Martindale:</p>
+                                    <p className="my-2">{product.martindale}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
-                                <p className="">Gramaje:</p>
-                                <p>{product.gramaje}</p>
+                                    <p className="">Gramaje:</p>
+                                    <p>{product.gramaje}</p>
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base ">
-                                <p className="my-2">Composicion:</p>
-                                <p className="my-2">{product.composicion}</p>
+                                    <p className="my-2">Composicion:</p>
+                                    <p className="my-2">{product.composicion}</p>
                                 </div>
-                                <div className="justify-center text-start text-base">    
+                                <div className="justify-center text-start text-base">
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 mx-2 text-center">
@@ -321,6 +345,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         alt={colorProduct.desprodu}
                                         className="w-full h-16 object-cover rounded-full cursor-pointer"
                                         onClick={() => handleColorClick(colorProduct)}
+                                        onError={(e) => { e.target.src = 'default_image_preview_url'; }}
                                     />
                                 </div>
                             ))}
