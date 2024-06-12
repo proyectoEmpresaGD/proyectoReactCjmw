@@ -9,6 +9,8 @@ export const createProductRouter = () => {
     productsRouter.get('/', productController.getAll.bind(productController));
     productsRouter.post('/', productController.create.bind(productController));
 
+    productsRouter.get('/filters', productController.getFilters.bind(productController));
+    productsRouter.post('/filter', productController.filterProducts.bind(productController));
     // Ruta de búsqueda debe ir antes de las rutas que capturan parámetros como 'id'
     productsRouter.get('/search', productController.search.bind(productController));
     productsRouter.get('/codfamil/:codfamil', productController.getByCodFamil.bind(productController)); // Nueva ruta

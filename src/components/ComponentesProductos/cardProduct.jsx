@@ -4,7 +4,9 @@ import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
 import { FiLoader, FiShoppingCart } from 'react-icons/fi';
-import PullToRefreshComponent from "./flecha";
+import PullToRefreshComponent from "./flecha"
+import Filtro from "../../app/products/buttonFiltro"
+
 
 const CardProduct = () => {
     const location = useLocation();
@@ -74,6 +76,7 @@ const CardProduct = () => {
                 !/PERCHA/i.test(product.desprodu) &&
                 !/(PERCHAS)/i.test(product.desprodu) &&
                 !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
+                !/(FUERA DE COLECCIÓN)/i.test(product.desprodu) &&
                 ['ARE', 'FLA', 'CJM', 'HAR'].includes(product.codmarca)
             ));
             setProducts(prevProducts => append ? [...prevProducts, ...validProducts] : validProducts);
@@ -234,6 +237,7 @@ const CardProduct = () => {
                         </button>
                     </div>
                 )}
+                <Filtro setFilteredProducts={setProducts}/>
                 <div className="flex flex-wrap justify-center items-center">
                     {products.map((product, index) => (
                         <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">

@@ -1,6 +1,5 @@
 import { Header } from "../../components/header";
 import CardProduct from "../../components/ComponentesProductos/cardProduct";
-import Filtro from "../products/buttonFiltro";
 import { CartProvider } from '../../components/CartContext';
 
 function Product() {
@@ -16,7 +15,6 @@ function Product() {
                         <p className=" mx-auto text-center py-10 text-lg">Descubre nuestra exclusiva colección de telas de alta calidad, perfectas para tus proyectos de moda y decoración. Desde elegantes sedas hasta versátiles algodones, tenemos la tela ideal para cada creación. Explora nuestro catálogo y encuentra la inspiración que necesitas para hacer realidad tus ideas.</p>
                         <p className="mx-auto text-center py-10 text-xl font-semibold">¡Empieza a crear con Cjm hoy mismo!</p>
                     </div>
-                    <Filtro />
                     <CardProduct />
                 </div>
             </CartProvider>
@@ -25,4 +23,6 @@ function Product() {
 }
 
 export default Product;
+
+
 

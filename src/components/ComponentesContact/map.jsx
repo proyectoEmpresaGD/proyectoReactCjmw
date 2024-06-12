@@ -262,17 +262,17 @@ const GeocodingService = () => {
               type="text"
               value={cityName}
               onChange={(e) => setCityName(e.target.value)}
-              placeholder="nombre de tu ciudad"
+              placeholder="¿Donde te encuentras?"
               className="relative mx-auto ml-2 mb-6 w-[55%] md:w-[30%] text-center py-3 px-3 xl:w-[22%] xl:hover:w-[24%] lg:w-[25%] lg:hover:w-[30%] border-b-2 text-[110%] bg-white hover:bg-gray-200 text-black duration-200 hover:rounded-xl rounded"
             />
             <button type="submit" className="relative mx-auto xl:ml-2 lg:ml-2 md:ml-2 ml-4 px-3 py-3 xl:px-6 lg:px-6 w-35% xl:w-[13%] text-center bg-black hover:bg-white text-white hover:text-black duration-200 border-2 border-black hover:border-gray-400 hover:rounded-xl rounded">
-              Buscar
+              Buscanos 
             </button>
           </form>
           <div id="map" className="w-full" style={{ height: "65vh", borderRadius: "2%" }}></div>
         </div>
         <div className="justify-center items-center mx-auto xl:col-span-1 lg:col-span-1 col-span-4">
-          <div className="mx-auto text-center justify-center overflow-auto max-h-96">
+          <div className="mx-auto text-center justify-center overflow-auto max-h-[80%]">
             <h1 className="py-[5%] text-3xl text-white font-bold">Tus Tiendas más cercanas</h1>
             <ul>
               {nearbyStores.map(store => (

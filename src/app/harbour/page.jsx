@@ -3,7 +3,6 @@ import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
-import CardProductBrand from "../../components/ComponentesProductos/cardProductBrand"
 import { Link } from "react-router-dom";
 import HarbourColecciones from "../colecciones/harbourColeccion"
 
