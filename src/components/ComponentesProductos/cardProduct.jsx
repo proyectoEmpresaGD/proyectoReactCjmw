@@ -7,6 +7,7 @@ import { FiLoader, FiShoppingCart } from 'react-icons/fi';
 import PullToRefreshComponent from "./flecha"
 import Filtro from "../../app/products/buttonFiltro"
 
+
 const CardProduct = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -49,7 +50,24 @@ const CardProduct = () => {
                 throw new Error('Error fetching products');
             }
             const data = await response.json();
-            const validProducts = data.filter(product => (
+
+            // Obtener las imágenes de calidad "Buena" y "Baja" para cada producto
+            const productsWithImages = await Promise.all(
+                data.map(async (product) => {
+                    const [imageBuena, imageBaja] = await Promise.all([
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                    ]);
+
+                    return {
+                        ...product,
+                        imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
+                        imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                    };
+                })
+            );
+
+            const validProducts = productsWithImages.filter(product => (
                 isValidProduct(product) &&
                 !/^(LIBRO|PORTADA|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
                 !/(PERCHAS Y LIBROS)/i.test(product.desprodu) &&
@@ -88,7 +106,24 @@ const CardProduct = () => {
                         throw new Error('Error fetching search results');
                     }
                     const data = await response.json();
-                    const filteredData = data.filter(product =>
+
+                    // Obtener las imágenes de calidad "Buena" y "Baja" para cada producto
+                    const productsWithImages = await Promise.all(
+                        data.map(async (product) => {
+                            const [imageBuena, imageBaja] = await Promise.all([
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                            ]);
+
+                            return {
+                                ...product,
+                                imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
+                                imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                            };
+                        })
+                    );
+
+                    const filteredData = productsWithImages.filter(product =>
                         isValidProduct(product) &&
                         !searchHistory.some(historyItem => historyItem.codprodu === product.codprodu)
                     );
@@ -121,7 +156,19 @@ const CardProduct = () => {
                         throw new Error('Error fetching product by ID');
                     }
                     const data = await response.json();
-                    setProducts([data]);
+
+                    const [imageBuena, imageBaja] = await Promise.all([
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${data.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${data.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                    ]);
+
+                    const productWithImages = {
+                        ...data,
+                        imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
+                        imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                    };
+
+                    setProducts([productWithImages]);
                     setShowClearButton(true); // Show the clear button after fetching a specific product
                 } catch (error) {
                     setError('Error fetching product by ID');
@@ -139,7 +186,7 @@ const CardProduct = () => {
             id: product.codprodu,
             name: product.desprodu,
             price: 0.8,
-            image: product.imagepreview,
+            image: product.imageBaja,
             quantity: 1
         });
     };
@@ -195,7 +242,12 @@ const CardProduct = () => {
                     {products.map((product, index) => (
                         <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
                             <div className="relative overflow-hidden w-full h-48 sm:h-56 md:h-64" onClick={() => handleProductClick(product)}>
-                                <img className="object-cover w-full h-full" src={product.urlimagen} alt={product.desprodu} />
+                                <img
+                                    className="object-cover w-full h-full"
+                                    src={product.imageBuena}
+                                    alt={product.desprodu}
+                                    onError={(e) => { e.target.src = 'default_buena_image_url'; }}
+                                />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
                             </div>
                             <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
