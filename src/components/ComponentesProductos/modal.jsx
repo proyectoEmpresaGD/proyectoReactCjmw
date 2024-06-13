@@ -248,56 +248,56 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     </div>
                     <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.desprodu}</h2>
 
-                    <div className="grid md:grid-cols-2 grid-cols-1 gap-3" onClick={e => e.stopPropagation()}>
-                    <div className="relative group w-full h-64 md:h-96">
-    <img
-        src={selectedImage}
-        alt={alt}
-        className="w-full h-full object-contain rounded-md"
-        onLoad={handleImageLoad}
-        onError={handleImageError}
-        onMouseMove={moveLens}
-        onMouseEnter={() => {
-            if (lensRef.current && resultRef.current) {
-                lensRef.current.style.display = 'block';
-                resultRef.current.style.display = 'block';
-            }
-        }}
-        onMouseLeave={() => {
-            if (lensRef.current && resultRef.current) {
-                lensRef.current.style.display = 'none';
-                resultRef.current.style.display = 'none';
-            }
-        }}
-    />
-    {imageLoaded && (
-        <>
-            <div
-                ref={lensRef}
-                className="absolute hidden w-full h-full border border-gray-300 opacity-50 bg-transparent pointer-events-none"
-            ></div>
+                    <div className="grid md:grid-cols-2 grid-cols-1 gap-2" onClick={e => e.stopPropagation()}>
+                        <div className="relative group w-full h-64 md:h-96">
+                            <img
+                                src={selectedImage}
+                                alt={alt}
+                                className="w-full h-full object-contain rounded-md"
+                                onLoad={handleImageLoad}
+                                onError={handleImageError}
+                                onMouseMove={moveLens}
+                                onMouseEnter={() => {
+                                    if (lensRef.current && resultRef.current) {
+                                        lensRef.current.style.display = 'block';
+                                        resultRef.current.style.display = 'block';
+                                    }
+                                }}
+                                onMouseLeave={() => {
+                                    if (lensRef.current && resultRef.current) {
+                                        lensRef.current.style.display = 'none';
+                                        resultRef.current.style.display = 'none';
+                                    }
+                                }}
+                            />
+                            {imageLoaded && (
+                                <>
+                                    <div
+                                        ref={lensRef}
+                                        className="absolute hidden w-full h-full border border-gray-300 opacity-50 bg-transparent pointer-events-none"
+                                    ></div>
 
-            <div
-                ref={resultRef}
-                className="absolute hidden top-0 left-0 w-full h-full pointer-events-none overflow-hidden"
-            >
-                <img
-                    src={selectedImage}
-                    alt={alt}
-                    className="absolute"
-                    style={{
-                        width: `${zoomFactor * 100}%`,
-                        height: `${zoomFactor * 100}%`,
-                        objectFit: 'cover',
-                        display: 'block'
-                    }}
-                />
-            </div>
+                                    <div
+                                        ref={resultRef}
+                                        className="absolute hidden top-0 left-0 w-full h-full pointer-events-none overflow-hidden"
+                                    >
+                                        <img
+                                            src={selectedImage}
+                                            alt={alt}
+                                            className="absolute"
+                                            style={{
+                                                width: `${zoomFactor * 70}%`,
+                                                height: `${zoomFactor * 70}%`,
+                                                objectFit: 'cover',
+                                                display: 'block'
+                                            }}
+                                        />
+                                    </div>
                                 </>
                             )}
                         </div>
                         <div className="flex flex-col justify-between xl:p-8 lg:p-8 md:p-8 mx-auto text-start">
-                            <h1 className="font-bold text-black mx-auto text-start">Descripción</h1>
+                            <h1 className="font-bold text-black mx-auto text-start">Ficha Técnica</h1>
                             <div className="">
                                 <div className="grid grid-cols-2 justify-start text-start text-base">
                                     <p className="">Marca:</p>
@@ -368,7 +368,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <img
                                         src={colorProduct.imageBaja}
                                         alt={colorProduct.desprodu}
-                                        className="w-full h-16 object-cover rounded-full cursor-pointer"
+                                        className="w-full h-24 object-cover rounded-full cursor-pointer"
                                         onClick={() => handleColorClick(colorProduct)}
                                         onError={(e) => { e.target.src = 'default_image_preview_url'; }}
                                     />
