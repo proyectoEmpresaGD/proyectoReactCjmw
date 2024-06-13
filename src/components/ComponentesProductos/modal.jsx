@@ -5,19 +5,19 @@ import "slick-carousel/slick/slick.css";
 import { useCart } from '../CartContext';
 import "slick-carousel/slick/slick-theme.css";
 import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
-import { CartProvider } from "../CartContext"; // Importa CartProvider correctamente
+import { CartProvider } from "../CartContext";
 import { Link } from "react-router-dom";
 
 const Modal = ({ isOpen, close, product, alt }) => {
     const { addToCart } = useCart();
-    const [modalMapaOpen, setModalMapaOpen] = useState(false); // Estado para controlar la apertura de ModalMapa
-    const [imageLoaded, setImageLoaded] = useState(false); // Estado para controlar la carga de la imagen
-    const [selectedImage, setSelectedImage] = useState(''); // Estado para la imagen seleccionada
-    const [selectedProduct, setSelectedProduct] = useState(product); // Estado para el producto seleccionado
-    const [relatedProducts, setRelatedProducts] = useState([]); // Estado para los productos relacionados
+    const [modalMapaOpen, setModalMapaOpen] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
+    const [selectedProduct, setSelectedProduct] = useState(product);
+    const [relatedProducts, setRelatedProducts] = useState([]);
     const lensRef = useRef(null);
     const resultRef = useRef(null);
-    const [zoomFactor, setZoomFactor] = useState(2); // Factor de zoom
+    const [zoomFactor, setZoomFactor] = useState(2);
 
     useEffect(() => {
         const fetchRelatedProducts = async () => {
@@ -71,11 +71,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
     }, [product.codprodu]);
 
     const handleMapClick = () => {
-        setModalMapaOpen(true); // Abre ModalMapa cuando se cliquea el botón
+        setModalMapaOpen(true);
     };
 
     const handleImageLoad = () => {
-        setImageLoaded(true); // Marca la imagen como cargada
+        setImageLoaded(true);
         const img = lensRef.current?.previousSibling;
         if (img) {
             const { width, height } = img;
@@ -85,7 +85,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const handleImageError = () => {
-        console.error('Error loading image'); // Maneja el error de carga de la imagen
+        console.error('Error loading image');
     };
 
     const moveLens = (e) => {
@@ -117,10 +117,28 @@ const Modal = ({ isOpen, close, product, alt }) => {
         result.firstChild.style.top = `-${zoomY}px`;
     };
 
-    const handleColorClick = (colorProduct) => {
-        setSelectedProduct(colorProduct); // Actualiza el producto seleccionado
-        setSelectedImage(colorProduct.imageBaja);
-        setImageLoaded(false); // Reset image loaded state to show lens only after image is loaded
+    const handleColorClick = async (colorProduct) => {
+        try {
+            const [buenaResponse, bajaResponse] = await Promise.all([
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/Buena`),
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/Baja`)
+            ]);
+
+            const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
+            const bajaImage = bajaResponse.ok ? await bajaResponse.json() : null;
+
+            const updatedProduct = {
+                ...colorProduct,
+                imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url',
+                imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : 'default_baja_image_url'
+            };
+
+            setSelectedProduct(updatedProduct);
+            setSelectedImage(updatedProduct.imageBuena || updatedProduct.imageBaja);
+            setImageLoaded(false);
+        } catch (error) {
+            console.error('Error fetching images for color product:', error);
+        }
     };
 
     const mantenimientoImages = {
@@ -189,7 +207,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
         addToCart({
             id: selectedProduct.codprodu,
             name: selectedProduct.desprodu,
-            price: 0.80, // Precio fijo por ahora
+            price: 0.80,
             image: selectedProduct.imageBaja,
             quantity: 1
         });
@@ -240,7 +258,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-4">
-                <div className="bg-white p-7 lg:mt-[5%] xl:mt-[5%] md:mt-[5%] mt-[30%] rounded-lg xl:max-w-4xl w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
+                <div className="bg-white p-7 lg:mt-[5%] xl:mt-[5%] md:mt-[5%] mt-[20%] rounded-lg xl:max-w-4xl w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
                     <div className="flex justify-end absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
@@ -296,82 +314,84 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 </>
                             )}
                         </div>
-                        <div className="flex flex-col justify-between xl:p-8 lg:p-8 md:p-8 mx-auto text-start">
-                            <h1 className="font-bold text-black mx-auto text-start">Ficha Técnica</h1>
+                        <div className="flex flex-col justify-start xl:p-8 lg:p-8 md:p-8 mx-auto text-start">
+                            <h1 className="font-bold text-black mx-auto text-start mb-4 mt-[-2rem]">Ficha Técnica</h1>
                             <div className="">
-                                <div className="grid grid-cols-2 justify-start text-start text-base">
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
                                     <p className="">Marca:</p>
                                     <p className="">{selectedProduct.codmarca}</p>
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base">
-                                    <p className="my-2">Colección:</p>
-                                    <p className="my-2">{selectedProduct.coleccion}</p>
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                    <p className="">Colección:</p>
+                                    <p className="">{selectedProduct.coleccion}</p>
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base">
-                                    <p className="">Color:</p>
-                                    <p className="">{selectedProduct.colorprincipal}</p>
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                    <p className="">Tonalidad:</p>
+                                    <p className="">{selectedProduct.tonalidad}</p>
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base">
-                                    <p className="my-2">Tipo:</p>
-                                    <p className="my-2">{selectedProduct.tipo}</p>
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                    <p className="">Tipo:</p>
+                                    <p className="">{selectedProduct.tipo}</p>
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base">
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
                                     <p className="">Estilo:</p>
                                     <p className="">{selectedProduct.estilo}</p>
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base">
-                                    <p className="my-2">Martindale:</p>
-                                    <p className="my-2">{selectedProduct.martindale}</p>
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                    <p className="">Martindale:</p>
+                                    <p className="">{selectedProduct.martindale}</p>
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base">
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
                                     <p className="">Gramaje:</p>
                                     <p>{selectedProduct.gramaje}</p>
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base ">
-                                    <p className="my-2">Composición:</p>
-                                    <p className="my-2">{selectedProduct.composicion}</p>
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                    <p className="">Composición:</p>
+                                    <p className="">{selectedProduct.composicion}</p>
                                 </div>
-                                <div className="justify-center text-start text-base">
+                                <div className="grid grid-cols-2 justify-start text-start text-base mt-4">
+                                    <div>
+                                        <h3 className="text-center font-semibold">Usos</h3>
+                                        <Link to="/usages">
+                                            <div className="flex justify-center items-center mt-2">
+                                                {getUsoImages(selectedProduct.uso)}
+                                            </div>
+                                        </Link>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-center font-semibold">Mantenimiento</h3>
+                                        <Link to="/usages">
+                                            <div className="flex justify-center items-center mt-2">
+                                                {getMantenimientoImages(selectedProduct.mantenimiento)}
+                                            </div>
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="grid grid-cols-2 mx-2 text-center">
-                                <div>
-                                    <h3 className=" justify-center mx-auto text-center">Usos</h3>
-                                    <Link to="/usages">
-                                        <div className="justify-center items-center mx-auto mt-2 flex ">
-                                            {getUsoImages(selectedProduct.uso)}
-                                        </div>
-                                    </Link>
+                                <div className="flex justify-between mt-6 space-x-4">
+                                    <button className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
+                                        Dónde comprar
+                                    </button>
+                                    <button className="bg-gradient-to-r from-[#8c7c68] to-[#a09282] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68]">
+                                        Adquirir muestra
+                                    </button>
                                 </div>
-                                <div>
-                                    <h3>Mantenimiento</h3>
-                                    <Link to="/usages">
-                                        <div className="flex justify-center mt-2">
-                                            {getMantenimientoImages(selectedProduct.mantenimiento)}
-                                        </div>
-                                    </Link>
-                                </div>
-                            </div>
-                            <div className="flex justify-between mt-4 ">
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-200 mx-1"
-                                    onClick={handleMapClick}>Dónde comprar</button>
-                                <button onClick={handleAddToCart} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-200">Adquirir muestra</button>
                             </div>
                         </div>
                     </div>
 
-                    {/* Carrusel de imágenes de colores */}
                     <div className="mt-6">
                         <Slider {...settings}>
                             {relatedProducts.map((colorProduct, index) => (
-                                <div key={index} className="px-2">
+                                <div key={index} className="relative px-2 cursor-pointer" onClick={() => handleColorClick(colorProduct)}>
                                     <img
                                         src={colorProduct.imageBaja}
                                         alt={colorProduct.desprodu}
-                                        className="w-full h-24 object-cover rounded-full cursor-pointer"
-                                        onClick={() => handleColorClick(colorProduct)}
+                                        className="w-full h-32 object-cover rounded-md"
                                         onError={(e) => { e.target.src = 'default_image_preview_url'; }}
                                     />
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                        <p className="text-white text-center">{colorProduct.desprodu}</p>
+                                    </div>
                                 </div>
                             ))}
                         </Slider>
