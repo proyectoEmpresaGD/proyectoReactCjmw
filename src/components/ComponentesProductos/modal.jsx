@@ -1,5 +1,5 @@
-import ModalMapa from "./modalMapa";
 import { useState, useRef, useEffect } from 'react';
+import ModalMapa from "./modalMapa";
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import { useCart } from '../CartContext';
@@ -76,10 +76,12 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     const handleImageLoad = () => {
         setImageLoaded(true); // Marca la imagen como cargada
-        const img = lensRef.current.previousSibling;
-        const { width, height } = img;
-        const factor = Math.max(2, (width > 300 || height > 300) ? 2 : 3);
-        setZoomFactor(factor);
+        const img = lensRef.current?.previousSibling;
+        if (img) {
+            const { width, height } = img;
+            const factor = Math.max(2, (width > 300 || height > 300) ? 2 : 3);
+            setZoomFactor(factor);
+        }
     };
 
     const handleImageError = () => {
@@ -108,12 +110,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
         lens.style.left = `${boundedPosX}px`;
         lens.style.top = `${boundedPosY}px`;
 
-        result.style.backgroundPosition = `-${boundedPosX * zoomFactor}px -${boundedPosY * zoomFactor}px`;
+        const zoomX = boundedPosX * zoomFactor;
+        const zoomY = boundedPosY * zoomFactor;
+
+        result.firstChild.style.left = `-${zoomX}px`;
+        result.firstChild.style.top = `-${zoomY}px`;
     };
 
     const handleColorClick = (colorProduct) => {
         setSelectedProduct(colorProduct); // Actualiza el producto seleccionado
-        setSelectedImage(colorProduct.imageBuena || colorProduct.imageBaja);
+        setSelectedImage(colorProduct.imageBaja);
         setImageLoaded(false); // Reset image loaded state to show lens only after image is loaded
     };
 
@@ -131,7 +137,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const getMantenimientoImages = (mantenimientos) => {
-        if (!mantenimientos) return "?"; 
+        if (!mantenimientos) return "?";
 
         const mantenimientoList = mantenimientos.split(';').map(mantenimiento => mantenimiento.trim());
         return mantenimientoList
@@ -243,42 +249,50 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.desprodu}</h2>
 
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-3" onClick={e => e.stopPropagation()}>
-                        <div className="relative group w-full h-64 md:h-96">
-                            <img
-                                src={selectedImage}
-                                alt={alt}
-                                className="w-full h-full object-contain rounded-md"
-                                onLoad={handleImageLoad}
-                                onError={handleImageError}
-                                onMouseMove={moveLens}
-                                onMouseEnter={() => {
-                                    if (lensRef.current && resultRef.current) {
-                                        lensRef.current.style.display = 'block';
-                                        resultRef.current.style.display = 'block';
-                                    }
-                                }}
-                                onMouseLeave={() => {
-                                    if (lensRef.current && resultRef.current) {
-                                        lensRef.current.style.display = 'none';
-                                        resultRef.current.style.display = 'none';
-                                    }
-                                }}
-                            />
-                            {imageLoaded && (
-                                <>
-                                    <div
-                                        ref={lensRef}
-                                        className="absolute hidden w-24 h-24 border border-gray-300 opacity-50 bg-white pointer-events-none rounded-full"
-                                    ></div>
-                                    <div
-                                        ref={resultRef}
-                                        className="absolute hidden top-0 left-0 w-full h-full bg-white bg-cover pointer-events-none"
-                                        style={{
-                                            backgroundImage: `url(${selectedImage})`,
-                                            backgroundSize: `${zoomFactor * 136}%`,
-                                            borderRadius: '0.5rem'
-                                        }}
-                                    ></div>
+                    <div className="relative group w-full h-64 md:h-96">
+    <img
+        src={selectedImage}
+        alt={alt}
+        className="w-full h-full object-contain rounded-md"
+        onLoad={handleImageLoad}
+        onError={handleImageError}
+        onMouseMove={moveLens}
+        onMouseEnter={() => {
+            if (lensRef.current && resultRef.current) {
+                lensRef.current.style.display = 'block';
+                resultRef.current.style.display = 'block';
+            }
+        }}
+        onMouseLeave={() => {
+            if (lensRef.current && resultRef.current) {
+                lensRef.current.style.display = 'none';
+                resultRef.current.style.display = 'none';
+            }
+        }}
+    />
+    {imageLoaded && (
+        <>
+            <div
+                ref={lensRef}
+                className="absolute hidden w-full h-full border border-gray-300 opacity-50 bg-transparent pointer-events-none"
+            ></div>
+
+            <div
+                ref={resultRef}
+                className="absolute hidden top-0 left-0 w-full h-full pointer-events-none overflow-hidden"
+            >
+                <img
+                    src={selectedImage}
+                    alt={alt}
+                    className="absolute"
+                    style={{
+                        width: `${zoomFactor * 100}%`,
+                        height: `${zoomFactor * 100}%`,
+                        objectFit: 'cover',
+                        display: 'block'
+                    }}
+                />
+            </div>
                                 </>
                             )}
                         </div>
@@ -352,7 +366,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             {relatedProducts.map((colorProduct, index) => (
                                 <div key={index} className="px-2">
                                     <img
-                                        src={colorProduct.imageBuena || colorProduct.imageBaja}
+                                        src={colorProduct.imageBaja}
                                         alt={colorProduct.desprodu}
                                         className="w-full h-16 object-cover rounded-full cursor-pointer"
                                         onClick={() => handleColorClick(colorProduct)}
