@@ -249,7 +249,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.desprodu}</h2>
 
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-2" onClick={e => e.stopPropagation()}>
-                        <div className="relative group w-full h-64 md:h-96">
+                        <div className="relative group w-full h-64 md:h-96 ">
                             <img
                                 src={selectedImage}
                                 alt={alt}
@@ -284,7 +284,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         <img
                                             src={selectedImage}
                                             alt={alt}
-                                            className="absolute"
+                                            className="absolute rounded-md"
                                             style={{
                                                 width: `${zoomFactor * 70}%`,
                                                 height: `${zoomFactor * 70}%`,

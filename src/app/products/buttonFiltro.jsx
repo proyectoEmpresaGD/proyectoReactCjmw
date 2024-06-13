@@ -21,7 +21,24 @@ function Filtro({ setFilteredProducts }) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const products = await response.json();
-            setFilteredProducts(products);
+
+            // Fetch images for the filtered products
+            const productsWithImages = await Promise.all(
+                products.map(async (product) => {
+                    const [imageBuena, imageBaja] = await Promise.all([
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                    ]);
+
+                    return {
+                        ...product,
+                        imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
+                        imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                    };
+                })
+            );
+
+            setFilteredProducts(productsWithImages);
         } catch (error) {
             console.error('Error fetching filtered products:', error);
         }

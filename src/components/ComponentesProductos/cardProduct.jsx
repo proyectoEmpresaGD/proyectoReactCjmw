@@ -7,7 +7,6 @@ import { FiLoader, FiShoppingCart } from 'react-icons/fi';
 import PullToRefreshComponent from "./flecha"
 import Filtro from "../../app/products/buttonFiltro"
 
-
 const CardProduct = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -99,7 +98,7 @@ const CardProduct = () => {
             const fetchSearchedProducts = async () => {
                 setLoading(true);
                 setError(null);
-                setProducts([]); // Clear products before a new search
+                setProducts([]); 
                 try {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=10`);
                     if (!response.ok) {
