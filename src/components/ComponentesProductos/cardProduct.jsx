@@ -98,7 +98,7 @@ const CardProduct = () => {
             const fetchSearchedProducts = async () => {
                 setLoading(true);
                 setError(null);
-                setProducts([]); 
+                setProducts([]);
                 try {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=10`);
                     if (!response.ok) {
@@ -236,7 +236,7 @@ const CardProduct = () => {
                         </button>
                     </div>
                 )}
-                <Filtro setFilteredProducts={setProducts}/>
+                <Filtro setFilteredProducts={setProducts} />
                 <div className="flex flex-wrap justify-center items-center">
                     {products.map((product, index) => (
                         <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
