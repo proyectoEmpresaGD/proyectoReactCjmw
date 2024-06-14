@@ -249,8 +249,8 @@ const CardProduct = () => {
                                 />
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
                             </div>
-                            <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-2">{product.desprodu}</h3>
-                            <div className="flex items-center justify-between mt-1">
+                            <h3 className="text-center text-lg sm:text-xl font-bold text-gray-900 mt-4">{product.desprodu}</h3>
+                            <div className="flex items-center justify-between mt-4">
                                 <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
                                     <FiShoppingCart className="text-2xl" />
                                 </button>
@@ -260,13 +260,13 @@ const CardProduct = () => {
                 </div>
                 {loading && !loadingMore && <SkeletonLoader repeticiones={10} />}
                 {loadingMore && (
-                    <div className="flex flex-col items-center justify-center w-full py-2">
+                    <div className="flex flex-col items-center justify-center w-full py-4">
                         <FiLoader className="animate-spin text-6xl text-gray-500" />
-                        <span className="text-gray-500 text-2xl mx-auto text-center">Cargando más productos...</span>
+                        <span className="text-gray-500 text-2xl mt-4">Cargando más productos...</span>
                     </div>
                 )}
                 {!loading && products.length === 0 && !error && (
-                    <div className="text-center text-gray-500">No products found</div>
+                    <div className="text-center text-gray-500"></div>
                 )}
                 {!loading && error && (
                     <div className="text-center text-red-500">{error}</div>
