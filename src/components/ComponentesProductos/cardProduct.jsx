@@ -266,7 +266,7 @@ const CardProduct = () => {
                     </div>
                 )}
                 {!loading && products.length === 0 && !error && (
-                    <div className="text-center text-gray-500"></div>
+                    <div className="text-center text-gray-500">No products found</div>
                 )}
                 {!loading && error && (
                     <div className="text-center text-red-500">{error}</div>
