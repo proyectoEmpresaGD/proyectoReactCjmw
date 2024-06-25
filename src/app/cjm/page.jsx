@@ -7,6 +7,14 @@ import CJMColecciones from "../colecciones/cjmColeccion"
 
 function CjmHome() {
 
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     const images = [
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
@@ -31,7 +39,7 @@ function CjmHome() {
         <>
             <CartProvider>
                 <Header />
-                <Carrusel images={images} />
+                <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full">
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoCJM.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[30%] h-[30%] max-w-full max-h-full " />

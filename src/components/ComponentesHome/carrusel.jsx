@@ -30,7 +30,7 @@ const CarruselColecciones = ({ images }) => {
     "Texto para la imagen 6",
     "Texto para la imagen 7",
     "Texto para la imagen 8"
-  ]); // Textos para cada imagen
+  ]);
 
   useEffect(() => {
     const shuffled = shuffleArray(images);

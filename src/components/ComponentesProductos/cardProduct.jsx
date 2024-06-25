@@ -6,6 +6,7 @@ import Modal from '../ComponentesProductos/modal';
 import { FiLoader, FiShoppingCart } from 'react-icons/fi';
 import PullToRefreshComponent from "./flecha"
 import Filtro from "../../app/products/buttonFiltro"
+import 'intersection-observer';
 
 const CardProduct = () => {
     const location = useLocation();
@@ -206,7 +207,9 @@ const CardProduct = () => {
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
+                console.log('IntersectionObserver entries:', entries);
                 if (entries[0].isIntersecting && !searchQuery && !productId) {
+                    console.log('Loader is intersecting, fetching next page');
                     setPage((prevPage) => {
                         const nextPage = prevPage + 1;
                         fetchProducts(nextPage, true);
@@ -214,7 +217,7 @@ const CardProduct = () => {
                     });
                 }
             },
-            { threshold: 1 }
+            { threshold: 0.1 }  // Ajusta el umbral para que sea más sensible
         );
         if (loader.current) {
             observer.observe(loader.current);
@@ -225,6 +228,23 @@ const CardProduct = () => {
             }
         };
     }, [searchQuery, productId]);
+
+    // Backup scroll event listener
+    useEffect(() => {
+        const handleScroll = () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && !loadingMore) {
+                console.log('Reached the bottom, fetching next page');
+                setPage((prevPage) => {
+                    const nextPage = prevPage + 1;
+                    fetchProducts(nextPage, true);
+                    return nextPage;
+                });
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [loadingMore]);
 
     return (
         <>
