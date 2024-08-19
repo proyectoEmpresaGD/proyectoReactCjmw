@@ -91,14 +91,21 @@ export const Header = () => {
         while (walker.nextNode()) {
             nodes.push(walker.currentNode);
         }
-
+    
         for (const node of nodes) {
             const originalText = node.nodeValue;
             if (originalText && originalText.trim()) {
-                let translatedText = await translateText(originalText.trim(), targetLanguage);
-                translatedText = decodeHTMLEntities(translatedText); // Decodificar entidades HTML
-                translatedText = customTranslations(translatedText, targetLanguage); // Aplicar traducciones personalizadas
-                node.nodeValue = translatedText;
+                try {
+                    let translatedText = await translateText(originalText.trim(), targetLanguage);
+                    if (translatedText) {
+                        translatedText = decodeHTMLEntities(translatedText); // Decodificar entidades HTML
+                        translatedText = customTranslations(translatedText, targetLanguage); // Aplicar traducciones personalizadas
+                        node.nodeValue = translatedText;
+                    }
+                } catch (error) {
+                    console.error('Error translating text:', error);
+                    // No hacer nada, dejar el texto original sin cambios
+                }
             }
         }
     };
@@ -211,7 +218,7 @@ export const Header = () => {
     const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
         localStorage.setItem('preferredLanguage', selectedOption.value);
-        translatePage(selectedOption.value);
+        translatePage(selectedOption.value); // Traduce la página solo cuando el usuario selecciona un idioma
     };
 
     return (
