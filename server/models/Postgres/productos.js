@@ -9,35 +9,59 @@ const pool = new pg.Pool({
 });
 
 export class ProductModel {
-  static async getAll({ CodFamil, CodSubFamil, limit = 10, offset = 0 }) {
-    let query = 'SELECT * FROM productos';
-    let params = [];
-
-    if (CodFamil) {
-      query += ' WHERE "codfamil" = $1';
-      params.push(CodFamil);
-    }
-
-    if (CodSubFamil) {
-      if (params.length > 0) {
-        query += ' AND "codsubfamil" = $2';
-      } else {
-        query += ' WHERE "codsubfamil" = $1';
-      }
-      params.push(CodSubFamil);
-    }
-
-    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-    params.push(limit, offset);
+  static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
+    let accumulatedProducts = [];
+    let currentOffset = offset;
+    let limit = requiredLimit; // Comienza pidiendo la cantidad requerida
 
     try {
-      const { rows } = await pool.query(query, params);
-      return rows;
+        while (accumulatedProducts.length < requiredLimit) {
+            let query = 'SELECT * FROM productos';
+            let params = [];
+
+            if (CodFamil) {
+                query += ' WHERE "codfamil" = $1';
+                params.push(CodFamil);
+            }
+
+            if (CodSubFamil) {
+                if (params.length > 0) {
+                    query += ' AND "codsubfamil" = $2';
+                } else {
+                    query += ' WHERE "codsubfamil" = $1';
+                }
+                params.push(CodSubFamil);
+            }
+
+            query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+            params.push(limit, currentOffset);
+
+            const { rows } = await pool.query(query, params);
+            if (rows.length === 0) {
+                // Si no hay más productos, salir del bucle
+                break;
+            }
+
+            accumulatedProducts = [...accumulatedProducts, ...rows];
+            currentOffset += rows.length;
+
+            if (rows.length < limit) {
+                // Si se devuelven menos productos de los solicitados, no tiene sentido seguir consultando
+                break;
+            }
+
+            // Ajusta el límite para la próxima consulta si ya tienes algunos productos acumulados
+            limit = requiredLimit - accumulatedProducts.length;
+        }
+
+        return accumulatedProducts.slice(0, requiredLimit);
+
     } catch (error) {
-      console.error('Error fetching products:', error);
-      throw new Error('Error fetching products');
+        console.error('Error fetching products:', error);
+        throw new Error('Error fetching products');
     }
-  }
+}
+
 
   static async getById({ id }) {
     const { rows } = await pool.query('SELECT * FROM productos WHERE "codprodu" = $1;', [id]);

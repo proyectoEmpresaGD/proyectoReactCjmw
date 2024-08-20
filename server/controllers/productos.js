@@ -3,16 +3,16 @@ import { ProductModel } from '../models/Postgres/productos.js';
 export class ProductController {
   async getAll(req, res) {
     try {
-      const { CodFamil, CodSubFamil, limit, page } = req.query;
-      const limitParsed = parseInt(limit, 10) || 10;
-      const pageParsed = parseInt(page, 10) || 1;
-      const offset = (pageParsed - 1) * limitParsed;
-      const products = await ProductModel.getAll({ CodFamil, CodSubFamil, limit: limitParsed, offset });
-      res.json(products);
+        const { CodFamil, CodSubFamil, limit, page } = req.query;
+        const requiredLimit = parseInt(limit, 10) || 16; // Asegura que el límite por defecto sea 16
+        const pageParsed = parseInt(page, 10) || 1;
+        const offset = (pageParsed - 1) * requiredLimit;
+        const products = await ProductModel.getAll({ CodFamil, CodSubFamil, requiredLimit, offset });
+        res.json(products);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
-  }
+}
 
   async getById(req, res) {
     try {

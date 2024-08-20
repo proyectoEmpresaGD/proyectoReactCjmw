@@ -94,25 +94,29 @@ const Modal = ({ isOpen, close, product, alt }) => {
         const lens = lensRef.current;
         const result = resultRef.current;
         const img = e.target;
+
+        // Obtener el tamaño de la imagen y la posición del ratón
         const { left, top, width, height } = img.getBoundingClientRect();
         const x = e.clientX - left;
         const y = e.clientY - top;
 
+        // Calcular el tamaño de la lupa
         const lensWidth = lens.offsetWidth / 2;
         const lensHeight = lens.offsetHeight / 2;
 
-        const posX = x - lensWidth;
-        const posY = y - lensHeight;
+        // Limitar la posición de la lupa dentro de la imagen
+        const posX = Math.max(0, Math.min(x - lensWidth, width - lens.offsetWidth));
+        const posY = Math.max(0, Math.min(y - lensHeight, height - lens.offsetHeight));
 
-        const boundedPosX = Math.max(0, Math.min(posX, width - lens.offsetWidth));
-        const boundedPosY = Math.max(0, Math.min(posY, height - lens.offsetHeight));
+        // Mover la lupa
+        lens.style.left = `${posX}px`;
+        lens.style.top = `${posY}px`;
 
-        lens.style.left = `${boundedPosX}px`;
-        lens.style.top = `${boundedPosY}px`;
+        // Calcular la posición de la imagen ampliada para que coincida con la original
+        const zoomX = (x * zoomFactor) - lensWidth;
+        const zoomY = (y * zoomFactor) - lensHeight;
 
-        const zoomX = boundedPosX * zoomFactor;
-        const zoomY = boundedPosY * zoomFactor;
-
+        // Posicionar la imagen ampliada en la misma posición que la imagen original
         result.firstChild.style.left = `-${zoomX}px`;
         result.firstChild.style.top = `-${zoomY}px`;
     };
@@ -270,6 +274,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         <div className="relative group w-full h-64 md:h-96 ">
                             <img
                                 src={selectedImage}
+                                style={{ filter: 'saturate(1.4) brightness(1.2)' }}
                                 alt={alt}
                                 className="w-full h-full object-contain rounded-md"
                                 onLoad={handleImageLoad}
@@ -290,11 +295,14 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             />
                             {imageLoaded && (
                                 <>
+                                    {/* Lupa dinámica */}
                                     <div
                                         ref={lensRef}
-                                        className="absolute hidden w-full h-full border border-gray-300 opacity-50 bg-transparent pointer-events-none"
+                                        className="absolute hidden w-24 h-24 border border-gray-300 opacity-50 bg-transparent pointer-events-none"
+                                        style={{ borderRadius: '50%', transition: 'ease',   }}
                                     ></div>
 
+                                    {/* Imagen ampliada */}
                                     <div
                                         ref={resultRef}
                                         className="absolute hidden top-0 left-0 w-full h-full pointer-events-none overflow-hidden"
@@ -304,10 +312,12 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                             alt={alt}
                                             className="absolute rounded-md"
                                             style={{
-                                                width: `${zoomFactor * 70}%`,
-                                                height: `${zoomFactor * 70}%`,
+                                                width: `${zoomFactor * 150}%`,
+                                                height: `${zoomFactor * 150}%`,
                                                 objectFit: 'cover',
-                                                display: 'block'
+                                                transition: 'ease',
+                                                transform: 'translate(50%, 0%)',
+                                                filter: 'saturate(1.4) brightness(1.2)',  // Para asegurar que el centro esté en la posición inicial
                                             }}
                                         />
                                     </div>
