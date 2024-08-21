@@ -113,8 +113,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
         lens.style.top = `${posY}px`;
 
         // Calcular la posición de la imagen ampliada para que coincida con la original
-        const zoomX = (x * zoomFactor) - lensWidth;
-        const zoomY = (y * zoomFactor) - lensHeight;
+        const zoomX = (posX + lensWidth) * zoomFactor - result.offsetWidth / 2;
+        const zoomY = (posY + lensHeight) * zoomFactor - result.offsetHeight / 2;
 
         // Posicionar la imagen ampliada en la misma posición que la imagen original
         result.firstChild.style.left = `-${zoomX}px`;
@@ -271,7 +271,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.desprodu}</h2>
 
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-2" onClick={e => e.stopPropagation()}>
-                        <div className="relative group w-full h-64 md:h-96 ">
+                        <div className="relative group w-full h-64 md:h-96 overflow-hidden">
                             <img
                                 src={selectedImage}
                                 style={{ filter: 'saturate(1.4) brightness(1.2)' }}
@@ -299,25 +299,28 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <div
                                         ref={lensRef}
                                         className="absolute hidden w-24 h-24 border border-gray-300 opacity-50 bg-transparent pointer-events-none"
-                                        style={{ borderRadius: '50%', transition: 'ease',   }}
+                                        style={{ borderRadius: '50%', transition: 'ease' }}
                                     ></div>
 
                                     {/* Imagen ampliada */}
                                     <div
                                         ref={resultRef}
-                                        className="absolute hidden top-0 left-0 w-full h-full pointer-events-none overflow-hidden"
+                                        className="absolute hidden top-0 left-0 pointer-events-none overflow-hidden"
+                                        style={{
+                                            width: '200%', // Haz que el contenedor sea el doble del tamaño original
+                                            height: '200%',
+                                            filter: 'saturate(1.4) brightness(1.2)' // Ajusta el tamaño para que sea mayor que el original
+                                        }}
                                     >
                                         <img
-                                            src={selectedImage}
+                                            src={selectedImage} 
                                             alt={alt}
                                             className="absolute rounded-md"
                                             style={{
-                                                width: `${zoomFactor * 150}%`,
-                                                height: `${zoomFactor * 150}%`,
+                                                width: `${zoomFactor * 70}%`,  // Doble del tamaño original
+                                                height: `${zoomFactor * 70}%`, // Doble del tamaño original
                                                 objectFit: 'cover',
                                                 transition: 'ease',
-                                                transform: 'translate(50%, 0%)',
-                                                filter: 'saturate(1.4) brightness(1.2)',  // Para asegurar que el centro esté en la posición inicial
                                             }}
                                         />
                                     </div>
