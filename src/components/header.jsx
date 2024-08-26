@@ -91,7 +91,7 @@ export const Header = () => {
         while (walker.nextNode()) {
             nodes.push(walker.currentNode);
         }
-    
+
         for (const node of nodes) {
             const originalText = node.nodeValue;
             if (originalText && originalText.trim()) {
@@ -225,23 +225,24 @@ export const Header = () => {
         <>
             <ScrollToTop />
             <header className="fixed top-0 left-0 w-full bg-white z-50">
-                <div className="container mx-auto flex items-center justify-between py-4 px-6 lg:px-8">
+                <div className="container mx-auto flex items-center justify-between py-2 px-2 lg:px-2">
                     <div className="flex items-center">
                         <button className="text-gray-800 lg:hidden focus:outline-none" onClick={() => toggleDropdown('menu')}>
                             {showMenu ? <RiArrowDropUpLine size={24} /> : <RiMenu3Fill size={24} />}
                         </button>
-                        <Link to="/" className="flex items-center space-x-2 text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
-                            <img className="h-8 lg:h-10" src={logoSrc} alt="Logo" />
-                            <span className="hidden lg:block">Home</span>
+
+                        <Link to="/" className='flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg'>
+                            <img className="h-8 lg:h-14" src={logoSrc} alt="Logo" />
+                            <span className="hidden lg:block"></span>
                         </Link>
                     </div>
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
-                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Productos</Link>
+                        <Link to="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Inicio</Link>
                         <div className="relative">
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
                                 onClick={() => toggleDropdown('brands')}>
-                                <span>Marcas & Colecciones</span>
+                                <span>Marcas</span>
                                 {showBrandsDropdown ?
                                     <RiArrowDropUpLine size={16} className="ml-2" /> :
                                     <RiArrowDropDownLine size={16} className="ml-2" />
@@ -256,8 +257,11 @@ export const Header = () => {
                                 </div>
                             )}
                         </div>
+
+                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Muestras</Link>
                         <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Sobre nosotros</Link>
                         <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contáctanos</Link>
+                        <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contract</Link>
                     </div>
                     <div className="flex items-center space-x-4">
                         <div className="relative">
@@ -315,9 +319,11 @@ export const Header = () => {
                 </div>
                 <div className={`bg-white lg:hidden ${showMenu ? '' : 'hidden'}`}>
                     <div className="bg-ivory py-2 px-4">
-                        <Link to="/about" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Sobre nosotros</Link>
-                        <Link to="/contact" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Contáctanos</Link>
-                        <Link to="/products" className="block text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg">Productos</Link>
+                        <Link to="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Inicio</Link>
+                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Muestras</Link>
+                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Sobre nosotros</Link>
+                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contáctanos</Link>
+                        <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contract</Link>
                         <div className="relative">
                             <button className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 text-center rounded-lg focus:outline-none" onClick={() => toggleDropdown('brands')}>
                                 Brands {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}
@@ -372,7 +378,7 @@ export const Header = () => {
                                         </div>
                                         {suggestions.map((item, index) => (
                                             <div key={index} className="p-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleSuggestionClick(item)}>
-                                                {item.desprodu}
+                                                {item.nombre}
                                             </div>
                                         ))}
                                     </div>
