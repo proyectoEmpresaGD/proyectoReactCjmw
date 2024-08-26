@@ -10,58 +10,65 @@ const pool = new pg.Pool({
 
 export class ProductModel {
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
-    let accumulatedProducts = [];
+    let accumulatedProducts = new Map();  // Para almacenar productos únicos por nombre
     let currentOffset = offset;
-    let limit = requiredLimit; // Comienza pidiendo la cantidad requerida
+    let internalLimit = 100;  // Para obtener un grupo grande de productos
+    let totalFetched = 0;
 
     try {
-        while (accumulatedProducts.length < requiredLimit) {
-            let query = 'SELECT * FROM productos';
+        while (accumulatedProducts.size < requiredLimit) {
+            let query = 'SELECT * FROM productos WHERE 1=1';
             let params = [];
 
             if (CodFamil) {
-                query += ' WHERE "codfamil" = $1';
+                query += ` AND "codfamil" = $${params.length + 1}`;
                 params.push(CodFamil);
             }
 
             if (CodSubFamil) {
-                if (params.length > 0) {
-                    query += ' AND "codsubfamil" = $2';
-                } else {
-                    query += ' WHERE "codsubfamil" = $1';
-                }
+                query += ` AND "codsubfamil" = $${params.length + 1}`;
                 params.push(CodSubFamil);
             }
 
+            query += ` AND "nombre" IS NOT NULL`;  // Filtrar productos con nombre no nulo
+            query += ` ORDER BY "codprodu" ASC`;  // Ordenar los resultados para consistencia
             query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-            params.push(limit, currentOffset);
+            params.push(internalLimit, currentOffset);
 
             const { rows } = await pool.query(query, params);
+
             if (rows.length === 0) {
-                // Si no hay más productos, salir del bucle
+                break;  // No hay más productos para cargar
+            }
+
+            rows.forEach(product => {
+                if (!accumulatedProducts.has(product.nombre)) {
+                    accumulatedProducts.set(product.nombre, product);
+                }
+            });
+
+            // Actualizar el offset para la siguiente iteración
+            totalFetched += rows.length;
+            currentOffset += rows.length; 
+
+            // Si hemos alcanzado el límite requerido de productos válidos, salimos del bucle
+            if (accumulatedProducts.size >= requiredLimit) {
                 break;
             }
 
-            accumulatedProducts = [...accumulatedProducts, ...rows];
-            currentOffset += rows.length;
-
-            if (rows.length < limit) {
-                // Si se devuelven menos productos de los solicitados, no tiene sentido seguir consultando
+            // Si hemos recorrido toda la tabla pero no hemos encontrado suficientes productos, salimos
+            if (rows.length < internalLimit) {
                 break;
             }
-
-            // Ajusta el límite para la próxima consulta si ya tienes algunos productos acumulados
-            limit = requiredLimit - accumulatedProducts.length;
         }
 
-        return accumulatedProducts.slice(0, requiredLimit);
+        return Array.from(accumulatedProducts.values()).slice(0, requiredLimit);
 
     } catch (error) {
         console.error('Error fetching products:', error);
         throw new Error('Error fetching products');
     }
 }
-
 
   static async getById({ id }) {
     const { rows } = await pool.query('SELECT * FROM productos WHERE "codprodu" = $1;', [id]);
@@ -101,9 +108,10 @@ export class ProductModel {
 
   static async search({ query, limit = 10, page = 1 }) {
     const searchQuery = `
-      SELECT * FROM productos
-      WHERE "desprodu" ILIKE $1
-      ORDER BY "desprodu"
+      SELECT DISTINCT ON ("nombre") *
+      FROM productos
+      WHERE "nombre" ILIKE $1
+      ORDER BY "nombre", "codprodu"  -- "codprodu" es para asegurar consistencia en los resultados
       LIMIT $2 OFFSET $3;
     `;
 
@@ -116,7 +124,8 @@ export class ProductModel {
       console.error('Error searching products:', error);
       throw new Error('Error searching products');
     }
-  }
+}
+
   static async getByCodFamil(codfamil) {
     try {
       const { rows } = await pool.query('SELECT * FROM productos WHERE "codfamil" = $1;', [codfamil]);
@@ -149,10 +158,6 @@ export class ProductModel {
       const { rows: martindaleValues } = await pool.query('SELECT DISTINCT martindale FROM productos');
       console.log('Fetched martindale values:', martindaleValues);
 
-      console.log('Fetching uso values');
-      const { rows: usoValues } = await pool.query('SELECT DISTINCT uso FROM productos');
-      console.log('Fetched uso values:', usoValues);
-
       console.log('Fetching colors');
       const { rows: colors } = await pool.query('SELECT DISTINCT colorprincipal FROM productos');
       console.log('Fetched colors:', colors);
@@ -167,7 +172,6 @@ export class ProductModel {
         fabricTypes: fabricTypes.map(f => f.tipo),
         fabricPatterns: fabricPatterns.map(f => f.estilo),
         martindaleValues: martindaleValues.map(m => m.martindale),
-        usoValues: usoValues.map(u => u.uso),
         colors: colors.map(c => c.colorprincipal),
         tonalidades: tonalidades.map(t => t.tonalidad)
       };
@@ -216,11 +220,6 @@ export class ProductModel {
     if (filters.martindale && filters.martindale.length > 0) {
       query += ` AND "martindale" = ANY($${index++})`;
       params.push(filters.martindale);
-    }
-
-    if (filters.uso && filters.uso.length > 0) {
-      query += ` AND "uso" = ANY($${index++})`;
-      params.push(filters.uso);
     }
 
     try {

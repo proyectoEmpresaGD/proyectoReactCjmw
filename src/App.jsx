@@ -14,6 +14,8 @@ import Usages from './app/usages/page.jsx'
 import HarbourColecciones from './app/colecciones/harbourColeccion.jsx'
 import GeocodingService from "./components/ComponentesContact/map.jsx"
 import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
+import Contract from "./app/contract/PaginaContract.jsx"
+
 
 
 function App() {
@@ -36,6 +38,7 @@ function App() {
         <Route path="/usages" element={<Usages />} />
         <Route path="/map/:direccion" component={<GeocodingService />} />
         <Route path="/harbourColecciones" element={<HarbourColecciones />} />
+        <Route path="/Contract" element={<Contract />} />
       </Routes>
     </>
   )

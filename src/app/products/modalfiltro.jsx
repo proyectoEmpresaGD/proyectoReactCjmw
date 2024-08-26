@@ -8,14 +8,12 @@ function FiltroModal({ isOpen, close, applyFilters }) {
     const [selectedFabricPatterns, setSelectedFabricPatterns] = useState([]);
     const [selectedTonalidades, setSelectedTonalidades] = useState([]);
     const [selectedMartindale, setSelectedMartindale] = useState([]);
-    const [selectedUso, setSelectedUso] = useState([]);
 
     const [brands, setBrands] = useState([]);
     const [collections, setCollections] = useState([]);
     const [fabricTypes, setFabricTypes] = useState([]);
     const [fabricPatterns, setFabricPatterns] = useState([]);
     const [martindaleValues, setMartindaleValues] = useState([]);
-    const [usoValues, setUsoValues] = useState([]);
     const [colors, setColors] = useState([]);
     const [tonalidades, setTonalidades] = useState([]);
 
@@ -42,7 +40,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                 const filteredFabricTypes = data.fabricTypes.filter(type => type);
                 const filteredFabricPatterns = data.fabricPatterns.filter(pattern => pattern);
                 const sortedMartindaleValues = data.martindaleValues.filter(value => value).sort((a, b) => b - a);
-                const filteredUsoValues = data.usoValues.filter(uso => uso);
+                
                 const filteredColors = data.colors.filter(color => color);
                 const filteredTonalidades = data.tonalidades.filter(tonalidad => tonalidad);
 
@@ -51,7 +49,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                 setFabricTypes(processData(filteredFabricTypes));
                 setFabricPatterns(processData(filteredFabricPatterns));
                 setMartindaleValues(sortedMartindaleValues);
-                setUsoValues(filteredUsoValues);
+                
                 setColors(processData(filteredColors));
                 setTonalidades(processData(filteredTonalidades));
             } catch (error) {
@@ -88,7 +86,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
             fabricPattern: selectedFabricPatterns,
             tonalidad: selectedTonalidades,
             martindale: selectedMartindale,
-            uso: selectedUso
+            
         };
 
         applyFilters(filtersToApply);
@@ -107,7 +105,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg xl:max-w-[70%] max-w-[90%] h-[80%] w-full m-4 overflow-y-auto ">
+            <div className="bg-white p-6 rounded-lg xl:max-w-[70%] max-w-[90%] h-[95%] w-full m-4 overflow-y-auto ">
                 <h2 className="text-center text-2xl font-bold">FILTROS</h2>
                 <div className="flex justify-end">
                     <button className="relative overflow-hidden m-4" onClick={close}>
@@ -186,7 +184,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
 
                     <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
                         <h3 className="font-semibold mx-auto">Tipo de Tela</h3>
-                        <div className='grid grid-cols-2'>
+                        <div className=''>
                             {fabricTypes.map((type) => (
                                 <label key={type} className="block">
                                     <input
@@ -203,7 +201,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
 
                     <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
                         <h3 className="font-semibold mx-auto">Dibujo de la Tela</h3>
-                        <div className='grid grid-cols-2'>
+                        <div className=''>
                             {fabricPatterns.map((pattern) => (
                                 <label key={pattern} className="block">
                                     <input
@@ -233,21 +231,6 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                                 </label>
                             ))}
                         </div>
-                    </div>
-
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Uso</h3>
-                        {usoValues.map((value) => (
-                            <label key={value} className="block">
-                                <input
-                                    type="checkbox"
-                                    name="uso"
-                                    checked={selectedUso.includes(value)}
-                                    onChange={() => handleCheckboxChange(setSelectedUso, selectedUso, value)}
-                                />
-                                {value}
-                            </label>
-                        ))}
                     </div>
                 </div>
                 <div className="mt-4 flex justify-end">

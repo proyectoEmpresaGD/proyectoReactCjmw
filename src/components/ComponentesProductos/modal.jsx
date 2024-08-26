@@ -25,18 +25,20 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${product.codfamil}`);
                 const data = await response.json();
                 const productsWithImages = await Promise.all(
-                    data.map(async (product) => {
-                        const [imageBuena, imageBaja] = await Promise.all([
-                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
-                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
-                        ]);
-
-                        return {
-                            ...product,
-                            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-                            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
-                        };
-                    })
+                    data
+                        .filter(p => p.nombre === product.nombre) // Filtrar productos con el mismo nombre
+                        .map(async (product) => {
+                            const [imageBuena, imageBaja] = await Promise.all([
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                            ]);
+    
+                            return {
+                                ...product,
+                                imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
+                                imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                            };
+                        })
                 );
                 setRelatedProducts(productsWithImages);
             } catch (error) {
@@ -44,7 +46,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
             }
         };
         fetchRelatedProducts();
-    }, [product.codfamil]);
+    }, [product.codfamil, product.nombre]);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -146,22 +148,46 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const mantenimientoImages = {
-        "Lavable a máquina": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/washing.svg',
-        "No lavable a máquina": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/do-not-wash.svg",
-        "Planchar a 120°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-1.svg',
-        "Planchar a 160°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-2.svg',
-        "Planchar a 210°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-3.svg',
-        "No planchar": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-disable.svg',
-        "Lavar a mano": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/hand-wash.svg',
-        "No usar blanqueador": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-no-bleach.svg',
-        "Limpieza en seco": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/dry-Clening.webp',
-        "No usar secadora": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/noun-do.svg',
+        "LAVAR A 30°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Lavar%20a%2030%C2%BA-480.jpg',
+        "LAVAR A 60°": '',
+        "LAVAR A 90°": '',
+        "NO LAVAR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20lavar-480.jpg",
+        "PLANCHAR A 120°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Lavar%20a%20120%C2%BA-480.jpg',
+        "PLANCHAR A 160°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-2.svg',
+        "PLANCHAR A 210°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-3.svg',
+        "NO PLANCHAR": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20planchar-480.jpg',
+        "LAVAR A MANO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/hand-wash.svg',
+        "NO USAR LEJIA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20lejia-480.jpg',
+        "LAVAR EN SECO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/dry-Clening.webp',
+        "NO USAR SECADORA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20usar%20secadora-480.jpg',
+        "USAR LEJIA": '',
+        "EASYCLEAN": '',
+        "USAR SECADORA": '',
+        "SECADO VERTICAL": '',
+
     };
 
-    const getMantenimientoImages = (mantenimientos) => {
-        if (!mantenimientos) return "?";
+    const parseMantenimientoXML = (mantenimientoXML) => {
+        // Crear un parser para el XML
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(mantenimientoXML, "text/xml");
 
-        const mantenimientoList = mantenimientos.split(';').map(mantenimiento => mantenimiento.trim());
+        // Extraer todos los valores de <Valor>
+        const valores = xmlDoc.getElementsByTagName("Valor");
+
+        // Convertir la colección de nodos en un array de valores
+        const mantenimientoList = Array.from(valores).map(node => node.textContent.trim());
+
+        return mantenimientoList;
+    };
+
+    const getMantenimientoImages = (mantenimiento) => {
+        if (!mantenimiento) return "?";
+
+        // Parsear el XML para obtener la lista de mantenimientos
+        const mantenimientoList = parseMantenimientoXML(mantenimiento);
+
+        // Filtrar y mapear a las imágenes correspondientes
         return mantenimientoList
             .filter(mantenimiento => mantenimientoImages[mantenimiento])
             .map((mantenimiento, index) => (
@@ -175,11 +201,15 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const usoImages = {
-        "Tapiceria Decorativa": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Upholstery%20for%20decoration.webp',
-        "Tapiceria": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Upholstery.webp',
-        'Cortinas': 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/courtains.svg',
-        "Blinds": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/window-blind.svg',
-        "Colchas": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/bedspreads.webp',
+        "TAPICERIA DECORATIVA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Tapiceria%20decorativa-480.jpg',
+        "TAPICERIA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Tapiceria-480.jpg',
+        'CORTINAS': 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Cortinas-480.jpg',
+        "ESTORES": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Estores-480.jpg',
+        "COLCHAS": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Colchas.jpg',
+        "ALFOMBRAS": "",
+        "FR": "",
+        "OUTDOOR": "",
+        "IMO": "",
     };
 
     const getUsoImages = (usos) => {
@@ -202,7 +232,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 style={{ ...style, display: 'block' }}
                 onClick={onClick}
             >
-                <TiChevronRight className="text-black text-3xl hover:text-gray-500 flex items-center justify-center cursor-pointer absolute top-1/2 transform -translate-y-[120%] lg:transform lg:-translate-y-[60%] xl:transform xl:-translate-y-[60%] md:transform md:-translate-y-[70%]" />
+                <TiChevronRight className="text-black text-3xl hover:text-gray-500 flex items-center justify-center cursor-pointer absolute top-1/2 transform -translate-y-[120%] lg:transform lg:-translate-y-[60%] xl:transform xl:-translate-y-[60%] md:transform md:-translate-y-[65%] pr-1" />
             </div>
         );
     };
@@ -211,7 +241,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
         addToCart({
             id: selectedProduct.codprodu,
             name: selectedProduct.desprodu,
-            price: 0.80,
+            price: 3,
             image: selectedProduct.imageBaja,
             quantity: 1
         });
@@ -226,7 +256,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 style={{ ...style, display: 'block', }}
                 onClick={onClick}
             >
-                <TiChevronLeft className="text-black text-3xl hover:text-gray-500 flex items-center justify-center cursor-pointer absolute top-1/2 transform -translate-y-[120%] lg:transform lg:-translate-y-[60%] xl:transform xl:-translate-y-[60%] md:transform md:-translate-y-[70%]" />
+                <TiChevronLeft className="text-black text-3xl hover:text-gray-500 flex items-center justify-center cursor-pointer absolute top-1/2 transform -translate-y-[120%] lg:transform lg:-translate-y-[60%] xl:transform xl:-translate-y-[60%] md:transform md:-translate-y-[65%] pr-1" />
             </div>
         );
     };
@@ -261,8 +291,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     return (
         <CartProvider>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-4 mt-14">
-                <div className="bg-white p-7 lg:mt-[5%] xl:mt-[5%] md:mt-[5%] mt-[20%] rounded-lg xl:max-w-4xl w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 mt-4">
+                <div className="bg-white p-7 lg:mt-[5%] xl:mt-[5%] md:mt-[5%] mt-[20%] rounded-lg xl:max-w-[58%] w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
                     <div className="flex justify-end absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
@@ -270,8 +300,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     </div>
                     <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.desprodu}</h2>
 
-                    <div className="grid md:grid-cols-2 grid-cols-1 gap-2" onClick={e => e.stopPropagation()}>
-                        <div className="relative group w-full h-64 md:h-96 overflow-hidden">
+                    <div className="grid md:grid-cols-5 " onClick={e => e.stopPropagation()}>
+                        <div className="relative group w-full h-72  md:h-72 overflow-hidden col-span-2">
                             <img
                                 src={selectedImage}
                                 style={{ filter: 'saturate(1.4) brightness(1.2)' }}
@@ -298,7 +328,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     {/* Lupa dinámica */}
                                     <div
                                         ref={lensRef}
-                                        className="absolute hidden w-24 h-24 border border-gray-300 opacity-50 bg-transparent pointer-events-none"
+                                        className="absolute hidden w-10 h-10 border border-gray-300 opacity-50 bg-transparent mx-11 pointer-events-none"
                                         style={{ borderRadius: '50%', transition: 'ease' }}
                                     ></div>
 
@@ -313,22 +343,23 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         }}
                                     >
                                         <img
-                                            src={selectedImage} 
+                                            src={selectedImage}
                                             alt={alt}
                                             className="absolute rounded-md"
                                             style={{
                                                 width: `${zoomFactor * 70}%`,  // Doble del tamaño original
-                                                height: `${zoomFactor * 70}%`, // Doble del tamaño original
+                                                height: `${zoomFactor * 60}%`, // Doble del tamaño original
                                                 objectFit: 'cover',
                                                 transition: 'ease',
+                                                transform: ''
                                             }}
                                         />
                                     </div>
                                 </>
                             )}
                         </div>
-                        <div className="flex flex-col justify-start xl:p-8 lg:p-8 md:p-8 mx-auto text-start">
-                            <h1 className="font-bold text-black mx-auto text-start mb-4 mt-[-2rem]">Ficha Técnica</h1>
+                        <div className="justify-start xl:p-4 lg:p-4 md:p-4 text-start col-span-2 w-full">
+                            <h1 className="font-bold text-black mx-auto text-center mb-4 mt-[-2rem]">Ficha Técnica</h1>
                             <div className="">
                                 <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
                                     <p className="">Marca:</p>
@@ -360,42 +391,44 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 </div>
                                 <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
                                     <p className="">Composición:</p>
-                                    <p className="">{selectedProduct.composicion}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mt-4">
-                                    <div>
-                                        <h3 className="text-center font-semibold">Usos</h3>
-                                        <Link to="/usages">
-                                            <div className="flex justify-center items-center mt-2">
-                                                {getUsoImages(selectedProduct.uso)}
-                                            </div>
-                                        </Link>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-center font-semibold">Mantenimiento</h3>
-                                        <Link to="/usages">
-                                            <div className="flex justify-center items-center mt-2">
-                                                {getMantenimientoImages(selectedProduct.mantenimiento)}
-                                            </div>
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between mt-6 space-x-4">
-                                    <button onClick={handleMapClick} className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
-                                        Dónde comprar
-                                    </button>
-                                    <button onClick={handleAddToCart} className="bg-gradient-to-r from-[#8c7c68] to-[#a09282] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68]">
-                                        Adquirir muestra
-                                    </button>
+                                    <p className=" break-words">{selectedProduct.composicion}</p>
                                 </div>
                             </div>
+                        </div>
+                        <div className='justify-start'>
+                            <div className="justify-start text-start text-base mt-4">
+                                <div>
+                                    <h3 className="text-center font-semibold">Usos</h3>
+                                    <Link to="/usages">
+                                        <div className="flex justify-center items-center mt-2">
+                                            {getUsoImages(selectedProduct.uso)}
+                                        </div>
+                                    </Link>
+                                </div>
+                                <div>
+                                    <h3 className="text-center mt-4 font-semibold">Mantenimiento</h3>
+                                    <Link to="/usages">
+                                        <div className="flex justify-center items-center mt-2">
+                                            {getMantenimientoImages(selectedProduct.mantenimiento)}
+                                        </div>
+                                    </Link>
+                                </div>
+                            </div>
+                        <div className="mx-auto text-center mt-6 ">
+                            <button onClick={handleMapClick} className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
+                                Dónde comprar
+                            </button>
+                            <button onClick={handleAddToCart} className="bg-gradient-to-r from-[#8c7c68] to-[#a09282] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68] mt-2">
+                                Adquirir muestra
+                            </button>
+                        </div>
                         </div>
                     </div>
 
                     <div className="mt-6">
                         <Slider {...settings}>
                             {relatedProducts.map((colorProduct, index) => (
-                                <div key={index} className="relative px-2 cursor-pointer" onClick={() => handleColorClick(colorProduct)}>
+                                <div key={index} className="relative px-1 cursor-pointer" onClick={() => handleColorClick(colorProduct)}>
                                     <img
                                         src={colorProduct.imageBaja}
                                         alt={colorProduct.desprodu}

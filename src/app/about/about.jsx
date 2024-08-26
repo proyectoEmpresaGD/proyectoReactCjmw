@@ -42,7 +42,7 @@ function About() {
                                 <p className="mb-4">Somos una empresa abierta y para el desarrollo de nuestras cuatro marcas recogemos la personalidad e influencias de cada cultura para cada nueva colección. Nos gusta la diferencia, nos gusta investigar y nos gusta caminar nuestro propio camino.</p>
                                 <p>Cremos firmemente en la personalidad de CJMW, HARBOUR, ARENA y FLAMENCO. Creemos en el diseño y la innovación.</p>
                             </div>
-                            <div className="flex items-center justify-center lg:justify-start">
+                            <div className="flex items-center justify-center lg:justify-end">
                                 <div className="max-w-lg border rounded-lg overflow-hidden">
                                     <img src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/1200%20FLAMENCO%20FOTOART/1200%20FLAMENCO%20BORNEO.jpg" alt="Tu imagen" className="w-full h-auto" />
                                 </div>
