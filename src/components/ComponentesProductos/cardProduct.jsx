@@ -190,9 +190,9 @@ const CardProduct = () => {
                                     src={product.imageBaja}
                                     alt={product.nombre}
                                     onError={(e) => { e.target.src = 'default_buena_image_url'; }}
-                                    style={{ filter: 'saturate(1.5) brightness(1.3)' }}
+                                    // style={{ filter: 'saturate(1.5) brightness(1.3)' }}
                                 />
-                                <div className="absolute inset-0 bg-black opacity-40"></div>
+                                
                             </div>
                             <h3 className="text-center text-lg sm:text-xl text-gray-900 mt-4">{product.nombre}</h3>
                             {/* <div className="flex items-center justify-between mt-4">
