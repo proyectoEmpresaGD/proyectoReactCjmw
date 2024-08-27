@@ -16,40 +16,31 @@ const CardProduct = () => {
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState(null);
-
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [offset, setOffset] = useState(0);
+    const [page, setPage] = useState(1);
     const [showClearButton, setShowClearButton] = useState(false);
     const itemsPerPage = 16;
 
-    const fetchProducts = async (newOffset) => {
+    const fetchProducts = async (pageNumber = 1) => {
+        setLoading(true);
         setError(null);
-        if (newOffset === 0) setLoading(true); else setLoadingMore(true);
-    
         try {
-            const url = `${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&offset=${newOffset}`;
-            console.log('Fetching URL:', url);
-            const response = await fetch(url);
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`);
             if (!response.ok) {
                 throw new Error('Error fetching products');
             }
-            const { products, nextOffset } = await response.json();
-            console.log('Fetched Products:', products);
-    
+            const data = await response.json();
+
+            // Obtener las imágenes de calidad "Buena" y "Baja" para cada producto
             const productsWithImages = await Promise.all(
-                products.map(async (product) => {
+                data.map(async (product) => {
                     const [imageBuena, imageBaja] = await Promise.all([
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`)
-                            .then(res => res.ok ? res.json() : null)
-                            .catch(() => null),
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`)
-                            .then(res => res.ok ? res.json() : null)
-                            .catch(() => null)
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
                     ]);
-    
+
                     return {
                         ...product,
                         imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
@@ -57,40 +48,21 @@ const CardProduct = () => {
                     };
                 })
             );
-    
-            setProducts(prevProducts => {
-                // Aseguramos que no se acumulen productos con nombres duplicados
-                const uniqueProducts = new Map();
-                [...prevProducts, ...productsWithImages].forEach(product => {
-                    if (!uniqueProducts.has(product.nombre)) {
-                        uniqueProducts.set(product.nombre, product);
-                    }
-                });
-                return Array.from(uniqueProducts.values());
-            });
-    
-            // Actualizamos el offset usando el valor devuelto por el backend
-            setOffset(nextOffset);
-    
+
+            setProducts(productsWithImages);
         } catch (error) {
-            console.error('Fetch Error:', error);
             setError('Error fetching products');
         } finally {
             setLoading(false);
-            setLoadingMore(false);
         }
     };
-    
-    const handleLoadMore = () => {
-        fetchProducts(offset);  // Llamada con el offset actualizado
-    };
-    
 
     useEffect(() => {
         if (!searchQuery && !productId) {
-            fetchProducts(offset);
+            fetchProducts(page);
         }
-    }, [searchQuery, productId]);
+    }, [searchQuery, productId, page]);
+    
 
     useEffect(() => {
         if (searchQuery) {
@@ -98,7 +70,6 @@ const CardProduct = () => {
                 setLoading(true);
                 setError(null);
                 setProducts([]);
-                setOffset(0); // Reset offset for new search
                 try {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}`);
                     if (!response.ok) {
@@ -106,6 +77,7 @@ const CardProduct = () => {
                     }
                     const data = await response.json();
 
+                    // Obtener las imágenes de calidad "Buena" y "Baja" para cada producto
                     const productsWithImages = await Promise.all(
                         data.map(async (product) => {
                             const [imageBuena, imageBaja] = await Promise.all([
@@ -189,9 +161,13 @@ const CardProduct = () => {
     const handleClearSearch = () => {
         navigate('/products');
         setProducts([]);
-        setOffset(0); // Reset offset when clearing search
+        setPage(1);
         setShowClearButton(false); // Hide the clear button when clearing the search
-        fetchProducts(0); // Fetch all products when clearing the search
+        fetchProducts(1); // Fetch all products when clearing the search
+    };
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
     };
 
     return (
@@ -219,6 +195,11 @@ const CardProduct = () => {
                                 <div className="absolute inset-0 bg-black opacity-40"></div>
                             </div>
                             <h3 className="text-center text-lg sm:text-xl text-gray-900 mt-4">{product.nombre}</h3>
+                            {/* <div className="flex items-center justify-between mt-4">
+                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
+                                    <FiShoppingCart className="text-2xl" />
+                                </button>
+                            </div> */}
                         </div>
                     ))}
                 </div>
@@ -229,16 +210,22 @@ const CardProduct = () => {
                 {!loading && error && (
                     <div className="text-center text-red-500">{error}</div>
                 )}
-                {!loadingMore && !loading && (
-                    <div className="flex justify-center mt-4">
-                        <button
-                            onClick={handleLoadMore}
-                            className="px-4 py-2 mx-1 bg-gray-300 rounded"
-                        >
-                            Cargar más productos
-                        </button>
-                    </div>
-                )}
+                <div className="flex justify-center mt-4">
+                    <button
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page === 1}
+                        className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
+                    >
+                        Anterior
+                    </button>
+                    <span className="px-4 py-2">{page}</span>
+                    <button
+                        onClick={() => handlePageChange(page + 1)}
+                        className="px-4 py-2 mx-1 bg-gray-300 rounded"
+                    >
+                        Siguiente
+                    </button>
+                </div>
                 {modalOpen && (
                     <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
                 )}

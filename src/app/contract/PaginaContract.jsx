@@ -22,9 +22,9 @@ function Contract() {
                                     <div className="text-center lg:text-left">
 
                                         <h2 style={{ color: ('#967a03') }} className="mt-8 text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl lg:leading-tight">The team</h2>
-                                        <p className="text-lg leading-relaxed text-white mt-6">The illusion of improving in each decoration, the order in execution and the perfect completion, encourage the creation of a team of professionals who travel to any part of the world, installing our articles made to measure for each project.</p>
-                                        <p className="text-lg leading-relaxed text-white mt-6">Each hotel is a new adventure, a new learning experience to increase our experience and a new place where we can demonstrate our dynamism.</p>
-                                        <p className="text-lg leading-relaxed text-white mt-6">We are all a team, from the first to the last, we all depend on everyone, and from the beginning of the manufacturing process until it ends, that path is governed by love for work and for our colleagues.</p>
+                                        <p className="text-lg leading-relaxed mt-6">The illusion of improving in each decoration, the order in execution and the perfect completion, encourage the creation of a team of professionals who travel to any part of the world, installing our articles made to measure for each project.</p>
+                                        <p className="text-lg leading-relaxed mt-6">Each hotel is a new adventure, a new learning experience to increase our experience and a new place where we can demonstrate our dynamism.</p>
+                                        <p className="text-lg leading-relaxed mt-6">We are all a team, from the first to the last, we all depend on everyone, and from the beginning of the manufacturing process until it ends, that path is governed by love for work and for our colleagues.</p>
                                     </div>
                                 </div>
                             </div>
