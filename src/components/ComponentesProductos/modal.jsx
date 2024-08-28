@@ -304,7 +304,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         <div className="relative group w-full h-72  md:h-72 overflow-hidden col-span-2">
                             <img
                                 src={selectedImage}
-                                style={{ filter: 'saturate(1.4) brightness(1.2)' }}
+                                // style={{ filter: 'saturate(1.4) brightness(1.2)' }}
                                 alt={alt}
                                 className="w-full h-full object-contain rounded-md"
                                 onLoad={handleImageLoad}
@@ -339,7 +339,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         style={{
                                             width: '200%', // Haz que el contenedor sea el doble del tamaño original
                                             height: '200%',
-                                            filter: 'saturate(1.4) brightness(1.2)' // Ajusta el tamaño para que sea mayor que el original
+                                            // filter: 'saturate(1.4) brightness(1.2)' // Ajusta el tamaño para que sea mayor que el original
                                         }}
                                     >
                                         <img
