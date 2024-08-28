@@ -14,73 +14,77 @@ export class ProductModel {
     let excludedNames = []; // Acumula los nombres de los productos ya mostrados en cualquier consulta
 
     try {
-        while (accumulatedProducts.length < requiredLimit) {
-            let limit = requiredLimit; // Siempre solicitamos 16 productos nuevos
-            let query = 'SELECT * FROM productos';
-            let params = [];
+      while (accumulatedProducts.length < requiredLimit) {
+        let limit = requiredLimit; // Siempre solicitamos 16 productos nuevos
+        let query = 'SELECT * FROM productos';
+        let params = [];
 
-            if (CodFamil) {
-                query += ' WHERE "codfamil" = $1';
-                params.push(CodFamil);
-            }
-
-            if (CodSubFamil) {
-                if (params.length > 0) {
-                    query += ' AND "codsubfamil" = $2';
-                } else {
-                    query += ' WHERE "codsubfamil" = $1';
-                }
-                params.push(CodSubFamil);
-            }
-
-            // Asegurarse de que el nombre no sea NULL ni vacío
-            if (params.length > 0) {
-                query += ' AND "nombre" IS NOT NULL AND "nombre" != \'\'';
-            } else {
-                query += ' WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
-            }
-
-            // Excluir los productos ya recuperados basados en el nombre
-            if (excludedNames.length > 0) {
-                const excludedNamesPlaceholders = excludedNames.map((_, i) => `$${params.length + i + 1}`).join(', ');
-                query += ` AND "nombre" NOT IN (${excludedNamesPlaceholders})`;
-                params = [...params, ...excludedNames];
-            }
-
-            query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-            params.push(limit, offset);
-
-            const { rows } = await pool.query(query, params);
-
-            // Filtrar nuevamente en caso de que por alguna razón hayan pasado productos sin nombre o con nombre vacío
-            const validRows = rows.filter(row => row.nombre && row.nombre.trim() !== '');
-
-            // Filtrar productos con nombres duplicados dentro de la misma consulta
-            const uniqueRows = validRows.filter(row => !excludedNames.includes(row.nombre));
-
-            accumulatedProducts = [...accumulatedProducts, ...uniqueRows];
-            
-            // Añadir los nombres de los productos válidos y únicos a excludedNames
-            excludedNames = [...excludedNames, ...uniqueRows.map(row => row.nombre)];
-
-            // Si se obtuvieron menos productos de los que pedimos, detenemos el bucle
-            if (uniqueRows.length < limit) {
-                break;
-            }
-
-            // Aumentamos el offset para la próxima iteración
-            offset += uniqueRows.length;
+        if (CodFamil) {
+          query += ' WHERE "codfamil" = $1';
+          params.push(CodFamil);
         }
 
-        // Devolver los productos acumulados, aunque sean menos de 16 si no hay suficientes
-        return accumulatedProducts.slice(0, requiredLimit);
+        if (CodSubFamil) {
+          if (params.length > 0) {
+            query += ' AND "codsubfamil" = $2';
+          } else {
+            query += ' WHERE "codsubfamil" = $1';
+          }
+          params.push(CodSubFamil);
+        }
+
+        // Asegurarse de que el nombre no sea NULL ni vacío
+        if (params.length > 0) {
+          query += ' AND "nombre" IS NOT NULL AND "nombre" != \'\'';
+        } else {
+          query += ' WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
+        }
+
+        // Excluir los productos ya recuperados basados en el nombre
+        if (excludedNames.length > 0) {
+          const excludedNamesPlaceholders = excludedNames.map((_, i) => `$${params.length + i + 1}`).join(', ');
+          query += ` AND "nombre" NOT IN (${excludedNamesPlaceholders})`;
+          params = [...params, ...excludedNames];
+        }
+
+        query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        params.push(limit, offset);
+
+        const { rows } = await pool.query(query, params);
+
+        // Filtrar nuevamente en caso de que por alguna razón hayan pasado productos sin nombre o con nombre vacío
+        const validRows = rows.filter(row => row.nombre && row.nombre.trim() !== '');
+
+        // Filtrar productos con nombres duplicados dentro de la misma consulta
+        const uniqueRows = validRows.filter(row => !excludedNames.includes(row.nombre));
+
+        accumulatedProducts = [...accumulatedProducts, ...uniqueRows];
+
+        // Añadir los nombres de los productos válidos y únicos a excludedNames
+        excludedNames = [...excludedNames, ...uniqueRows.map(row => row.nombre)];
+
+        // Si se obtuvieron menos productos de los que pedimos, detenemos el bucle
+        if (uniqueRows.length < limit) {
+          break;
+        }
+
+        // Aumentamos el offset para la próxima iteración
+        offset += uniqueRows.length;
+      }
+
+      // Devolver los productos acumulados, aunque sean menos de 16 si no hay suficientes
+      return accumulatedProducts.slice(0, requiredLimit);
 
     } catch (error) {
-        console.error('Error fetching products:', error);
-        throw new Error('Error fetching products');
+      console.error('Error fetching products:', error);
+      throw new Error('Error fetching products');
     }
-}
+  }
 
+  static async getById({ id }) {
+    const { rows } = await pool.query('SELECT * FROM productos WHERE "codprodu" = $1;', [id]);
+    return rows.length > 0 ? rows[0] : null;
+  }
 
   static async create({ input }) {
     const { CodProdu, DesProdu, CodFamil, Comentario, UrlImagen } = input;
