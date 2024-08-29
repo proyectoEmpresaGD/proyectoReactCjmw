@@ -16,7 +16,7 @@ export class ProductModel {
     try {
       while (accumulatedProducts.length < requiredLimit) {
         let limit = requiredLimit; // Siempre solicitamos 16 productos nuevos
-        let query = 'SELECT * FROM productos';
+        let query = 'SELECT DISTINCT ON ("nombre") * FROM productos';
         let params = [];
 
         if (CodFamil) {
