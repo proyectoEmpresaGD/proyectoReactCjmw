@@ -149,21 +149,22 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     const mantenimientoImages = {
         "LAVAR A 30°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Lavar%20a%2030%C2%BA-480.jpg',
-        "LAVAR A 60°": '',
+        "LAVAR A 40°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
         "LAVAR A 90°": '',
         "NO LAVAR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20lavar-480.jpg",
         "PLANCHAR A 120°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Lavar%20a%20120%C2%BA-480.jpg',
-        "PLANCHAR A 160°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-2.svg',
-        "PLANCHAR A 210°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/iron-3.svg',
+        "PLANCHAR A 160°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',
+        "PLANCHAR A 210°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',
         "NO PLANCHAR": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20planchar-480.jpg',
-        "LAVAR A MANO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/hand-wash.svg',
+        "LAVAR A MANO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',
         "NO USAR LEJIA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20lejia-480.jpg',
-        "LAVAR EN SECO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/dry-Clening.webp',
+        "LAVAR EN SECO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20en%20seco.jpg',
+        "NO LAVAR EN SECO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar%20en%20seco.jpg',
         "NO USAR SECADORA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20usar%20secadora-480.jpg',
         "USAR LEJIA": '',
-        "EASYCLEAN": '',
-        "USAR SECADORA": '',
-        "SECADO VERTICAL": '',
+        "EASYCLEAN": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',
+        "USAR SECADORA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Usar%20secadora.jpg',
+        "SECADO VERTICAL": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Secado%20vertical.jpg',
 
     };
 
@@ -206,10 +207,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
         'CORTINAS': 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Cortinas-480.jpg',
         "ESTORES": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Estores-480.jpg',
         "COLCHAS": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Colchas.jpg',
-        "ALFOMBRAS": "",
-        "FR": "",
-        "OUTDOOR": "",
-        "IMO": "",
+        "ALFOMBRAS": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Alfombras.jpg',
+        "FR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg",
+        "OUTDOOR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg",
+        "IMO": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg",
     };
 
     const getUsoImages = (usos) => {
