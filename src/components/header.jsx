@@ -30,6 +30,7 @@ export const Header = () => {
     const searchInputRef = useRef(null);
     const [inputText, setInputText] = useState('');
     const [selectedLanguage, setSelectedLanguage] = useState({ value: 'es', label: 'Spanish' });
+    const [isHovered, setIsHovered] = useState(false); // Estado para manejar el hover
 
     const languageOptions = [
         { value: 'en', label: 'English' },
@@ -39,111 +40,30 @@ export const Header = () => {
         { value: 'it', label: 'Italian' }
     ];
 
-    // Función para traducir texto utilizando la API de Google Translate
-    const translateText = async (text, targetLanguage) => {
-        try {
-            const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    q: text,
-                    target: targetLanguage
-                })
-            });
-            const data = await response.json();
-            return data.data.translations[0].translatedText;
-        } catch (error) {
-            console.error('Error translating text:', error);
-            return '';
-        }
-    };
-
-    // Función para decodificar entidades HTML
-    const decodeHTMLEntities = (text) => {
-        const textArea = document.createElement('textarea');
-        textArea.innerHTML = text;
-        return textArea.value;
-    };
-
-    // Función para aplicar traducciones personalizadas
-    const customTranslations = (text, targetLanguage) => {
-        const customTerms = {
-            "telas": { "en": "Fabrics", "fr": "Tissu", "it": "Tessuto", "de": "Stoff", "es": "Telas" }
-        };
-
-        Object.keys(customTerms).forEach(term => {
-            const translation = customTerms[term][targetLanguage];
-            if (translation) {
-                const regex = new RegExp(`\\b${term}\\b`, 'gi');
-                text = text.replace(regex, translation);
-            }
-        });
-
-        return text;
-    };
-
-    // Función para traducir la página
-    const translatePage = async (targetLanguage) => {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-        const nodes = [];
-        while (walker.nextNode()) {
-            nodes.push(walker.currentNode);
-        }
-
-        for (const node of nodes) {
-            const originalText = node.nodeValue;
-            if (originalText && originalText.trim()) {
-                try {
-                    let translatedText = await translateText(originalText.trim(), targetLanguage);
-                    if (translatedText) {
-                        translatedText = decodeHTMLEntities(translatedText); // Decodificar entidades HTML
-                        translatedText = customTranslations(translatedText, targetLanguage); // Aplicar traducciones personalizadas
-                        node.nodeValue = translatedText;
-                    }
-                } catch (error) {
-                    console.error('Error translating text:', error);
-                    // No hacer nada, dejar el texto original sin cambios
-                }
-            }
-        }
-    };
-
-    // Función para aplicar el idioma guardado
-    const applySavedLanguage = async () => {
-        const savedLanguage = localStorage.getItem('preferredLanguage');
-        if (savedLanguage) {
-            await translatePage(savedLanguage);
-        }
-    };
-
-    useEffect(() => {
-        setLanguages(languageOptions);
-
-        switch (location.pathname) {
-            case '/harbourHome': setLogoSrc('/logoHarbour.png'); break;
-            case '/arenaHome': setLogoSrc('/logoArena.png'); break;
-            case '/cjmHome': setLogoSrc('/logoCJM.png'); break;
-            case '/flamencoHome': setLogoSrc('/logoFlamenco.png'); break;
-            default: setLogoSrc('/logoCJM.png'); break;
-        }
-
-        applySavedLanguage();
-    }, [location.pathname]);
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [location]);
-
+    // Función para cerrar todos los dropdowns
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);
         setShowUserDropdown(false);
         setShowLanguageDropdown(false);
+        setShowSearchBar(false);
+        setShowCart(false);
     };
 
+    // Cierra los dropdowns si se hace clic fuera de ellos
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest('.dropdown, .cart, .search, .language')) {
+                closeAllDropdowns();
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const toggleDropdown = (dropdown) => {
-        closeAllDropdowns();
+        closeAllDropdowns(); // Cerramos todos los dropdowns antes de abrir uno nuevo
         switch (dropdown) {
             case 'menu':
                 setShowMenu(!showMenu);
@@ -164,6 +84,9 @@ export const Header = () => {
                         searchInputRef.current.focus();
                     }
                 }, 100);
+                break;
+            case 'cart':
+                setShowCart(!showCart);
                 break;
             default:
                 break;
@@ -224,7 +147,12 @@ export const Header = () => {
     return (
         <>
             <ScrollToTop />
-            <header className="fixed top-0 left-0 w-full bg-white z-50">
+            <header
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isHovered || showSearchBar || showUserDropdown || showBrandsDropdown || showLanguageDropdown || showCart ? 'bg-white shadow-md' : 'bg-transparent'
+                    }`}
+                onMouseEnter={() => setIsHovered(true)} // Cambia el fondo a blanco al hacer hover
+                onMouseLeave={() => setIsHovered(false)} // Vuelve a ser transparente al dejar el hover
+            >
                 <div className="container mx-auto flex items-center justify-between py-2 px-2 lg:px-2">
                     <div className="flex items-center">
                         <button className="text-gray-800 lg:hidden focus:outline-none" onClick={() => toggleDropdown('menu')}>
@@ -264,7 +192,7 @@ export const Header = () => {
                         <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contract</Link>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <div className="relative">
+                        <div className="relative dropdown">
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('user')}>
                                 <RiUserFill size={24} />
                             </button>
@@ -275,12 +203,12 @@ export const Header = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="relative">
+                        <div className="relative search">
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('search')}>
                                 <RiSearchLine size={24} />
                             </button>
                         </div>
-                        <div className="relative">
+                        <div className="relative language">
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
                                 <FaGlobe size={24} />
                             </button>
@@ -305,8 +233,8 @@ export const Header = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="relative">
-                            <button className="text-gray-800 focus:outline-none relative" onClick={() => setShowCart(!showCart)}>
+                        <div className="relative cart">
+                            <button className="text-gray-800 focus:outline-none relative" onClick={() => toggleDropdown('cart')}>
                                 <RiShoppingCartFill size={24} />
                                 {itemCount > 0 && (
                                     <span className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1" style={{ transform: 'translate(50%, -50%)', fontSize: '0.75rem' }}>
@@ -314,6 +242,7 @@ export const Header = () => {
                                     </span>
                                 )}
                             </button>
+                            {showCart && <ShoppingCart onClose={() => setShowCart(false)} />}
                         </div>
                     </div>
                 </div>
