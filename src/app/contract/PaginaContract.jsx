@@ -8,7 +8,7 @@ function Contract() {
                 <Header />
                 <div className="min-h-screen bg-black text-white" style={{ background: 'linear-gradient(to right, #110586, ##000080)' }}>
                     <div className=" text-center mx-auto">
-                        <h1 className="mt-[20%] md:mt-[8%] xl:mt-[5%] lg:mt-[8%] p-[2%] text-5xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-500 bg-clip-text text-transparent">Contract & Services</h1>
+                        <h1 className="p-[2%] text-5xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-500 bg-clip-text text-transparent">Contract & Services</h1>
                     </div>
                     <section className="py-20 lg:py-12 bg-ivory font-Corinthia text-center mx-auto">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
