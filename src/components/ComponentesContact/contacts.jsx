@@ -22,7 +22,7 @@ function Contacts() {
     const telefonoHolanda = "+34-111-222-333"
     return (
         <>
-            <section className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862] mt-[15%] md:mt-[0%] xl:mt-[0%] lg:mt-[0%]">
+            <section className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862]">
                 <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <div className="max-w-2xl mx-auto text-center lg:mt-8 mt-14 py-[1%] ">
                         <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl mt-[15%] md:mt-[5%] xl:mt-[10%]">Contáctanos</h2>

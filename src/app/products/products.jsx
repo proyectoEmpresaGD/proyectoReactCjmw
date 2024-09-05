@@ -8,7 +8,7 @@ function Product() {
             <CartProvider>
                 <Header />
                 <div className="flex-grow ">
-                    <div className="max-w-2xl mx-auto text-center mt-24">
+                    <div className="max-w-2xl mx-auto text-center">
                         <h1 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">
                             PRODUCTOS
                         </h1>

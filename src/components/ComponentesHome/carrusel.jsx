@@ -42,7 +42,7 @@ const CarruselColecciones = ({ images }) => {
   }, [images]);
 
   return (
-    <div className='lg:h-[100vh] sm:h-[50vh] sm:bg-cover lg:bg-cover mt-[20%] xl:mt-[5%] md:mt-[4%]'>
+    <div className='lg:h-[100vh] sm:h-[50vh] sm:bg-cover lg:bg-cover'>
       <Fade
         duration={6000}
         indicators={false}
