@@ -148,19 +148,19 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const mantenimientoImages = {
-        "LAVAR A 30°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Lavar%20a%2030%C2%BA-480.jpg',
+        "LAVAR A 30°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',
         "LAVAR A 40°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
         "LAVAR A 90°": '',
-        "NO LAVAR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20lavar-480.jpg",
-        "PLANCHAR A 120°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Lavar%20a%20120%C2%BA-480.jpg',
+        "NO LAVAR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",
+        "PLANCHAR A 120°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',
         "PLANCHAR A 160°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',
         "PLANCHAR A 210°": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',
-        "NO PLANCHAR": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20planchar-480.jpg',
+        "NO PLANCHAR": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20planchar.jpg',
         "LAVAR A MANO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',
-        "NO USAR LEJIA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20lejia-480.jpg',
+        "NO USAR LEJIA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lejia.jpg',
         "LAVAR EN SECO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20en%20seco.jpg',
         "NO LAVAR EN SECO": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar%20en%20seco.jpg',
-        "NO USAR SECADORA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/No%20usar%20secadora-480.jpg',
+        "NO USAR SECADORA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20usar%20secadora.jpg',
         "USAR LEJIA": '',
         "EASYCLEAN": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',
         "USAR SECADORA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Usar%20secadora.jpg',
@@ -202,11 +202,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const usoImages = {
-        "TAPICERIA DECORATIVA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Tapiceria%20decorativa-480.jpg',
-        "TAPICERIA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Tapiceria-480.jpg',
-        'CORTINAS': 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Cortinas-480.jpg',
-        "ESTORES": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Estores-480.jpg',
-        "COLCHAS": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Iconos/Colchas.jpg',
+        "TAPICERIA DECORATIVA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria%20decorativa.jpg',
+        "TAPICERIA": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria.jpg',
+        'CORTINAS': 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Cortinas.jpg',
+        "ESTORES": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Estores.jpg',
+        "COLCHAS": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Colchas.jpg',
         "ALFOMBRAS": 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Alfombras.jpg',
         "FR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg",
         "OUTDOOR": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg",
@@ -292,8 +292,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     return (
         <CartProvider>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 mt-4">
-                <div className="bg-white p-7 lg:mt-[5%] xl:mt-[5%] md:mt-[5%] mt-[20%] rounded-lg xl:max-w-[58%] w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%]">
+                <div className="bg-white p-7 rounded-lg xl:max-w-[58%] w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
                     <div className="flex justify-end absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />

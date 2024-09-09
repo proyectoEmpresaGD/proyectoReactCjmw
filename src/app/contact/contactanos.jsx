@@ -7,8 +7,7 @@ function Contacto() {
     return (
         <>
             <CartProvider>
-                <Header />
-                <br></br>                
+                <Header />             
                 <Contacts />
                 <Footer />
             </CartProvider>

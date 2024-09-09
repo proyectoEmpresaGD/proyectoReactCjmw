@@ -18,6 +18,14 @@ const texts = [
     'https://cjmw.eu/ImagenesTelasCjmw/Iconos/LOGOBASSARI_01.png'
 ];
 
+const names =[
+    "Arena",
+    "Harbour",
+    "Cjm",
+    "Flamenco",
+    "Bassari",
+]
+
 
 // function shuffleArray(array) {
 //     for (let i = array.length - 1; i > 0; i--) {
@@ -32,7 +40,7 @@ function Home() {
         <>
             <CartProvider>
                 <Header />
-                <CarruselHome images={images} texts={texts} />
+                <CarruselHome images={images} texts={texts} names={names} />
             </CartProvider>
         </>
     );

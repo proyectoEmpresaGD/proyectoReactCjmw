@@ -4,7 +4,7 @@ import { CartProvider } from '../../components/CartContext';
 
 function Product() {
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen xl:pt-[8%] lg:pt-[12%] md:pt-[10%] sm:pt-[15%]  pt-[20%]">
             <CartProvider>
                 <Header />
                 <div className="flex-grow ">
