@@ -292,7 +292,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     return (
         <CartProvider>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%]">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5%">
                 <div className="bg-white p-7 rounded-lg xl:max-w-[58%] w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
                     <div className="flex justify-end absolute top-4 right-4">
                         <button className="relative " onClick={close}>
