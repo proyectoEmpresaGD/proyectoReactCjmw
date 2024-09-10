@@ -19,15 +19,15 @@ export const Header = () => {
     const { itemCount } = useCart();
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
+    const [showProductsDropdown, setShowProductsDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
     const [showSearchBar, setShowSearchBar] = useState(false);
-    const [languages, setLanguages] = useState([]);
     const [searchHistory, setSearchHistory] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const searchInputRef = useRef(null);
     const [selectedLanguage, setSelectedLanguage] = useState({ value: 'es', label: 'Spanish' });
-    const [isHovered, setIsHovered] = useState(false); // Estado para manejar el hover y la transición
+    const [isHovered, setIsHovered] = useState(false);
 
     // Referencias a los dropdowns y modales
     const searchRef = useRef(null);
@@ -36,6 +36,7 @@ export const Header = () => {
     const languageRef = useRef(null);
     const menuRef = useRef(null);
     const brandsRef = useRef(null);
+    const productsRef = useRef(null);
 
     const languageOptions = [
         { value: 'en', label: 'English' },
@@ -45,36 +46,37 @@ export const Header = () => {
         { value: 'it', label: 'Italian' }
     ];
 
-    // Función para cerrar todos los dropdowns, excepto el buscador y el carrito
+    const handleProductSelect = (value) => {
+        setShowProductsDropdown(false);
+        navigate(`/products?category=${value}`);
+    };
+
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);
+        setShowProductsDropdown(false);
         setShowUserDropdown(false);
         setShowLanguageDropdown(false);
     };
 
-    // Cerrar solo el buscador y el carrito cuando se haga clic fuera de ellos
     const closeSearchAndCart = () => {
         setShowSearchBar(false);
         setShowCart(false);
     };
 
-    // Lógica para cerrar dropdowns y modales al hacer clic fuera de ellos
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
-                !searchRef.current?.contains(event.target) && // Si el clic no está dentro del buscador
-                !cartRef.current?.contains(event.target) && // Si el clic no está dentro del carrito
+                !searchRef.current?.contains(event.target) &&
+                !cartRef.current?.contains(event.target) &&
                 !userRef.current?.contains(event.target) &&
                 !languageRef.current?.contains(event.target) &&
                 !menuRef.current?.contains(event.target) &&
-                !brandsRef.current?.contains(event.target)
+                !brandsRef.current?.contains(event.target) &&
+                !productsRef.current?.contains(event.target)
             ) {
                 closeAllDropdowns();
             }
-            if (
-                !searchRef.current?.contains(event.target) && // Si el clic no está dentro del buscador
-                !cartRef.current?.contains(event.target)
-            ) {
+            if (!searchRef.current?.contains(event.target) && !cartRef.current?.contains(event.target)) {
                 closeSearchAndCart();
             }
         };
@@ -86,13 +88,16 @@ export const Header = () => {
     }, []);
 
     const toggleDropdown = (dropdown) => {
-        closeAllDropdowns(); // Cerramos todos los dropdowns antes de abrir uno nuevo
+        closeAllDropdowns();
         switch (dropdown) {
             case 'menu':
                 setShowMenu(!showMenu);
                 break;
             case 'brands':
                 setShowBrandsDropdown(!showBrandsDropdown);
+                break;
+            case 'products':
+                setShowProductsDropdown(!showProductsDropdown);
                 break;
             case 'user':
                 setShowUserDropdown(!showUserDropdown);
@@ -164,17 +169,16 @@ export const Header = () => {
     const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
         localStorage.setItem('preferredLanguage', selectedOption.value);
-        translatePage(selectedOption.value); // Traduce la página solo cuando el usuario selecciona un idioma
     };
 
     return (
         <>
             <ScrollToTop />
             <header
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isHovered || showSearchBar || showUserDropdown || showBrandsDropdown || showLanguageDropdown || showCart || showMenu ? 'bg-white shadow-md' : 'bg-transparent'
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isHovered || showSearchBar || showUserDropdown || showBrandsDropdown || showProductsDropdown || showLanguageDropdown || showCart || showMenu ? 'bg-white shadow-md' : 'bg-transparent'
                     }`}
-                onMouseEnter={() => setIsHovered(true)} // Cambia el fondo a blanco al hacer hover
-                onMouseLeave={() => setIsHovered(false)} // Vuelve a ser transparente al dejar el hover
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
             >
                 <div className="container mx-auto flex items-center justify-between py-2 px-4 lg:px-8">
                     <div className="flex items-center">
@@ -212,7 +216,26 @@ export const Header = () => {
                             )}
                         </div>
 
-                        <Link to="/products" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Muestras</Link>
+                        <div className="relative" ref={productsRef}>
+                            <button
+                                className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
+                                onClick={() => toggleDropdown('products')}
+                            >
+                                <span>Productos</span>
+                                {showProductsDropdown ?
+                                    <RiArrowDropUpLine size={16} className="ml-2" /> :
+                                    <RiArrowDropDownLine size={16} className="ml-2" />
+                                }
+                            </button>
+                            {showProductsDropdown && (
+                                <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
+                                    <Link to="/products" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Todos los productos</Link>
+                                    <Link to="/products" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Telas</Link>
+                                    <Link to="/products" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Papeles</Link>
+                                </div>
+                            )}
+                        </div>
+
                         <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Sobre nosotros</Link>
                         <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contáctanos</Link>
                         <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contract</Link>
@@ -305,7 +328,7 @@ export const Header = () => {
                                 <FaGlobe size={24} />
                             </button>
                             {showLanguageDropdown && (
-                                <div className="absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
+                                <div className="absolute top-full right-0 bg-white shadow-lg rounded-md py-2 w-40 z-50">
                                     <Select
                                         options={languageOptions}
                                         value={selectedLanguage}
@@ -329,26 +352,58 @@ export const Header = () => {
                 </div>
 
                 {/* Menú en pantallas pequeñas */}
-                <div className={`bg-white lg:hidden ${showMenu ? '' : 'hidden'}`}>
-                    <div className="bg-ivory py-2 px-4">
-                        <Link to="/" className="block text-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Inicio</Link>
-                        <Link to="/products" className="block text-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Muestras</Link>
-                        <Link to="/about" className="block text-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Sobre nosotros</Link>
-                        <Link to="/contact" className="block text-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contáctanos</Link>
-                        <Link to="/contract" className="block text-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contract</Link>
-                        <div className="relative">
-                            <button className="block text-left text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 text-left rounded-lg focus:outline-none" onClick={() => toggleDropdown('brands')}>
-                                Marcas {showBrandsDropdown ? <RiArrowDropUpLine size={16} /> : <RiArrowDropDownLine size={16} />}
+                <div className={`lg:hidden transition-all ${showMenu ? 'block' : 'hidden'} fixed top-0 left-0 w-full h-full bg-white z-50`}>
+                    <div className="bg-white shadow-lg py-4 px-6 h-full">
+                        <div className="flex justify-between mb-4">
+                            <Link to="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
+                                <img className="h-10" src={logoSrc} alt="Logo Empresa" />
+                            </Link>
+                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('menu')}>
+                                <RiArrowDropUpLine size={24} />
+                            </button>
+                        </div>
+
+                        {/* Dropdown de Marcas */}
+                        <div className="border-b-2 py-2">
+                            <button
+                                className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
+                                onClick={() => toggleDropdown('brands')}
+                            >
+                                Marcas
+                                {showBrandsDropdown ? <RiArrowDropUpLine size={20} /> : <RiArrowDropDownLine size={20} />}
                             </button>
                             {showBrandsDropdown && (
-                                <div className={`bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50`}>
-                                    <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
-                                    <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
-                                    <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
-                                    <Link to="/flamencoHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</Link>
+                                <div className="pl-4 mt-2">
+                                    <Link to="/arenaHome" className="block py-1 text-gray-700 hover:text-gray-900">Arena</Link>
+                                    <Link to="/harbourHome" className="block py-1 text-gray-700 hover:text-gray-900">Harbour</Link>
+                                    <Link to="/cjmHome" className="block py-1 text-gray-700 hover:text-gray-900">CJM</Link>
+                                    <Link to="/flamencoHome" className="block py-1 text-gray-700 hover:text-gray-900">Flamenco</Link>
                                 </div>
                             )}
                         </div>
+
+                        {/* Dropdown de Productos */}
+                        <div className="border-b-2 py-2">
+                            <button
+                                className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
+                                onClick={() => toggleDropdown('products')}
+                            >
+                                Productos
+                                {showProductsDropdown ? <RiArrowDropUpLine size={20} /> : <RiArrowDropDownLine size={20} />}
+                            </button>
+                            {showProductsDropdown && (
+                                <div className="pl-4 mt-2">
+                                    <Link to="/products" className="block py-1 text-gray-700 hover:text-gray-900">Todos los productos</Link>
+                                    <Link to="/products?category=telas" className="block py-1 text-gray-700 hover:text-gray-900">Telas</Link>
+                                    <Link to="/products?category=papeles" className="block py-1 text-gray-700 hover:text-gray-900">Papeles</Link>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Otras opciones */}
+                        <Link to="/about" className="block text-gray-800 font-semibold py-2">Sobre nosotros</Link>
+                        <Link to="/contact" className="block text-gray-800 font-semibold py-2">Contáctanos</Link>
+                        <Link to="/contract" className="block text-gray-800 font-semibold py-2">Contract</Link>
                     </div>
                 </div>
             </header>
