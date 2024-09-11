@@ -32,7 +32,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
                                 fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
                             ]);
-    
+
                             return {
                                 ...product,
                                 imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
@@ -293,19 +293,23 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5%">
-                <div className="bg-white p-7 rounded-lg xl:max-w-[58%] w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh]">
+                <div className="bg-white p-7 rounded-lg xl:max-w-[58%] w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh] mt-[8%] 2xl:mt-[4%]">
                     <div className="flex justify-end absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                         </button>
                     </div>
-                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.desprodu}</h2>
+                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
 
                     <div className="grid md:grid-cols-5 " onClick={e => e.stopPropagation()}>
                         <div className="relative group w-full h-72  md:h-72 overflow-hidden col-span-2">
                             <img
                                 src={selectedImage}
-                                // style={{ filter: 'saturate(1.4) brightness(1.2)' }}
+                                style={{
+                                    width: `${zoomFactor * 70}%`,  // Aplica el mismo factor de zoom
+                                    height: `${zoomFactor * 60}%`, // Aplica el mismo factor de zoom
+                                    objectFit: 'cover',  // Mantiene las proporciones como en la segunda imagen
+                                }}
                                 alt={alt}
                                 className="w-full h-full object-contain rounded-md"
                                 onLoad={handleImageLoad}
@@ -340,6 +344,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         style={{
                                             width: '200%', // Haz que el contenedor sea el doble del tamaño original
                                             height: '200%',
+                                            borderRadius: '5px'
                                             // filter: 'saturate(1.4) brightness(1.2)' // Ajusta el tamaño para que sea mayor que el original
                                         }}
                                     >
@@ -394,6 +399,14 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <p className="">Composición:</p>
                                     <p className=" break-words">{selectedProduct.composicion}</p>
                                 </div>
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                    <p className="">Repeticion Horizontal:</p>
+                                    <p className=" break-words">{parseFloat(selectedProduct.repminhor).toFixed(2)} cm</p>
+                                </div>
+                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                    <p className="">Repeticion Vertical:</p>
+                                    <p className=" break-words">{parseFloat(selectedProduct.repminver).toFixed(2)} cm</p>
+                                </div>
                             </div>
                         </div>
                         <div className='justify-start'>
@@ -415,15 +428,24 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     </Link>
                                 </div>
                             </div>
-                        <div className="mx-auto text-center mt-6 ">
-                            <button onClick={handleMapClick} className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
-                                Dónde comprar
-                            </button>
-                            <button onClick={handleAddToCart} className="bg-gradient-to-r from-[#8c7c68] to-[#a09282] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68] mt-2">
-                                Adquirir muestra
-                            </button>
+                            <div className="mx-auto text-center mt-6 ">
+                                <button onClick={handleMapClick} className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
+                                    Dónde comprar
+                                </button>
+                                <button onClick={handleAddToCart} className="bg-gradient-to-r from-[#8c7c68] to-[#a09282] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68] mt-2">
+                                    Adquirir muestra
+                                </button>
+                            </div>
                         </div>
+                    </div>
+
+                    <div className="flex items-center justify-end mb-4">
+                        <div className="flex items-center justify-center bg-gray-300 text-black font-semibold rounded-full w-9 h-9">
+                            {relatedProducts.length}
                         </div>
+                        <p className="ml-2 text-lg">
+                            {relatedProducts.length === 1 ? 'color available' : 'colors available'}
+                        </p>
                     </div>
 
                     <div className="mt-6">
@@ -432,12 +454,12 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 <div key={index} className="relative px-1 cursor-pointer" onClick={() => handleColorClick(colorProduct)}>
                                     <img
                                         src={colorProduct.imageBaja}
-                                        alt={colorProduct.desprodu}
+                                        alt={colorProduct.nombre}
                                         className="w-full h-32 object-cover rounded-md"
                                         onError={(e) => { e.target.src = 'default_image_preview_url'; }}
                                     />
                                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                        <p className="text-white text-center">{colorProduct.desprodu}</p>
+                                        <p className="text-white text-center">{selectedProduct.nombre} {selectedProduct.tonalidad}</p>
                                     </div>
                                 </div>
                             ))}
