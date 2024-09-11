@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Footer from '../footer'; // Suponiendo que tienes este componente importado
+import FooterHome from '../ComponentesUsages/footerHome';
 
 const CarruselHome = ({ images, texts, names }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -59,7 +60,7 @@ const CarruselHome = ({ images, texts, names }) => {
 
                 {/* Último slide que muestra el Footer */}
                 <div className="h-screen w-full relative">
-                    <Footer /> {/* Aquí renderizas tu componente Footer */}
+                    <FooterHome /> {/* Aquí renderizas tu componente Footer */}
                 </div>
             </div>
 
