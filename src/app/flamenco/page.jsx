@@ -15,6 +15,8 @@ function FlamencoHome() {
         return array;
     }
 
+    const marca = 'FLA';
+
     const images = [
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20KUKULKAN.jpg",
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20PUMMERIN.jpg",
@@ -31,7 +33,7 @@ function FlamencoHome() {
         "PUMMERIN",
         "PERRAULT",
         "KUKULKAN",
-        
+
     ]
 
     return (
@@ -45,7 +47,7 @@ function FlamencoHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <FlamencoColecciones/>
+                <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>
         </>
