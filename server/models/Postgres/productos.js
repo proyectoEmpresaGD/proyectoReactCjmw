@@ -242,4 +242,27 @@ export class ProductModel {
     }
   }
 
+
+  static async getCollectionsByBrand(brand) {
+    try {
+      const query = `
+        SELECT DISTINCT UPPER(coleccion) AS coleccion
+        FROM productos
+        WHERE codmarca = $1
+        AND nombre IS NOT NULL
+      `;
+
+      const { rows } = await pool.query(query, [brand]);
+
+      // Asegúrate de devolver solo los nombres de las colecciones
+      return rows.map(row => row.coleccion);
+    } catch (error) {
+      console.error('Error fetching collections by brand:', error);
+      throw new Error('Error fetching collections by brand');
+    }
+  }
+
+
+
+
 }

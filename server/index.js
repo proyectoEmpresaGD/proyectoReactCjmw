@@ -1,4 +1,6 @@
 import express, { json } from 'express';
+import { urlencoded } from 'express'; // Asegúrate de importar urlencoded
+
 import { createProductRouter } from './routes/productos.js';
 import { createImagenRouter } from './routes/imagenes.js';
 import { corsMiddleware } from './middlewares/cors.js';
@@ -22,6 +24,8 @@ const app = express();
 app.use(json());
 app.use(corsMiddleware());
 app.disable('x-powered-by');
+app.use(express.urlencoded({ extended: true })); // Por si envías datos como formularios
+
 
 // Sirve archivos estáticos desde el directorio 'web'
 app.use(express.static(join(__dirname, 'web')));
