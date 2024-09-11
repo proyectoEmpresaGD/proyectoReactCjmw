@@ -39,6 +39,8 @@ const titles = [
     "ArenaCarrusel2.webp",
     "ArenaCarrusel3.webp"
 ]
+const marca = 'HAR';
+
 
 function HarbourHome() {
 
@@ -49,11 +51,11 @@ function HarbourHome() {
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full">
-                            <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
+                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
                 <NewCollection images={imagesCollection} titles={titles} />
-                <HarbourColecciones/>
+                <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>
         </>

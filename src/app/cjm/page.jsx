@@ -33,6 +33,7 @@ function CjmHome() {
         "ArenaCarrusel3.webp"
     ]
 
+    const marca = 'CJM';
 
 
     return (
@@ -46,7 +47,7 @@ function CjmHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <CJMColecciones/>
+                <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>
         </>
