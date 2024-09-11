@@ -33,7 +33,7 @@ const FooterHome = () => {
                 <div className="flex flex-col items-center">
                     <h3 className="text-lg font-bold mb-4">Descubre Nuestra Web</h3>
                     <img
-                        src="/public/frame.png"
+                        src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/frame.png"
                         alt="Código QR para descargar la app"
                         className="w-32 h-32 object-contain"
                     />
