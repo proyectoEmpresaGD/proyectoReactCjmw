@@ -3,10 +3,9 @@ import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
-import ArenaColecciones from "../colecciones/arenaColeccion"
+import ColeccionesMarcas from "../colecciones/ColeccionesMarcas"
 
 function ArenaHome() {
-
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -15,22 +14,21 @@ function ArenaHome() {
         return array;
     }
 
+    const marca = 'ARE';
+
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENT/1200%20ARENA%20ANTILLA%20VELVET%2002.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENT/1200%20ARENA%20COTE%20D%20AZUR%2002.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENT/1200%20ARENA%20PERSIAN%20MOOD.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENT/1200%20ARENA%20GRANITE%2002.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/ARE00992%20ANTIBES%20RUBY%202.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/APACHE%20CHERRY.jpg",
     ]
 
     const titles = [
         "1200ARENADUNE01.jpg",
-        "ANTILLA VELVET",
-        "COTE D AZUR",
-        "PERSIAN MOOD"
+        "TOUCH",
+        "ARTISAN",
+        "SANTORINI",
     ]
 
     return (
@@ -44,7 +42,7 @@ function ArenaHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <ArenaColecciones />
+                <ColeccionesMarcas marca={marca}/>
                 <Footer />
             </CartProvider>
         </>
