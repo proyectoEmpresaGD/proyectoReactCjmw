@@ -230,8 +230,6 @@ export const Header = () => {
                             {showProductsDropdown && (
                                 <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
                                     <Link to="/products" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Todos los productos</Link>
-                                    <Link to="/products" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Telas</Link>
-                                    <Link to="/products" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Papeles</Link>
                                 </div>
                             )}
                         </div>
@@ -394,8 +392,6 @@ export const Header = () => {
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
                                     <Link to="/products" className="block py-1 text-gray-700 hover:text-gray-900">Todos los productos</Link>
-                                    <Link to="/products?category=telas" className="block py-1 text-gray-700 hover:text-gray-900">Telas</Link>
-                                    <Link to="/products?category=papeles" className="block py-1 text-gray-700 hover:text-gray-900">Papeles</Link>
                                 </div>
                             )}
                         </div>
