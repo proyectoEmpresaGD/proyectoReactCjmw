@@ -39,6 +39,7 @@ function App() {
         <Route path="/map/:direccion" component={<GeocodingService />} />
         <Route path="/Contract" element={<Contract />} />
       </Routes>
+
     </>
   )
 }
