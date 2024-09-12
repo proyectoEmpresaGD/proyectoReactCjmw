@@ -11,7 +11,6 @@ import BlogHome from './app/blog/page.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
 import Products from "./app/products/products.jsx"
 import Usages from './app/usages/page.jsx'
-import HarbourColecciones from './app/colecciones/harbourColeccion.jsx'
 import GeocodingService from "./components/ComponentesContact/map.jsx"
 import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
 import Contract from "./app/contract/PaginaContract.jsx"
@@ -39,7 +38,6 @@ function App() {
         <Route path="/map/:direccion" component={<GeocodingService />} />
         <Route path="/Contract" element={<Contract />} />
       </Routes>
-
     </>
   )
 }
