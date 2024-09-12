@@ -40,6 +40,7 @@ function App() {
         <Route path="/harbourColecciones" element={<HarbourColecciones />} />
         <Route path="/Contract" element={<Contract />} />
       </Routes>
+
     </>
   )
 }
