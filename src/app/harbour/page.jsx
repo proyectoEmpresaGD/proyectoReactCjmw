@@ -4,8 +4,7 @@ import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import { Link } from "react-router-dom";
-import HarbourColecciones from "../colecciones/harbourColeccion"
-
+import ColeccionesMarcas from "../colecciones/ColeccionesMarcas"
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {

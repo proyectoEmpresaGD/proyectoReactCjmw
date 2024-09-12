@@ -3,7 +3,7 @@ import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
-import CJMColecciones from "../colecciones/cjmColeccion"
+import ColeccionesMarcas from "../colecciones/ColeccionesMarcas"
 
 function BassariHome() {
 
@@ -33,7 +33,7 @@ function BassariHome() {
         "ArenaCarrusel3.webp"
     ]
 
-
+    const marca = 'BAS';
 
     return (
         <>
@@ -46,7 +46,7 @@ function BassariHome() {
                     </div>
                 </body>
                 <NewCollection images={images} titles={titles} />
-                <CJMColecciones/>
+                <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>
         </>
