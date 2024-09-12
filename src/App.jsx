@@ -37,7 +37,6 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
         <Route path="/map/:direccion" component={<GeocodingService />} />
-        <Route path="/harbourColecciones" element={<HarbourColecciones />} />
         <Route path="/Contract" element={<Contract />} />
       </Routes>
     </>
