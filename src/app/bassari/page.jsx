@@ -3,7 +3,7 @@ import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
-import ColeccionesMarcas from "../colecciones/ColeccionesMarcas"
+import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
 
 function BassariHome() {
 
@@ -14,26 +14,29 @@ function BassariHome() {
         }
         return array;
     }
+    
+
+    const marca = 'BAS';
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/ARE00992%20ANTIBES%20RUBY%202.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/APACHE%20CHERRY.jpg",
     ]
 
     const titles = [
-        "1200ARENADUNE01.jpg",
-        "ArenaCarrusel1.webp",
-        "ArenaCarrusel2.webp",
-        "ArenaCarrusel3.webp"
+        "TOUCH",
+        "ARTISAN",
+        "SANTORINI",
     ]
 
-    const marca = 'BAS';
+    const CodProduBas = [
+        "",
+        "",
+        ""
+    ]
 
     return (
         <>
@@ -41,12 +44,12 @@ function BassariHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
-                    <div className=" flex items-center justify-center h-full">
-                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/LOGOBASSARI_01.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[30%] h-[30%] max-w-full max-h-full " />
+                    <div className=" flex items-center justify-center h-full mt-[2%]">
+                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/LOGOBASSARI_01.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
-                <NewCollection images={images} titles={titles} />
-                <ColeccionesMarcas marca={marca} />
+                <NewCollection images={images} titles={titles} productCodes={CodProduBas} />
+                <ColeccionesMarcas marca={marca}/>
                 <Footer />
             </CartProvider>
         </>

@@ -1,5 +1,49 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+/* Fondo flamenco*/
+.bg-dots {
+  position: relative; /* Asegura que los elementos hijos se posicionen en relación al contenedor */
+  z-index: -1; /* Asegura que esté detrás de otros componentes */
+}
+
+.bg-dots::before,
+.bg-dots::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Asegura que los puntos queden detrás del contenido */
+  pointer-events: none; /* Evita la interacción con los círculos */
+  background-repeat: no-repeat;
+}
+
+.bg-dots::before {
+  background-image: radial-gradient(circle at 10% 15%, rgba(128, 128, 128, 0.9) 30px, transparent 35px),
+                    radial-gradient(circle at 40% 60%, rgba(128, 128, 128, 0.9) 50px, transparent 55px),
+                    radial-gradient(circle at 70% 20%, rgba(128, 128, 128, 0.9) 40px, transparent 45px),
+                    radial-gradient(circle at 90% 50%, rgba(128, 128, 128, 0.8) 60px, transparent 65px),
+                    radial-gradient(circle at 20% 70%, rgba(128, 128, 128, 0.9) 45px, transparent 50px),
+                    radial-gradient(circle at 80% 40%, rgba(128, 128, 128, 0.9) 55px, transparent 60px),
+                    radial-gradient(circle at 15% 85%, rgba(128, 128, 128, 0.9) 35px, transparent 40px),
+                    radial-gradient(circle at 50% 90%, rgba(128, 128, 128, 0.9) 50px, transparent 55px),
+                    radial-gradient(circle at 30% 35%, rgba(128, 128, 128, 0.9) 40px, transparent 45px),
+                    radial-gradient(circle at 30% 35%, rgba(128, 128, 128, 0.9) 40px, transparent 50px);
+}
+
+.bg-dots::after {
+  background-image: radial-gradient(circle at 50% 10%, rgba(128, 128, 128, 0.9) 25px, transparent 30px),
+                    radial-gradient(circle at 30% 80%, rgba(128, 128, 128, 0.8) 35px, transparent 40px),
+                    radial-gradient(circle at 70% 30%, rgba(128, 128, 128, 0.9) 60px, transparent 65px),
+                    radial-gradient(circle at 90% 10%, rgba(128, 128, 128, 0.9) 45px, transparent 50px),
+                    radial-gradient(circle at 20% 50%, rgba(128, 128, 128, 0.9) 50px, transparent 55px),
+                    radial-gradient(circle at 75% 45%, rgba(128, 128, 128, 0.9) 30px, transparent 35px),
+                    radial-gradient(circle at 65% 75%, rgba(128, 128, 128, 0.9) 55px, transparent 60px),
+                    radial-gradient(circle at 10% 30%, rgba(128, 128, 128, 0.9) 40px, transparent 45px),
+                    radial-gradient(circle at 30% 35%, rgba(128, 128, 128, 0.9) 40px, transparent 50px);
+}
+
 *{
     font-family: Poppins;    
 }

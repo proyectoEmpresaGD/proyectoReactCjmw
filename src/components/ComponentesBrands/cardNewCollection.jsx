@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Modal from '../ComponentesProductos/modal'; // Importa el componente de la ventana modal
 
-const NewCollection = ( { images, titles } ) => {
+const NewCollection = ({ images, titles, productCodes }) => {
     const [hoveredItem, setHoveredItem] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     const handleMouseEnter = (index) => {
         setHoveredItem(index);
@@ -11,7 +14,21 @@ const NewCollection = ( { images, titles } ) => {
         setHoveredItem(null);
     };
 
-    
+    // Función para abrir la ventana modal al hacer clic en "Shop Now"
+    const handleShopNowClick = async (index) => {
+        const selectedProductCode = productCodes[index];
+
+        // Hacer la llamada para obtener la información completa del producto
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${selectedProductCode}`);
+            const data = await response.json();
+
+            setSelectedProduct(data); // Guardar la información completa del producto
+            setModalOpen(true); // Abrir la ventana modal
+        } catch (error) {
+            console.error('Error fetching product:', error);
+        }
+    };
 
     return (
         <section>
@@ -24,24 +41,24 @@ const NewCollection = ( { images, titles } ) => {
                     </p>
                 </header>
 
-                <ul className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <ul className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     <li
                         onMouseEnter={() => handleMouseEnter(0)}
                         onMouseLeave={handleMouseLeave}
-                        className={`group relative ${hoveredItem === 0 ? 'opacity-90' : 'opacity-100'
-                            } transition duration-500`}
+                        className={`group relative ${hoveredItem === 0 ? 'opacity-90' : 'opacity-100'} transition duration-500 `}
                     >
-                        <a href="#" className="block">
+                        <a className="block">
                             <img
                                 src={images[0]}
                                 alt=""
-                                className={`aspect-square w-full object-cover transform ${hoveredItem === 0 ? 'scale-105' : 'scale-100'
-                                    } transition duration-500`}
+                                className={`aspect-square w-full object-cover transform ${hoveredItem === 0 ? 'scale-105' : 'scale-100'} transition duration-500`}
                             />
-
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
-                                <h3 className="text-xl font-medium text-white">{titles[3]}</h3>
-                                <span className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white">
+                                <h3 className="text-xl font-medium text-white">{titles[0]}</h3>
+                                <span
+                                    onClick={() => handleShopNowClick(0)} // Manejar clic en Shop Now
+                                    className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
+                                >
                                     Shop Now
                                 </span>
                             </div>
@@ -51,20 +68,20 @@ const NewCollection = ( { images, titles } ) => {
                     <li
                         onMouseEnter={() => handleMouseEnter(1)}
                         onMouseLeave={handleMouseLeave}
-                        className={`group relative ${hoveredItem === 1 ? 'opacity-90' : 'opacity-100'
-                            } transition duration-500`}
+                        className={`group relative ${hoveredItem === 1 ? 'opacity-90' : 'opacity-100'} transition duration-500 `}
                     >
-                        <a href="#" className="block">
+                        <a className="block">
                             <img
                                 src={images[1]}
                                 alt=""
-                                className={`aspect-square w-full object-cover transform ${hoveredItem === 1 ? 'scale-105' : 'scale-100'
-                                    } transition duration-500`}
+                                className={`aspect-square w-full object-cover transform ${hoveredItem === 1 ? 'scale-105' : 'scale-100'} transition duration-500`}
                             />
-
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
                                 <h3 className="text-xl font-medium text-white">{titles[1]}</h3>
-                                <span className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white">
+                                <span
+                                    onClick={() => handleShopNowClick(1)} // Manejar clic en Shop Now
+                                    className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
+                                >
                                     Shop Now
                                 </span>
                             </div>
@@ -74,20 +91,20 @@ const NewCollection = ( { images, titles } ) => {
                     <li
                         onMouseEnter={() => handleMouseEnter(2)}
                         onMouseLeave={handleMouseLeave}
-                        className={`group relative lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 ${hoveredItem === 2 ? 'opacity-90' : 'opacity-100'
-                            } transition duration-500`}
+                        className={`group relative lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 ${hoveredItem === 2 ? 'opacity-90' : 'opacity-100'} transition duration-500`}
                     >
-                        <a href="#" className="block">
+                        <a className="block">
                             <img
                                 src={images[2]}
                                 alt=""
-                                className={`aspect-square w-full object-cover transform ${hoveredItem === 2 ? 'scale-105' : 'scale-100'
-                                    } transition duration-500`}
+                                className={`aspect-square w-full object-cover transform ${hoveredItem === 2 ? 'scale-105' : 'scale-100'} transition duration-500`}
                             />
-
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
                                 <h3 className="text-xl font-medium text-white">{titles[2]}</h3>
-                                <span className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white">
+                                <span
+                                    onClick={() => handleShopNowClick(2)} // Manejar clic en Shop Now
+                                    className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
+                                >
                                     Shop Now
                                 </span>
                             </div>
@@ -95,6 +112,15 @@ const NewCollection = ( { images, titles } ) => {
                     </li>
                 </ul>
             </div>
+
+            {/* Modal */}
+            {modalOpen && selectedProduct && (
+                <Modal
+                    isOpen={modalOpen}
+                    close={() => setModalOpen(false)}
+                    product={selectedProduct} // Pasar el producto seleccionado a la modal
+                />
+            )}
         </section>
     );
 };

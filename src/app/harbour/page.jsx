@@ -4,7 +4,7 @@ import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import { Link } from "react-router-dom";
-import ColeccionesMarcas from "../colecciones/ColeccionesMarcas"
+import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -22,7 +22,6 @@ const images = [
     "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
     "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
     "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel2.webp",
 ]
 
 const imagesCollection = [

@@ -56,8 +56,8 @@ const ShoppingCart = ({ onClose }) => {
                     <span className="text-base text-gray-600">Total:</span>
                     <span className="text-lg font-semibold">€{totalPrice}</span>
                 </div>
-                <button onClick={() => console.log("Proceeding to checkout...")} className="w-full mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Proceed to Checkout
+                <button onClick={() => console.log("Proceeding to checkout...")} className="w-full mt-4 bg-gray-500  duration-150 text-white  font-bold py-2 px-4 rounded">
+                    Proximamente disponible
                 </button>
             </div>
         </div>

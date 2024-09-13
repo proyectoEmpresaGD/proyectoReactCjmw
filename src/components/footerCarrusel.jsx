@@ -37,7 +37,7 @@ const Footer = () => {
                     CJM WORLDWIDE
                 </h3>
                 <nav className="mt-4 flex flex-col lg:flex-row items-center justify-between gap-4">
-
+                
                     <Link to="/about" className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300">
                         Sobre Nosotros
                     </Link>

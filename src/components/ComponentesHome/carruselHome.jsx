@@ -1,18 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
-import Footer from '../footer'; // Suponiendo que tienes este componente importado
 import FooterHome from '../ComponentesUsages/footerHome';
 
 const CarruselHome = ({ images, texts, names }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
     const containerRef = useRef(null);
+    const touchStartY = useRef(0);
+    const touchEndY = useRef(0);
 
+    // Función para manejar el desplazamiento por scroll en desktop
     useEffect(() => {
         const handleScroll = (event) => {
-            if (isScrolling) return; // Evita múltiples eventos de scroll
+            if (isScrolling) return;
 
             const { deltaY } = event;
-            const direction = deltaY > 0 ? 1 : -1; // Determina la dirección del scroll
+            const direction = deltaY > 0 ? 1 : -1;
 
             setIsScrolling(true);
 
@@ -42,6 +44,47 @@ const CarruselHome = ({ images, texts, names }) => {
         };
     }, [images.length, isScrolling]);
 
+    // Función para manejar el desplazamiento táctil en móviles
+    useEffect(() => {
+        const handleTouchStart = (e) => {
+            touchStartY.current = e.touches[0].clientY;
+            e.preventDefault();
+        };
+
+        const handleTouchMove = (e) => {
+            touchEndY.current = e.touches[0].clientY;
+            e.preventDefault();
+        };
+
+        const handleTouchEnd = () => {
+            const distance = touchStartY.current - touchEndY.current;
+            const threshold = 50; // Distancia mínima para considerar un swipe
+
+            if (distance > threshold) {
+                // Swipe hacia arriba
+                setCurrentSlide((prevSlide) => (prevSlide < images.length ? prevSlide + 1 : prevSlide));
+            } else if (distance < -threshold) {
+                // Swipe hacia abajo
+                setCurrentSlide((prevSlide) => (prevSlide > 0 ? prevSlide - 1 : prevSlide));
+            }
+        };
+
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener('touchstart', handleTouchStart);
+            container.addEventListener('touchmove', handleTouchMove);
+            container.addEventListener('touchend', handleTouchEnd);
+        }
+
+        return () => {
+            if (container) {
+                container.removeEventListener('touchstart', handleTouchStart);
+                container.removeEventListener('touchmove', handleTouchMove);
+                container.removeEventListener('touchend', handleTouchEnd);
+            }
+        };
+    }, [images.length]);
+
     return (
         <div className="relative h-screen overflow-hidden w-full" ref={containerRef}>
             {/* Contenedor del carrusel */}
@@ -64,15 +107,17 @@ const CarruselHome = ({ images, texts, names }) => {
                 </div>
             </div>
 
-            {/* Nombre del slide actual en formato móvil (totalmente vertical y estático) */}
-            <div className="absolute right-2 top-2/4 transform -translate-y-1/2 flex flex-col items-center space-y-2 md:hidden">
-                {/* Nombre dinámico del slide actual completamente vertical con espacio extra para no pisar los indicadores */}
-                <span className="text-white font-bold mb-8 transform rotate-90  ">
-                    {names[currentSlide]}
-                </span>
-
+            {/* Nombre del slide actual en formato móvil */}
+            <div className="absolute right-2 top-1/4 transform -translate-y-1/2 items-center space-y-2 md:hidden">
                 {/* Indicadores en forma de círculos (en móviles) */}
-                <div className="flex flex-col items-center space-y-2">
+                <div className="absolute right-2 flex flex-col items-center space-y-2">
+                    <span
+                        className="text-white font-bold mb-16 block transition-opacity duration-300 ease-in-out rotate-90"
+                        style={{ width: '1em', display: 'inline-block',  }}
+                    >
+                        {names[currentSlide]}
+                    </span>
+
                     {[...images, 'footer'].map((_, index) => (
                         <div
                             key={index}
@@ -82,9 +127,11 @@ const CarruselHome = ({ images, texts, names }) => {
                 </div>
             </div>
 
-            {/* Nombres en la parte inferior, alineados horizontalmente (solo en pantallas grandes) */}
+
+
+            {/* Nombres en la parte inferior (solo en pantallas grandes) */}
             {names && names.length > 0 && (
-                <div className="absolute bottom-5 left-0 right-0 flex justify-between px-[20%] space-x-8 items-center hidden md:flex">
+                <div className="absolute bottom-5 left-0 right-0 justify-between px-[20%] space-x-8 items-center hidden md:flex">
                     {names.map((name, index) => (
                         <span
                             key={index}
