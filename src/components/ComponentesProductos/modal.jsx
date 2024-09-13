@@ -241,7 +241,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const handleAddToCart = () => {
         addToCart({
             id: selectedProduct.codprodu,
-            name: selectedProduct.desprodu,
+            name: selectedProduct.nombre,
             price: 3,
             image: selectedProduct.imageBaja,
             quantity: 1
@@ -293,15 +293,15 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5%">
-                <div className="bg-white p-7 rounded-lg xl:max-w-[58%] w-90% md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[90vh] mt-[8%] 2xl:mt-[4%]">
+                <div className="bg-white p-7 rounded-lg xl:max-w-[100%] 2xl:max-w-[70%] md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[80vh] mt-[8%] 2xl:mt-[4%]">
                     <div className="flex justify-end absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                         </button>
                     </div>
-                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
+                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.codprodu}</h2>
 
-                    <div className="grid md:grid-cols-5 " onClick={e => e.stopPropagation()}>
+                    <div className="grid md:grid-cols-6 " onClick={e => e.stopPropagation()}>
                         <div className="relative group w-full h-72  md:h-72 overflow-hidden col-span-2">
                             <img
                                 src={selectedImage}
@@ -364,51 +364,58 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 </>
                             )}
                         </div>
-                        <div className="justify-start xl:p-4 lg:p-4 md:p-4 text-start col-span-2 w-full">
+                        <div className="justify-start xl:p-4 lg:p-4 md:p-4 text-start col-span-3 w-full">
                             <h1 className="font-bold text-black mx-auto text-center mb-4 mt-[-2rem]">Ficha Técnica</h1>
-                            <div className="">
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Marca:</p>
-                                    <p className="">{selectedProduct.codmarca}</p>
+                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-4">
+                                <div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Marca:</p>
+                                        <p>{selectedProduct.codmarca}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Colección:</p>
+                                        <p>{selectedProduct.coleccion}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Tonalidad:</p>
+                                        <p>{selectedProduct.tonalidad}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Tipo:</p>
+                                        <p>{selectedProduct.tipo}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Estilo:</p>
+                                        <p>{selectedProduct.estilo}</p>
+                                    </div>
+
                                 </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Colección:</p>
-                                    <p className="">{selectedProduct.coleccion}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Tonalidad:</p>
-                                    <p className="">{selectedProduct.tonalidad}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Tipo:</p>
-                                    <p className="">{selectedProduct.tipo}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Estilo:</p>
-                                    <p className="">{selectedProduct.estilo}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Martindale:</p>
-                                    <p className="">{selectedProduct.martindale}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Gramaje:</p>
-                                    <p>{selectedProduct.gramaje}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Composición:</p>
-                                    <p className=" break-words">{selectedProduct.composicion}</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Repeticion Horizontal:</p>
-                                    <p className=" break-words">{parseFloat(selectedProduct.repminhor).toFixed(2)} cm</p>
-                                </div>
-                                <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
-                                    <p className="">Repeticion Vertical:</p>
-                                    <p className=" break-words">{parseFloat(selectedProduct.repminver).toFixed(2)} cm</p>
+
+                                <div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Martindale:</p>
+                                        <p>{selectedProduct.martindale}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Gramaje:</p>
+                                        <p>{selectedProduct.gramaje}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Composición:</p>
+                                        <p className="break-words">{selectedProduct.composicion}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Rapord Horizontal:</p>
+                                        <p className="break-words">{parseFloat(selectedProduct.repminhor).toFixed(2)} cm</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Rapord Vertical:</p>
+                                        <p className="break-words">{parseFloat(selectedProduct.repminver).toFixed(2)} cm</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                         <div className='justify-start'>
                             <div className="justify-start text-start text-base mt-4">
                                 <div>
@@ -451,7 +458,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     <div className="mt-6">
                         <Slider {...settings}>
                             {relatedProducts.map((colorProduct, index) => (
-                                <div key={index} className="relative px-1 cursor-pointer" onClick={() => handleColorClick(colorProduct)}>
+                                <div
+                                    key={index}
+                                    className={`relative px-1 mx-auto cursor-pointer flex-grow ${relatedProducts.length < 4 ? 'w-full' : 'w-1/4'}`}
+                                    onClick={() => handleColorClick(colorProduct)}
+                                >
                                     <img
                                         src={colorProduct.imageBaja}
                                         alt={colorProduct.nombre}
@@ -459,18 +470,19 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         onError={(e) => { e.target.src = 'default_image_preview_url'; }}
                                     />
                                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                        <p className="text-white text-center">{selectedProduct.nombre} {selectedProduct.tonalidad}</p>
+                                        <p className="text-white text-center">{colorProduct.nombre} {colorProduct.tonalidad}</p>
                                     </div>
                                 </div>
                             ))}
                         </Slider>
                     </div>
+
                 </div>
                 {modalMapaOpen && (
                     <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
                 )}
             </div>
-        </CartProvider>
+        </CartProvider >
     );
 };
 

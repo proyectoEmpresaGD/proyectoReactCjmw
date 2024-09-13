@@ -1,11 +1,12 @@
 import './App.css'
-import { HashRouter as Router, Route, Routes } from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import Home from "./app/paginaPrincipal.jsx"
 import About from "./app/about/about.jsx"
 import Contacto from "./app/contact/contactanos.jsx"
 import HarbourHome from './app/harbour/page.jsx'
 import ArenaHome from "./app/arena/page.jsx"
 import CjmHome from "./app/cjm/page.jsx"
+import BassariHome from "./app/bassari/page.jsx"
 import FlamencoHome from './app/flamenco/page.jsx'
 import BlogHome from './app/blog/page.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
@@ -15,11 +16,7 @@ import GeocodingService from "./components/ComponentesContact/map.jsx"
 import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
 import Contract from "./app/contract/PaginaContract.jsx"
 
-
-
 function App() {
-
-
   return (
     <>
       <ScrollToTop />
@@ -32,10 +29,11 @@ function App() {
         <Route path="/cjmHome" element={<CjmHome />} />
         <Route path="/arenaHome" element={<ArenaHome />} />
         <Route path="/flamencoHome" element={<FlamencoHome />} />
+        <Route path="/bassariHome" element={<BassariHome />} />
         <Route path="/BlogHome/:newsId" element={<BlogHome />} />
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
-        <Route path="/map/:direccion" component={<GeocodingService />} />
+        <Route path="/map/:direccion" element={<GeocodingService />} />
         <Route path="/Contract" element={<Contract />} />
       </Routes>
     </>

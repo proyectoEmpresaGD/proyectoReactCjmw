@@ -6,7 +6,7 @@ function Contract() {
         <>
             <CartProvider>
                 <Header />
-                <div className="min-h-screen bg-black text-white xl:pt-[8%] lg:pt-[12%] md:pt-[10%] sm:pt-[15%] pt-[20%] ">
+                <div className="min-h-screen bg-black text-white xl:pt-[7%] lg:pt-[12%] md:pt-[10%] sm:pt-[15%] pt-[20%] ">
                     <div className="text-center mx-auto">
                         <h1 className="p-[2%] text-5xl font-extrabold text-white tracking-wide">
                             Contract  Services
