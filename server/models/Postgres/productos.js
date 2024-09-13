@@ -117,20 +117,25 @@ export class ProductModel {
     return rows[0];
   }
 
-  static async search({ query, limit = 10, page = 1 }) {
+  static async search({ query, limit = 10, offset = 0 }) {
     const searchQuery = `
       SELECT DISTINCT ON ("nombre") *
       FROM productos
       WHERE "nombre" ILIKE $1
-      ORDER BY "nombre", "codprodu" 
+        AND "nombre" IS NOT NULL 
+        AND "nombre" != '' 
+        AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)')
+        AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
+        AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
+      ORDER BY "nombre", "codprodu"
       LIMIT $2 OFFSET $3;
     `;
-
-    const offset = (page - 1) * limit;
+    const offsetValue = offset || 0;
+    const searchString = `%${query}%`;
 
     try {
-      const { rows } = await pool.query(searchQuery, [`${query}%`, limit, offset]);
-      return rows;
+      const { rows } = await pool.query(searchQuery, [searchString, limit, offsetValue]);
+      return { products: rows, total: rows.length }; // Devolver el campo products y total
     } catch (error) {
       console.error('Error searching products:', error);
       throw new Error('Error searching products');
@@ -192,12 +197,12 @@ export class ProductModel {
     }
   }
 
-
-  static async filter(filters) {
-    let query = 'SELECT * FROM productos WHERE 1=1';
+  static async filter(filters, limit = 16, offset = 0) {
+    let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE 1=1';
     let params = [];
     let index = 1;
 
+    // Aplicar los filtros basados en las marcas, colores, colecciones, etc.
     if (filters.brand && filters.brand.length > 0) {
       query += ` AND "codmarca" = ANY($${index++})`;
       params.push(filters.brand);
@@ -233,9 +238,13 @@ export class ProductModel {
       params.push(filters.martindale);
     }
 
+    // Aplicar el límite y el offset
+    query += ` LIMIT $${index++} OFFSET $${index}`;
+    params.push(limit, offset);
+
     try {
       const { rows } = await pool.query(query, params);
-      return rows;
+      return { products: rows, total: rows.length }; // Devuelve productos y total
     } catch (error) {
       console.error('Error filtering products:', error);
       throw new Error('Error filtering products');
@@ -243,24 +252,6 @@ export class ProductModel {
   }
 
 
-  static async getCollectionsByBrand(brand) {
-    try {
-      const query = `
-        SELECT DISTINCT UPPER(coleccion) AS coleccion
-        FROM productos
-        WHERE codmarca = $1
-        AND nombre IS NOT NULL
-      `;
-
-      const { rows } = await pool.query(query, [brand]);
-
-      // Asegúrate de devolver solo los nombres de las colecciones
-      return rows.map(row => row.coleccion);
-    } catch (error) {
-      console.error('Error fetching collections by brand:', error);
-      throw new Error('Error fetching collections by brand');
-    }
-  }
 
 
 

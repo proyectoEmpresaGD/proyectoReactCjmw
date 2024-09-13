@@ -14,22 +14,25 @@ import 'tailwindcss/tailwind.css';
 export const Header = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [logoSrc, setLogoSrc] = useState('/logoCJM.png');
-    const [showCart, setShowCart] = useState(false);
     const { itemCount } = useCart();
+
+    const [logoSrc] = useState('/logoCJM.png');
+    const [showCart, setShowCart] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
     const [showProductsDropdown, setShowProductsDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
     const [showSearchBar, setShowSearchBar] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const [searchHistory, setSearchHistory] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
+    const [showClearButton, setShowClearButton] = useState(false); // Para el botón "Limpiar filtros"
     const searchInputRef = useRef(null);
     const [selectedLanguage, setSelectedLanguage] = useState({ value: 'es', label: 'Spanish' });
     const [isHovered, setIsHovered] = useState(false);
+    const [filtersActive, setFiltersActive] = useState(false); // Nuevo estado para controlar los filtros
 
-    // Referencias a los dropdowns y modales
     const searchRef = useRef(null);
     const cartRef = useRef(null);
     const userRef = useRef(null);
@@ -123,52 +126,70 @@ export const Header = () => {
 
     const handleSearchInputChange = async (event) => {
         const query = event.target.value;
+        setSearchQuery(query);
+
         if (query.length >= 3) {
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${query}`);
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('Error fetching suggestions');
                 }
                 const results = await response.json();
-                const filteredResults = results.filter(result =>
-                    !searchHistory.some(historyItem => historyItem.codprodu === result.codprodu)
-                );
-                setSuggestions(filteredResults.slice(0, 3));
+
+                if (Array.isArray(results.products)) {
+                    setSuggestions(results.products.slice(0, 3)); // Mostrar hasta 3 sugerencias
+                } else {
+                    setSuggestions([]); // Resetear si no es un array válido
+                }
             } catch (error) {
                 console.error('Error fetching suggestions:', error);
-                setSuggestions([]);
+                setSuggestions([]); // Resetear sugerencias si ocurre un error
             }
         } else {
-            setSuggestions([]);
+            setSuggestions([]); // Limpiar sugerencias si la consulta es muy corta
         }
     };
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
-        const query = searchInputRef.current.value;
-        if (query.length > 0) {
-            const newHistory = [query, ...searchHistory].slice(0, 2);
+        if (searchQuery.length > 0) {
+            const newHistory = [searchQuery, ...searchHistory].slice(0, 3); // Guardar solo las últimas 3 búsquedas
             setSearchHistory(newHistory);
             setShowSearchBar(false);
-            navigate(`/products?search=${query}`);
+            setFiltersActive(true); // Marca que los filtros están activos
+            setShowClearButton(true); // Mostrar el botón al realizar una búsqueda
+
+            navigate(`/products?search=${searchQuery}`);
         }
     };
 
     const handleRecentSearchClick = (search) => {
+        setSearchQuery(search);
         setShowSearchBar(false);
+        setFiltersActive(true); // Marca que los filtros están activos
         navigate(`/products?search=${search}`);
     };
 
     const handleSuggestionClick = (item) => {
-        const newHistory = [item.desprodu, ...searchHistory].slice(0, 2);
+        const newHistory = [item.nombre, ...searchHistory].slice(0, 3);
         setSearchHistory(newHistory);
+        setSearchQuery(item.nombre);
         setShowSearchBar(false);
-        navigate(`/products?productId=${item.codprodu}`);
+        setFiltersActive(true); // Marca que los filtros están activos
+        navigate(`/products?productId=${item.codprodu}`); // Navegar con el ID del producto
     };
 
     const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
         localStorage.setItem('preferredLanguage', selectedOption.value);
+    };
+
+    const handleClearSearch = () => {
+        setSearchQuery('');
+        setSearchHistory([]);
+        setShowClearButton(false); // Ocultar el botón "Limpiar filtros"
+        setFiltersActive(false); // Marca que no hay filtros activos
+        navigate('/products');
     };
 
     return (
@@ -192,7 +213,6 @@ export const Header = () => {
                         </Link>
                     </div>
 
-                    {/* Menú en pantallas grandes */}
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
                         <Link to="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Inicio</Link>
                         <div className="relative" ref={brandsRef}>
@@ -201,10 +221,7 @@ export const Header = () => {
                                 onClick={() => toggleDropdown('brands')}
                             >
                                 <span>Marcas</span>
-                                {showBrandsDropdown ?
-                                    <RiArrowDropUpLine size={16} className="ml-2" /> :
-                                    <RiArrowDropDownLine size={16} className="ml-2" />
-                                }
+                                {showBrandsDropdown ? <RiArrowDropUpLine size={16} className="ml-2" /> : <RiArrowDropDownLine size={16} className="ml-2" />}
                             </button>
                             {showBrandsDropdown && (
                                 <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
@@ -222,10 +239,7 @@ export const Header = () => {
                                 onClick={() => toggleDropdown('products')}
                             >
                                 <span>Productos</span>
-                                {showProductsDropdown ?
-                                    <RiArrowDropUpLine size={16} className="ml-2" /> :
-                                    <RiArrowDropDownLine size={16} className="ml-2" />
-                                }
+                                {showProductsDropdown ? <RiArrowDropUpLine size={16} className="ml-2" /> : <RiArrowDropDownLine size={16} className="ml-2" />}
                             </button>
                             {showProductsDropdown && (
                                 <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
@@ -239,7 +253,6 @@ export const Header = () => {
                         <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">Contract</Link>
                     </div>
 
-                    {/* Íconos en pantallas grandes */}
                     <div className="flex items-center space-x-4">
                         <div className="relative dropdown" ref={userRef}>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('user')}>
@@ -253,7 +266,6 @@ export const Header = () => {
                             )}
                         </div>
 
-                        {/* Buscador */}
                         <div className="relative search" ref={searchRef}>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('search')}>
                                 <RiSearchLine size={24} />
@@ -264,6 +276,7 @@ export const Header = () => {
                                         <input
                                             ref={searchInputRef}
                                             type="text"
+                                            value={searchQuery}
                                             placeholder="Buscar..."
                                             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none"
                                             onChange={handleSearchInputChange}
@@ -303,7 +316,6 @@ export const Header = () => {
                             )}
                         </div>
 
-                        {/* Carrito */}
                         <div className="relative cart" ref={cartRef}>
                             <button className="text-gray-800 focus:outline-none relative" onClick={() => toggleDropdown('cart')}>
                                 <RiShoppingCartFill size={24} />
@@ -320,7 +332,6 @@ export const Header = () => {
                             )}
                         </div>
 
-                        {/* Bola del mundo para idioma */}
                         <div className="relative language" ref={languageRef}>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
                                 <FaGlobe size={24} />
@@ -349,7 +360,14 @@ export const Header = () => {
                     </div>
                 </div>
 
-                {/* Menú en pantallas pequeñas */}
+                {showClearButton && (
+                    <div className="fixed top-16 right-5 z-40">
+                        <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center">
+                            Limpiar filtros
+                        </button>
+                    </div>
+                )}
+
                 <div className={`lg:hidden transition-all ${showMenu ? 'block' : 'hidden'} fixed top-0 left-0 w-full h-full bg-white z-50`}>
                     <div className="bg-white shadow-lg py-4 px-6 h-full">
                         <div className="flex justify-between mb-4">
@@ -361,7 +379,6 @@ export const Header = () => {
                             </button>
                         </div>
 
-                        {/* Dropdown de Marcas */}
                         <div className="border-b-2 py-2">
                             <button
                                 className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
@@ -380,7 +397,6 @@ export const Header = () => {
                             )}
                         </div>
 
-                        {/* Dropdown de Productos */}
                         <div className="border-b-2 py-2">
                             <button
                                 className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
@@ -396,7 +412,6 @@ export const Header = () => {
                             )}
                         </div>
 
-                        {/* Otras opciones */}
                         <Link to="/about" className="block text-gray-800 font-semibold py-2">Sobre nosotros</Link>
                         <Link to="/contact" className="block text-gray-800 font-semibold py-2">Contáctanos</Link>
                         <Link to="/contract" className="block text-gray-800 font-semibold py-2">Contract</Link>

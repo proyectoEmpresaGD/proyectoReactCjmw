@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 
-function FiltroModal({ isOpen, close, applyFilters }) {
-    const [selectedBrands, setSelectedBrands] = useState([]);
-    const [selectedColors, setSelectedColors] = useState([]);
-    const [selectedCollections, setSelectedCollections] = useState([]);
-    const [selectedFabricTypes, setSelectedFabricTypes] = useState([]);
-    const [selectedFabricPatterns, setSelectedFabricPatterns] = useState([]);
-    const [selectedTonalidades, setSelectedTonalidades] = useState([]);
-    const [selectedMartindale, setSelectedMartindale] = useState([]);
+function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
+    // Filtros seleccionados por el usuario
+    const [selectedBrands, setSelectedBrands] = useState(currentFilters?.brand || []);
+    const [selectedColors, setSelectedColors] = useState(currentFilters?.color || []);
+    const [selectedCollections, setSelectedCollections] = useState(currentFilters?.collection || []);
+    const [selectedFabricTypes, setSelectedFabricTypes] = useState(currentFilters?.fabricType || []);
+    const [selectedFabricPatterns, setSelectedFabricPatterns] = useState(currentFilters?.fabricPattern || []);
+    const [selectedTonalidades, setSelectedTonalidades] = useState(currentFilters?.tonalidad || []);
+    const [selectedMartindale, setSelectedMartindale] = useState(currentFilters?.martindale || []);
 
+    // Datos de filtros para mostrar en el modal
     const [brands, setBrands] = useState([]);
     const [collections, setCollections] = useState([]);
     const [fabricTypes, setFabricTypes] = useState([]);
@@ -17,66 +19,37 @@ function FiltroModal({ isOpen, close, applyFilters }) {
     const [colors, setColors] = useState([]);
     const [tonalidades, setTonalidades] = useState([]);
 
+    // Función para cargar los datos de los filtros desde el backend
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/filters`;
-                console.log('Fetching data from:', url);
-
-                const response = await fetch(url, {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filters`);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error('Error fetching filters');
                 }
-
                 const data = await response.json();
-                console.log('Fetched data:', data);
 
-                const filteredBrands = data.brands.filter(brand => brand && ["ARE", "HAR", "FLA", "CJM"].includes(brand));
-                const filteredCollections = data.collections.filter(collection => collection);
-                const filteredFabricTypes = data.fabricTypes.filter(type => type);
-                const filteredFabricPatterns = data.fabricPatterns.filter(pattern => pattern);
-                const sortedMartindaleValues = data.martindaleValues.filter(value => value).sort((a, b) => b - a);
-                
-                const filteredColors = data.colors.filter(color => color);
-                const filteredTonalidades = data.tonalidades.filter(tonalidad => tonalidad);
-
-                setBrands(processData(filteredBrands));
-                setCollections(processData(filteredCollections));
-                setFabricTypes(processData(filteredFabricTypes));
-                setFabricPatterns(processData(filteredFabricPatterns));
-                setMartindaleValues(sortedMartindaleValues);
-                
-                setColors(processData(filteredColors));
-                setTonalidades(processData(filteredTonalidades));
+                setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM"])); // Filtrar por marcas específicas
+                setCollections(filterValidData(data.collections));
+                setFabricTypes(filterValidData(data.fabricTypes));
+                setFabricPatterns(filterValidData(data.fabricPatterns));
+                setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
+                setColors(filterValidData(data.colors));
+                setTonalidades(filterValidData(data.tonalidades));
             } catch (error) {
-                console.error('Error fetching data:', error.message);
+                console.error('Error fetching filters:', error);
             }
         };
 
         fetchData();
     }, []);
 
-    const processData = (data) => {
-        const processedData = [];
-        const seenValues = new Set();
-
-        data.forEach(item => {
-            if (item) { // Filtra valores nulos
-                const value = item.split(';')[0].trim();
-                if (!seenValues.has(value)) {
-                    seenValues.add(value);
-                    processedData.push(value);
-                }
-            }
-        });
-
-        return processedData;
+    // Función para procesar datos válidos (sin duplicados ni valores vacíos)
+    const filterValidData = (data, validOptions = []) => {
+        return [...new Set(data.filter(item => item && (!validOptions.length || validOptions.includes(item))))];
     };
 
+    // Aplicar los filtros seleccionados
     const handleApplyFilters = () => {
         const filtersToApply = {
             brand: selectedBrands,
@@ -86,13 +59,12 @@ function FiltroModal({ isOpen, close, applyFilters }) {
             fabricPattern: selectedFabricPatterns,
             tonalidad: selectedTonalidades,
             martindale: selectedMartindale,
-            
         };
-
         applyFilters(filtersToApply);
-        close();
+        close(); // Cerrar el modal después de aplicar filtros
     };
 
+    // Función para manejar la selección de checkboxes
     const handleCheckboxChange = (setSelected, selected, value) => {
         if (selected.includes(value)) {
             setSelected(selected.filter(item => item !== value));
@@ -105,7 +77,7 @@ function FiltroModal({ isOpen, close, applyFilters }) {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg xl:max-w-[70%] max-w-[90%] h-[95%] w-full m-4 overflow-y-auto ">
+            <div className="bg-white p-6 rounded-lg xl:max-w-[70%] max-w-[90%] h-[95%] w-full m-4 overflow-y-auto">
                 <h2 className="text-center text-2xl font-bold">FILTROS</h2>
                 <div className="flex justify-end">
                     <button className="relative overflow-hidden m-4" onClick={close}>
@@ -113,134 +85,128 @@ function FiltroModal({ isOpen, close, applyFilters }) {
                     </button>
                 </div>
                 <div className='grid xl:grid-cols-4 md:grid-cols-2 gap-3 gap-y-6'>
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Marcas</h3>
-                        <div className='grid grid-cols-2'>
-                            {brands.map((brand) => (
-                                <label key={brand} className="block">
-                                    <input
-                                        type="checkbox"
-                                        name="brand"
-                                        checked={selectedBrands.includes(brand)}
-                                        onChange={() => handleCheckboxChange(setSelectedBrands, selectedBrands, brand)}
-                                    />
-                                    {brand}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Marcas */}
+                    <FilterSection
+                        title="Marcas"
+                        items={brands}
+                        selectedItems={selectedBrands}
+                        handleCheckboxChange={handleCheckboxChange}
+                        setSelected={setSelectedBrands}
+                    />
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Colecciones</h3>
-                        <input type="text" id="input-group-search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Buscar Colección" />
-                        {collections.map((collection) => (
-                            <label key={collection} className="block">
-                                <input
-                                    type="checkbox"
-                                    name="collection"
-                                    checked={selectedCollections.includes(collection)}
-                                    onChange={() => handleCheckboxChange(setSelectedCollections, selectedCollections, collection)}
-                                />
-                                {collection}
-                            </label>
-                        ))}
-                    </div>
+                    {/* Colecciones */}
+                    <FilterSection
+                        title="Colecciones"
+                        items={collections}
+                        selectedItems={selectedCollections}
+                        handleCheckboxChange={handleCheckboxChange}
+                        setSelected={setSelectedCollections}
+                        searchPlaceholder="Buscar Colección"
+                    />
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Tonalidad</h3>
-                        <div className="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-5 grid-cols-3 gap-2 mx-auto">
-                            {tonalidades.map((tonalidad) => (
-                                <div
-                                    key={tonalidad}
-                                    className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedTonalidades.includes(tonalidad) ? 'ring-2 ring-white' : ''}`}
-                                    style={{ backgroundColor: tonalidad }}
-                                    onClick={() => handleCheckboxChange(setSelectedTonalidades, selectedTonalidades, tonalidad)}
-                                >
-                                    {selectedTonalidades.includes(tonalidad) && (
-                                        <div className="w-10 h-10 border-2 border-black"></div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Tonalidades */}
+                    <ColorGrid
+                        title="Tonalidad"
+                        items={tonalidades}
+                        selectedItems={selectedTonalidades}
+                        handleCheckboxChange={handleCheckboxChange}
+                        setSelected={setSelectedTonalidades}
+                    />
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Colores principal</h3>
-                        <div className="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-5 grid-cols-3 gap-2 mx-auto">
-                            {colors.map((color) => (
-                                <div
-                                    key={color}
-                                    className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedColors.includes(color) ? 'ring-2 ring-white' : ''}`}
-                                    style={{ backgroundColor: color }}
-                                    onClick={() => handleCheckboxChange(setSelectedColors, selectedColors, color)}
-                                >
-                                    {selectedColors.includes(color) && (
-                                        <div className="w-10 h-10 border-2 border-black"></div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Colores */}
+                    <ColorGrid
+                        title="Colores"
+                        items={colors}
+                        selectedItems={selectedColors}
+                        handleCheckboxChange={handleCheckboxChange}
+                        setSelected={setSelectedColors}
+                    />
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Tipo de Tela</h3>
-                        <div className=''>
-                            {fabricTypes.map((type) => (
-                                <label key={type} className="block">
-                                    <input
-                                        type="checkbox"
-                                        name="fabricType"
-                                        checked={selectedFabricTypes.includes(type)}
-                                        onChange={() => handleCheckboxChange(setSelectedFabricTypes, selectedFabricTypes, type)}
-                                    />
-                                    {type}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Tipos de Tela */}
+                    <FilterSection
+                        title="Tipos de Tela"
+                        items={fabricTypes}
+                        selectedItems={selectedFabricTypes}
+                        handleCheckboxChange={handleCheckboxChange}
+                        setSelected={setSelectedFabricTypes}
+                    />
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className="font-semibold mx-auto">Dibujo de la Tela</h3>
-                        <div className=''>
-                            {fabricPatterns.map((pattern) => (
-                                <label key={pattern} className="block">
-                                    <input
-                                        type="checkbox"
-                                        name="fabricPattern"
-                                        checked={selectedFabricPatterns.includes(pattern)}
-                                        onChange={() => handleCheckboxChange(setSelectedFabricPatterns, selectedFabricPatterns, pattern)}
-                                    />
-                                    {pattern}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Dibujo de la Tela */}
+                    <FilterSection
+                        title="Dibujo de la Tela"
+                        items={fabricPatterns}
+                        selectedItems={selectedFabricPatterns}
+                        handleCheckboxChange={handleCheckboxChange}
+                        setSelected={setSelectedFabricPatterns}
+                    />
 
-                    <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] lg:min-h-[250px] lg:max-h-[250px] max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
-                        <h3 className='font-semibold mx-auto'>Martindale</h3>
-                        <div className='grid grid-cols-2'>
-                            {martindaleValues.map((value) => (
-                                <label key={value} className="block">
-                                    <input
-                                        type="checkbox"
-                                        name="martindale"
-                                        checked={selectedMartindale.includes(value)}
-                                        onChange={() => handleCheckboxChange(setSelectedMartindale, selectedMartindale, value)}
-                                    />
-                                    {value}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Martindale */}
+                    <FilterSection
+                        title="Martindale"
+                        items={martindaleValues}
+                        selectedItems={selectedMartindale}
+                        handleCheckboxChange={handleCheckboxChange}
+                        setSelected={setSelectedMartindale}
+                    />
                 </div>
+
                 <div className="mt-4 flex justify-end">
-                    <button onClick={handleApplyFilters} className="group relative h-12 overflow-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50">
-                        <span className="relative z-10">Aplicar Filtros</span>
-                        <span className="absolute inset-0 overflow-hidden rounded-md">
-                            <span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span>
-                        </span>
+                    <button onClick={handleApplyFilters} className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                        Aplicar Filtros
                     </button>
                 </div>
+            </div>
+        </div>
+    );
+}
+
+// Componente reutilizable para las secciones de filtro
+function FilterSection({ title, items, selectedItems, handleCheckboxChange, setSelected, searchPlaceholder }) {
+    return (
+        <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+            <h3 className="font-semibold mx-auto">{title}</h3>
+            {searchPlaceholder && (
+                <input
+                    type="text"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-2"
+                    placeholder={searchPlaceholder}
+                />
+            )}
+            <div>
+                {items.map((item) => (
+                    <label key={item} className="block">
+                        <input
+                            type="checkbox"
+                            name={title.toLowerCase()}
+                            checked={selectedItems.includes(item)}
+                            onChange={() => handleCheckboxChange(setSelected, selectedItems, item)}
+                        />
+                        {item}
+                    </label>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// Componente reutilizable para mostrar colores o tonalidades
+function ColorGrid({ title, items, selectedItems, handleCheckboxChange, setSelected }) {
+    return (
+        <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+            <h3 className="font-semibold mx-auto">{title}</h3>
+            <div className="grid xl:grid-cols-4 grid-cols-3 gap-2 mx-auto">
+                {items.map((item) => (
+                    <div
+                        key={item}
+                        className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedItems.includes(item) ? 'ring-2 ring-white' : ''}`}
+                        style={{ backgroundColor: item }}
+                        onClick={() => handleCheckboxChange(setSelected, selectedItems, item)}
+                    >
+                        {selectedItems.includes(item) && (
+                            <div className="w-10 h-10 border-2 border-black"></div>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );
