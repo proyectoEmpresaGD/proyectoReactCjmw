@@ -3,39 +3,39 @@ import { ProductModel } from '../models/Postgres/productos.js';
 export class ProductController {
   async getAll(req, res) {
     try {
-        const { CodFamil, CodSubFamil, limit, page } = req.query;
-        const requiredLimit = parseInt(limit, 10) || 16; // Asegura que el límite por defecto sea 16
-        const pageParsed = parseInt(page, 10) || 1;
-        const offset = (pageParsed - 1) * requiredLimit;
-        const products = await ProductModel.getAll({ CodFamil, CodSubFamil, requiredLimit, offset });
-        res.json(products);
+      const { CodFamil, CodSubFamil, limit, page } = req.query;
+      const requiredLimit = parseInt(limit, 10) || 16; // Asegura que el límite por defecto sea 16
+      const pageParsed = parseInt(page, 10) || 1;
+      const offset = (pageParsed - 1) * requiredLimit;
+      const products = await ProductModel.getAll({ CodFamil, CodSubFamil, requiredLimit, offset });
+      res.json(products);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-}
-
-async getCollectionsByBrand(req, res) {
-  try {
-    const { brand } = req.query;
-
-    if (!brand || typeof brand !== 'string' || brand.trim() === '') {
-      return res.status(400).json({ message: 'A valid brand parameter is required' });
-    }
-
-    // Llamar al método del modelo para obtener las colecciones
-    const collections = await ProductModel.getCollectionsByBrand(brand);
-
-    if (collections.length === 0) {
-      return res.status(404).json({ message: `No collections found for brand ${brand}` });
-    }
-
-    // Devolver las colecciones en formato JSON
-    return res.json(collections);
-  } catch (error) {
-    console.error('Error fetching collections by brand:', error);
-    return res.status(500).json({ error: 'Error fetching collections by brand', details: error.message });
   }
-}
+
+  async getCollectionsByBrand(req, res) {
+    try {
+      const { brand } = req.query;
+
+      if (!brand || typeof brand !== 'string' || brand.trim() === '') {
+        return res.status(400).json({ message: 'A valid brand parameter is required' });
+      }
+
+      // Llamar al método del modelo para obtener las colecciones
+      const collections = await ProductModel.getCollectionsByBrand(brand);
+
+      if (collections.length === 0) {
+        return res.status(404).json({ message: `No collections found for brand ${brand}` });
+      }
+
+      // Devolver las colecciones en formato JSON
+      return res.json(collections);
+    } catch (error) {
+      console.error('Error fetching collections by brand:', error);
+      return res.status(500).json({ error: 'Error fetching collections by brand', details: error.message });
+    }
+  }
 
 
   async getById(req, res) {
@@ -89,25 +89,43 @@ async getCollectionsByBrand(req, res) {
     }
   }
 
+  // Controlador search en el backend
   async search(req, res) {
     try {
       const { query, limit, page } = req.query;
-      if (!query) {
+
+      if (!query || query.trim() === '') {
         return res.status(400).json({ message: 'Query parameter is required' });
       }
+
       const limitParsed = parseInt(limit, 10) || 12;
       const pageParsed = parseInt(page, 10) || 1;
       const offset = (pageParsed - 1) * limitParsed;
-      const products = await ProductModel.search({
+
+      const { products, total } = await ProductModel.search({
         query,
         limit: limitParsed,
         offset
       });
-      res.json(products);
+
+      if (products.length === 0) {
+        return res.status(404).json({ message: 'No products found for the search query' });
+      }
+
+      res.json({
+        products,
+        pagination: {
+          currentPage: pageParsed,
+          limit: limitParsed,
+          totalResults: total
+        }
+      });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.error('Error searching products:', error);
+      res.status(500).json({ error: 'Error searching products', details: error.message });
     }
   }
+
 
   async getByCodFamil(req, res) {
     try {
@@ -122,6 +140,7 @@ async getCollectionsByBrand(req, res) {
 
   async getFilters(req, res) {
     try {
+
       console.log('Fetching filters');
       const filters = await ProductModel.getFilters();
       console.log('Filters fetched:', filters);
@@ -134,25 +153,37 @@ async getCollectionsByBrand(req, res) {
 
   async filterProducts(req, res) {
     const filters = req.body;
+    const limit = parseInt(req.query.limit, 10) || 16; // Productos por página
+    const page = parseInt(req.query.page, 10) || 1;    // Página actual
+    const offset = (page - 1) * limit;                 // Cálculo del offset
+
     try {
-      const products = await ProductModel.filter(filters);
+      // Filtrar productos con base en los filtros recibidos
+      const { products, total } = await ProductModel.filter(filters, limit, offset);
+
+      // Excluir productos no deseados basados en las descripciones y marcas
       const validProducts = products.filter(product => (
         !/^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu) &&
-        !/(PERCHAS Y LIBROS)/i.test(product.desprodu) &&
-        !/CUTTING/i.test(product.desprodu) &&
-        !/(LIBROS)/i.test(product.desprodu) &&
-        !/PERCHA/i.test(product.desprodu) &&
-        !/(FUERA DE COLECCIÓN)/i.test(product.desprodu) &&
-        !/(PERCHAS)/i.test(product.desprodu) &&
-        !/(FUERA DE COLECCION)/i.test(product.desprodu) &&
+        !/CUTTING|PERCHA|FUERA DE COLECCIÓN/i.test(product.desprodu) &&
         ['ARE', 'FLA', 'CJM', 'HAR', 'BAS'].includes(product.codmarca)
       ));
-      res.json(validProducts);
+
+      // Enviar productos válidos con paginación
+      res.json({
+        products: validProducts,
+        pagination: {
+          currentPage: page,
+          limit,
+          totalResults: total, // Total real de productos antes del filtrado adicional
+          totalValidResults: validProducts.length // Total tras el filtrado adicional
+        }
+      });
     } catch (error) {
       console.error('Error filtering products:', error);
-      res.status(500).json({ error: 'Error filtering products' });
+      res.status(500).json({ error: 'Error filtering products', details: error.message });
     }
   }
+
 
   static async getByCodFamil(req, res) {
     const { codfamil } = req.params;

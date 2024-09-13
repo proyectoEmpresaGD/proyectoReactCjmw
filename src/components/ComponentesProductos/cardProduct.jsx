@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
-import { FiShoppingCart } from 'react-icons/fi';
 import Filtro from "../../app/products/buttonFiltro";
 
 const CardProduct = () => {
@@ -20,129 +19,136 @@ const CardProduct = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [page, setPage] = useState(1);
-    const [showClearButton, setShowClearButton] = useState(false);
+    const [totalProducts, setTotalProducts] = useState(0);
+    const [filters, setFilters] = useState(null); // Estado para los filtros aplicados
+    const [isFiltered, setIsFiltered] = useState(false); // Filtros activos
+    const [isSearching, setIsSearching] = useState(!!searchQuery); // Búsqueda activa
+    const [clearButtonVisible, setClearButtonVisible] = useState(false); // Control del botón "Limpiar filtros"
     const itemsPerPage = 16;
 
+    // Control centralizado del estado del botón "Limpiar filtros"
+    useEffect(() => {
+        // Mostrar el botón "Limpiar filtros" solo si hay búsqueda o filtros activos
+        if (isFiltered || isSearching) {
+            setClearButtonVisible(true);
+        } else {
+            setClearButtonVisible(false);
+        }
+    }, [isFiltered, isSearching]);
+
+    // Cargar imágenes de un producto
+    const loadProductImages = async (product) => {
+        const [imageBuena, imageBaja] = await Promise.all([
+            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+        ]);
+
+        return {
+            ...product,
+            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
+            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+        };
+    };
+
+    // Cargar productos según búsqueda, filtros o todos los productos
     const fetchProducts = async (pageNumber = 1) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`);
+            let response;
+            // Si hay una búsqueda activa
+            if (searchQuery) {
+                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`);
+                setIsSearching(true);
+                setIsFiltered(false); // No hay filtros cuando se realiza una búsqueda
+            }
+            // Si hay filtros activos
+            else if (filters) {
+                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filters),
+                });
+                setIsFiltered(true);
+                setIsSearching(false); // No hay búsqueda cuando se aplican filtros
+            }
+            // Cargar todos los productos sin filtros ni búsqueda
+            else {
+                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`);
+                setIsFiltered(false);
+                setIsSearching(false);
+            }
+
             if (!response.ok) {
                 throw new Error('Error fetching products');
             }
+
             const data = await response.json();
+            const productsData = data.products || data;
 
-            // Obtener las imágenes de calidad "Buena" y "Baja" para cada producto
-            const productsWithImages = await Promise.all(
-                data.map(async (product) => {
-                    const [imageBuena, imageBaja] = await Promise.all([
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
-                    ]);
-
-                    return {
-                        ...product,
-                        imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-                        imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
-                    };
-                })
-            );
-
-            setProducts(productsWithImages);
+            if (productsData.length === 0) {
+                setError('No products found');
+            } else {
+                const productsWithImages = await loadProductsImages(productsData);
+                setProducts(productsWithImages);
+                setTotalProducts(data.total || productsWithImages.length);
+            }
         } catch (error) {
-            setError('Error fetching products');
+            setError(error.message);
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        if (!searchQuery && !productId) {
-            fetchProducts(page);
+    // Cargar imágenes para los productos
+    const loadProductsImages = async (products) => {
+        return await Promise.all(
+            products.map(async (product) => {
+                return await loadProductImages(product);
+            })
+        );
+    };
+
+    // Cargar productos por ID
+    const fetchProductsById = async (id) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`);
+            if (!response.ok) {
+                throw new Error('Error fetching product by ID');
+            }
+            const product = await response.json();
+            const productWithImages = await loadProductImages(product);
+            setProducts([productWithImages]);
+            setTotalProducts(1);
+            setIsFiltered(true);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
-    }, [searchQuery, productId, page]);
-    
+    };
 
-    useEffect(() => {
-        if (searchQuery) {
-            const fetchSearchedProducts = async () => {
-                setLoading(true);
-                setError(null);
-                setProducts([]);
-                try {
-                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}`);
-                    if (!response.ok) {
-                        throw new Error('Error fetching search results');
-                    }
-                    const data = await response.json();
-
-                    // Obtener las imágenes de calidad "Buena" y "Baja" para cada producto
-                    const productsWithImages = await Promise.all(
-                        data.map(async (product) => {
-                            const [imageBuena, imageBaja] = await Promise.all([
-                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
-                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
-                            ]);
-
-                            return {
-                                ...product,
-                                imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-                                imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
-                            };
-                        })
-                    );
-
-                    setProducts(productsWithImages);
-                    setShowClearButton(true); // Show the clear button after a search
-                } catch (error) {
-                    setError('Error fetching search results');
-                    setShowClearButton(true); // Show the clear button even if there's an error
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchSearchedProducts();
-        }
-    }, [searchQuery]);
-
+    // Efecto para cargar productos al cambiar búsqueda, filtros o página
     useEffect(() => {
         if (productId) {
-            const fetchProductById = async () => {
-                setLoading(true);
-                setError(null);
-                setProducts([]); // Clear products before fetching a specific product
-                try {
-                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${productId}`);
-                    if (!response.ok) {
-                        throw new Error('Error fetching product by ID');
-                    }
-                    const data = await response.json();
-
-                    const [imageBuena, imageBaja] = await Promise.all([
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${data.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${data.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
-                    ]);
-
-                    const productWithImages = {
-                        ...data,
-                        imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-                        imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
-                    };
-
-                    setProducts([productWithImages]);
-                    setShowClearButton(true); // Show the clear button after fetching a specific product
-                } catch (error) {
-                    setError('Error fetching product by ID');
-                    setShowClearButton(true); // Show the clear button even if there's an error
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchProductById();
+            fetchProductsById(productId);
+        } else {
+            fetchProducts(page);
         }
-    }, [productId]);
+    }, [searchQuery, productId, page, filters]);
 
+    // Manejar productos filtrados desde el componente Filtro
+    const handleFilteredProducts = (filteredProducts, selectedFilters) => {
+        setProducts(filteredProducts);
+        setFilters(selectedFilters);
+        setIsFiltered(true); // Indicar que hay filtros activos
+        setIsSearching(false); // No hay búsqueda cuando se aplican filtros
+        setPage(1); // Reiniciar a la primera página
+    };
+
+    // Agregar productos al carrito
     const handleAddToCart = (product) => {
         addToCart({
             id: product.codprodu,
@@ -153,84 +159,94 @@ const CardProduct = () => {
         });
     };
 
+    // Abrir modal de producto
     const handleProductClick = (product) => {
         setSelectedProduct(product);
         setModalOpen(true);
     };
 
+    // Limpiar búsqueda y filtros, recargar todos los productos
     const handleClearSearch = () => {
-        navigate('/products');
-        setProducts([]);
-        setPage(1);
-        setShowClearButton(false); // Hide the clear button when clearing the search
-        fetchProducts(1); // Fetch all products when clearing the search
+        setFilters(null);  // Limpiar los filtros
+        setIsFiltered(false);  // Desactivar filtros
+        setIsSearching(false);  // Desactivar búsqueda
+        setPage(1);  // Reiniciar a la primera página
+        navigate('/products');  // Navegar a la ruta sin parámetros de búsqueda
+        fetchProducts(1);  // Recargar todos los productos
     };
 
+    // Cambiar la página y cargar productos
     const handlePageChange = (newPage) => {
         setPage(newPage);
+        fetchProducts(newPage);
     };
 
     return (
-        <>
-            <div>
-                {showClearButton && (
-                    <div className="fixed top-1/4 right-5 z-40">
-                        <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
-                            Mostrar<br />productos
-                        </button>
-                    </div>
-                )}
-                <Filtro setFilteredProducts={setProducts} />
-                <div className="flex flex-wrap justify-center items-center">
-                    {products.map((product, index) => (
-                        <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
-                            <div className="relative overflow-hidden w-full h-80 sm:h-64 md:h-64" onClick={() => handleProductClick(product)}>
-                                <img
-                                    className="object-cover w-full h-full"
-                                    src={product.imageBaja}
-                                    alt={product.nombre}
-                                    onError={(e) => { e.target.src = 'default_buena_image_url'; }}
-                                    // style={{ filter: 'saturate(1.5) brightness(1.3)' }}
-                                />
-                                
-                            </div>
-                            <h3 className="text-center text-lg sm:text-xl text-gray-900 mt-4">{product.nombre}</h3>
-                            {/* <div className="flex items-center justify-between mt-4">
-                                <button onClick={() => handleAddToCart(product)} className="bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">
-                                    <FiShoppingCart className="text-2xl" />
-                                </button>
-                            </div> */}
+        <div>
+            {/* Botón para limpiar filtros o búsqueda */}
+            {clearButtonVisible && (
+                <div className="fixed top-1/4 right-5 z-40">
+                    <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
+                        Limpiar filtros
+                    </button>
+                </div>
+            )}
+
+            <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
+
+            <div className="flex flex-wrap justify-center items-center">
+                {products.map((product, index) => (
+                    <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
+                        <div className="relative overflow-hidden w-full h-80 sm:h-64 md:h-64" onClick={() => handleProductClick(product)}>
+                            <img
+                                className="object-cover w-full h-full"
+                                src={product.imageBaja}
+                                alt={product.nombre}
+                                onError={(e) => { e.target.src = 'default_buena_image_url'; }}
+                            />
                         </div>
-                    ))}
-                </div>
-                {loading && <SkeletonLoader repeticiones={10} />}
-                {!loading && products.length === 0 && !error && (
-                    <div className="text-center text-gray-500">No products found</div>
-                )}
-                {!loading && error && (
-                    <div className="text-center text-red-500">{error}</div>
-                )}
-                <div className="flex justify-center mt-4">
-                    <button
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page === 1}
-                        className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
-                    >
-                        Anterior
-                    </button>
-                    <span className="px-4 py-2">{page}</span>
-                    <button
-                        onClick={() => handlePageChange(page + 1)}
-                        className="px-4 py-2 mx-1 bg-gray-300 rounded"
-                    >
-                        Siguiente
-                    </button>
-                </div>
-                {modalOpen && (
-                    <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
-                )}
+                        <h3 className="text-center text-lg sm:text-xl text-gray-900 mt-4">{product.nombre}</h3>
+                    </div>
+                ))}
             </div>
-        </>
+
+            {/* Carga de productos */}
+            {loading && <SkeletonLoader repeticiones={10} />}
+            {!loading && products.length === 0 && !error && (
+                <div className="text-center text-gray-500">No se encontraron productos</div>
+            )}
+            {!loading && error && (
+                <div className="text-center text-red-500">{error}</div>
+            )}
+
+            {/* Paginación */}
+            <div className="flex justify-center mt-4">
+                <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1}
+                    className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
+                >
+                    Anterior
+                </button>
+                <span className="px-4 py-2">{page}</span>
+                <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={products.length < itemsPerPage || products.length === 0}
+                    className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
+                >
+                    Siguiente
+                </button>
+            </div>
+
+            {/* Modal del producto */}
+            {selectedProduct && (
+                <Modal
+                    isOpen={modalOpen}
+                    close={() => setModalOpen(false)}
+                    product={selectedProduct}
+                />
+            )}
+        </div>
     );
 };
 
