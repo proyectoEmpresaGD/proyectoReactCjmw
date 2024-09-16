@@ -26,11 +26,11 @@ app.disable('x-powered-by');
 app.use(express.urlencoded({ extended: true })); // Por si envías datos como formularios
 
 // Sirve archivos estáticos desde el directorio 'web'
-app.use(express.static(join(__dirname, 'web')));
+app.use(express.static(join(__dirname, '../src')));
 
 // Redirige todas las rutas al archivo index.html para que React maneje las rutas
-app.get('/', function (req, res) {
-  res.sendFile(join(__dirname, 'web', 'index.html'), function (err) {
+app.get('/*', function (req, res) {
+  res.sendFile(join(__dirname, '../src', 'index.html'), function (err) {
     if (err) {
       res.status(500).send(err);
     }
