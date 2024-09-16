@@ -10,12 +10,12 @@ const pool = new pg.Pool({
 
 export class ProductModel {
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
-    let accumulatedProducts = []; // Acumula los productos válidos que se van obteniendo
-    let excludedNames = []; // Acumula los nombres de los productos ya mostrados en cualquier consulta
+    let accumulatedProducts = [];
+    let excludedNames = [];
 
     try {
       while (accumulatedProducts.length < requiredLimit) {
-        let limit = requiredLimit; // Siempre solicitamos 16 productos nuevos
+        let limit = requiredLimit;
         let query = 'SELECT DISTINCT ON ("nombre") * FROM productos';
         let params = [];
 
@@ -40,7 +40,7 @@ export class ProductModel {
           query += ' WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
         }
 
-        // Excluir los productos ya recuperados basados en el nombre
+        // Excluir productos ya recuperados
         if (excludedNames.length > 0) {
           const excludedNamesPlaceholders = excludedNames.map((_, i) => `$${params.length + i + 1}`).join(', ');
           query += ` AND "nombre" NOT IN (${excludedNamesPlaceholders})`;
@@ -51,28 +51,19 @@ export class ProductModel {
         params.push(limit, offset);
 
         const { rows } = await pool.query(query, params);
-
-        // Filtrar nuevamente en caso de que por alguna razón hayan pasado productos sin nombre o con nombre vacío
         const validRows = rows.filter(row => row.nombre && row.nombre.trim() !== '');
-
-        // Filtrar productos con nombres duplicados dentro de la misma consulta
         const uniqueRows = validRows.filter(row => !excludedNames.includes(row.nombre));
 
         accumulatedProducts = [...accumulatedProducts, ...uniqueRows];
-
-        // Añadir los nombres de los productos válidos y únicos a excludedNames
         excludedNames = [...excludedNames, ...uniqueRows.map(row => row.nombre)];
 
-        // Si se obtuvieron menos productos de los que pedimos, detenemos el bucle
         if (uniqueRows.length < limit) {
           break;
         }
 
-        // Aumentamos el offset para la próxima iteración
         offset += uniqueRows.length;
       }
 
-      // Devolver los productos acumulados, aunque sean menos de 16 si no hay suficientes
       return accumulatedProducts.slice(0, requiredLimit);
 
     } catch (error) {
@@ -113,7 +104,6 @@ export class ProductModel {
 
   static async delete({ id }) {
     const { rows } = await pool.query('DELETE FROM productos WHERE "codprodu" = $1 RETURNING *;', [id]);
-
     return rows[0];
   }
 
@@ -135,7 +125,7 @@ export class ProductModel {
 
     try {
       const { rows } = await pool.query(searchQuery, [searchString, limit, offsetValue]);
-      return { products: rows, total: rows.length }; // Devolver el campo products y total
+      return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error searching products:', error);
       throw new Error('Error searching products');
@@ -154,33 +144,13 @@ export class ProductModel {
 
   static async getFilters() {
     try {
-      console.log('Fetching brands');
       const { rows: brands } = await pool.query('SELECT DISTINCT codmarca FROM productos');
-      console.log('Fetched brands:', brands);
-
-      console.log('Fetching collections');
       const { rows: collections } = await pool.query('SELECT DISTINCT coleccion, codmarca FROM productos');
-      console.log('Fetched collections:', collections);
-
-      console.log('Fetching fabric types');
       const { rows: fabricTypes } = await pool.query('SELECT DISTINCT tipo FROM productos');
-      console.log('Fetched fabric types:', fabricTypes);
-
-      console.log('Fetching fabric patterns');
       const { rows: fabricPatterns } = await pool.query('SELECT DISTINCT estilo FROM productos');
-      console.log('Fetched fabric patterns:', fabricPatterns);
-
-      console.log('Fetching martindale values');
       const { rows: martindaleValues } = await pool.query('SELECT DISTINCT martindale FROM productos');
-      console.log('Fetched martindale values:', martindaleValues);
-
-      console.log('Fetching colors');
       const { rows: colors } = await pool.query('SELECT DISTINCT colorprincipal FROM productos');
-      console.log('Fetched colors:', colors);
-
-      console.log('Fetching tonalidades');
       const { rows: tonalidades } = await pool.query('SELECT DISTINCT tonalidad FROM productos');
-      console.log('Fetched tonalidades:', tonalidades);
 
       return {
         brands: brands.map(b => b.codmarca),
@@ -202,7 +172,6 @@ export class ProductModel {
     let params = [];
     let index = 1;
 
-    // Aplicar los filtros basados en las marcas, colores, colecciones, etc.
     if (filters.brand && filters.brand.length > 0) {
       query += ` AND "codmarca" = ANY($${index++})`;
       params.push(filters.brand);
@@ -228,32 +197,91 @@ export class ProductModel {
       params.push(filters.fabricPattern);
     }
 
-    if (filters.tonalidad && filters.tonalidad.length > 0) {
-      query += ` AND "tonalidad" = ANY($${index++})`;
-      params.push(filters.tonalidad);
-    }
-
     if (filters.martindale && filters.martindale.length > 0) {
       query += ` AND "martindale" = ANY($${index++})`;
       params.push(filters.martindale);
     }
 
-    // Aplicar el límite y el offset
     query += ` LIMIT $${index++} OFFSET $${index}`;
     params.push(limit, offset);
 
     try {
       const { rows } = await pool.query(query, params);
-      return { products: rows, total: rows.length }; // Devuelve productos y total
+      return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error filtering products:', error);
       throw new Error('Error filtering products');
     }
   }
 
+  static async getCollectionsByBrand(brand) {
+    try {
+      const query = `
+        SELECT DISTINCT UPPER(coleccion) AS coleccion
+        FROM productos
+        WHERE codmarca = $1
+        AND nombre IS NOT NULL
+      `;
 
+      const { rows } = await pool.query(query, [brand]);
+      return rows.map(row => row.coleccion);
+    } catch (error) {
+      console.error('Error fetching collections by brand:', error);
+      throw new Error('Error fetching collections by brand');
+    }
+  }
 
+  static async searchCollections(query) {
+    try {
+      const searchQuery = `%${query}%`;
+      const { rows } = await pool.query(`
+        SELECT DISTINCT coleccion
+        FROM productos
+        WHERE coleccion ILIKE $1
+        AND nombre IS NOT NULL AND nombre != ''
+      `, [searchQuery]);
 
+      return rows.map(row => row.coleccion);
+    } catch (error) {
+      console.error('Error searching collections:', error);
+      throw new Error('Error searching collections');
+    }
+  }
+
+  // Add search methods for fabric types, fabric patterns, and martindale values
+  static async searchFabricTypes(query) {
+    try {
+      const searchQuery = `%${query}%`;
+      const { rows } = await pool.query(`
+        SELECT DISTINCT tipo
+        FROM productos
+        WHERE tipo ILIKE $1
+        AND nombre IS NOT NULL AND nombre != ''
+      `, [searchQuery]);
+
+      return rows.map(row => row.tipo);
+    } catch (error) {
+      console.error('Error searching fabric types:', error);
+      throw new Error('Error searching fabric types');
+    }
+  }
+
+  static async searchFabricPatterns(query) {
+    try {
+      const searchQuery = `%${query}%`;
+      const { rows } = await pool.query(`
+        SELECT DISTINCT estilo
+        FROM productos
+        WHERE estilo ILIKE $1
+        AND nombre IS NOT NULL AND nombre != ''
+      `, [searchQuery]);
+
+      return rows.map(row => row.estilo);
+    } catch (error) {
+      console.error('Error searching fabric patterns:', error);
+      throw new Error('Error searching fabric patterns');
+    }
+  }
 
 
 }
