@@ -4,7 +4,7 @@ import {
     RiArrowDropDownLine, RiArrowDropUpLine
 } from 'react-icons/ri';
 import { FaGlobe } from 'react-icons/fa';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
 import ScrollToTop from './ScrollToTop';
@@ -12,7 +12,6 @@ import Select from 'react-select';
 import 'tailwindcss/tailwind.css';
 
 export const Header = () => {
-    const location = useLocation();
     const navigate = useNavigate();
     const { itemCount } = useCart();
 
@@ -27,11 +26,11 @@ export const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchHistory, setSearchHistory] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
-    const [showClearButton, setShowClearButton] = useState(false); // Para el botón "Limpiar filtros"
+    const [showClearButton, setShowClearButton] = useState(false);
     const searchInputRef = useRef(null);
     const [selectedLanguage, setSelectedLanguage] = useState({ value: 'es', label: 'Spanish' });
     const [isHovered, setIsHovered] = useState(false);
-    const [filtersActive, setFiltersActive] = useState(false); // Nuevo estado para controlar los filtros
+    const [filtersActive, setFiltersActive] = useState(false);
 
     const searchRef = useRef(null);
     const cartRef = useRef(null);
@@ -48,11 +47,6 @@ export const Header = () => {
         { value: 'de', label: 'German' },
         { value: 'it', label: 'Italian' }
     ];
-
-    const handleProductSelect = (value) => {
-        setShowProductsDropdown(false);
-        navigate(`/products?category=${value}`);
-    };
 
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);
@@ -137,27 +131,27 @@ export const Header = () => {
                 const results = await response.json();
 
                 if (Array.isArray(results.products)) {
-                    setSuggestions(results.products.slice(0, 3)); // Mostrar hasta 3 sugerencias
+                    setSuggestions(results.products.slice(0, 3));
                 } else {
-                    setSuggestions([]); // Resetear si no es un array válido
+                    setSuggestions([]);
                 }
             } catch (error) {
                 console.error('Error fetching suggestions:', error);
-                setSuggestions([]); // Resetear sugerencias si ocurre un error
+                setSuggestions([]);
             }
         } else {
-            setSuggestions([]); // Limpiar sugerencias si la consulta es muy corta
+            setSuggestions([]);
         }
     };
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
         if (searchQuery.length > 0) {
-            const newHistory = [searchQuery, ...searchHistory].slice(0, 3); // Guardar solo las últimas 3 búsquedas
+            const newHistory = [searchQuery, ...searchHistory].slice(0, 3);
             setSearchHistory(newHistory);
             setShowSearchBar(false);
-            setFiltersActive(true); // Marca que los filtros están activos
-            setShowClearButton(true); // Mostrar el botón al realizar una búsqueda
+            setFiltersActive(true);
+            setShowClearButton(true);
 
             navigate(`/products?search=${searchQuery}`);
         }
@@ -166,7 +160,7 @@ export const Header = () => {
     const handleRecentSearchClick = (search) => {
         setSearchQuery(search);
         setShowSearchBar(false);
-        setFiltersActive(true); // Marca que los filtros están activos
+        setFiltersActive(true);
         navigate(`/products?search=${search}`);
     };
 
@@ -175,8 +169,8 @@ export const Header = () => {
         setSearchHistory(newHistory);
         setSearchQuery(item.nombre);
         setShowSearchBar(false);
-        setFiltersActive(true); // Marca que los filtros están activos
-        navigate(`/products?productId=${item.codprodu}`); // Navegar con el ID del producto
+        setFiltersActive(true);
+        navigate(`/products?productId=${item.codprodu}`);
     };
 
     const handleLanguageChange = (selectedOption) => {
@@ -187,9 +181,14 @@ export const Header = () => {
     const handleClearSearch = () => {
         setSearchQuery('');
         setSearchHistory([]);
-        setShowClearButton(false); // Ocultar el botón "Limpiar filtros"
-        setFiltersActive(false); // Marca que no hay filtros activos
+        setShowClearButton(false);
+        setFiltersActive(false);
         navigate('/products');
+    };
+
+    const handleNavigate = (path) => {
+        setShowMenu(false); // Cerrar el menú en pantallas pequeñas
+        navigate(path); // Navegar a la ruta seleccionada
     };
 
     return (
@@ -209,7 +208,6 @@ export const Header = () => {
 
                         <Link to="/" className="flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg">
                             <img className="h-8 lg:h-14" src={logoSrc} alt="Logo" />
-                            <span className="hidden lg:block"></span>
                         </Link>
                     </div>
 
@@ -360,14 +358,6 @@ export const Header = () => {
                     </div>
                 </div>
 
-                {showClearButton && (
-                    <div className="fixed top-16 right-5 z-40">
-                        <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center">
-                            Limpiar filtros
-                        </button>
-                    </div>
-                )}
-
                 <div className={`lg:hidden transition-all ${showMenu ? 'block' : 'hidden'} fixed top-0 left-0 w-full h-full bg-white z-50`}>
                     <div className="bg-white shadow-lg py-4 px-6 h-full">
                         <div className="flex justify-between mb-4">
@@ -389,10 +379,10 @@ export const Header = () => {
                             </button>
                             {showBrandsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <Link to="/arenaHome" className="block py-1 text-gray-700 hover:text-gray-900">Arena</Link>
-                                    <Link to="/harbourHome" className="block py-1 text-gray-700 hover:text-gray-900">Harbour</Link>
-                                    <Link to="/cjmHome" className="block py-1 text-gray-700 hover:text-gray-900">CJM</Link>
-                                    <Link to="/flamencoHome" className="block py-1 text-gray-700 hover:text-gray-900">Flamenco</Link>
+                                    <button onClick={() => handleNavigate('/arenaHome')} className="block py-1 text-gray-700 hover:text-gray-900">Arena</button>
+                                    <button onClick={() => handleNavigate('/harbourHome')} className="block py-1 text-gray-700 hover:text-gray-900">Harbour</button>
+                                    <button onClick={() => handleNavigate('/cjmHome')} className="block py-1 text-gray-700 hover:text-gray-900">CJM</button>
+                                    <button onClick={() => handleNavigate('/flamencoHome')} className="block py-1 text-gray-700 hover:text-gray-900">Flamenco</button>
                                 </div>
                             )}
                         </div>
@@ -407,14 +397,14 @@ export const Header = () => {
                             </button>
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <Link to="/products" className="block py-1 text-gray-700 hover:text-gray-900">Todos los productos</Link>
+                                    <button onClick={() => handleNavigate('/products')} className="block py-1 text-gray-700 hover:text-gray-900">Todos los productos</button>
                                 </div>
                             )}
                         </div>
 
-                        <Link to="/about" className="block text-gray-800 font-semibold py-2">Sobre nosotros</Link>
-                        <Link to="/contact" className="block text-gray-800 font-semibold py-2">Contáctanos</Link>
-                        <Link to="/contract" className="block text-gray-800 font-semibold py-2">Contract</Link>
+                        <button onClick={() => handleNavigate('/about')} className="block text-gray-800 font-semibold py-2">Sobre nosotros</button>
+                        <button onClick={() => handleNavigate('/contact')} className="block text-gray-800 font-semibold py-2">Contáctanos</button>
+                        <button onClick={() => handleNavigate('/contract')} className="block text-gray-800 font-semibold py-2">Contract</button>
                     </div>
                 </div>
             </header>

@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 
 function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
+    // Colores principales permitidos
+    const allowedColors = ['GRIS', 'NEGRO', 'VERDE', 'BEIGE', 'BLANCO', 'MARRON', 'AZUL', 'AMARILLO', 'NARANJA', 'ROJO', 'MORADO', 'VIOLETA', 'ROSA'];
+
     // Filtros seleccionados por el usuario
     const [selectedBrands, setSelectedBrands] = useState(currentFilters?.brand || []);
     const [selectedColors, setSelectedColors] = useState(currentFilters?.color || []);
     const [selectedCollections, setSelectedCollections] = useState(currentFilters?.collection || []);
     const [selectedFabricTypes, setSelectedFabricTypes] = useState(currentFilters?.fabricType || []);
     const [selectedFabricPatterns, setSelectedFabricPatterns] = useState(currentFilters?.fabricPattern || []);
-    const [selectedTonalidades, setSelectedTonalidades] = useState(currentFilters?.tonalidad || []);
     const [selectedMartindale, setSelectedMartindale] = useState(currentFilters?.martindale || []);
 
     // Datos de filtros para mostrar en el modal
@@ -17,7 +19,11 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     const [fabricPatterns, setFabricPatterns] = useState([]);
     const [martindaleValues, setMartindaleValues] = useState([]);
     const [colors, setColors] = useState([]);
-    const [tonalidades, setTonalidades] = useState([]);
+
+    // Campos de búsqueda
+    const [collectionSearch, setCollectionSearch] = useState('');
+    const [fabricTypeSearch, setFabricTypeSearch] = useState('');
+    const [fabricPatternSearch, setFabricPatternSearch] = useState('');
 
     // Función para cargar los datos de los filtros desde el backend
     useEffect(() => {
@@ -34,8 +40,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                 setFabricTypes(filterValidData(data.fabricTypes));
                 setFabricPatterns(filterValidData(data.fabricPatterns));
                 setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
-                setColors(filterValidData(data.colors));
-                setTonalidades(filterValidData(data.tonalidades));
+                setColors(filterValidData(data.colors).filter(color => allowedColors.includes(color.toUpperCase())));
             } catch (error) {
                 console.error('Error fetching filters:', error);
             }
@@ -57,7 +62,6 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
             collection: selectedCollections,
             fabricType: selectedFabricTypes,
             fabricPattern: selectedFabricPatterns,
-            tonalidad: selectedTonalidades,
             martindale: selectedMartindale,
         };
         applyFilters(filtersToApply);
@@ -71,6 +75,11 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         } else {
             setSelected([...selected, value]);
         }
+    };
+
+    // Filtro basado en el campo de búsqueda, validando que el item sea una cadena
+    const filterItems = (items, search) => {
+        return items.filter(item => typeof item === 'string' && item.toLowerCase().includes(search.toLowerCase()));
     };
 
     if (!isOpen) return null;
@@ -97,20 +106,13 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                     {/* Colecciones */}
                     <FilterSection
                         title="Colecciones"
-                        items={collections}
+                        items={filterItems(collections, collectionSearch)}
                         selectedItems={selectedCollections}
                         handleCheckboxChange={handleCheckboxChange}
                         setSelected={setSelectedCollections}
                         searchPlaceholder="Buscar Colección"
-                    />
-
-                    {/* Tonalidades */}
-                    <ColorGrid
-                        title="Tonalidad"
-                        items={tonalidades}
-                        selectedItems={selectedTonalidades}
-                        handleCheckboxChange={handleCheckboxChange}
-                        setSelected={setSelectedTonalidades}
+                        searchValue={collectionSearch}
+                        setSearchValue={setCollectionSearch}
                     />
 
                     {/* Colores */}
@@ -125,22 +127,28 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                     {/* Tipos de Tela */}
                     <FilterSection
                         title="Tipos de Tela"
-                        items={fabricTypes}
+                        items={filterItems(fabricTypes, fabricTypeSearch)}
                         selectedItems={selectedFabricTypes}
                         handleCheckboxChange={handleCheckboxChange}
                         setSelected={setSelectedFabricTypes}
+                        searchPlaceholder="Buscar Tipo de Tela"
+                        searchValue={fabricTypeSearch}
+                        setSearchValue={setFabricTypeSearch}
                     />
 
                     {/* Dibujo de la Tela */}
                     <FilterSection
                         title="Dibujo de la Tela"
-                        items={fabricPatterns}
+                        items={filterItems(fabricPatterns, fabricPatternSearch)}
                         selectedItems={selectedFabricPatterns}
                         handleCheckboxChange={handleCheckboxChange}
                         setSelected={setSelectedFabricPatterns}
+                        searchPlaceholder="Buscar Dibujo de la Tela"
+                        searchValue={fabricPatternSearch}
+                        setSearchValue={setFabricPatternSearch}
                     />
 
-                    {/* Martindale */}
+                    {/* Martindale (sin buscador) */}
                     <FilterSection
                         title="Martindale"
                         items={martindaleValues}
@@ -160,8 +168,8 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     );
 }
 
-// Componente reutilizable para las secciones de filtro
-function FilterSection({ title, items, selectedItems, handleCheckboxChange, setSelected, searchPlaceholder }) {
+// Componente reutilizable para las secciones de filtro con búsqueda
+function FilterSection({ title, items, selectedItems, handleCheckboxChange, setSelected, searchPlaceholder, searchValue, setSearchValue }) {
     return (
         <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
             <h3 className="font-semibold mx-auto">{title}</h3>
@@ -170,6 +178,8 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
                     type="text"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-2"
                     placeholder={searchPlaceholder}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
                 />
             )}
             <div>
@@ -189,7 +199,7 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
     );
 }
 
-// Componente reutilizable para mostrar colores o tonalidades
+// Componente reutilizable para mostrar colores
 function ColorGrid({ title, items, selectedItems, handleCheckboxChange, setSelected }) {
     return (
         <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
@@ -199,7 +209,7 @@ function ColorGrid({ title, items, selectedItems, handleCheckboxChange, setSelec
                     <div
                         key={item}
                         className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedItems.includes(item) ? 'ring-2 ring-white' : ''}`}
-                        style={{ backgroundColor: item }}
+                        style={{ backgroundColor: getColor(item), border: item.toUpperCase() === 'BLANCO' ? '1px solid #D1D1D1' : 'none' }} // Borde gris claro para color blanco
                         onClick={() => handleCheckboxChange(setSelected, selectedItems, item)}
                     >
                         {selectedItems.includes(item) && (
@@ -211,5 +221,25 @@ function ColorGrid({ title, items, selectedItems, handleCheckboxChange, setSelec
         </div>
     );
 }
+
+// Función para obtener el color hexadecimal
+const getColor = (colorName) => {
+    const colors = {
+        GRIS: '#808080',
+        NEGRO: '#000000',
+        VERDE: '#008000',
+        BEIGE: '#F5F5DC',
+        BLANCO: '#FFFFFF',
+        MARRON: '#A52A2A',
+        AZUL: '#0000FF',
+        AMARILLO: '#FFFF00',
+        NARANJA: '#FFA500',
+        ROJO: '#FF0000',
+        MORADO: '#800080',
+        VIOLETA: '#EE82EE',
+        ROSA: '#FFC0CB',
+    };
+    return colors[colorName.toUpperCase()] || '#000000';
+};
 
 export default FiltroModal;
