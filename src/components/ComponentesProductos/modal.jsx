@@ -293,15 +293,15 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5%">
-                <div className="bg-white p-7 rounded-lg xl:max-w-[100%] 2xl:max-w-[70%] md:max-w-3xl m-4 h-auto overflow-auto shadow-lg relative max-h-[80vh] mt-[8%] 2xl:mt-[4%]">
-                    <div className="flex justify-end absolute top-4 right-4">
+                <div className="bg-white p-7 rounded-lg xl:max-w-[100%] 2xl:max-w-[70%] w-[95%] md:max-w-[95%] m-4 h-auto overflow-auto shadow-lg relative max-h-[85vh] mt-[9%] 2xl:mt-[6%]">
+                    <div className="flex justify-center absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                         </button>
                     </div>
-                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.codprodu}</h2>
+                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
 
-                    <div className="grid md:grid-cols-6 " onClick={e => e.stopPropagation()}>
+                    <div className="grid md:grid-cols-6 sm:md:grid-cols-6 grid-cols-1 justify-center mx-auto " onClick={e => e.stopPropagation()}>
                         <div className="relative group w-full h-72  md:h-72 overflow-hidden col-span-2">
                             <img
                                 src={selectedImage}
@@ -323,8 +323,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 }}
                                 onMouseLeave={() => {
                                     if (lensRef.current && resultRef.current) {
-                                        lensRef.current.style.display = 'none';
-                                        resultRef.current.style.display = 'none';
+                                        lensRef.current.style.display = 'cover';
+                                        resultRef.current.style.display = 'cover';
                                     }
                                 }}
                             />
@@ -364,8 +364,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 </>
                             )}
                         </div>
-                        <div className="justify-start xl:p-4 lg:p-4 md:p-4 text-start col-span-3 w-full">
-                            <h1 className="font-bold text-black mx-auto text-center mb-4 mt-[-2rem]">Ficha Técnica</h1>
+                        <div className="justify-start xl:p-4 lg:p-4 md:p-4 text-center md:text-start col-span-3 w-full">
+                            <h1 className="font-bold text-black mx-auto text-center mb-4 mt-[2rem] md:mt-[0rem]">Ficha Técnica</h1>
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-4">
                                 <div>
                                     <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
@@ -381,6 +381,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         <p>{selectedProduct.tonalidad}</p>
                                     </div>
                                     <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
+                                        <p>Color:</p>
+                                        <p>{selectedProduct.colorprincipal}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 justify-start text-start text-base mb-2">
                                         <p>Tipo:</p>
                                         <p>{selectedProduct.tipo}</p>
                                     </div>
@@ -388,7 +392,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         <p>Estilo:</p>
                                         <p>{selectedProduct.estilo}</p>
                                     </div>
-
+                                    <div className="grid grid-cols-2 justify-start text-start text-base ">
+                                        <p>Ancho:</p>
+                                        <p>{selectedProduct.ancho}</p>
+                                    </div>
                                 </div>
 
                                 <div>
@@ -435,7 +442,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div className="mx-auto text-center mt-6 ">
+                            <div className="mx-auto text-center mt-6 mb-2 ">
                                 <button onClick={handleMapClick} className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
                                     Dónde comprar
                                 </button>
@@ -443,17 +450,18 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     Adquirir muestra
                                 </button>
                             </div>
+                            <div className="flex items-center justify-center mb-2">
+                                <div className="flex items-center justify-center bg-gray-300 text-black font-semibold rounded-full w-9 h-9">
+                                    {relatedProducts.length}
+                                </div>
+                                <p className="ml-2 text-lg">
+                                    {relatedProducts.length === 1 ? 'color available' : 'colors available'}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-end mb-4">
-                        <div className="flex items-center justify-center bg-gray-300 text-black font-semibold rounded-full w-9 h-9">
-                            {relatedProducts.length}
-                        </div>
-                        <p className="ml-2 text-lg">
-                            {relatedProducts.length === 1 ? 'color available' : 'colors available'}
-                        </p>
-                    </div>
+
 
                     <div className="mt-6">
                         <Slider {...settings}>

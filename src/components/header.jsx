@@ -227,6 +227,7 @@ export const Header = () => {
                                     <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
                                     <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
                                     <Link to="/flamencoHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</Link>
+                                    <Link to="/bassariHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Bassari</Link>
                                 </div>
                             )}
                         </div>
@@ -383,6 +384,7 @@ export const Header = () => {
                                     <button onClick={() => handleNavigate('/harbourHome')} className="block py-1 text-gray-700 hover:text-gray-900">Harbour</button>
                                     <button onClick={() => handleNavigate('/cjmHome')} className="block py-1 text-gray-700 hover:text-gray-900">CJM</button>
                                     <button onClick={() => handleNavigate('/flamencoHome')} className="block py-1 text-gray-700 hover:text-gray-900">Flamenco</button>
+                                    <button onClick={() => handleNavigate('/bassariHome')} className="block py-1 text-gray-700 hover:text-gray-900">Bassari</button>
                                 </div>
                             )}
                         </div>
