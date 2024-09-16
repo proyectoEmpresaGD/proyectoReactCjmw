@@ -41,7 +41,7 @@ function FlamencoHome() {
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
-                <body className=" bg-dots">
+                <body className="">
                     <div className=" flex items-center justify-center h-full">
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>

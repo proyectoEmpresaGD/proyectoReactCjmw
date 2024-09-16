@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 const FooterHome = () => {
     const [isMobile, setIsMobile] = useState(false);
     const [isEmpresaOpen, setIsEmpresaOpen] = useState(false);
-    const [isPoliticasOpen, setIsPoliticasOpen] = useState(false)
+    const [isPoliticasOpen, setIsPoliticasOpen] = useState(false);
+
     // Detectar si la pantalla es móvil
     useEffect(() => {
         const handleResize = () => {
@@ -61,24 +62,22 @@ const FooterHome = () => {
                         alt="Código QR para descargar la app"
                         className="w-32 h-32 object-contain"
                     />
-
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 items-center lg:items-center text-center">
                     {/* Empresa Section */}
                     <div>
                         <h3
-                            className={`text-lg font-bold mb-4 cursor-pointer ${isMobile ? '' : 'cursor-default'}`}
-                            onClick={isMobile ? toggleEmpresa : null}
+                            className="text-lg font-bold mb-4 cursor-pointer"
+                            onClick={toggleEmpresa}
                         >
                             Empresa
                         </h3>
                         {/* Mostrar enlaces si no es móvil o si está abierto el desplegable en móvil */}
                         <div
-                            className={`overflow-hidden transition-max-height duration-4000 ease`}
+                            className={`overflow-hidden transition-all duration-500 ease-in-out`}
                             style={{
                                 maxHeight: isEmpresaOpen || !isMobile ? '500px' : '0',
-                                transition: 'max-height 1s ease-in-out',
                             }}
                         >
                             <nav className="grid grid-cols-1 gap-2 text-center lg:text-center">
@@ -101,17 +100,16 @@ const FooterHome = () => {
                     {/* Políticas Section */}
                     <div>
                         <h3
-                            className={`text-lg font-bold mb-4 cursor-pointer ${isMobile ? '' : 'cursor-default'}`}
-                            onClick={isMobile ? togglePoliticas : null}
+                            className="text-lg font-bold mb-4 cursor-pointer"
+                            onClick={togglePoliticas}
                         >
                             Políticas
                         </h3>
                         {/* Mostrar enlaces si no es móvil o si está abierto el desplegable en móvil */}
                         <div
-                            className={`overflow-hidden transition-max-height duration-4000 ease-in-out`}
+                            className={`overflow-hidden transition-all duration-500 ease-in-out`}
                             style={{
                                 maxHeight: isPoliticasOpen || !isMobile ? '500px' : '0',
-                                transition: 'max-height 1s ease-in-out',
                             }}
                         >
                             <nav className="grid grid-cols-1 gap-2 text-center lg:text-center">
@@ -148,8 +146,6 @@ const FooterHome = () => {
                 </div>
             </div>
 
-
-
             {/* Parte inferior con botón de contacto y derechos reservados */}
             <div className="container mx-auto mt-2 text-center lg:text-left flex flex-col lg:flex-row items-center justify-between">
                 <Link
@@ -164,7 +160,7 @@ const FooterHome = () => {
                     © CJM WORLDWIDE S.L. 2023 - Todos los Derechos Reservados
                 </p>
             </div>
-        </footer >
+        </footer>
     );
 };
 
