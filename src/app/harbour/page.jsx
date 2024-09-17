@@ -48,7 +48,7 @@ function HarbourHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
-                    <div className=" flex items-center justify-center h-full">
+                    <div className=" flex items-center justify-center h-full mt-3">
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>

@@ -93,6 +93,11 @@ const imageSet = {
       "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/TOUCH/TOUCH%20BACALL%202.jpg",
       "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/TOUCH/TOUCH%20AUDREY.jpg",
     ],
+    [
+      "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/TOUCH/TOUCH%20GRACE%203.jpg",
+      "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/TOUCH/TOUCH%20BACALL%202.jpg",
+      "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/TOUCH/TOUCH%20AUDREY.jpg",
+    ],
   ],
   'HAR': [
     [

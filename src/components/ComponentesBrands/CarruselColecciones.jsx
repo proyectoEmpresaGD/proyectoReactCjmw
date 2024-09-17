@@ -28,7 +28,7 @@ const CarruselColecciones = ({ imageSets = [] }) => {
         >
           {/* Generar dinámicamente las imágenes del conjunto seleccionado */}
           {images.map((image, index) => (
-            <div key={index} className="each-fade-effect lg:h-[58vh] md:h-[50vh] sm:h-[50vh] rounded-md">
+            <div key={index} className="each-fade-effect lg:h-[58vh] md:h-[50vh] sm:h-[50vh] mx-4 xl:mx-0 rounded-md">
               <div className="image-container sm:object-center lg:w-[58vh] lg:h-full sm:h-full sm:w-full bg-cover rounded-md">
                 <img src={image} alt={`Slide ${index}`} className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover rounded-md sm:object-center" />
               </div>
