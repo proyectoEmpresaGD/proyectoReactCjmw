@@ -15,28 +15,33 @@ function shuffleArray(array) {
 }
 
 const images = [
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
     "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20MARINE.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/DESERT%20GATE%20INDIGO.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/ROOTS%20PORCELAIN.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/DESERT%20GATE%20NOIR.jpg",
+    
 ]
 
 const imagesCollection = [
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20BOLONIA.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20TANGERINE.jpg",
 ]
 
 
 const titles = [
-    "ARENA DUNE",
-    "ARENA DUNE",
-    "ArenaCarrusel2.webp",
-    "ArenaCarrusel3.webp"
+    "HAIMA",
+    "BOLONIA",
+    "ARISTOS"
 ]
+
+const CodProduHar = [
+    "HAR01053",
+    "HAR00045",
+    "HAR00715"
+]
+
 const marca = 'HAR';
 
 
@@ -48,11 +53,11 @@ function HarbourHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
-                    <div className=" flex items-center justify-center h-full mt-3">
+                    <div className=" flex items-center justify-center h-full pt-3">
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
-                <NewCollection images={imagesCollection} titles={titles} />
+                <NewCollection images={imagesCollection} titles={titles} productCodes={CodProduHar}/>
                 <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>
