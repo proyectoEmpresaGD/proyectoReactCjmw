@@ -11,6 +11,7 @@ const CardProduct = () => {
     const searchParams = new URLSearchParams(location.search);
     const searchQuery = searchParams.get('search');
     const productId = searchParams.get('productId');
+    const type = searchParams.get('type'); // Nuevo parámetro para determinar el tipo (papel o telas)
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
@@ -28,7 +29,6 @@ const CardProduct = () => {
 
     // Control centralizado del estado del botón "Limpiar filtros"
     useEffect(() => {
-        // Mostrar el botón "Limpiar filtros" solo si hay búsqueda o filtros activos
         if (isFiltered || isSearching) {
             setClearButtonVisible(true);
         } else {
@@ -56,11 +56,26 @@ const CardProduct = () => {
         setError(null);
         try {
             let response;
+
             // Si hay una búsqueda activa
             if (searchQuery) {
                 response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`);
                 setIsSearching(true);
                 setIsFiltered(false); // No hay filtros cuando se realiza una búsqueda
+            }
+            // Si el tipo es "papel" o "telas"
+            else if (type) {
+                // Aquí pasamos el type como parte del filtro general
+                const filterParams = {
+                    fabricType: type === 'papel' ? ['PAPEL PARED'] : [] // Si es telas, lo dejamos vacío
+                };
+                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filterParams),
+                });
+                setIsFiltered(true); // Indicar que hay un filtro de tipo activo
+                setIsSearching(false); // No hay búsqueda cuando se aplican filtros de tipo
             }
             // Si hay filtros activos
             else if (filters) {
@@ -130,14 +145,14 @@ const CardProduct = () => {
         }
     };
 
-    // Efecto para cargar productos al cambiar búsqueda, filtros o página
+    // Efecto para cargar productos al cambiar búsqueda, tipo, filtros o página
     useEffect(() => {
         if (productId) {
             fetchProductsById(productId);
         } else {
             fetchProducts(page);
         }
-    }, [searchQuery, productId, page, filters]);
+    }, [searchQuery, productId, type, page, filters]);
 
     // Manejar productos filtrados desde el componente Filtro
     const handleFilteredProducts = (filteredProducts, selectedFilters) => {
