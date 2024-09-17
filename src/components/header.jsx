@@ -245,8 +245,10 @@ export const Header = () => {
                                 {showProductsDropdown ? <RiArrowDropUpLine size={16} className="ml-2" /> : <RiArrowDropDownLine size={16} className="ml-2" />}
                             </button>
                             {showProductsDropdown && (
-                                <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
-                                    <button onMouseDown={() => handleLinkClick('/products')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Todos los productos</button>
+                                <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50 flex flex-col justify-center items-center">
+                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-center">Todos los productos</button>
+                                    <button onMouseDown={() => handleLinkClick('/products?type=papel')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-center">Papeles</button>
+                                    <button onMouseDown={() => handleLinkClick('/products?type=tela')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-center">Telas</button>
                                 </div>
                             )}
                         </div>
@@ -402,7 +404,9 @@ export const Header = () => {
                             </button>
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-1 text-gray-700 hover:text-gray-900">Todos los productos</button>
+                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-1 text-gray-700 hover:text-gray-900 text-center">Todos los productos</button>
+                                    <button onMouseDown={() => handleLinkClick('/products?type=papel')} className="block py-1 text-gray-700 hover:text-gray-900 text-center">Papeles</button>
+                                    <button onMouseDown={() => handleLinkClick('/products?type=tela')} className="block py-1 text-gray-700 hover:text-gray-900 text-center">Telas</button>
                                 </div>
                             )}
                         </div>

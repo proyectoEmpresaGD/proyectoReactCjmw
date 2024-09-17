@@ -21,5 +21,8 @@ export const createProductRouter = () => {
     productsRouter.patch('/:id', productController.update.bind(productController));
     productsRouter.delete('/:id', productController.delete.bind(productController));
 
+
+
+
     return productsRouter;
 }

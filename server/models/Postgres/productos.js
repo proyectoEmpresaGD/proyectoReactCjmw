@@ -33,14 +33,12 @@ export class ProductModel {
           params.push(CodSubFamil);
         }
 
-        // Asegurarse de que el nombre no sea NULL ni vacío
         if (params.length > 0) {
           query += ' AND "nombre" IS NOT NULL AND "nombre" != \'\'';
         } else {
           query += ' WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
         }
 
-        // Excluir productos ya recuperados
         if (excludedNames.length > 0) {
           const excludedNamesPlaceholders = excludedNames.map((_, i) => `$${params.length + i + 1}`).join(', ');
           query += ` AND "nombre" NOT IN (${excludedNamesPlaceholders})`;
@@ -167,6 +165,30 @@ export class ProductModel {
     }
   }
 
+  // Filtro para productos basados en el tipo (ej. "PAPEL PARED")
+  static async getByType({ type, limit = 16, offset = 0 }) {
+    try {
+      let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE 1=1';
+      const params = [];
+      let index = 1;
+
+      if (type === 'papeles') {
+        query += ` AND "tipo" = 'PAPEL PARED'`;
+      } else if (type === 'telas') {
+        query += ` AND "tipo" != 'PAPEL PARED'`;
+      }
+
+      query += ` LIMIT $${index++} OFFSET $${index}`;
+      params.push(limit, offset);
+
+      const { rows } = await pool.query(query, params);
+      return { products: rows, total: rows.length };
+    } catch (error) {
+      console.error('Error filtering products by type:', error);
+      throw new Error('Error filtering products by type');
+    }
+  }
+
   static async filter(filters, limit = 16, offset = 0) {
     let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE 1=1';
     let params = [];
@@ -224,64 +246,13 @@ export class ProductModel {
       `;
 
       const { rows } = await pool.query(query, [brand]);
+
+      // Asegúrate de devolver solo los nombres de las colecciones
       return rows.map(row => row.coleccion);
     } catch (error) {
       console.error('Error fetching collections by brand:', error);
       throw new Error('Error fetching collections by brand');
     }
   }
-
-  static async searchCollections(query) {
-    try {
-      const searchQuery = `%${query}%`;
-      const { rows } = await pool.query(`
-        SELECT DISTINCT coleccion
-        FROM productos
-        WHERE coleccion ILIKE $1
-        AND nombre IS NOT NULL AND nombre != ''
-      `, [searchQuery]);
-
-      return rows.map(row => row.coleccion);
-    } catch (error) {
-      console.error('Error searching collections:', error);
-      throw new Error('Error searching collections');
-    }
-  }
-
-  // Add search methods for fabric types, fabric patterns, and martindale values
-  static async searchFabricTypes(query) {
-    try {
-      const searchQuery = `%${query}%`;
-      const { rows } = await pool.query(`
-        SELECT DISTINCT tipo
-        FROM productos
-        WHERE tipo ILIKE $1
-        AND nombre IS NOT NULL AND nombre != ''
-      `, [searchQuery]);
-
-      return rows.map(row => row.tipo);
-    } catch (error) {
-      console.error('Error searching fabric types:', error);
-      throw new Error('Error searching fabric types');
-    }
-  }
-
-  static async searchFabricPatterns(query) {
-    try {
-      const searchQuery = `%${query}%`;
-      const { rows } = await pool.query(`
-        SELECT DISTINCT estilo
-        FROM productos
-        WHERE estilo ILIKE $1
-        AND nombre IS NOT NULL AND nombre != ''
-      `, [searchQuery]);
-
-      return rows.map(row => row.estilo);
-    } catch (error) {
-      console.error('Error searching fabric patterns:', error);
-      throw new Error('Error searching fabric patterns');
-    }
-  }
-
 
 }
