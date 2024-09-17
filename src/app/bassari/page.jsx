@@ -26,6 +26,12 @@ function BassariHome() {
         "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/APACHE%20CHERRY.jpg",
     ]
 
+    const imagesNewCollections = [
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
+    ]
+
     const titles = [
         "TOUCH",
         "ARTISAN",
@@ -48,7 +54,7 @@ function BassariHome() {
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/LOGOBASSARI_01.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
-                <NewCollection images={images} titles={titles} productCodes={CodProduBas} />
+                <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduBas} />
                 <ColeccionesMarcas marca={marca}/>
                 <Footer />
             </CartProvider>

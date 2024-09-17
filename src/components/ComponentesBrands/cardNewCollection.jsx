@@ -41,7 +41,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
                     </p>
                 </header>
 
-                <ul className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
+                <ul className="mt-8 grid grid-cols-1 gap-7 lg:grid-cols-3">
                     <li
                         onMouseEnter={() => handleMouseEnter(0)}
                         onMouseLeave={handleMouseLeave}

@@ -3,10 +3,10 @@ import { Header } from "../components/header";
 import { CartProvider } from '../components/CartContext';
 
 const images = [
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/TUNDRA%20KOLA.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/HARBOUR%20AMBIENTE/ARISTOS%20MARINE.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/FLAMENCO%20AMBIENTE/%20KUKULKAN%20ASHES.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/CJM%20AMBIENTE/GARDEN%20OF%20PEONIES%20EDEN%202.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/CORTINA_PASARELA.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/SALON1_OK.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/LOFT%20ALUMINIUM%202.jpg",
     "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/IMG_9820.jpg",
 ];
 
@@ -14,15 +14,15 @@ const texts = [
     'https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoArena.png',
     'https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png',
     'https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png',
-    'https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoCJM.png',
-    'https://cjmw.eu/ImagenesTelasCjmw/Iconos/LOGOBASSARI_01.png'
+    'https://cjmw.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg',
+    'https://cjmw.eu/ImagenesTelasCjmw/Iconos/LOGOBASSARI_BLANCO.png'
 ];
 
 const names =[
     "Arena",
     "Harbour",
-    "Cjm",
     "Flamenco",
+    "CJM",
     "Bassari",
 ]
 

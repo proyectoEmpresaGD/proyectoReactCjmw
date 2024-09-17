@@ -21,13 +21,15 @@ function CjmHome() {
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+    ]
+
+    const imagesNewCollections = [
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
         "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
     ]
 
     const titles = [
-        "1200ARENADUNE01.jpg",
         "ArenaCarrusel1.webp",
         "ArenaCarrusel2.webp",
         "ArenaCarrusel3.webp"
@@ -42,11 +44,11 @@ function CjmHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
-                    <div className=" flex items-center justify-center h-full">
-                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoCJM.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[30%] h-[30%] max-w-full max-h-full " />
+                    <div className=" flex items-center justify-center h-full mt-3">
+                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg" alt="" className=" lg:w-[20%] lg:h-[20%] w-[30%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
-                <NewCollection images={images} titles={titles} />
+                <NewCollection images={imagesNewCollections} titles={titles} />
                 <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>

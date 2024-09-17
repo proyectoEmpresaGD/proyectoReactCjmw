@@ -24,6 +24,12 @@ function ArenaHome() {
         "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/APACHE%20CHERRY.jpg",
     ]
 
+    const imagesNewCollections = [
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
+    ]
+
     const titles = [
         "TOUCH",
         "ATISAN",
@@ -42,11 +48,11 @@ function ArenaHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-r from-[#ebdecf] to-[#a78d6e] ">
-                    <div className=" flex items-center justify-center h-full">
+                    <div className=" flex items-center justify-center h-full mt-3">
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoArena.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 
-                <NewCollection images={images} titles={titles} productCodes={CodProduAre} />
+                <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduAre} />
                 <ColeccionesMarcas marca={marca} />
                 </body>
                 <Footer />
