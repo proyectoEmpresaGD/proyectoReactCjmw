@@ -186,9 +186,13 @@ export const Header = () => {
         navigate('/products');
     };
 
-    const handleNavigate = (path) => {
-        setShowMenu(false); // Cerrar el menú en pantallas pequeñas
-        navigate(path); // Navegar a la ruta seleccionada
+    const handleLinkClick = (path) => {
+        setTimeout(() => {
+            navigate(path);  // Retrasar el cierre del menú hasta que se ejecute la redirección
+        }, 100);
+        setShowMenu(false);  // Cerrar el menú de forma segura después de la redirección
+        setShowBrandsDropdown(false); // Cerrar el dropdown de marcas
+        setShowProductsDropdown(false); // Cerrar el dropdown de productos
     };
 
     return (
@@ -223,11 +227,11 @@ export const Header = () => {
                             </button>
                             {showBrandsDropdown && (
                                 <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
-                                    <Link to="/arenaHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</Link>
-                                    <Link to="/harbourHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</Link>
-                                    <Link to="/cjmHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</Link>
-                                    <Link to="/flamencoHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</Link>
-                                    <Link to="/bassariHome" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Bassari</Link>
+                                    <button onMouseDown={() => handleLinkClick('/arenaHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</button>
+                                    <button onMouseDown={() => handleLinkClick('/harbourHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</button>
+                                    <button onMouseDown={() => handleLinkClick('/cjmHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</button>
+                                    <button onMouseDown={() => handleLinkClick('/flamencoHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</button>
+                                    <button onMouseDown={() => handleLinkClick('/bassariHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Bassari</button>
                                 </div>
                             )}
                         </div>
@@ -242,7 +246,7 @@ export const Header = () => {
                             </button>
                             {showProductsDropdown && (
                                 <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
-                                    <Link to="/products" className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Todos los productos</Link>
+                                    <button onMouseDown={() => handleLinkClick('/products')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Todos los productos</button>
                                 </div>
                             )}
                         </div>
@@ -259,8 +263,7 @@ export const Header = () => {
                             </button>
                             {showUserDropdown && (
                                 <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
-                                    <button className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => setShowUserDropdown(false)}>Sign In</button>
-                                    <button className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left" onClick={() => setShowUserDropdown(false)}>Sign Out</button>
+                                    <p className="block px-4 py-2 text-gray-500 hover:bg-gray-200 w-full text-left">Feature in development</p>
                                 </div>
                             )}
                         </div>
@@ -380,11 +383,11 @@ export const Header = () => {
                             </button>
                             {showBrandsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <button onClick={() => handleNavigate('/arenaHome')} className="block py-1 text-gray-700 hover:text-gray-900">Arena</button>
-                                    <button onClick={() => handleNavigate('/harbourHome')} className="block py-1 text-gray-700 hover:text-gray-900">Harbour</button>
-                                    <button onClick={() => handleNavigate('/cjmHome')} className="block py-1 text-gray-700 hover:text-gray-900">CJM</button>
-                                    <button onClick={() => handleNavigate('/flamencoHome')} className="block py-1 text-gray-700 hover:text-gray-900">Flamenco</button>
-                                    <button onClick={() => handleNavigate('/bassariHome')} className="block py-1 text-gray-700 hover:text-gray-900">Bassari</button>
+                                    <button onMouseDown={() => handleLinkClick('/arenaHome')} className="block py-1 text-gray-700 hover:text-gray-900">Arena</button>
+                                    <button onMouseDown={() => handleLinkClick('/harbourHome')} className="block py-1 text-gray-700 hover:text-gray-900">Harbour</button>
+                                    <button onMouseDown={() => handleLinkClick('/cjmHome')} className="block py-1 text-gray-700 hover:text-gray-900">CJM</button>
+                                    <button onMouseDown={() => handleLinkClick('/flamencoHome')} className="block py-1 text-gray-700 hover:text-gray-900">Flamenco</button>
+                                    <button onMouseDown={() => handleLinkClick('/bassariHome')} className="block py-1 text-gray-700 hover:text-gray-900">Bassari</button>
                                 </div>
                             )}
                         </div>
@@ -399,14 +402,14 @@ export const Header = () => {
                             </button>
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <button onClick={() => handleNavigate('/products')} className="block py-1 text-gray-700 hover:text-gray-900">Todos los productos</button>
+                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-1 text-gray-700 hover:text-gray-900">Todos los productos</button>
                                 </div>
                             )}
                         </div>
 
-                        <button onClick={() => handleNavigate('/about')} className="block text-gray-800 font-semibold py-2">Sobre nosotros</button>
-                        <button onClick={() => handleNavigate('/contact')} className="block text-gray-800 font-semibold py-2">Contáctanos</button>
-                        <button onClick={() => handleNavigate('/contract')} className="block text-gray-800 font-semibold py-2">Contract</button>
+                        <button onClick={() => handleLinkClick('/about')} className="block text-gray-800 font-semibold py-2">Sobre nosotros</button>
+                        <button onClick={() => handleLinkClick('/contact')} className="block text-gray-800 font-semibold py-2">Contáctanos</button>
+                        <button onClick={() => handleLinkClick('/contract')} className="block text-gray-800 font-semibold py-2">Contract</button>
                     </div>
                 </div>
             </header>

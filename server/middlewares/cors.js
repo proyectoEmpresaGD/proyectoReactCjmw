@@ -8,7 +8,8 @@ const ACCEPTED_ORIGINS = [
   'http://localhost:5173',
   'https://translate.google.com',
   'https://proyecto-react-cjmw-neon.vercel.app',
-  'https://cjmw-worldwide.vercel.app'
+  'https://cjmw-worldwide.vercel.app',
+  'https://cjmw.eu'
   // Agregado para permitir solicitudes desde Google Translate
 ];
 
