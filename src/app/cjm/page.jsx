@@ -16,23 +16,29 @@ function CjmHome() {
     }
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel4.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/VELVETY/VELVETY%20EVERGREEN.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/TOKIO/TOKIO%20Y%20SHIBULLA.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/VELVETY/VELVETY%20ALOE.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/ROAD%20TO%20ASIA/BOTANICAL%20KOMORI%20MAGNESIUM.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/COLONY/FIYI%20ALUMINIUM.jpg",
     ]
 
     const imagesNewCollections = [
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel1.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel2.webp",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ArenaCarrusel3.webp",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/COLONY/TONGA%20PUMICE.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/SET%20OF%20THREADS/ASIAN%20ROMANTICISM%20EVERGREEN%20(EDITAR).jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/ROAD%20TO%20ASIA/BOTANICAL%20KOMORI%20ROYAL%20BLUE%2004.jpg",
     ]
 
     const titles = [
-        "ArenaCarrusel1.webp",
-        "ArenaCarrusel2.webp",
-        "ArenaCarrusel3.webp"
+        "TONGA",
+        "ASIAN ROMANTICISM",
+        "BOTANICAL KOMORI"
+    ]
+
+    const CodProduCJM = [
+        "CJM01750",
+        "CJM01384",
+        "CJM01395",
     ]
 
     const marca = 'CJM';
@@ -44,11 +50,11 @@ function CjmHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
-                    <div className=" flex items-center justify-center h-full mt-3">
+                    <div className=" flex items-center justify-center h-full pt-3">
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg" alt="" className=" lg:w-[20%] lg:h-[20%] w-[30%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
-                <NewCollection images={imagesNewCollections} titles={titles} />
+                <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduCJM} />
                 <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>

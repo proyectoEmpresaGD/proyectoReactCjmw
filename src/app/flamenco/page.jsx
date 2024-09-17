@@ -18,11 +18,11 @@ function FlamencoHome() {
     const marca = 'FLA';
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20KUKULKAN.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20PUMMERIN.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20PERRAULT.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20TOPKAPI.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20ZAHARA%2002.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20C01%20%20(3).jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20DAMSON%20%20(2).jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/TULUM%20C01%20(2).jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/IMPERIAL.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/LUMIERE.jpg",
     ]
 
     const imagesNewCollections = [
@@ -34,7 +34,12 @@ function FlamencoHome() {
         "KUKULKAN",
         "PUMMERIN",
         "PERRAULT",
+    ]
 
+    const CodProduFla = [
+        "FLA00166",
+        "CJM00392",
+        "FLA00120"
     ]
 
     return (
@@ -43,11 +48,11 @@ function FlamencoHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <body className="">
-                    <div className=" flex items-center justify-center h-full mt-3">
+                    <div className=" flex items-center justify-center h-full pt-3">
                         <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 
-                <NewCollection images={imagesNewCollections} titles={titles} />
+                <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduFla} />
                 <ColeccionesMarcas marca={marca} />
                 </body>
                 <Footer />
