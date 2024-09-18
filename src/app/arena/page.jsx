@@ -38,8 +38,8 @@ function ArenaHome() {
 
     const CodProduAre = [
         "ARE00192",
-        "ARE01106",
         "ARE00582",
+        "ARE01106",
     ]
 
     return (
