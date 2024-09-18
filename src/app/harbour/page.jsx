@@ -15,11 +15,11 @@ function shuffleArray(array) {
 }
 
 const images = [
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20MARINE.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/DESERT%20GATE%20INDIGO.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/ROOTS%20PORCELAIN.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/DESERT%20GATE%20NOIR.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ARISTOS%20MARINE%20CARRUSEL.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN.jpg",
     
 ]
 
