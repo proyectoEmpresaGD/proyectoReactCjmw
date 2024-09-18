@@ -18,6 +18,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const lensRef = useRef(null);
     const resultRef = useRef(null);
     const [zoomFactor, setZoomFactor] = useState(2);
+    const [isZooming, setIsZooming] = useState(false);
 
     useEffect(() => {
         const fetchRelatedProducts = async () => {
@@ -121,6 +122,22 @@ const Modal = ({ isOpen, close, product, alt }) => {
         // Posicionar la imagen ampliada en la misma posición que la imagen original
         result.firstChild.style.left = `-${zoomX}px`;
         result.firstChild.style.top = `-${zoomY}px`;
+    };
+
+    const handleMouseEnter = () => {
+        if (lensRef.current && resultRef.current) {
+            lensRef.current.style.display = 'block';
+            resultRef.current.style.display = 'block';
+            setIsZooming(true);  // Mostrar imagen ampliada
+        }
+    };
+
+    const handleMouseLeave = () => {
+        if (lensRef.current && resultRef.current) {
+            lensRef.current.style.display = 'none';
+            resultRef.current.style.display = 'none';
+            setIsZooming(false);  // Volver a la imagen original
+        }
     };
 
     const handleColorClick = async (colorProduct) => {
@@ -293,7 +310,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5%">
-                <div className="bg-white p-7 rounded-lg xl:max-w-[100%] 2xl:max-w-[70%] w-[95%] md:max-w-[95%] m-4 h-auto overflow-auto shadow-lg relative max-h-[85vh] mt-[9%] 2xl:mt-[6%]">
+                <div className="bg-white px-7 pt-3 xl:max-w-[100%] 2xl:max-w-[70%] w-[95%] md:max-w-[95%] m-4 h-auto overflow-auto shadow-lg relative max-h-[95vh] mt-[20%] md:mt-[9%] 2xl:mt-[6%]">
                     <div className="flex justify-center absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
@@ -302,12 +319,12 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.codprodu}</h2>
 
                     <div className="grid md:grid-cols-6 sm:md:grid-cols-6 grid-cols-1 justify-center mx-auto " onClick={e => e.stopPropagation()}>
-                        <div className="relative group w-full h-72  md:h-72 overflow-hidden col-span-2">
+                        <div className="relative group w-full  h-72  md:h-72 overflow-hidden col-span-2">
                             <img
                                 src={selectedImage}
                                 style={{
-                                    width: `${zoomFactor * 70}%`,  // Aplica el mismo factor de zoom
-                                    height: `${zoomFactor * 60}%`, // Aplica el mismo factor de zoom
+                                    width: '100%',  // Restablecer el tamaño original
+                                    height: '100%',  // Restablecer el tamaño original
                                     objectFit: 'cover',  // Mantiene las proporciones como en la segunda imagen
                                 }}
                                 alt={alt}
@@ -315,36 +332,26 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 onLoad={handleImageLoad}
                                 onError={handleImageError}
                                 onMouseMove={moveLens}
-                                onMouseEnter={() => {
-                                    if (lensRef.current && resultRef.current) {
-                                        lensRef.current.style.display = 'block';
-                                        resultRef.current.style.display = 'block';
-                                    }
-                                }}
-                                onMouseLeave={() => {
-                                    if (lensRef.current && resultRef.current) {
-                                        lensRef.current.style.display = 'cover';
-                                        resultRef.current.style.display = 'cover';
-                                    }
-                                }}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
                             />
                             {imageLoaded && (
                                 <>
                                     {/* Lupa dinámica */}
                                     <div
                                         ref={lensRef}
-                                        className="absolute hidden w-10 h-10 border border-gray-300 opacity-50 bg-transparent mx-11 pointer-events-none"
+                                        className="absolute hidden w-20 h-15 border border-gray-300 opacity-50 bg-transparent mx-11 pointer-events-none"
                                         style={{ borderRadius: '50%', transition: 'ease' }}
                                     ></div>
 
                                     {/* Imagen ampliada */}
                                     <div
                                         ref={resultRef}
-                                        className="absolute hidden top-0 left-0 pointer-events-none overflow-hidden"
+                                        className="absolute hidden top-0 left-0 pointer-events-none rounded-lg overflow-hidden"
                                         style={{
                                             width: '200%', // Haz que el contenedor sea el doble del tamaño original
                                             height: '200%',
-                                            borderRadius: '5px'
+                                            borderRadius: '10px'
                                             // filter: 'saturate(1.4) brightness(1.2)' // Ajusta el tamaño para que sea mayor que el original
                                         }}
                                     >
@@ -353,8 +360,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                             alt={alt}
                                             className="absolute rounded-md"
                                             style={{
-                                                width: `${zoomFactor * 70}%`,  // Doble del tamaño original
-                                                height: `${zoomFactor * 60}%`, // Doble del tamaño original
+                                                width: `${zoomFactor * 100}%`,  // Doble del tamaño original
+                                                height: `${zoomFactor * 100}%`, // Doble del tamaño original
                                                 objectFit: 'cover',
                                                 transition: 'ease',
                                                 transform: ''
@@ -442,11 +449,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div className="mx-auto text-center mt-6 mb-2 ">
-                                <button onClick={handleMapClick} className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
+                            <div className="mx-auto text-center mt-4 mb-6 ">
+                                <button onClick={handleMapClick} className="bg-gradient-to-r from-[#a57b52] to-[#c8a17d] text-white font-semibold py-2 px-3 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
                                     Dónde comprar
                                 </button>
-                                <button onClick={handleAddToCart} className="bg-gradient-to-r from-[#8c7c68] to-[#a09282] text-white font-bold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68] mt-2">
+                                <button onClick={handleAddToCart} className="bg-gradient-to-r from-[#8c7c68] to-[#a09282] text-white font-semibold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68] mt-2">
                                     Adquirir muestra
                                 </button>
                             </div>

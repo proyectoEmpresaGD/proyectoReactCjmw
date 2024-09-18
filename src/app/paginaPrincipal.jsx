@@ -3,9 +3,9 @@ import { Header } from "../components/header";
 import { CartProvider } from '../components/CartContext';
 
 const images = [
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/CORTINA_PASARELA.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.webp",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/SALON1_OK.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/PADDINGTON.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/HARBOUR%20AMBIENTE/ARISTOS%20MARINE%20CARRUSEL.jpg",
+    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/FLAMENCO%20CARRUSEL%20HOME.jpg",
     "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/LOFT%20ALUMINIUM%202.jpg",
     "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/IMG_9820.jpg",
 ];
@@ -19,11 +19,11 @@ const texts = [
 ];
 
 const names =[
-    "Arena",
-    "Harbour",
-    "Flamenco",
+    "ARENA",
+    "HARBOUR",
+    "FLAMENCO",
     "CJM",
-    "Bassari",
+    "BASSARI",
 ]
 
 

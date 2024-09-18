@@ -17,11 +17,11 @@ function ArenaHome() {
     const marca = 'ARE';
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/ARE00992%20ANTIBES%20RUBY%202.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/APACHE%20CHERRY.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/LEVANTINE(1).jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ANTIBES%20RUBY%202.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/BLIZZARD%20SHELL.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/JEWEL%20BURNT%20ORANGE.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/MIKONOS%20LINEN%20(2)%20(2)%20(2).jpg",
     ]
 
     const imagesNewCollections = [

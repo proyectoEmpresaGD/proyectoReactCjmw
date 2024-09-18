@@ -18,11 +18,11 @@ function FlamencoHome() {
     const marca = 'FLA';
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20C01%20%20(3).jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20DAMSON%20%20(2).jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/TULUM%20C01%20(2).jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/IMPERIAL.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/LUMIERE.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/GENESIS%20C01%20%20(3).jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/GENESIS%20DAMSON%20%20(2).jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/jarapa.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/LUMIERE.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/TULUM%20C01%20(2).jpg",
     ]
 
     const imagesNewCollections = [

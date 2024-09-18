@@ -16,11 +16,11 @@ function CjmHome() {
     }
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/VELVETY/VELVETY%20EVERGREEN.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/TOKIO/TOKIO%20Y%20SHIBULLA.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/VELVETY/VELVETY%20ALOE.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/ROAD%20TO%20ASIA/BOTANICAL%20KOMORI%20MAGNESIUM.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/COLONY/FIYI%20ALUMINIUM.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/CJMW/VERANDA%20EVERGREEN.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/CJMW/ROKKI%20PUMICE.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/CJMW/FIYI%20ALUMINIUM.jpg",
+        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/CJMW/BOTANICAL%20KOMORI%20MAGNESIUM.jpg",
     ]
 
     const imagesNewCollections = [
