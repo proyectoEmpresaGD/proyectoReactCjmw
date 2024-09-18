@@ -9,8 +9,8 @@ const ACCEPTED_ORIGINS = [
   'https://translate.google.com',
   'https://proyecto-react-cjmw-neon.vercel.app',
   'https://cjmw-worldwide.vercel.app',
-  'https://cjmw.eu'
-  // Agregado para permitir solicitudes desde Google Translate
+  'https://cjmw.eu',
+  'https://www.cjmw.eu' // Añadido para aceptar con y sin www
 ];
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
@@ -19,6 +19,7 @@ export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => c
       return callback(null, true);
     }
 
+    // Permitir solicitudes si origin es null o undefined (como en solicitudes locales)
     if (!origin) {
       return callback(null, true);
     }
