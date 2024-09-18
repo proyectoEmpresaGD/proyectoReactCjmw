@@ -196,7 +196,7 @@ const imageSet = {
       "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/BORNEO.jpg",
       "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/IMPERIAL.jpg",
       "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/LUMIERE.jpg",
-      "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/MOREAU.jpg"
+      
     ],
 
 
@@ -218,7 +218,9 @@ const imageSet = {
       "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/CJM%20AMBIENTE/ASIAN%20ROMANTICISM%20ROYAL%20BLUE%20F2.jpg"
     ],
     [
-      "",
+      "https://cjmw.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/buena%20calidad/HAR01196%20LIENZO%20C01%20ANCHO%20280.jpg",
+      "https://cjmw.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/buena%20calidad/HAR01278%20LIENZO%20C05%20ANCHO%20150.jpg",
+      "https://cjmw.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/buena%20calidad/HAR01288%20LIENZO%20C78%20ANCHO%20150.jpg"
     ],
     [
       "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/MOODBOARDS/MOODBOARD%20SABANNA%2001.jpg"
@@ -325,7 +327,7 @@ function ColeccionesMarcas({ marca }) {
           {colecciones.map((coleccion, index) => (
             <div key={index}>
               <div className="flex items-center justify-center py-[15%] sm:py-[10%] md:py-[10%] lg:py-[10%] xl:py-[3%] 2xl:py-[3%]">
-                <h1 className="text-3xl py-[1%]">{coleccion}</h1>
+                <h1 className="text-3xl pt-[5%]">{coleccion}</h1>
               </div>
 
               {/* Mostrar el carrusel para el conjunto de imágenes correspondiente a esta colección */}
