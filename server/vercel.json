@@ -7,6 +7,11 @@
     ],
     "routes": [
         {
+            "src": "/images/(.*)",
+            "dest": "https://images.cjmw.eu/$1",
+            "status": 200
+        },
+        {
             "src": "/(.*)",
             "dest": "/"
         }
