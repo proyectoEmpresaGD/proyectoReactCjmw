@@ -310,13 +310,13 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5%">
-                <div className="bg-white px-7 pt-3 xl:max-w-[100%] 2xl:max-w-[70%] w-[95%] md:max-w-[95%] m-4 h-auto overflow-auto shadow-lg relative max-h-[95vh] mt-[20%] md:mt-[9%] 2xl:mt-[6%]">
+                <div className="bg-white px-7 pt-3 xl:max-w-[100%] 2xl:max-w-[70%] w-[95%] md:max-w-[95%] m-4 h-auto overflow-auto shadow-lg relative max-h-[95vh] mt-[40%] md:mt-[9%] 2xl:mt-[6%]">
                     <div className="flex justify-center absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                         </button>
                     </div>
-                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.codprodu}</h2>
+                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
 
                     <div className="grid md:grid-cols-6 sm:md:grid-cols-6 grid-cols-1 justify-center mx-auto " onClick={e => e.stopPropagation()}>
                         <div className="relative group w-full  h-72  md:h-72 overflow-hidden col-span-2">
