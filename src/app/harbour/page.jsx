@@ -15,18 +15,18 @@ function shuffleArray(array) {
 }
 
 const images = [
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ARISTOS%20MARINE%20CARRUSEL.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ARISTOS%20MARINE%20CARRUSEL.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN.jpg",
     
 ]
 
 const imagesCollection = [
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20BOLONIA.jpg",
-    "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20TANGERINE.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20BOLONIA.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20TANGERINE.jpg",
 ]
 
 
@@ -54,7 +54,7 @@ function HarbourHome() {
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full pt-3">
-                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
+                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
                 <NewCollection images={imagesCollection} titles={titles} productCodes={CodProduHar}/>

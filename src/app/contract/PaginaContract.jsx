@@ -19,7 +19,7 @@ function Contract() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                                 <div className="max-w-lg mx-auto lg:mx-0 lg:max-w-none">
                                     <img
-                                        src="https://cjmw.eu/____impro/1/onewebmedia/CONTRACT01.jpg?etag=%2253113-5edfa2df%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=601%2B400&quality=85"
+                                        src="https://bassari.eu/____impro/1/onewebmedia/CONTRACT01.jpg?etag=%2253113-5edfa2df%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=601%2B400&quality=85"
                                         alt="Team"
                                         className="w-full h-auto rounded-lg shadow-xl hover:scale-105 transform transition-transform duration-500"
                                     />
@@ -58,7 +58,7 @@ function Contract() {
                             </div>
                             <div className="flex items-center justify-center lg:justify-end">
                                 <img
-                                    src="https://cjmw.eu/____impro/1/onewebmedia/CONTRACT02.jpg?etag=%225268b-5edfacbc%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=390%2B390&quality=85"
+                                    src="https://bassari.eu/____impro/1/onewebmedia/CONTRACT02.jpg?etag=%225268b-5edfacbc%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=390%2B390&quality=85"
                                     alt="Department"
                                     className="rounded-lg shadow-xl hover:scale-105 transform transition-transform duration-500"
                                 />
@@ -71,7 +71,7 @@ function Contract() {
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="max-w-lg mx-auto lg:mx-0 lg:max-w-none">
                                 <img
-                                    src="https://cjmw.eu/____impro/1/onewebmedia/CONTRACT03.jpg?etag=%225eb6c-5edfb3d0%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=390%2B390&quality=85"
+                                    src="https://bassari.eu/____impro/1/onewebmedia/CONTRACT03.jpg?etag=%225eb6c-5edfb3d0%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=390%2B390&quality=85"
                                     alt="Projects"
                                     className="rounded-lg shadow-xl hover:scale-105 transform transition-transform duration-500"
                                 />
@@ -103,7 +103,7 @@ function Contract() {
                             </div>
                             <div className="flex items-center justify-center lg:justify-end">
                                 <img
-                                    src="https://cjmw.eu/____impro/1/onewebmedia/CONTRACT04.jpg?etag=W%2F%2272255-5edfb3e1%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=390%2B390&quality=85"
+                                    src="https://bassari.eu/____impro/1/onewebmedia/CONTRACT04.jpg?etag=W%2F%2272255-5edfb3e1%22&sourceContentType=image%2Fjpeg&ignoreAspectRatio&resize=390%2B390&quality=85"
                                     alt="Fabrics"
                                     className="rounded-lg shadow-xl hover:scale-105 transform transition-transform duration-500"
                                 />
@@ -119,12 +119,12 @@ function Contract() {
                                 Si tienes alguna pregunta o quieres más información sobre nuestros servicios, no dudes en contactarnos. ¡Estaremos encantados de ayudarte!
                             </p>
                             <p className="text-lg leading-relaxed text-white mb-4">
-                                Escríbenos a: <a href="mailto:info@cjmw.eu" className="text-blue-500 hover:text-blue-700 underline transition duration-300">info@cjmw.eu</a>
+                                Escríbenos a: <a href="mailto:info@bassari.eu" className="text-blue-500 hover:text-blue-700 underline transition duration-300">info@bassari.eu</a>
                             </p>
 
                             <div className="mt-10">
                                 <a
-                                    href="mailto:info@cjmw.eu"
+                                    href="mailto:info@bassari.eu"
                                     className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg"
                                 >
                                     Enviar correo

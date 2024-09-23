@@ -15,7 +15,7 @@ function About() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                                 <div className="flex items-center justify-center lg:justify-start">
                                     <div className="w-full max-w-lg border rounded-lg overflow-hidden shadow-lg hover:scale-105 transform transition-transform duration-500">
-                                        <img src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/CJM%20AMBIENTE/ANNUM%20ANTHRACITE.jpg" alt="Tu imagen" className="w-full h-auto object-cover" />
+                                        <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/CJM%20AMBIENTE/ANNUM%20ANTHRACITE.jpg" alt="Tu imagen" className="w-full h-auto object-cover" />
                                     </div>
                                 </div>
                                 <div className="lg:pl-10">
@@ -43,7 +43,7 @@ function About() {
                             </div>
                             <div className="flex items-center justify-center lg:justify-end">
                                 <div className="w-full max-w-lg border rounded-lg overflow-hidden shadow-lg hover:scale-105 transform transition-transform duration-500">
-                                    <img src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/ATMOSPHERE%20MOSS.jpg" alt="Hecho en España" className="w-full h-auto object-cover" />
+                                    <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/ATMOSPHERE%20MOSS.jpg" alt="Hecho en España" className="w-full h-auto object-cover" />
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,7 @@ function About() {
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="flex items-center justify-center lg:justify-start">
                                 <div className="w-full max-w-lg border rounded-lg overflow-hidden shadow-lg hover:scale-105 transform transition-transform duration-500">
-                                    <img src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/amapolas.png" alt="Headquarters" className="w-full h-auto object-cover" />
+                                    <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/amapolas.png" alt="Headquarters" className="w-full h-auto object-cover" />
                                 </div>
                             </div>
                             <div className="text-gray-800 text-lg text-justify">
