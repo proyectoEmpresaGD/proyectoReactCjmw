@@ -18,17 +18,17 @@ function FlamencoHome() {
     const marca = 'FLA';
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/GENESIS%20C01%20%20(3).jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/GENESIS%20DAMSON%20%20(2).jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/jarapa.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/LUMIERE.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/TULUM%20C01%20(2).jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/GENESIS%20C01%20%20(3).jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/GENESIS%20DAMSON%20%20(2).jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/jarapa.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/LUMIERE.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/TULUM%20C01%20(2).jpg",
     ]
 
     const imagesNewCollections = [
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20KUKULKAN.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20PUMMERIN.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20PERRAULT.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20KUKULKAN.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20PUMMERIN.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/1200%20FLAMENCO%20PERRAULT.jpg",
     ]
     const titles = [
         "KUKULKAN",
@@ -49,7 +49,7 @@ function FlamencoHome() {
                 <Carrusel images={shuffleArray([...images])} />
                 <body className="">
                     <div className=" flex items-center justify-center h-full pt-3">
-                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
+                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 
                 <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduFla} />

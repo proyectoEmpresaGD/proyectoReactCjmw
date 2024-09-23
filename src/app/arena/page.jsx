@@ -17,17 +17,17 @@ function ArenaHome() {
     const marca = 'ARE';
 
     const images = [
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/LEVANTINE(1).jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/ANTIBES%20RUBY%202.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/BLIZZARD%20SHELL.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/JEWEL%20BURNT%20ORANGE.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/Carruseles/ARENA/MIKONOS%20LINEN%20(2)%20(2)%20(2).jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/ARENA/LEVANTINE(1).jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/ARENA/ANTIBES%20RUBY%202.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/ARENA/BLIZZARD%20SHELL.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/ARENA/JEWEL%20BURNT%20ORANGE.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/ARENA/MIKONOS%20LINEN%20(2)%20(2)%20(2).jpg",
     ]
 
     const imagesNewCollections = [
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
-        "https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
     ]
 
     const titles = [
@@ -49,7 +49,7 @@ function ArenaHome() {
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-r from-[#ebdecf] to-[#a78d6e] ">
                     <div className=" flex items-center justify-center h-full pt-3">
-                        <img src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/logoArena.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
+                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoArena.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 
                 <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduAre} />

@@ -3,10 +3,10 @@ import GeocodingService from "../../components/ComponentesContact/map"
 
 function Contacts() {
 
-    const direccionMontilla = "Calle Marqués de Larios nº58, Málaga Spain";
-    const direccionMadrid = "Calle Marqués de Larios nº58, Málaga Spain";
-    const direccionBarcelona = "Calle Marqués de Larios nº58, Málaga Spain";
-    const direccionHolanda = "Calle Marqués de Larios nº58, Málaga Spain";
+    const direccionMontilla = "Avenida de europa 19";
+    const direccionMadrid = "C/ Juan Álvarez mendizabal 53";
+    const direccionBarcelona = "Aribau 228 bajos 1º";
+    const direccionHolanda = "Nieuve showroo, ETC DESIGN CENTER 1e Etage Stand 32";
 
     const enviarCorreo = () => {
         window.open('https://mail.google.com/mail/?view=cm&fs=1&to=pedidos@cjmw.eu'); //Reemplaza el destinatario por el correo al que le quieras enviar el gmail
@@ -16,9 +16,9 @@ function Contacts() {
         window.open(`tel:${telefono}`);
     };
 
-    const telefonoMontilla = "+34-111-222-333"
-    const telefonoMadrid = "+34-111-222-333"
-    const telefonoBarcelona = "+34-111-222-333"
+    const telefonoMontilla = "+34-957-656-475"
+    const telefonoMadrid = "+34-666-538-245"
+    const telefonoBarcelona = "+31-614-446-800"
     const telefonoHolanda = "+34-111-222-333"
     return (
         <>
@@ -53,7 +53,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-1 text-base text-gray-900"> Calle Marqués de Larios nº58, Málaga Spain </span>
+                                                                    <span className="block ml-1 text-base text-gray-900">Avenida de europa 19</span>
                                                                 </div>
                                                             </div>
 
@@ -65,7 +65,7 @@ function Contacts() {
                                                                         </svg>
                                                                     </button>
                                                                     <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+34-111-222-333</span>
+                                                                        <span className="text-base text-gray-900">+34-957-656-475</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -83,7 +83,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900"> Calle Marqués de Larios nº58, Málaga Spain </span>
+                                                                    <span className="block ml-3 text-base text-gray-900">C/ Juan Álvarez mendizabal 53</span>
                                                                 </div>
                                                             </div>
 
@@ -95,7 +95,7 @@ function Contacts() {
                                                                         </svg>
                                                                     </button>
                                                                     <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+34-111-222-333</span>
+                                                                        <span className="text-base text-gray-900">+34-673-342-185</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -115,7 +115,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900"> Calle Marqués de Larios nº58, Málaga Spain </span>
+                                                                    <span className="block ml-3 text-base text-gray-900">Aribau 228 bajos 1º</span>
                                                                 </div>
                                                             </div>
 
@@ -127,7 +127,7 @@ function Contacts() {
                                                                         </svg>
                                                                     </button>
                                                                     <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+34-111-222-333</span>
+                                                                        <span className="text-base text-gray-900">+34-666-538-045</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -147,7 +147,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900"> Calle Marqués de Larios nº58, Málaga Spain </span>
+                                                                    <span className="block ml-3 text-base text-gray-900">Nieuve showroo, ETC DESIGN CENTER 1e Etage Stand 32</span>
                                                                 </div>
                                                             </div>
 
@@ -159,7 +159,7 @@ function Contacts() {
                                                                         </svg>
                                                                     </button>
                                                                     <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+34-111-222-333</span>
+                                                                        <span className="text-base text-gray-900">+31-614-446-800</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
