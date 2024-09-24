@@ -15,7 +15,7 @@ export const Header = () => {
     const navigate = useNavigate();
     const { itemCount } = useCart();
 
-    const [logoSrc] = useState('/logoCJM.png');
+    const [logoSrc] = useState('https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png');
     const [showCart, setShowCart] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
