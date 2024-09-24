@@ -199,16 +199,16 @@ export class ProductModel {
       params.push(filters.brand);
     }
 
+    // Aplicar filtro por colección si está presente
+    if (filters.collection && filters.collection.length > 0) {
+      query += ` AND "coleccion" ILIKE $${index++}`;
+      params.push(`%${filters.collection}%`);
+    }
+
     // Aplicar filtro por color si está presente
     if (filters.color && filters.color.length > 0) {
       query += ` AND "colorprincipal" = ANY($${index++})`;
       params.push(filters.color);
-    }
-
-    // Aplicar filtro por colección si está presente
-    if (filters.collection && filters.collection.length > 0) {
-      query += ` AND "coleccion" = ANY($${index++})`;
-      params.push(filters.collection);
     }
 
     // Aplicar filtro por tipo de tela si está presente
@@ -262,7 +262,6 @@ export class ProductModel {
       throw new Error('Error filtering products');
     }
   }
-
 
   static async getCollectionsByBrand(brand) {
     try {

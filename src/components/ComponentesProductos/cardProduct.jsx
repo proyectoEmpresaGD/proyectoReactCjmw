@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
-import Filtro from "../../app/products/buttonFiltro";
+import Filtro from '../../app/products/buttonFiltro';
 import SubMenuCarousel from './SubMenuCarousel';
 
 const CardProduct = () => {
@@ -16,6 +16,7 @@ const CardProduct = () => {
     const fabricPattern = searchParams.get('fabricPattern'); // Estilo desde el submenú
     const uso = searchParams.get('uso'); // Uso para filtros como Outdoor o FR
     const fabricType = searchParams.get('fabricType'); // Tipo para Terciopelo
+    const collection = searchParams.get('collection'); // Colección desde la URL
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
@@ -42,14 +43,18 @@ const CardProduct = () => {
 
     const loadProductImages = async (product) => {
         const [imageBuena, imageBaja] = await Promise.all([
-            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
-            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then((res) =>
+                res.ok ? res.json() : null
+            ),
+            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then((res) =>
+                res.ok ? res.json() : null
+            ),
         ]);
 
         return {
             ...product,
             imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url',
         };
     };
 
@@ -62,61 +67,93 @@ const CardProduct = () => {
 
             if (searchQuery) {
                 // Petición de búsqueda
-                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`);
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`
+                );
                 setIsSearching(true);
                 setIsFiltered(false);
             } else if (type) {
                 // Filtro de tipo (Papeles o Telas)
                 filterParams = { fabricType: type === 'papel' ? ['PAPEL PARED'] : [] };
-                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(filterParams),
-                });
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(filterParams),
+                    }
+                );
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (fabricPattern) {
                 // Filtro de estilo desde el submenú (Ej: Liso, Flores, Wallpaper, Wallcovering)
                 filterParams = { fabricPattern: [fabricPattern] };
-                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(filterParams),
-                });
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(filterParams),
+                    }
+                );
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (uso) {
                 // Filtro de uso (Outdoor, FR)
                 filterParams = { uso: [uso] };
-                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(filterParams),
-                });
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(filterParams),
+                    }
+                );
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (fabricType) {
                 // Filtro de tipo (Terciopelo)
                 filterParams = { fabricType: [fabricType] };
-                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(filterParams),
-                });
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(filterParams),
+                    }
+                );
+                setIsFiltered(true);
+                setIsSearching(false);
+            } else if (collection) {
+                // Filtro por colección
+                filterParams = { collection: [collection] };
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(filterParams),
+                    }
+                );
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (filters) {
                 // Otros filtros desde el modal
-                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(filters),
-                });
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(filters),
+                    }
+                );
                 setIsFiltered(true);
                 setIsSearching(false);
             } else {
                 // Obtener todos los productos
-                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`);
+                response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`
+                );
                 setIsFiltered(false);
                 setIsSearching(false);
             }
@@ -176,7 +213,7 @@ const CardProduct = () => {
         } else {
             fetchProducts(page);
         }
-    }, [searchQuery, productId, type, fabricPattern, uso, fabricType, page, filters]);
+    }, [searchQuery, productId, type, fabricPattern, uso, fabricType, collection, page, filters]);
 
     const handleFilteredProducts = (filteredProducts, selectedFilters) => {
         setProducts(filteredProducts);
@@ -192,7 +229,7 @@ const CardProduct = () => {
             name: product.desprodu,
             price: 3,
             image: product.imageBaja,
-            quantity: 1
+            quantity: 1,
         });
     };
 
@@ -230,7 +267,7 @@ const CardProduct = () => {
         } else if (category === 'WALLCOVERING') {
             navigate(`/products?fabricPattern=WALLCOVERING`); // Navegar con el filtro para Wallcovering
         } else {
-            navigate(`/products?fabricPattern=${category}`); // Navegar con otros filtros de estilo
+            navigate(`/products?collection=${category}`); // Navegar con el filtro de colección
         }
     };
 
@@ -238,7 +275,10 @@ const CardProduct = () => {
         <div>
             {clearButtonVisible && (
                 <div className="fixed top-1/4 right-5 z-40">
-                    <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
+                    <button
+                        onClick={handleClearSearch}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center w-22 sm:w-30 md:w-30"
+                    >
                         Limpiar filtros
                     </button>
                 </div>
@@ -251,14 +291,25 @@ const CardProduct = () => {
 
             <div className="flex flex-wrap justify-center items-center">
                 {products.map((product, index) => (
-                    <div key={`${product.codprodu}-${index}`} className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
-                        <div className="relative overflow-hidden w-full h-80 sm:h-64 md:h-64" onClick={() => handleProductClick(product)}>
+                    <div
+                        key={`${product.codprodu}-${index}`}
+                        className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]"
+                    >
+                        <div
+                            className="relative overflow-hidden w-full h-80 sm:h-64 md:h-64 cursor-pointer"
+                            onClick={() => handleProductClick(product)}
+                        >
                             <img
                                 className="object-cover w-full h-full"
                                 src={product.imageBaja}
                                 alt={product.nombre}
-                                onError={(e) => { e.target.src = 'default_buena_image_url'; }}
+                                onError={(e) => {
+                                    e.target.src = 'default_buena_image_url';
+                                }}
                             />
+                            <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-lg md:hidden">
+                                Toca para ver
+                            </div>
                         </div>
                         <h3 className="text-center text-lg sm:text-xl text-gray-900 mt-4">{product.nombre}</h3>
                     </div>
@@ -269,9 +320,7 @@ const CardProduct = () => {
             {!loading && products.length === 0 && !error && (
                 <div className="text-center text-gray-500">No se encontraron productos</div>
             )}
-            {!loading && error && (
-                <div className="text-center text-red-500">{error}</div>
-            )}
+            {!loading && error && <div className="text-center text-red-500">{error}</div>}
 
             <div className="flex justify-center mt-4">
                 <button
@@ -292,11 +341,7 @@ const CardProduct = () => {
             </div>
 
             {selectedProduct && (
-                <Modal
-                    isOpen={modalOpen}
-                    close={() => setModalOpen(false)}
-                    product={selectedProduct}
-                />
+                <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} />
             )}
         </div>
     );
