@@ -4,6 +4,7 @@ import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
 import Filtro from "../../app/products/buttonFiltro";
+import SubMenuCarousel from './SubMenuCarousel';
 
 const CardProduct = () => {
     const location = useLocation();
@@ -11,7 +12,10 @@ const CardProduct = () => {
     const searchParams = new URLSearchParams(location.search);
     const searchQuery = searchParams.get('search');
     const productId = searchParams.get('productId');
-    const type = searchParams.get('type'); // Nuevo parámetro para determinar el tipo (papel o telas)
+    const type = searchParams.get('type'); // Tipo desde header
+    const fabricPattern = searchParams.get('fabricPattern'); // Estilo desde el submenú
+    const uso = searchParams.get('uso'); // Uso para filtros como Outdoor o FR
+    const fabricType = searchParams.get('fabricType'); // Tipo para Terciopelo
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
@@ -21,13 +25,13 @@ const CardProduct = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [page, setPage] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
-    const [filters, setFilters] = useState(null); // Estado para los filtros aplicados
-    const [isFiltered, setIsFiltered] = useState(false); // Filtros activos
-    const [isSearching, setIsSearching] = useState(!!searchQuery); // Búsqueda activa
-    const [clearButtonVisible, setClearButtonVisible] = useState(false); // Control del botón "Limpiar filtros"
+    const [filters, setFilters] = useState(null);
+    const [isFiltered, setIsFiltered] = useState(false);
+    const [isSearching, setIsSearching] = useState(!!searchQuery);
+    const [clearButtonVisible, setClearButtonVisible] = useState(false);
+    const [activeCategory, setActiveCategory] = useState(null); // Estado para marcar la categoría activa
     const itemsPerPage = 16;
 
-    // Control centralizado del estado del botón "Limpiar filtros"
     useEffect(() => {
         if (isFiltered || isSearching) {
             setClearButtonVisible(true);
@@ -36,7 +40,6 @@ const CardProduct = () => {
         }
     }, [isFiltered, isSearching]);
 
-    // Cargar imágenes de un producto
     const loadProductImages = async (product) => {
         const [imageBuena, imageBaja] = await Promise.all([
             fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
@@ -50,45 +53,69 @@ const CardProduct = () => {
         };
     };
 
-    // Cargar productos según búsqueda, filtros o todos los productos
     const fetchProducts = async (pageNumber = 1) => {
         setLoading(true);
         setError(null);
         try {
             let response;
+            let filterParams = {};
 
-            // Si hay una búsqueda activa
             if (searchQuery) {
+                // Petición de búsqueda
                 response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`);
                 setIsSearching(true);
-                setIsFiltered(false); // No hay filtros cuando se realiza una búsqueda
-            }
-            // Si el tipo es "papel" o "telas"
-            else if (type) {
-                // Aquí pasamos el type como parte del filtro general
-                const filterParams = {
-                    fabricType: type === 'papel' ? ['PAPEL PARED'] : [] // Si es telas, lo dejamos vacío
-                };
+                setIsFiltered(false);
+            } else if (type) {
+                // Filtro de tipo (Papeles o Telas)
+                filterParams = { fabricType: type === 'papel' ? ['PAPEL PARED'] : [] };
                 response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(filterParams),
                 });
-                setIsFiltered(true); // Indicar que hay un filtro de tipo activo
-                setIsSearching(false); // No hay búsqueda cuando se aplican filtros de tipo
-            }
-            // Si hay filtros activos
-            else if (filters) {
+                setIsFiltered(true);
+                setIsSearching(false);
+            } else if (fabricPattern) {
+                // Filtro de estilo desde el submenú (Ej: Liso, Flores, Wallpaper, Wallcovering)
+                filterParams = { fabricPattern: [fabricPattern] };
+                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filterParams),
+                });
+                setIsFiltered(true);
+                setIsSearching(false);
+            } else if (uso) {
+                // Filtro de uso (Outdoor, FR)
+                filterParams = { uso: [uso] };
+                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filterParams),
+                });
+                setIsFiltered(true);
+                setIsSearching(false);
+            } else if (fabricType) {
+                // Filtro de tipo (Terciopelo)
+                filterParams = { fabricType: [fabricType] };
+                response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filterParams),
+                });
+                setIsFiltered(true);
+                setIsSearching(false);
+            } else if (filters) {
+                // Otros filtros desde el modal
                 response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(filters),
                 });
                 setIsFiltered(true);
-                setIsSearching(false); // No hay búsqueda cuando se aplican filtros
-            }
-            // Cargar todos los productos sin filtros ni búsqueda
-            else {
+                setIsSearching(false);
+            } else {
+                // Obtener todos los productos
                 response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`);
                 setIsFiltered(false);
                 setIsSearching(false);
@@ -115,7 +142,6 @@ const CardProduct = () => {
         }
     };
 
-    // Cargar imágenes para los productos
     const loadProductsImages = async (products) => {
         return await Promise.all(
             products.map(async (product) => {
@@ -124,7 +150,6 @@ const CardProduct = () => {
         );
     };
 
-    // Cargar productos por ID
     const fetchProductsById = async (id) => {
         setLoading(true);
         setError(null);
@@ -145,25 +170,22 @@ const CardProduct = () => {
         }
     };
 
-    // Efecto para cargar productos al cambiar búsqueda, tipo, filtros o página
     useEffect(() => {
         if (productId) {
             fetchProductsById(productId);
         } else {
             fetchProducts(page);
         }
-    }, [searchQuery, productId, type, page, filters]);
+    }, [searchQuery, productId, type, fabricPattern, uso, fabricType, page, filters]);
 
-    // Manejar productos filtrados desde el componente Filtro
     const handleFilteredProducts = (filteredProducts, selectedFilters) => {
         setProducts(filteredProducts);
         setFilters(selectedFilters);
-        setIsFiltered(true); // Indicar que hay filtros activos
-        setIsSearching(false); // No hay búsqueda cuando se aplican filtros
-        setPage(1); // Reiniciar a la primera página
+        setIsFiltered(true);
+        setIsSearching(false);
+        setPage(1);
     };
 
-    // Agregar productos al carrito
     const handleAddToCart = (product) => {
         addToCart({
             id: product.codprodu,
@@ -174,31 +196,46 @@ const CardProduct = () => {
         });
     };
 
-    // Abrir modal de producto
     const handleProductClick = (product) => {
         setSelectedProduct(product);
         setModalOpen(true);
     };
 
-    // Limpiar búsqueda y filtros, recargar todos los productos
     const handleClearSearch = () => {
-        setFilters(null);  // Limpiar los filtros
-        setIsFiltered(false);  // Desactivar filtros
-        setIsSearching(false);  // Desactivar búsqueda
-        setPage(1);  // Reiniciar a la primera página
-        navigate('/products');  // Navegar a la ruta sin parámetros de búsqueda
-        fetchProducts(1);  // Recargar todos los productos
+        setFilters(null);
+        setIsFiltered(false);
+        setIsSearching(false);
+        setActiveCategory(null); // Desmarcar categoría activa
+        setPage(1);
+        navigate('/products');
+        fetchProducts(1);
     };
 
-    // Cambiar la página y cargar productos
     const handlePageChange = (newPage) => {
         setPage(newPage);
         fetchProducts(newPage);
     };
 
+    // Manejar el clic en una categoría del submenú replicando la lógica del header
+    const handleCategoryFilter = (category) => {
+        setActiveCategory(category); // Marcar la categoría seleccionada
+        if (category === 'OUTDOOR') {
+            navigate(`/products?uso=OUTDOOR`); // Navegar con el filtro para OUTDOOR
+        } else if (category === 'FR') {
+            navigate(`/products?uso=FR`); // Navegar con el filtro para FR
+        } else if (category === 'TERCIOPELO') {
+            navigate(`/products?fabricType=TERCIOPELO`); // Navegar con el filtro para Terciopelo
+        } else if (category === 'WALLPAPER') {
+            navigate(`/products?fabricPattern=WALLPAPER`); // Navegar con el filtro para Wallpaper
+        } else if (category === 'WALLCOVERING') {
+            navigate(`/products?fabricPattern=WALLCOVERING`); // Navegar con el filtro para Wallcovering
+        } else {
+            navigate(`/products?fabricPattern=${category}`); // Navegar con otros filtros de estilo
+        }
+    };
+
     return (
         <div>
-            {/* Botón para limpiar filtros o búsqueda */}
             {clearButtonVisible && (
                 <div className="fixed top-1/4 right-5 z-40">
                     <button onClick={handleClearSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center w-22 sm:w-30 md:w-30">
@@ -208,6 +245,9 @@ const CardProduct = () => {
             )}
 
             <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
+
+            {/* Pasar el handleCategoryFilter y la categoría activa al SubMenuCarousel */}
+            <SubMenuCarousel onFilterClick={handleCategoryFilter} type={type} activeCategory={activeCategory} />
 
             <div className="flex flex-wrap justify-center items-center">
                 {products.map((product, index) => (
@@ -225,7 +265,6 @@ const CardProduct = () => {
                 ))}
             </div>
 
-            {/* Carga de productos */}
             {loading && <SkeletonLoader repeticiones={10} />}
             {!loading && products.length === 0 && !error && (
                 <div className="text-center text-gray-500">No se encontraron productos</div>
@@ -234,7 +273,6 @@ const CardProduct = () => {
                 <div className="text-center text-red-500">{error}</div>
             )}
 
-            {/* Paginación */}
             <div className="flex justify-center mt-4">
                 <button
                     onClick={() => handlePageChange(page - 1)}
@@ -253,7 +291,6 @@ const CardProduct = () => {
                 </button>
             </div>
 
-            {/* Modal del producto */}
             {selectedProduct && (
                 <Modal
                     isOpen={modalOpen}
