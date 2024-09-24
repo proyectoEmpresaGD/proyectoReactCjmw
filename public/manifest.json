@@ -3,22 +3,22 @@
     "name": "CJMW WORLDWIDE",
     "icons": [
         {
-            "src": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
             "sizes": "64x64 32x32 24x24 16x16",
             "type": "image/x-icon"
         },
         {
-            "src": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
             "type": "image/svg",
             "sizes": "192x192"
         },
         {
-            "src": "https://cjmw.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
             "type": "image/png",
             "sizes": "512x512"
         }
     ],
-    "start_url": "https://cjmw-worldwide.vercel.app/#/",
+    "start_url": "https://www.cjmw.eu/#/",
     "display": "standalone",
     "theme_color": "#000000",
     "background_color": "#ffffff"
