@@ -14,17 +14,22 @@ const CarruselColecciones = ({ imageSets = [] }) => {
   }, [imageSets]);
 
   return (
-    <div className='xl:h-[59.75vh] md:h-[51.4vh] sm:h-[50vh] xl:w-[60vh] sm:bg-cover lg:bg-cover mx-auto justify-center'>
+    <div className="h-[35vh] sm:h-[50vh] md:h-[40vh] lg:h-[50vh] w-full max-w-[80vw] sm:max-w-[70vw] md:max-w-[60vw] lg:max-w-[50vw] bg-cover mx-auto flex justify-center items-center">
       {randomImage ? (
-        <div className="lg:h-[58vh] md:h-[50vh] sm:h-[50vh] mx-4 xl:mx-0 rounded-md">
-          <div className="image-container sm:object-center lg:w-[58vh] lg:h-full sm:h-full sm:w-full bg-cover rounded-md">
-            <img src={randomImage} alt="Random Display" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover rounded-md sm:object-center" />
+        <div className="h-full w-full rounded-md overflow-hidden">
+          <div className="image-container h-full w-full object-cover rounded-md mx-auto">
+            <img
+              src={randomImage}
+              alt="Random Display"
+              className="object-cover w-full h-full rounded-md"
+            />
           </div>
         </div>
       ) : (
         <p>No images available</p>
       )}
     </div>
+
   );
 };
 

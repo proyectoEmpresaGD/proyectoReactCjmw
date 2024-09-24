@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import { CartProvider } from '../CartContext';
 import CarruselColecciones from '../ComponentesBrands/CarruselColecciones';
 const imageSet = {
@@ -195,7 +196,7 @@ const imageSet = {
       "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/BORNEO.jpg",
       "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/IMPERIAL.jpg",
       "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/LUMIERE.jpg",
-      
+
     ],
 
 
@@ -278,12 +279,15 @@ function ColeccionesMarcas({ marca }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const imageSetsForMarca = imageSet[marca] || [];
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCollectionsByBrand = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/getCollectionsByBrand?brand=${marca}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/products/getCollectionsByBrand?brand=${marca}`
+        );
         if (!response.ok) {
           throw new Error(`Error fetching collections: ${response.statusText}`);
         }
@@ -312,24 +316,39 @@ function ColeccionesMarcas({ marca }) {
     return <div>No collections found for {marca}</div>;
   }
 
-  console.log('Colecciones:', colecciones);
-  console.log('Image sets for marca:', imageSetsForMarca);
+  const handleCollectionClick = (coleccion) => {
+    navigate(`/products?collection=${coleccion}`);
+  };
 
   return (
     <CartProvider>
-      <div className="xl:mt-[3%] mt-[20%] md:mt-[10%]]">
+      <div className="mt-[20%] md:mt-[10%] lg:mt-[5%] xl:mt-[3%] px-5">
         <div className="flex items-center justify-center h-full pt-4">
-          <h1 className="text-3xl font-bold text-black mx-auto">Explora nuestras colecciones</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black mx-auto">
+            Explora nuestras colecciones
+          </h1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-6 py-5">
           {colecciones.map((coleccion, index) => (
-            <div key={index}>
-              <div className="flex items-center justify-center py-[15%] sm:py-[10%] md:py-[10%] lg:py-[10%] xl:py-[3%] 2xl:py-[3%]">
-                <h1 className="text-3xl pt-[5%]">{coleccion}</h1>
+            <div
+              key={index}
+              onClick={() => handleCollectionClick(coleccion)}
+              className="relative group cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg rounded-lg overflow-hidden bg-white w-full"
+            >
+              {/* Indicador de toque para móviles */}
+              <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-lg md:hidden lg:hidden xl:hidden">
+                Toca para ver
               </div>
 
-              {/* Mostrar el carrusel para el conjunto de imágenes correspondiente a esta colección */}
+              {/* Contenedor de texto mejorado */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-5 group-hover:bg-opacity-30 transition duration-300">
+                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-white text-center px-4 py-2 bg-opacity-80 rounded-md">
+                  {coleccion}
+                </h1>
+              </div>
+
+              {/* Mostrar el carrusel de imágenes correspondiente */}
               {imageSetsForMarca[index] && (
                 <CarruselColecciones imageSets={imageSetsForMarca[index]} />
               )}
@@ -337,9 +356,11 @@ function ColeccionesMarcas({ marca }) {
           ))}
         </div>
       </div>
+
+
+
     </CartProvider>
   );
 }
 
 export default ColeccionesMarcas;
-
