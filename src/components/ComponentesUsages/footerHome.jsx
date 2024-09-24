@@ -35,7 +35,7 @@ const FooterHome = () => {
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
                     <a href="#" className="flex items-center justify-center">
                         <img
-                            src="https://cjmw.eu/ImagenesTelasCjmw/Iconos/Logo.png"
+                            src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logo.png"
                             alt="Logo"
                             className="w-16 h-16 object-contain"
                         />
@@ -58,7 +58,7 @@ const FooterHome = () => {
                 <div className="flex flex-col items-center">
                     <h3 className="text-lg font-bold mb-2">Descubre Nuestra Web</h3>
                     <img
-                        src="https://cjmw.eu/ImagenesTelasCjmw/ImagenesAmbiente/frame.png"
+                        src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/frame.png"
                         alt="Código QR para descargar la app"
                         className="w-32 h-32 object-contain"
                     />
