@@ -55,7 +55,7 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
     };
 
     return (
-        <div className="relative flex items-center justify-between w-full px-11 max-w-screen-md mx-auto overflow-hidden py-6">
+        <div className="relative flex items-center justify-between w-full px-11 max-w-screen-md mx-auto overflow-hidden py-6 p">
             {/* Flecha Izquierda */}
             {showLeftArrow && (
                 <button
