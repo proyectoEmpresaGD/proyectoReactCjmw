@@ -10,7 +10,9 @@ const ACCEPTED_ORIGINS = [
   'https://proyecto-react-cjmw-neon.vercel.app',
   'https://cjmw-worldwide.vercel.app',
   'https://cjmw.eu',
-  'https://www.cjmw.eu' // Añadido para aceptar con y sin www
+  'https://www.cjmw.eu',
+  'https://bassari.eu',
+  'https://www.bassari.eu' // Añadido para aceptar con y sin www
 ];
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
