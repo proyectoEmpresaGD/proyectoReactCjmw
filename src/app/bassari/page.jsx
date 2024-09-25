@@ -19,29 +19,29 @@ function BassariHome() {
     const marca = 'BAS';
 
     const images = [
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/ARE00992%20ANTIBES%20RUBY%202.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/APACHE%20CHERRY.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/Mejor%20calidad/BASSARI%20KASSUMAY%20IWOL%20ARGILE%20(COLCHA)%20WOLOF%20SAVANE%20(CORTINA)%20LOMPOUL%20ARGILE%20(COJINES%20TRASEROS)%20KAOLACK%20ARGILE(COJINES%20DELANTEROS).jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/Mejor%20calidad/BASSARI%20KASSUMAY%20YEMBE%20.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/UNIVERS/Buena%20Calidad/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/TRIBAL/Buena%20calidad/BASSARI%20TRIBAL%20INDEFELO%20LA%20MER%20.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/TRIBAL/Buena%20calidad/BASSARI%20TRIBAL%20DANDE%20ARGILE%20(COJ%C3%8DN%20PEQUE%C3%91O).jpg",
     ]
 
     const imagesNewCollections = [
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/SANTORINI%20NOIR.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/MOOD%20BOARD%20TOUCH%202.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/BARANDILLA.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/TRIBAL/Baja%20calidad/BASSARI%20TRIBAL%20BEDICK%20VERT%20(CORTINA).jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/UNIVERS/Baja%20Calidad/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20KARABANE%20ARGILE%20II.jpg",
     ]
 
     const titles = [
-        "TOUCH",
-        "ARTISAN",
-        "SANTORINI",
+        "TRIBAL",
+        "UNIVERS",
+        "KASSUMAY",
     ]
 
     const CodProduBas = [
-        "",
-        "",
-        ""
+        "BAS00058",
+        "BAS00241",
+        "BAS00128"
     ]
 
     return (

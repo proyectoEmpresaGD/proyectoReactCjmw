@@ -261,13 +261,18 @@ const imageSet = {
   ],
   'BAS': [
     [
-      "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/HARBOUR%20AMBIENTE/MOOD%20BOARD%20BOLONIA.jpg"
+      "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20IWOL%20ARGILE%20(COLCHA)%20WOLOF%20SAVANE%20(CORTINA)%20LOMPOUL%20ARGILE%20(COJINES%20TRASEROS)%20KAOLACK%20ARGILE(COJINES%20DELANTEROS).jpg",
+      "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20KAOLACK%20MOUTARDE.jpg",
+      "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20KARABANE%20AMBRE%20ARGILE%20ET%20MOUTARDE.jpg"
     ],
     [
-      "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/CJM%20AMBIENTE/ASIAN%20ROMANTICISM%20ROYAL%20BLUE%20F2.jpg"
+      "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/TRIBAL/Baja%20calidad/BASSARI%20TRIBAL%20DAKAR%20BOUE%20SABLE%20ET%20GRIS%20NUAGE.jpg",
+      "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/TRIBAL/Baja%20calidad/BASSARI%20TRIBAL%20DAKAR%20INDIGO.jpg",
+      "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/TRIBAL/Baja%20calidad/BASSARI%20TRIBAL%20KARITE%20AMBRE%20.jpg"
     ],
     [
-      "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/FLAMENCO%20AMBIENTE/1200%20FLAMENCO%20ZAHARA%2004.jpg"
+      "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/UNIVERS/Baja%20Calidad/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE.jpg",
+
     ],
   ],
 }
