@@ -187,6 +187,8 @@ export class ProductModel {
       throw new Error('Error filtering products by type');
     }
   }
+
+
   // Método para aplicar filtros a los productos
   static async filter(filters, limit = 16, offset = 0) {
     let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
@@ -217,18 +219,11 @@ export class ProductModel {
       params.push(filters.fabricType);
     }
 
-    // Aplicar filtro por estilo (liso, flores, etc.) o patrones específicos
+    // Aplicar filtro por estilo específico desde el submenú
     if (filters.fabricPattern && filters.fabricPattern.length > 0) {
-      if (filters.fabricPattern.includes('TERCIOPELO')) {
-        query += ` AND "tipo" ILIKE '%TERCIOPELO%'`; // Filtro específico para terciopelo
-      } else if (filters.fabricPattern.includes('WALLPAPER')) {
-        query += ` AND "estilo" ILIKE '%WALLPAPER%'`; // Filtro específico para wallpaper
-      } else if (filters.fabricPattern.includes('WALLCOVERING')) {
-        query += ` AND "estilo" ILIKE '%WALLCOVERING%'`; // Filtro específico para wallcovering
-      } else {
-        query += ` AND "estilo" = ANY($${index++})`;
-        params.push(filters.fabricPattern);
-      }
+      // Filtros específicos por estilo: TELAS CON FLORES, WALLPAPER, WALLCOVERING, etc.
+      query += ` AND "estilo" = ANY($${index++})`;
+      params.push(filters.fabricPattern);
     }
 
     // Aplicar filtro por uso si está presente (Outdoor, FR)
@@ -262,6 +257,7 @@ export class ProductModel {
       throw new Error('Error filtering products');
     }
   }
+
 
   static async getCollectionsByBrand(brand) {
     try {

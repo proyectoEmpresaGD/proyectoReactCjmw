@@ -267,7 +267,8 @@ const CardProduct = () => {
         } else if (category === 'WALLCOVERING') {
             navigate(`/products?fabricPattern=WALLCOVERING`); // Navegar con el filtro para Wallcovering
         } else {
-            navigate(`/products?collection=${category}`); // Navegar con el filtro de colección
+            // Para TELAS CON FLORES u otros estilos específicos
+            navigate(`/products?fabricPattern=${category}`); // Navegar con el filtro por el estilo de tela
         }
     };
 

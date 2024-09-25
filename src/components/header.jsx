@@ -4,7 +4,7 @@ import {
     RiArrowDropDownLine, RiArrowDropUpLine
 } from 'react-icons/ri';
 import { FaGlobe } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
 import ScrollToTop from './ScrollToTop';
@@ -13,9 +13,9 @@ import 'tailwindcss/tailwind.css';
 
 export const Header = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { itemCount } = useCart();
 
-    const [logoSrc] = useState('https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png');
     const [showCart, setShowCart] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
@@ -47,6 +47,21 @@ export const Header = () => {
         { value: 'de', label: 'German' },
         { value: 'it', label: 'Italian' }
     ];
+
+    // Map URLs to logos
+    const brandLogos = {
+        '/arenaHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoArena.png',
+        '/harbourHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoHarbour.png',
+        '/cjmHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png',
+        '/flamencoHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoFlamenco.png',
+        '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOBASSARI_01.png',
+    };
+
+    // Default corporate logo
+    const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png';
+
+    // Determine current logo based on location
+    const logoSrc = brandLogos[location.pathname] || defaultLogo;
 
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);
@@ -188,11 +203,11 @@ export const Header = () => {
 
     const handleLinkClick = (path) => {
         setTimeout(() => {
-            navigate(path);  // Retrasar el cierre del menú hasta que se ejecute la redirección
+            navigate(path);
         }, 100);
-        setShowMenu(false);  // Cerrar el menú de forma segura después de la redirección
-        setShowBrandsDropdown(false); // Cerrar el dropdown de marcas
-        setShowProductsDropdown(false); // Cerrar el dropdown de productos
+        setShowMenu(false);
+        setShowBrandsDropdown(false);
+        setShowProductsDropdown(false);
     };
 
     return (
