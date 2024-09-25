@@ -6,15 +6,15 @@ function Contract() {
         <>
             <CartProvider>
                 <Header />
-                <div className="min-h-screen bg-black text-white xl:pt-[7%] lg:pt-[12%] md:pt-[10%] sm:pt-[15%] pt-[20%] ">
+                <div className="min-h-screen bg-white text-white xl:pt-[7%] lg:pt-[12%] md:pt-[10%] sm:pt-[15%] pt-[20%] ">
                     <div className="text-center mx-auto">
-                        <h1 className="p-[2%] text-5xl font-extrabold text-white tracking-wide">
+                        <h1 className="p-[2%] text-5xl font-extrabold text-black tracking-wide">
                             Contract  Services
                         </h1>
                     </div>
 
                     {/* Sección "The team" */}
-                    <section className="py-20 lg:py-12 bg-black text-gray-300 font-light text-center">
+                    <section className="py-20 lg:py-12 bg-white text-black font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                                 <div className="max-w-lg mx-auto lg:mx-0 lg:max-w-none">
@@ -45,7 +45,7 @@ function Contract() {
                     </section>
 
                     {/* Sección "The department" */}
-                    <section className="py-20 bg-black text-gray-300 font-light text-center">
+                    <section className="py-20 bg-white text-black font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="text-lg text-justify">
                                 <h2 className="text-4xl font-bold mb-4 text-yellow-500">The Department</h2>
@@ -67,7 +67,7 @@ function Contract() {
                     </section>
 
                     {/* Sección "Significant projects" */}
-                    <section className="py-20 lg:py-12 bg-black text-gray-300 font-light text-center">
+                    <section className="py-20 lg:py-12 bg-white text-black font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="max-w-lg mx-auto lg:mx-0 lg:max-w-none">
                                 <img
@@ -91,7 +91,7 @@ function Contract() {
                     </section>
 
                     {/* Sección "Exclusive fabrics on demand" */}
-                    <section className="py-20 lg:py-12 bg-black text-gray-300 font-light text-center">
+                    <section className="py-20 lg:py-12 bg-white text-black font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="text-lg text-justify">
                                 <h2 className="text-4xl font-bold mb-4 text-yellow-500">
@@ -112,13 +112,13 @@ function Contract() {
                     </section>
 
                     {/* Sección "Contáctanos" */}
-                    <section className="py-20 bg-black text-gray-300 font-light text-center">
+                    <section className="py-20 bg-white text-gray-300 font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl text-center">
                             <h2 className="text-4xl font-bold mb-6 text-yellow-500">Contáctanos</h2>
-                            <p className="text-lg leading-relaxed text-white mb-8">
+                            <p className="text-lg leading-relaxed text-black mb-8">
                                 Si tienes alguna pregunta o quieres más información sobre nuestros servicios, no dudes en contactarnos. ¡Estaremos encantados de ayudarte!
                             </p>
-                            <p className="text-lg leading-relaxed text-white mb-4">
+                            <p className="text-lg leading-relaxed text-black mb-4">
                                 Escríbenos a: <a href="mailto:info@bassari.eu" className="text-blue-500 hover:text-blue-700 underline transition duration-300">info@bassari.eu</a>
                             </p>
 
