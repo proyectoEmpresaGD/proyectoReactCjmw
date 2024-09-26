@@ -21,7 +21,7 @@ function About() {
                                 <div className="lg:pl-10">
                                     <div className="text-center lg:text-left">
                                         <p className="text-sm font-semibold tracking-widest text-gray-800 uppercase mb-2">De un vistazo</p>
-                                        <h2 className="mt-4 text-4xl font-bold leading-tight text-gray-900 sm:text-5xl">CJM: Transformando espacios con telas de calidad</h2>
+                                        <h2 className="text-center font-semibold text-gray-600 text-2xl mb-6">CJM: Transformando espacios con telas de calidad</h2>
                                         <p className="text-lg leading-relaxed text-gray-800 mt-6">CJM es responsable del negocio global de CJM, HARBOUR, ARENA y FLAMENCO, nuestras cuatro marcas de textiles decorativos. Fundada el 23 de noviembre de 2000 por la familia Caracuel Jiménez Marqués, la empresa se centra en el desarrollo, producción y venta de telas para mobiliario interior y exterior de uso doméstico o para el mercado contract.</p>
                                         <p className="text-lg leading-relaxed text-gray-800 mt-6">En CJM, la fabricación y el diseño de telas de calidad van de la mano. Nuestras dos divisiones comerciales están en constante expansión global, estando presentes en más de 30 países en cuatro continentes.</p>
                                         <p className="text-lg leading-relaxed text-gray-800 mt-6">Ecología y sostenibilidad significan crear valor duradero para nuestros clientes, empleados y la sociedad. La base de la estrategia empresarial sostenible de CJM es la responsabilidad respecto a los efectos en el medio ambiente en el desarrollo de sus telas e instalaciones decorativas.</p>
@@ -54,7 +54,7 @@ function About() {
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="flex items-center justify-center lg:justify-start">
                                 <div className="w-full max-w-lg border rounded-lg overflow-hidden shadow-lg hover:scale-105 transform transition-transform duration-500">
-                                    <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/amapolas.png" alt="Headquarters" className="w-full h-auto object-cover" />
+                                    <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/JARAPA/Jarapa/Buenas/Vani_Living_326_Brkt_Portrait%20copy.jpg" alt="Headquarters" className="w-full h-auto object-cover" />
                                 </div>
                             </div>
                             <div className="text-gray-800 text-lg text-justify">

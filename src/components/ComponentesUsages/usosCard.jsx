@@ -4,7 +4,7 @@ const CareInstructions = () => {
     const careInstructions = [
         {
             id: 1,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
             title: "Lavar a 30º",
             details: [
                 "Apto para lavar a 30° en lavadora.",
@@ -14,7 +14,7 @@ const CareInstructions = () => {
         },
         {
             id: 2,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
             title: "Lavar a 40º",
             details: [
                 "Apto para lavar a 30° en lavadora.",
@@ -24,7 +24,7 @@ const CareInstructions = () => {
         },
         {
             id: 3,
-            iconPath: "https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",  // Cambia esta ruta por la de tu icono
+            iconPath: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",  // Cambia esta ruta por la de tu icono
             title: "No lavable a máquina",
             details: [
                 "Si se indica, recomendamos limpiar la tela a mano o en seco siguiendo las instrucciones especificadas en cada caso.",
@@ -33,25 +33,25 @@ const CareInstructions = () => {
         },
         {
             id: 4,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
             title: "Planchar a 120°",
             details: ["Se recomienda planchar la tela siempre por el reverso hasta 120 grados."],
         },
         {
             id: 5,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
             title: "Planchar a 160°",
             details: ["Se recomienda planchar la tela siempre por el reverso hasta 160 grados."],
         },
         {
             id: 6,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',  // Cambia esta ruta por la de tu icono
             title: "Planchar a 210°",
             details: ["Se recomienda planchar la tela siempre por el reverso hasta 210 grados."],
         },
         {
             id: 7,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20planchar.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20planchar.jpg',  // Cambia esta ruta por la de tu icono
             title: "No planchar",
             details: [
                 "Se usan fibras especiales para hacer la tela indicada.",
@@ -60,7 +60,7 @@ const CareInstructions = () => {
         },
         {
             id: 8,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',  // Cambia esta ruta por la de tu icono
             title: "Lavar a mano",
             details: [
                 "Apto para lavar a mano en agua tibia.",
@@ -71,7 +71,7 @@ const CareInstructions = () => {
         },
         {
             id: 9,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lejia.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lejia.jpg',  // Cambia esta ruta por la de tu icono
             title: "No usar blanqueador",
             details: [
                 "Ninguna de nuestras telas puede ser tratada con blanqueador.",
@@ -80,7 +80,7 @@ const CareInstructions = () => {
         },
         {
             id: 10,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20en%20seco.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20en%20seco.jpg',  // Cambia esta ruta por la de tu icono
             title: "Limpieza en seco",
             details: [
                 "Apto para ser limpiado en seco sin usar percloroetileno.",
@@ -89,7 +89,7 @@ const CareInstructions = () => {
         },
         {
             id: 11,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar%20en%20seco.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar%20en%20seco.jpg',  // Cambia esta ruta por la de tu icono
             title: "No lavar en seco",
             details: [
                 "Apto para ser limpiado en seco sin usar percloroetileno.",
@@ -98,7 +98,7 @@ const CareInstructions = () => {
         },
         {
             id: 12,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20usar%20secadora.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20usar%20secadora.jpg',  // Cambia esta ruta por la de tu icono
             title: "No usar secadora",
             details: [
                 "Después de lavar las telas en la lavadora, se recomienda dejarlas colgadas en un tendedero para secar.",
@@ -107,7 +107,7 @@ const CareInstructions = () => {
         },
         {
             id: 13,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',  // Cambia esta ruta por la de tu icono
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',  // Cambia esta ruta por la de tu icono
             title: "EASY CLEAN",
             details: [
                 "Después de lavar las telas en la lavadora, se recomienda dejarlas colgadas en un tendedero para secar.",
@@ -119,7 +119,7 @@ const CareInstructions = () => {
     const usageInstructions = [
         {
             id: 1,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria%20decorativa.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria%20decorativa.jpg',
             title: "Tapiceria decorativa",
             details: [
                 "Adecuado para tapicería decorativa.",
@@ -129,7 +129,7 @@ const CareInstructions = () => {
         },
         {
             id: 2,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria.jpg',
             title: "Tapiceria",
             details: [
                 "Adecuado para tapicería.",
@@ -139,7 +139,7 @@ const CareInstructions = () => {
         },
         {
             id: 3,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Cortinas.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Cortinas.jpg',
             title: "Cortinas",
             details: [
                 "Adecuado para cortinas.",
@@ -154,7 +154,7 @@ const CareInstructions = () => {
         },
         {
             id: 4,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Estores.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Estores.jpg',
             title: "Estores",
             details: [
                 "Adecuado para Estores.",
@@ -164,7 +164,7 @@ const CareInstructions = () => {
         },
         {
             id: 5,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/Colchas.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Colchas.jpg',
             title: "Colchas",
             details: [
                 "Adecuado para colchas.",
@@ -174,7 +174,7 @@ const CareInstructions = () => {
         },
         {
             id: 6,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg',
             title: "FR",
             details: [
                 "Resistentes al fuego.",
@@ -184,7 +184,7 @@ const CareInstructions = () => {
         },
         {
             id: 7,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg',
             title: "IMO",
             details: [
                 "Adecuado para uso maritimo.",
@@ -194,7 +194,7 @@ const CareInstructions = () => {
         },
         {
             id: 8,
-            iconPath: 'https://cjmw.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg',
+            iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg',
             title: "OUTDOOR",
             details: [
                 "Adecuado para el exterior.",

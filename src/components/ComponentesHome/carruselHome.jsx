@@ -1,15 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Necesario para la navegación
+import { useNavigate } from 'react-router-dom';
 import FooterHome from '../ComponentesUsages/footerHome';
 
 const CarruselHome = ({ images, texts, names, routes }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
-    const [isTap, setIsTap] = useState(true); // Nuevo estado para detectar si es un "tap"
+    const [isTap, setIsTap] = useState(true);
     const containerRef = useRef(null);
     const touchStartY = useRef(0);
     const touchEndY = useRef(0);
-    const navigate = useNavigate(); // Hook para la navegación
+    const touchStartX = useRef(0); // Añadido para controlar el movimiento horizontal
+    const touchEndX = useRef(0);   // Añadido para controlar el movimiento horizontal
+    const navigate = useNavigate();
 
     // Función para manejar el desplazamiento por scroll en desktop
     useEffect(() => {
@@ -51,28 +53,29 @@ const CarruselHome = ({ images, texts, names, routes }) => {
     useEffect(() => {
         const handleTouchStart = (e) => {
             touchStartY.current = e.touches[0].clientY;
-            setIsTap(true); // Al tocar la pantalla, asumimos que puede ser un tap
-            e.preventDefault();
+            touchStartX.current = e.touches[0].clientX; // Capturamos también la posición X
+            setIsTap(true);
         };
 
         const handleTouchMove = (e) => {
             touchEndY.current = e.touches[0].clientY;
-            const distance = touchStartY.current - touchEndY.current;
-            if (Math.abs(distance) > 10) {
-                setIsTap(false); // Si hay movimiento, no es un tap
+            touchEndX.current = e.touches[0].clientX; // Capturamos también la posición X
+            const distanceY = touchStartY.current - touchEndY.current;
+            const distanceX = touchStartX.current - touchEndX.current; // Distancia en X
+
+            // Si detectamos un swipe considerable, no es un tap
+            if (Math.abs(distanceY) > 10 || Math.abs(distanceX) > 10) {
+                setIsTap(false);
             }
-            e.preventDefault();
         };
 
         const handleTouchEnd = () => {
-            const distance = touchStartY.current - touchEndY.current;
-            const threshold = 50; // Distancia mínima para considerar un swipe
+            const distanceY = touchStartY.current - touchEndY.current;
+            const threshold = 50;
 
-            if (distance > threshold) {
-                // Swipe hacia arriba
+            if (distanceY > threshold) {
                 setCurrentSlide((prevSlide) => (prevSlide < images.length ? prevSlide + 1 : prevSlide));
-            } else if (distance < -threshold) {
-                // Swipe hacia abajo
+            } else if (distanceY < -threshold) {
                 setCurrentSlide((prevSlide) => (prevSlide > 0 ? prevSlide - 1 : prevSlide));
             }
         };
@@ -93,9 +96,10 @@ const CarruselHome = ({ images, texts, names, routes }) => {
         };
     }, [images.length]);
 
+    // Función para manejar el clic en las imágenes de `texts`
     const handleClick = (index) => {
         if (routes && routes[index] && isTap) {
-            navigate(routes[index]); // Navega a la ruta correspondiente
+            navigate(routes[index]);
         }
     };
 
@@ -109,7 +113,7 @@ const CarruselHome = ({ images, texts, names, routes }) => {
                 {images.map((image, index) => (
                     <div key={index} className="h-screen w-full relative">
                         <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover" />
-                        <div className="relative xl:bottom-[60%] lg:bottom-[60%] bottom-[50%] mx-auto text-center xl:w-[25%] lg:w-[25%] w-[70%] p-4">
+                        <div className="relative  bottom-[65%] mx-auto text-center xl:w-[25%] lg:w-[25%] w-[70%] p-4">
                             <img 
                                 src={texts[index]} 
                                 alt="" 

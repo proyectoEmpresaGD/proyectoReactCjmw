@@ -114,7 +114,7 @@ function Contract() {
                     {/* Sección "Contáctanos" */}
                     <section className="py-20 bg-white text-gray-300 font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl text-center">
-                            <h2 className="text-4xl font-bold mb-6 text-yellow-500">Contáctanos</h2>
+                            <h2 className="text-4xl font-bold mb-6 text-black">Contáctanos</h2>
                             <p className="text-lg leading-relaxed text-black mb-8">
                                 Si tienes alguna pregunta o quieres más información sobre nuestros servicios, no dudes en contactarnos. ¡Estaremos encantados de ayudarte!
                             </p>
