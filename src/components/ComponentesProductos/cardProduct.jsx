@@ -273,11 +273,11 @@ const CardProduct = () => {
                 </button>
 
                 {/* Botón Limpiar filtros */}
-                {(isFiltered || isSearching) && (
+                {clearButtonVisible && (
                     <button
                         onClick={handleClearSearch}
-                        className="bg-gray-400 px-8 py-2 text-neutral-50 mt-2 transition-transform duration-200 hover:bg-gray-500 hover:scale-105"
-                        style={{ width: '100%' }}
+                        className="bg-gray-400 text-neutral-50 p-2 xl:px-2 lg:px-4 2xl:px-2 text-center justify-center max-w-[15%] lg:min-w-[8%] xl:w-[5%] xl:hover:w-[6%] hover:max-w-[20%] mt-2 hover:rounded-xl rounded"
+                        style={{ marginTop: '10px' }}
                     >
                         Limpiar filtros
                     </button>
