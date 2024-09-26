@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from '../ComponentesProductos/modal';
-import Filtro from '../../app/products/buttonFiltro';
+import FiltroModal from '../../app/products/modalfiltro'; // Asegúrate de que el path es correcto
 import SubMenuCarousel from './SubMenuCarousel';
 
 const CardProduct = () => {
@@ -12,11 +12,11 @@ const CardProduct = () => {
     const searchParams = new URLSearchParams(location.search);
     const searchQuery = searchParams.get('search');
     const productId = searchParams.get('productId');
-    const type = searchParams.get('type'); // Tipo desde header
-    const fabricPattern = searchParams.get('fabricPattern'); // Estilo desde el submenú
-    const uso = searchParams.get('uso'); // Uso para filtros como Outdoor o FR
-    const fabricType = searchParams.get('fabricType'); // Tipo para Terciopelo
-    const collection = searchParams.get('collection'); // Colección desde la URL
+    const type = searchParams.get('type');
+    const fabricPattern = searchParams.get('fabricPattern');
+    const uso = searchParams.get('uso');
+    const fabricType = searchParams.get('fabricType');
+    const collection = searchParams.get('collection');
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
@@ -30,7 +30,8 @@ const CardProduct = () => {
     const [isFiltered, setIsFiltered] = useState(false);
     const [isSearching, setIsSearching] = useState(!!searchQuery);
     const [clearButtonVisible, setClearButtonVisible] = useState(false);
-    const [activeCategory, setActiveCategory] = useState(null); // Estado para marcar la categoría activa
+    const [activeCategory, setActiveCategory] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const itemsPerPage = 16;
 
     useEffect(() => {
@@ -66,14 +67,12 @@ const CardProduct = () => {
             let filterParams = {};
 
             if (searchQuery) {
-                // Petición de búsqueda
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`
                 );
                 setIsSearching(true);
                 setIsFiltered(false);
             } else if (type) {
-                // Filtro de tipo (Papeles o Telas)
                 filterParams = { fabricType: type === 'papel' ? ['PAPEL PARED'] : [] };
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
@@ -86,7 +85,6 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (fabricPattern) {
-                // Filtro de estilo desde el submenú (Ej: Liso, Flores, Wallpaper, Wallcovering)
                 filterParams = { fabricPattern: [fabricPattern] };
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
@@ -99,7 +97,6 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (uso) {
-                // Filtro de uso (Outdoor, FR)
                 filterParams = { uso: [uso] };
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
@@ -112,7 +109,6 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (fabricType) {
-                // Filtro de tipo (Terciopelo)
                 filterParams = { fabricType: [fabricType] };
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
@@ -125,7 +121,6 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (collection) {
-                // Filtro por colección
                 filterParams = { collection: [collection] };
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
@@ -138,7 +133,6 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (filters) {
-                // Otros filtros desde el modal
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
@@ -150,7 +144,6 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else {
-                // Obtener todos los productos
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`
                 );
@@ -242,7 +235,7 @@ const CardProduct = () => {
         setFilters(null);
         setIsFiltered(false);
         setIsSearching(false);
-        setActiveCategory(null); // Desmarcar categoría activa
+        setActiveCategory(null);
         setPage(1);
         navigate('/products');
         fetchProducts(1);
@@ -253,49 +246,57 @@ const CardProduct = () => {
         fetchProducts(newPage);
     };
 
-    // Manejar el clic en una categoría del submenú replicando la lógica del header
     const handleCategoryFilter = (category) => {
-        setActiveCategory(category); // Marcar la categoría seleccionada
+        setActiveCategory(category);
         if (category === 'OUTDOOR') {
-            navigate(`/products?uso=OUTDOOR`); // Navegar con el filtro para OUTDOOR
+            navigate(`/products?uso=OUTDOOR`);
         } else if (category === 'FR') {
-            navigate(`/products?uso=FR`); // Navegar con el filtro para FR
+            navigate(`/products?uso=FR`);
         } else if (category === 'TERCIOPELO') {
-            navigate(`/products?fabricType=TERCIOPELO`); // Navegar con el filtro para Terciopelo
+            navigate(`/products?fabricType=TERCIOPELO`);
         } else if (category === 'WALLPAPER') {
-            navigate(`/products?fabricPattern=WALLPAPER`); // Navegar con el filtro para Wallpaper
+            navigate(`/products?fabricPattern=WALLPAPER`);
         } else if (category === 'WALLCOVERING') {
-            navigate(`/products?fabricPattern=WALLCOVERING`); // Navegar con el filtro para Wallcovering
+            navigate(`/products?fabricPattern=WALLCOVERING`);
         } else {
-            // Para TELAS CON FLORES u otros estilos específicos
-            navigate(`/products?fabricPattern=${category}`); // Navegar con el filtro por el estilo de tela
+            navigate(`/products?fabricPattern=${category}`);
         }
     };
 
     return (
         <div>
-            {clearButtonVisible && (
-                <div className="fixed top-1/4 right-5 z-40">
+            <div className="top-1/4 sticky xl:ml-2 z-10 xl:mt-4 mt-4 ml-5">
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex p-2 xl:px-2 lg:px-4 2xl:px-2 text-center justify-center max-w-[15%] lg:min-w-[8%] xl:w-[5%] xl:hover:w-[6%] hover:max-w-[20%] bg-black hover:bg-white text-white hover:text-black duration-200 border-2 border-black hover:border-gray-400 hover:rounded-xl rounded">
+                    Filtrar por
+                </button>
+
+                {/* Botón Limpiar filtros */}
+                {(isFiltered || isSearching) && (
                     <button
                         onClick={handleClearSearch}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full text-sm text-center w-22 sm:w-30 md:w-30"
+                        className="bg-gray-400 px-8 py-2 text-neutral-50 mt-2 transition-transform duration-200 hover:bg-gray-500 hover:scale-105"
+                        style={{ width: '100%' }}
                     >
                         Limpiar filtros
                     </button>
-                </div>
-            )}
+                )}
+            </div>
 
-            <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
+            <FiltroModal
+                isOpen={isModalOpen}
+                close={() => setIsModalOpen(false)}
+                applyFilters={handleFilteredProducts}
+            />
 
-            {/* Pasar el handleCategoryFilter y la categoría activa al SubMenuCarousel */}
             <SubMenuCarousel onFilterClick={handleCategoryFilter} type={type} activeCategory={activeCategory} />
 
             <div className="flex flex-wrap justify-center items-center">
                 {products.map((product, index) => (
                     <div
                         key={`${product.codprodu}-${index}`}
-                        className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]"
-                    >
+                        className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]">
                         <div
                             className="relative overflow-hidden w-full h-80 sm:h-64 md:h-64 cursor-pointer"
                             onClick={() => handleProductClick(product)}

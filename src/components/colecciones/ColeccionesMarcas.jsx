@@ -328,7 +328,7 @@ function ColeccionesMarcas({ marca }) {
   return (
     <CartProvider>
       <div className="mt-[20%] md:mt-[10%] lg:mt-[5%] xl:mt-[3%] px-5">
-        <div className="flex items-center justify-center h-full pt-4">
+        <div className="flex items-center justify-center h-full pt-7">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black mx-auto">
             Explora nuestras colecciones
           </h1>

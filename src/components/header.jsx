@@ -226,7 +226,7 @@ export const Header = () => {
                         </button>
 
                         <Link to="/" className="flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg">
-                            <img className="h-8 lg:h-9 xl:h-14" src={logoSrc} alt="Logo" />
+                            <img className="h-9 lg:h-10 xl:h-14" src={logoSrc} alt="Logo" />
                         </Link>
                     </div>
 
