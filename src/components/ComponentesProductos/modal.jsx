@@ -310,16 +310,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5% pb-32">
-                <div className="bg-white px-7 pt-3 xl:max-w-[100%] 2xl:max-w-[70%] w-[95%] md:max-w-[95%] m-4 h-[90vh] md:h-auto overflow-auto shadow-lg relative max-h-[95vh] mt-[40%] md:mt-[15%] 2xl:mt-[6%]">
+                <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] md:h-auto overflow-auto shadow-lg relative max-h-[95vh] mt-[50%] md:mt-[15%] lg:[15%] 2xl:mt-[15]">
                     <div className="flex justify-center absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                         </button>
                     </div>
-                    <h2 className="text-center text-3xl font-semibold mb-4 text-gray-800 mt-12 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
+                    <h2 className="text-center text-3xl font-semibold mb-2 md:mb-4 text-gray-800 mt-7 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
 
-                    <div className="grid md:grid-cols-6 sm:md:grid-cols-6 grid-cols-1 justify-center mx-auto " onClick={e => e.stopPropagation()}>
-                        <div className="relative group w-full  h-72 lg:w-[100%] lg:h-[90%] md:h-[60%] overflow-hidden col-span-2">
+                    <div className="grid lg:grid-cols-6 md:grid-cols-7 sm:md:grid-cols-6 grid-cols-1 justify-center mx-auto " onClick={e => e.stopPropagation()}>
+                        <div className="relative group w-full h-[100%] lg:w-[100%] lg:h-[75%] 2xl:h-[90%] md:h-[50%] overflow-hidden col-span-2 md:col-span-3 lg:col-span-2">
                             <img
                                 src={selectedImage}
                                 style={{
@@ -402,22 +402,21 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     </p>
                                 </div>
 
-                                <div className="text-center mt-4 mb-6">
-                                    <button onClick={handleMapClick} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-3 rounded-full transition duration-200 mx-1 hover:from-[#c8a17d] hover:to-[#a57b52]">
+                                <div className="text-center mt-2 mb-2">
+                                    <button onClick={handleMapClick} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-3 rounded-md transition duration-200 mx-1">
                                         Dónde comprar
                                     </button>
-                                    <button onClick={handleAddToCart} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-2 rounded-full transition duration-200 mx-1 hover:from-[#a09282] hover:to-[#8c7c68] mt-2">
+                                    <button onClick={handleAddToCart} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-2 rounded-md transition duration-200 mx-1 mt-2">
                                         Adquirir muestra
                                     </button>
                                 </div>
                             </div>
 
                             {/* Ficha Técnica */}
-                            <div className="justify-start xl:p-4 lg:p-4 md:p-4 md:text-sm text-sm lg:text-md  text-center md:text-start w-full">
+                            <div className="justify-start xl:p-2 lg:p-2 md:p-2 md:text-sm text-sm lg:text-md  text-center md:text-start w-full">
                                 <h1 className="font-bold text-black mx-auto text-center mb-4 mt-[2rem] md:mt-[0rem] ">Ficha Técnica</h1>
-                                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
-                                    {/* Primera columna de la ficha técnica */}
-                                    <div className=" "> {/* Ajusta el ancho mínimo si es necesario */}
+                                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
+                                    <div className=" "> 
                                         <div className="grid grid-cols-2 md:justify-start md:text-start  md:text-sm text-sm lg:text-md mb-2">
                                             <p>Marca:</p>
                                             <p>{selectedProduct.codmarca}</p>

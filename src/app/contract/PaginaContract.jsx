@@ -26,7 +26,7 @@ function Contract() {
                                 </div>
                                 <div className="lg:pl-10 text-justify">
                                     <div className="text-left">
-                                        <h2 className="text-4xl font-bold mb-4 text-yellow-500">
+                                        <h2 className="text-4xl font-bold mb-4 text-black">
                                             The Team
                                         </h2>
                                         <p className="text-lg leading-relaxed mb-4">
@@ -48,7 +48,7 @@ function Contract() {
                     <section className="py-20 bg-white text-black font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="text-lg text-justify">
-                                <h2 className="text-4xl font-bold mb-4 text-yellow-500">The Department</h2>
+                                <h2 className="text-4xl font-bold mb-4 text-black">The Department</h2>
                                 <p className="mb-4">
                                     In 2008, our company created a new line of work dedicated to hotel installation. Step by step and relying on different projects, we professionalized and automated our Tailor-Made section, incorporating machinery and training our staff.
                                 </p>
@@ -77,7 +77,7 @@ function Contract() {
                                 />
                             </div>
                             <div className="text-lg text-justify">
-                                <h2 className="text-4xl font-bold mb-4 text-yellow-500">
+                                <h2 className="text-4xl font-bold mb-4 text-black">
                                     Significant Projects
                                 </h2>
                                 <p className="mb-4">
@@ -94,7 +94,7 @@ function Contract() {
                     <section className="py-20 lg:py-12 bg-white text-black font-light text-center">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="text-lg text-justify">
-                                <h2 className="text-4xl font-bold mb-4 text-yellow-500">
+                                <h2 className="text-4xl font-bold mb-4 text-black">
                                     Exclusive Fabrics on Demand
                                 </h2>
                                 <p className="mb-4">
@@ -119,13 +119,13 @@ function Contract() {
                                 Si tienes alguna pregunta o quieres más información sobre nuestros servicios, no dudes en contactarnos. ¡Estaremos encantados de ayudarte!
                             </p>
                             <p className="text-lg leading-relaxed text-black mb-4">
-                                Escríbenos a: <a href="mailto:info@bassari.eu" className="text-blue-500 hover:text-blue-700 underline transition duration-300">info@bassari.eu</a>
+                                Escríbenos a: <a href="mailto:info@cjmw.eu" className="text-blue-500 hover:text-blue-700 underline transition duration-300">info@cjmw.eu</a>
                             </p>
 
                             <div className="mt-10">
                                 <a
-                                    href="mailto:info@bassari.eu"
-                                    className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg"
+                                    href="mailto:info@cjmw.eu"
+                                    className="inline-block bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-3 px-8 rounded-md transition-transform transform hover:scale-105 shadow-lg"
                                 >
                                     Enviar correo
                                 </a>
