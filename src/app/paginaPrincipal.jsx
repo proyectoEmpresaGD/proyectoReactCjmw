@@ -26,6 +26,14 @@ const names =[
     "BASSARI",
 ]
 
+const rutas= [
+    "arenaHome",
+    "harbourHome",
+    "flamencoHome",
+    "cjmHome",
+    "bassariHome",
+]
+
 
 // function shuffleArray(array) {
 //     for (let i = array.length - 1; i > 0; i--) {
@@ -40,7 +48,7 @@ function Home() {
         <>
             <CartProvider>
                 <Header />
-                <CarruselHome images={images} texts={texts} names={names} />
+                <CarruselHome images={images} texts={texts} names={names} routes={rutas} />
             </CartProvider>
         </>
     );

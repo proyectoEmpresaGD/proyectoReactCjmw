@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Necesario para la navegación
 import FooterHome from '../ComponentesUsages/footerHome';
 
-const CarruselHome = ({ images, texts, names }) => {
+const CarruselHome = ({ images, texts, names, routes }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
     const containerRef = useRef(null);
     const touchStartY = useRef(0);
     const touchEndY = useRef(0);
+    const navigate = useNavigate(); // Hook para la navegación
 
     // Función para manejar el desplazamiento por scroll en desktop
     useEffect(() => {
@@ -85,6 +87,12 @@ const CarruselHome = ({ images, texts, names }) => {
         };
     }, [images.length]);
 
+    const handleClick = (index) => {
+        if (routes && routes[index]) {
+            navigate(routes[index]); // Navega a la ruta correspondiente
+        }
+    };
+
     return (
         <div className="relative h-screen overflow-hidden w-full" ref={containerRef}>
             {/* Contenedor del carrusel */}
@@ -96,7 +104,12 @@ const CarruselHome = ({ images, texts, names }) => {
                     <div key={index} className="h-screen w-full relative">
                         <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover" />
                         <div className="relative xl:bottom-[60%] lg:bottom-[60%] bottom-[50%] mx-auto text-center xl:w-[25%] lg:w-[25%] w-[70%] p-4">
-                            <img src={texts[index]} alt="" />
+                            <img 
+                                src={texts[index]} 
+                                alt="" 
+                                onClick={() => handleClick(index)} // Manejador de clic para navegar
+                                className="cursor-pointer" // Añadir cursor de puntero para indicar que es clickeable
+                            />
                         </div>
                     </div>
                 ))}
@@ -113,7 +126,7 @@ const CarruselHome = ({ images, texts, names }) => {
                 <div className="absolute right-2 flex flex-col items-center space-y-2">
                     <span
                         className="text-white font-bold mb-16 block transition-opacity duration-300 ease-in-out rotate-90"
-                        style={{ width: '1em', display: 'inline-block',  }}
+                        style={{ width: '1em', display: 'inline-block' }}
                     >
                         {names[currentSlide]}
                     </span>
@@ -126,8 +139,6 @@ const CarruselHome = ({ images, texts, names }) => {
                     ))}
                 </div>
             </div>
-
-
 
             {/* Nombres en la parte inferior (solo en pantallas grandes) */}
             {names && names.length > 0 && (
