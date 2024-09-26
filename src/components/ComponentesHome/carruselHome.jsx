@@ -5,6 +5,7 @@ import FooterHome from '../ComponentesUsages/footerHome';
 const CarruselHome = ({ images, texts, names, routes }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
+    const [isTap, setIsTap] = useState(true); // Nuevo estado para detectar si es un "tap"
     const containerRef = useRef(null);
     const touchStartY = useRef(0);
     const touchEndY = useRef(0);
@@ -50,11 +51,16 @@ const CarruselHome = ({ images, texts, names, routes }) => {
     useEffect(() => {
         const handleTouchStart = (e) => {
             touchStartY.current = e.touches[0].clientY;
+            setIsTap(true); // Al tocar la pantalla, asumimos que puede ser un tap
             e.preventDefault();
         };
 
         const handleTouchMove = (e) => {
             touchEndY.current = e.touches[0].clientY;
+            const distance = touchStartY.current - touchEndY.current;
+            if (Math.abs(distance) > 10) {
+                setIsTap(false); // Si hay movimiento, no es un tap
+            }
             e.preventDefault();
         };
 
@@ -88,7 +94,7 @@ const CarruselHome = ({ images, texts, names, routes }) => {
     }, [images.length]);
 
     const handleClick = (index) => {
-        if (routes && routes[index]) {
+        if (routes && routes[index] && isTap) {
             navigate(routes[index]); // Navega a la ruta correspondiente
         }
     };

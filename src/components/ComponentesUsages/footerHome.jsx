@@ -68,8 +68,8 @@ const FooterHome = () => {
                     {/* Empresa Section */}
                     <div>
                         <h3
-                            className={`text-lg font-bold mb-4 cursor-pointer ${isMobile ? '' : 'cursor-default'}`}
-                            onClick={isMobile ? toggleEmpresa : null}
+                            className="text-lg font-bold mb-4 cursor-pointer"
+                            onClick={toggleEmpresa} // Siempre habilitamos el clic
                         >
                             Empresa
                         </h3>
@@ -100,8 +100,8 @@ const FooterHome = () => {
                     {/* Políticas Section */}
                     <div>
                         <h3
-                            className={`text-lg font-bold mb-4 cursor-pointer ${isMobile ? '' : 'cursor-default'}`}
-                            onClick={isMobile ? togglePoliticas : null}
+                            className="text-lg font-bold mb-4 cursor-pointer"
+                            onClick={togglePoliticas} // Siempre habilitamos el clic
                         >
                             Políticas
                         </h3>
