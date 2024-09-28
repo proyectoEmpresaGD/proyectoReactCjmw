@@ -14,7 +14,7 @@ function BassariHome() {
         }
         return array;
     }
-    
+
 
     const marca = 'BAS';
 
@@ -33,9 +33,9 @@ function BassariHome() {
     ]
 
     const titles = [
-        "TRIBAL",
-        "UNIVERS",
-        "KASSUMAY",
+        "BEDICK",
+        "ASTEROIDE",
+        "KARABANE",
     ]
 
     const CodProduBas = [
@@ -55,7 +55,7 @@ function BassariHome() {
                     </div>
                 </body>
                 <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduBas} />
-                <ColeccionesMarcas marca={marca}/>
+                <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>
         </>
