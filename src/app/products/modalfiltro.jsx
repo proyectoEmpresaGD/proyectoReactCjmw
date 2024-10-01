@@ -35,7 +35,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                 }
                 const data = await response.json();
 
-                setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM"])); // Filtrar por marcas específicas
+                setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM", "BAS"])); // Filtrar por marcas específicas
                 setCollections(filterValidData(data.collections));
                 setFabricTypes(filterValidData(data.fabricTypes));
                 setFabricPatterns(filterValidData(data.fabricPatterns));
