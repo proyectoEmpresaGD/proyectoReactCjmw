@@ -96,7 +96,7 @@ const Footer = () => {
             </div>
             <div className="mt-8">
                 <p className="text-gray-600 text-center">
-                    © CJM WORLDWIDE S.L. 2023 - Todos los Derechos Reservados
+                    © CJM WORLDWIDE S.L. 2024 - Todos los Derechos Reservados
                 </p>
             </div>
         </footer>

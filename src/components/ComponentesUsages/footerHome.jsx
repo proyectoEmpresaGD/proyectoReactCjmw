@@ -58,12 +58,12 @@ const FooterHome = () => {
                 <div className="flex flex-col items-center">
                     <h3 className="text-lg font-bold mb-2">Descubre Nuestra Web</h3>
                     <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/frame.png"
+                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/qr-code.svg"
                         alt="Código QR para descargar la app"
                         className="w-32 h-32 object-contain"
                     />
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 items-center lg:items-center text-center">
                     {/* Empresa Section */}
                     <div>
@@ -142,7 +142,7 @@ const FooterHome = () => {
                                 </a>
                             </nav>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
             </div>
 
@@ -157,7 +157,7 @@ const FooterHome = () => {
                 </Link>
 
                 <p className="text-gray-600 mt-4 lg:mt-0 lg:text-right">
-                    © CJM WORLDWIDE S.L. 2023 - Todos los Derechos Reservados
+                    © CJM WORLDWIDE S.L. 2024 - Todos los Derechos Reservados
                 </p>
             </div>
         </footer>

@@ -19,6 +19,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const resultRef = useRef(null);
     const [zoomFactor, setZoomFactor] = useState(2);
     const [isZooming, setIsZooming] = useState(false);
+    const [showIconMeaning, setShowIconMeaning] = useState(''); // Nuevo estado para mostrar significado del icono
 
     useEffect(() => {
         const fetchRelatedProducts = async () => {
@@ -65,12 +66,15 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url',
                     imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : 'default_baja_image_url'
                 });
+
                 setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url');
             } catch (error) {
                 console.error('Error fetching images:', error);
             }
         };
+
         fetchImages();
+
     }, [product.codprodu]);
 
     const handleMapClick = () => {
@@ -98,28 +102,22 @@ const Modal = ({ isOpen, close, product, alt }) => {
         const result = resultRef.current;
         const img = e.target;
 
-        // Obtener el tamaño de la imagen y la posición del ratón
         const { left, top, width, height } = img.getBoundingClientRect();
         const x = e.clientX - left;
         const y = e.clientY - top;
 
-        // Calcular el tamaño de la lupa
         const lensWidth = lens.offsetWidth / 2;
         const lensHeight = lens.offsetHeight / 2;
 
-        // Limitar la posición de la lupa dentro de la imagen
         const posX = Math.max(0, Math.min(x - lensWidth, width - lens.offsetWidth));
         const posY = Math.max(0, Math.min(y - lensHeight, height - lens.offsetHeight));
 
-        // Mover la lupa
         lens.style.left = `${posX}px`;
         lens.style.top = `${posY}px`;
 
-        // Calcular la posición de la imagen ampliada para que coincida con la original
         const zoomX = (posX + lensWidth) * zoomFactor - result.offsetWidth / 2;
         const zoomY = (posY + lensHeight) * zoomFactor - result.offsetHeight / 2;
 
-        // Posicionar la imagen ampliada en la misma posición que la imagen original
         result.firstChild.style.left = `-${zoomX}px`;
         result.firstChild.style.top = `-${zoomY}px`;
     };
@@ -128,7 +126,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
         if (lensRef.current && resultRef.current) {
             lensRef.current.style.display = 'block';
             resultRef.current.style.display = 'block';
-            setIsZooming(true);  // Mostrar imagen ampliada
+            setIsZooming(true);
         }
     };
 
@@ -136,7 +134,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
         if (lensRef.current && resultRef.current) {
             lensRef.current.style.display = 'none';
             resultRef.current.style.display = 'none';
-            setIsZooming(false);  // Volver a la imagen original
+            setIsZooming(false);
         }
     };
 
@@ -182,18 +180,14 @@ const Modal = ({ isOpen, close, product, alt }) => {
         "EASYCLEAN": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',
         "USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Usar%20secadora.jpg',
         "SECADO VERTICAL": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Secado%20vertical.jpg',
-
     };
 
     const parseMantenimientoXML = (mantenimientoXML) => {
-        // Crear un parser para el XML
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(mantenimientoXML, "text/xml");
 
-        // Extraer todos los valores de <Valor>
         const valores = xmlDoc.getElementsByTagName("Valor");
 
-        // Convertir la colección de nodos en un array de valores
         const mantenimientoList = Array.from(valores).map(node => node.textContent.trim());
 
         return mantenimientoList;
@@ -202,10 +196,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const getMantenimientoImages = (mantenimiento) => {
         if (!mantenimiento) return "?";
 
-        // Parsear el XML para obtener la lista de mantenimientos
         const mantenimientoList = parseMantenimientoXML(mantenimiento);
 
-        // Filtrar y mapear a las imágenes correspondientes
         return mantenimientoList
             .filter(mantenimiento => mantenimientoImages[mantenimiento])
             .map((mantenimiento, index) => (
@@ -213,7 +205,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     key={index}
                     src={mantenimientoImages[mantenimiento]}
                     alt={mantenimiento}
-                    className="w-6 h-6 mx-1"
+                    className="w-6 h-6 mx-1 cursor-pointer"
+                    title={`Click para ver el significado de ${mantenimiento}`} // Agregar tooltip
+                    onClick={() => setShowIconMeaning(mantenimiento)} // Al hacer clic, mostrar el significado
                 />
             ));
     };
@@ -238,7 +232,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 key={index}
                 src={`${usoImages[uso]}`}
                 alt={uso}
-                className="w-6 h-6 mx-1"
+                className="w-6 h-6 mx-1 cursor-pointer"
+                title={`Click para ver el significado de ${uso}`} // Agregar tooltip
+                onClick={() => setShowIconMeaning(uso)} // Al hacer clic, mostrar el significado
             />
         ));
     };
@@ -323,9 +319,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             <img
                                 src={selectedImage}
                                 style={{
-                                    width: '100%',  // Restablecer el tamaño original
-                                    height: '100%',  // Restablecer el tamaño original
-                                    objectFit: 'cover',  // Mantiene las proporciones como en la segunda imagen
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
                                 }}
                                 alt={alt}
                                 className="w-full h-full object-contain rounded-md"
@@ -337,22 +333,19 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             />
                             {imageLoaded && (
                                 <>
-                                    {/* Lupa dinámica */}
                                     <div
                                         ref={lensRef}
                                         className="absolute hidden w-20 h-15 border border-gray-300 opacity-50 bg-transparent mx-11 pointer-events-none"
                                         style={{ borderRadius: '50%', transition: 'ease' }}
                                     ></div>
 
-                                    {/* Imagen ampliada */}
                                     <div
                                         ref={resultRef}
                                         className="absolute hidden top-0 left-0 pointer-events-none rounded-lg overflow-hidden"
                                         style={{
-                                            width: '200%', // Haz que el contenedor sea el doble del tamaño original
+                                            width: '200%',
                                             height: '200%',
                                             borderRadius: '10px'
-                                            // filter: 'saturate(1.4) brightness(1.2)' // Ajusta el tamaño para que sea mayor que el original
                                         }}
                                     >
                                         <img
@@ -360,8 +353,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                             alt={alt}
                                             className="absolute rounded-md"
                                             style={{
-                                                width: `${zoomFactor * 100}%`,  // Doble del tamaño original
-                                                height: `${zoomFactor * 100}%`, // Doble del tamaño original
+                                                width: `${zoomFactor * 100}%`,
+                                                height: `${zoomFactor * 100}%`,
                                                 objectFit: 'cover',
                                                 transition: 'ease',
                                                 transform: ''
@@ -416,7 +409,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             <div className="justify-start xl:p-2 lg:p-2 md:p-2 md:text-sm text-sm lg:text-md  text-center md:text-start w-full">
                                 <h1 className="font-bold text-black mx-auto text-center mb-4 mt-[2rem] md:mt-[0rem] ">Ficha Técnica</h1>
                                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
-                                    <div className=" "> 
+                                    <div className=" ">
                                         <div className="grid grid-cols-2 md:justify-start md:text-start  md:text-sm text-sm lg:text-md mb-2">
                                             <p>Marca:</p>
                                             <p>{selectedProduct.codmarca}</p>
@@ -498,6 +491,14 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         </div>
 
                     </div>
+                    {/* Mostrar el significado del icono seleccionado */}
+                    {showIconMeaning && (
+                        <div className="fixed bottom-10 left-10 bg-white p-4 rounded-md shadow-md">
+                            <h3 className="text-lg font-bold">Significado del Icono</h3>
+                            <p>{showIconMeaning}</p>
+                            <button className="text-blue-500 mt-2" onClick={() => setShowIconMeaning('')}>Cerrar</button>
+                        </div>
+                    )}
                 </div>
                 {modalMapaOpen && (
                     <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />

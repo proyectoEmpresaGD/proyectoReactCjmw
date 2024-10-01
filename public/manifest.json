@@ -1,19 +1,19 @@
 {
     "short_name": "CJMW APP",
-    "name": "CJMW WORLDWIDE",
+    "name": "CJMW Group",
     "icons": [
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png",
             "sizes": "64x64 32x32 24x24 16x16",
             "type": "image/x-icon"
         },
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png",
             "type": "image/svg",
             "sizes": "192x192"
         },
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png",
             "type": "image/png",
             "sizes": "512x512"
         }
