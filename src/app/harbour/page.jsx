@@ -15,11 +15,11 @@ function shuffleArray(array) {
 }
 
 const images = [
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ARISTOS%20MARINE%20CARRUSEL.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1_5_11zon_4_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ARISTOS%20MARINE%20CARRUSEL_2_11zon_1_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO_3_11zon_2_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR_4_11zon_3_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN_6_11zon_5_11zon.webp",
     
 ]
 
