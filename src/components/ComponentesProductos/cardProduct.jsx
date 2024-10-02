@@ -76,7 +76,8 @@ const CardProduct = () => {
             let response;
             let filterParams = {};
 
-            if (searchQuery) {
+            if (searchQuery && !filters) {
+                // Petición de búsqueda, si no hay filtros aplicados
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`
                 );
@@ -143,6 +144,8 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (filters) {
+                // Si hay filtros activos, desactivar la búsqueda y aplicar los filtros
+                setIsSearching(false); // Desactivamos la búsqueda
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
@@ -152,8 +155,8 @@ const CardProduct = () => {
                     }
                 );
                 setIsFiltered(true);
-                setIsSearching(false);
             } else {
+                // Obtener todos los productos si no hay búsqueda ni filtros
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`
                 );
@@ -214,7 +217,7 @@ const CardProduct = () => {
         setProducts(filteredProducts);
         setFilters(selectedFilters);
         setIsFiltered(true);
-        setIsSearching(false);
+        setIsSearching(false); // Al aplicar un filtro, desactivamos la búsqueda
         setPage(1);
         setFilterCleared(false); // Restablecer bandera al aplicar filtros
     };

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 
 const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
-    // Definición de las categorías del submenú con ajuste dinámico según tipo
-    const categories = [
+    // Definición de las categorías originales del submenú (valores de filtro)
+    const originalCategories = [
         "TELAS CON FLORES",
         "LISO",
         "RAYAS",
@@ -14,6 +14,20 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
         ...(type !== 'tela' ? ["WALLPAPER", "WALLCOVERING"] : []),
     ];
 
+    // Definición de nombres personalizados para mostrar en el submenú
+    const customNames = [
+        "Flores",
+        "Lisos ",
+        "Rayas ",
+        "Visillos ",
+        "Geométricos",
+        "Terciopelo",
+        "Fr",
+        "OUTDOOR",
+        ...(type !== 'tela' ? ["WALLPAPER", "WALLCOVERING"] : []),
+    ];
+
+    // Estado de flechas y referencia del carrusel
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(false);
     const carouselRef = useRef(null);
@@ -33,11 +47,12 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
         updateArrowVisibility();
         window.addEventListener('resize', updateArrowVisibility);
         return () => window.removeEventListener('resize', updateArrowVisibility);
-    }, [categories.length]);
+    }, [customNames.length]);
 
-    // Función para manejar el clic en una categoría
-    const handleFilterClick = (category) => {
-        onFilterClick(category);
+    // Función para manejar el clic en una categoría personalizada
+    const handleFilterClick = (index) => {
+        const originalCategory = originalCategories[index]; // Obtener el nombre original
+        onFilterClick(originalCategory); // Filtrar usando el nombre original
     };
 
     // Avanza el carrusel suavemente
@@ -55,7 +70,7 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
     };
 
     return (
-        <div className="relative flex items-center justify-between w-full px-11 max-w-screen-md mx-auto overflow-hidden py-6 p">
+        <div className="relative flex items-center justify-between w-full px-11 max-w-screen-md mx-auto overflow-hidden py-6">
             {/* Flecha Izquierda */}
             {showLeftArrow && (
                 <button
@@ -73,15 +88,15 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
                 className="flex overflow-x-scroll scrollbar-hide space-x-2 items-center"
                 onScroll={updateArrowVisibility}
             >
-                {categories.map((category, index) => (
+                {customNames.map((customName, index) => (
                     <button
                         key={index}
-                        onClick={() => handleFilterClick(category)}
+                        onClick={() => handleFilterClick(index)} // Filtrar usando el índice
                         className={`px-5 py-2 text-md font-semibold transition-all duration-300 whitespace-nowrap rounded-md 
-                            ${activeCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-blue-100'}`}
-                        aria-label={`Filtrar por ${category}`}
+                            ${activeCategory === originalCategories[index] ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-blue-100'}`}
+                        aria-label={`Filtrar por ${customName}`}
                     >
-                        {category}
+                        {customName} {/* Mostrar el nombre personalizado */}
                     </button>
                 ))}
             </div>

@@ -10,9 +10,9 @@ export const createImagenRouter = () => {
     imagenRouter.post('/', imagenController.create.bind(imagenController));
 
     // Rutas para operaciones específicas de una imagen
-    imagenRouter.get('/:codprodu/:codclaarchivo', imagenController.getByCodproduAndCodclaarchivo.bind(imagenController));
+    imagenRouter.get('/:codprodu/:codclaarchivo', imagenController.getById.bind(imagenController));
     imagenRouter.patch('/:codprodu/:codclaarchivo', imagenController.update.bind(imagenController));
     imagenRouter.delete('/:codprodu/:codclaarchivo', imagenController.delete.bind(imagenController));
 
     return imagenRouter;
-}
+};

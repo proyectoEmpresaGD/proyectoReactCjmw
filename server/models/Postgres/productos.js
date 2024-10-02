@@ -1,7 +1,11 @@
+import NodeCache from 'node-cache';
 import pg from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+// Inicializa NodeCache con un TTL (tiempo de vida en segundos)
+const cache = new NodeCache({ stdTTL: 3600 });
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -9,7 +13,15 @@ const pool = new pg.Pool({
 });
 
 export class ProductModel {
+  // Obtener todos los productos con caché en NodeCache
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
+    const cacheKey = `products:${CodFamil || 'all'}:${CodSubFamil || 'all'}:${offset}:${requiredLimit}`;
+    const cachedProducts = cache.get(cacheKey);
+
+    if (cachedProducts) {
+      return cachedProducts;
+    }
+
     let accumulatedProducts = [];
     let excludedNames = [];
 
@@ -62,6 +74,7 @@ export class ProductModel {
         offset += uniqueRows.length;
       }
 
+      cache.set(cacheKey, accumulatedProducts.slice(0, requiredLimit));
       return accumulatedProducts.slice(0, requiredLimit);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -69,59 +82,106 @@ export class ProductModel {
     }
   }
 
+  // Obtener un producto por ID con caché en NodeCache
   static async getById({ id }) {
-    const { rows } = await pool.query('SELECT * FROM productos WHERE "codprodu" = $1;', [id]);
-    return rows.length > 0 ? rows[0] : null;
+    const cacheKey = `product:${id}`;
+
+    const cachedProduct = cache.get(cacheKey);
+    if (cachedProduct) {
+      return cachedProduct;
+    }
+
+    try {
+      const { rows } = await pool.query('SELECT * FROM productos WHERE "codprodu" = $1;', [id]);
+      if (rows.length > 0) {
+        cache.set(cacheKey, rows[0]);
+        return rows[0];
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching product by ID:', error);
+      throw new Error('Error fetching product by ID');
+    }
   }
 
+  // Crear un nuevo producto e invalidar la caché
   static async create({ input }) {
     const { CodProdu, DesProdu, CodFamil, Comentario, UrlImagen } = input;
 
-    const { rows } = await pool.query(
-      `INSERT INTO productos ("codprodu", "desprodu", "codfamil", "comentario", "urlimagen")
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;`,
-      [CodProdu, DesProdu, CodFamil, Comentario, UrlImagen]
-    );
+    try {
+      const { rows } = await pool.query(
+        `INSERT INTO productos ("codprodu", "desprodu", "codfamil", "comentario", "urlimagen")
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *;`,
+        [CodProdu, DesProdu, CodFamil, Comentario, UrlImagen]
+      );
 
-    return rows[0];
+      cache.flushAll();
+      return rows[0];
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw new Error('Error creating product');
+    }
   }
 
+  // Actualizar un producto e invalidar la caché
   static async update({ id, input }) {
     const fields = Object.keys(input).map((key, index) => `"${key}" = $${index + 2}`).join(", ");
     const values = Object.values(input);
 
-    const { rows } = await pool.query(
-      `UPDATE productos SET ${fields} WHERE "codprodu" = $1 RETURNING *;`,
-      [id, ...values]
-    );
+    try {
+      const { rows } = await pool.query(
+        `UPDATE productos SET ${fields} WHERE "codprodu" = $1 RETURNING *;`,
+        [id, ...values]
+      );
 
-    return rows[0];
+      cache.del(`product:${id}`);
+      cache.flushAll();
+      return rows[0];
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw new Error('Error updating product');
+    }
   }
 
+  // Eliminar un producto e invalidar la caché
   static async delete({ id }) {
-    const { rows } = await pool.query('DELETE FROM productos WHERE "codprodu" = $1 RETURNING *;', [id]);
-    return rows[0];
+    try {
+      const { rows } = await pool.query('DELETE FROM productos WHERE "codprodu" = $1 RETURNING *;', [id]);
+
+      cache.del(`product:${id}`);
+      cache.flushAll();
+      return rows[0];
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw new Error('Error deleting product');
+    }
   }
 
+  // Buscar productos con caché en NodeCache
   static async search({ query, limit = 10, offset = 0 }) {
+    const cacheKey = `search:${query}:${offset}:${limit}`;
+
+    const cachedSearchResults = cache.get(cacheKey);
+    if (cachedSearchResults) {
+      return cachedSearchResults;
+    }
+
     const searchQuery = `
       SELECT DISTINCT ON ("nombre") *
       FROM productos
       WHERE "nombre" ILIKE $1
         AND "nombre" IS NOT NULL 
         AND "nombre" != '' 
-        AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)')
-        AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
-        AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
       ORDER BY "nombre", "codprodu"
       LIMIT $2 OFFSET $3;
     `;
-    const offsetValue = offset || 0;
     const searchString = `%${query}%`;
 
     try {
-      const { rows } = await pool.query(searchQuery, [searchString, limit, offsetValue]);
+      const { rows } = await pool.query(searchQuery, [searchString, limit, offset]);
+      cache.set(cacheKey, { products: rows, total: rows.length });
       return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error searching products:', error);
@@ -129,17 +189,34 @@ export class ProductModel {
     }
   }
 
+  // Obtener productos por familia
   static async getByCodFamil(codfamil) {
+    const cacheKey = `products:family:${codfamil}`;
+
+    const cachedProducts = cache.get(cacheKey);
+    if (cachedProducts) {
+      return cachedProducts;
+    }
+
     try {
       const { rows } = await pool.query('SELECT * FROM productos WHERE "codfamil" = $1;', [codfamil]);
+      cache.set(cacheKey, rows);
       return rows;
     } catch (error) {
-      console.error('Error fetching products by codfamil:', error);
-      throw new Error('Error fetching products by codfamil');
+      console.error('Error fetching products by family:', error);
+      throw new Error('Error fetching products by family');
     }
   }
 
+  // Obtener filtros con caché en NodeCache
   static async getFilters() {
+    const cacheKey = 'filters';
+
+    const cachedFilters = cache.get(cacheKey);
+    if (cachedFilters) {
+      return cachedFilters;
+    }
+
     try {
       const { rows: brands } = await pool.query('SELECT DISTINCT codmarca FROM productos');
       const { rows: collections } = await pool.query('SELECT DISTINCT coleccion, codmarca FROM productos');
@@ -149,23 +226,33 @@ export class ProductModel {
       const { rows: colors } = await pool.query('SELECT DISTINCT colorprincipal FROM productos');
       const { rows: tonalidades } = await pool.query('SELECT DISTINCT tonalidad FROM productos');
 
-      return {
+      const filters = {
         brands: brands.map(b => b.codmarca),
         collections: collections.map(c => c.coleccion),
         fabricTypes: fabricTypes.map(f => f.tipo),
         fabricPatterns: fabricPatterns.map(f => f.estilo),
         martindaleValues: martindaleValues.map(m => m.martindale),
         colors: colors.map(c => c.colorprincipal),
-        tonalidades: tonalidades.map(t => t.tonalidad)
+        tonalidades: tonalidades.map(t => t.tonalidad),
       };
+
+      cache.set(cacheKey, filters);
+      return filters;
     } catch (error) {
       console.error('Error fetching filters:', error);
       throw new Error('Error fetching filters');
     }
   }
 
-  // Filtro para productos basados en el tipo (ej. "PAPEL PARED")
+  // Filtro para productos por tipo con caché
   static async getByType({ type, limit = 16, offset = 0 }) {
+    const cacheKey = `products:type:${type}:${offset}:${limit}`;
+
+    const cachedProducts = cache.get(cacheKey);
+    if (cachedProducts) {
+      return cachedProducts;
+    }
+
     try {
       let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE 1=1';
       const params = [];
@@ -181,6 +268,7 @@ export class ProductModel {
       params.push(limit, offset);
 
       const { rows } = await pool.query(query, params);
+      cache.set(cacheKey, rows);
       return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error filtering products by type:', error);
@@ -188,17 +276,25 @@ export class ProductModel {
     }
   }
 
-
-  // Método para aplicar filtros a los productos
+  // Filtros de productos aplicados con caché
   static async filter(filters, limit = 16, offset = 0) {
+    console.log('Filters received:', filters); // Log para revisar qué está recibiendo el servidor
+    const cacheKey = `products:filter:${JSON.stringify(filters)}:${offset}:${limit}`;
+
+    const cachedProducts = cache.get(cacheKey);
+    if (cachedProducts) {
+      return cachedProducts;
+    }
+
     let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
     let params = [];
     let index = 1;
 
     // Aplicar filtro por marca si está presente
     if (filters.brand && filters.brand.length > 0) {
+      // Convertir el array en formato PostgreSQL (array literal) con llaves
       query += ` AND "codmarca" = ANY($${index++})`;
-      params.push(filters.brand);
+      params.push(`{${filters.brand.join(',')}}`);
     }
 
     // Aplicar filtro por colección si está presente
@@ -209,21 +305,23 @@ export class ProductModel {
 
     // Aplicar filtro por color si está presente
     if (filters.color && filters.color.length > 0) {
+      // Convertir el array en formato PostgreSQL (array literal) con llaves
       query += ` AND "colorprincipal" = ANY($${index++})`;
-      params.push(filters.color);
+      params.push(`{${filters.color.join(',')}}`);
     }
 
     // Aplicar filtro por tipo de tela si está presente
     if (filters.fabricType && filters.fabricType.length > 0) {
+      // Convertir el array en formato PostgreSQL (array literal) con llaves
       query += ` AND "tipo" = ANY($${index++})`;
-      params.push(filters.fabricType);
+      params.push(`{${filters.fabricType.join(',')}}`);
     }
 
     // Aplicar filtro por estilo específico desde el submenú
     if (filters.fabricPattern && filters.fabricPattern.length > 0) {
-      // Filtros específicos por estilo: TELAS CON FLORES, WALLPAPER, WALLCOVERING, etc.
+      // Convertir el array en formato PostgreSQL (array literal) con llaves
       query += ` AND "estilo" = ANY($${index++})`;
-      params.push(filters.fabricPattern);
+      params.push(`{${filters.fabricPattern.join(',')}}`);
     }
 
     // Aplicar filtro por uso si está presente (Outdoor, FR)
@@ -242,8 +340,9 @@ export class ProductModel {
 
     // Aplicar filtro por martindale si está presente
     if (filters.martindale && filters.martindale.length > 0) {
+      // Convertir el array en formato PostgreSQL (array literal) con llaves
       query += ` AND "martindale" = ANY($${index++})`;
-      params.push(filters.martindale);
+      params.push(`{${filters.martindale.join(',')}}`);
     }
 
     query += ` LIMIT $${index++} OFFSET $${index}`;
@@ -251,6 +350,7 @@ export class ProductModel {
 
     try {
       const { rows } = await pool.query(query, params);
+      cache.set(cacheKey, rows);
       return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error filtering products:', error);
@@ -258,23 +358,36 @@ export class ProductModel {
     }
   }
 
-
   static async getCollectionsByBrand(brand) {
+    const cacheKey = `collections:brand:${brand}`;
+
+    // Intentar obtener los datos desde la caché
+    const cachedCollections = cache.get(cacheKey);
+    if (cachedCollections) {
+      return cachedCollections;
+    }
+
     try {
       const query = `
-        SELECT DISTINCT UPPER(coleccion) AS coleccion
-        FROM productos
-        WHERE codmarca = $1
-        AND nombre IS NOT NULL
-      `;
+            SELECT DISTINCT UPPER(coleccion) AS coleccion
+            FROM productos
+            WHERE codmarca = $1
+            AND nombre IS NOT NULL
+        `;
 
       const { rows } = await pool.query(query, [brand]);
 
-      // Asegúrate de devolver solo los nombres de las colecciones
-      return rows.map(row => row.coleccion);
+      const collections = rows.map(row => row.coleccion);
+
+      // Guardar en la caché
+      cache.set(cacheKey, collections);
+
+      return collections;
     } catch (error) {
       console.error('Error fetching collections by brand:', error);
       throw new Error('Error fetching collections by brand');
     }
   }
+
+
 }

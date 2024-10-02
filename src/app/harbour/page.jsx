@@ -15,18 +15,18 @@ function shuffleArray(array) {
 }
 
 const images = [
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ARISTOS%20MARINE%20CARRUSEL.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN.jpg",
-    
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HarbourCarrusel1_5_11zon_4_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ARISTOS%20MARINE%20CARRUSEL_2_11zon_1_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO_3_11zon_2_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR_4_11zon_3_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN_6_11zon_5_11zon.webp",
+
 ]
 
 const imagesCollection = [
-    "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20BOLONIA.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20TANGERINE.jpg",
+    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202_1_11zon_4_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20BOLONIA_9_11zon_1_11zon.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20TANGERINE_1_11zon.webp",
 ]
 
 
@@ -57,7 +57,7 @@ function HarbourHome() {
                         <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
-                <NewCollection images={imagesCollection} titles={titles} productCodes={CodProduHar}/>
+                <NewCollection images={imagesCollection} titles={titles} productCodes={CodProduHar} />
                 <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>

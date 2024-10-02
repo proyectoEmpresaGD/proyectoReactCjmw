@@ -16,17 +16,17 @@ function CjmHome() {
     }
 
     const images = [
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/VERANDA%20EVERGREEN.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/ROKKI%20PUMICE.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/FIYI%20ALUMINIUM.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/BOTANICAL%20KOMORI%20MAGNESIUM.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/TOKIO%20Y%20SHIBULLA_4_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/VERANDA%20EVERGREEN_5_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/ROKKI%20PUMICE_3_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/FIYI%20ALUMINIUM_2_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/BOTANICAL%20KOMORI%20MAGNESIUM_1_11zon.webp",
     ]
 
     const imagesNewCollections = [
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/COLONY/TONGA%20PUMICE.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/SET%20OF%20THREADS/ASIAN%20ROMANTICISM%20EVERGREEN%20(EDITAR).jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/CJM%20AMBIENTE/ROAD%20TO%20ASIA/BOTANICAL%20KOMORI%20ROYAL%20BLUE%2004.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/COLONY/TONGA%20PUMICE_10_11zon_13_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SET%20OF%20THREADS/ASIAN%20ROMANTICISM%20EVERGREEN%20(EDITAR)_9_11zon_2_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/ROAD%20TO%20ASIA/BOTANICAL%20KOMORI%20ROYAL%20BLUE%2004_9_11zon_6_11zon.webp",
     ]
 
     const titles = [
