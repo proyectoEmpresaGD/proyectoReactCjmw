@@ -17,6 +17,7 @@ export const Header = () => {
 
     const { itemCount } = useCart();
 
+
     const [showCart, setShowCart] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
