@@ -14,6 +14,7 @@ import 'tailwindcss/tailwind.css';
 export const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
+
     const { itemCount } = useCart();
 
     const [showCart, setShowCart] = useState(false);
