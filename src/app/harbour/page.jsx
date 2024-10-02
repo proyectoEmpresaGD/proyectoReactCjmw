@@ -20,7 +20,6 @@ const images = [
     "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20INDIGO_3_11zon_2_11zon.webp",
     "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/DESERT%20GATE%20NOIR_4_11zon_3_11zon.webp",
     "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/ROOTS%20PORCELAIN_6_11zon_5_11zon.webp",
-
 ]
 
 const imagesCollection = [
