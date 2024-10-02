@@ -30,6 +30,7 @@ function FlamencoHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/FLAMENCO/GENESIS%20DAMSON%20%20(2)_6_11zon_4_11zon.webp",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/FLAMENCO/TULUM%20C01%20(2)_9_11zon_7_11zon.webp",
     ]
+
     const titles = [
         "KUKULKAN",
         "PUMMERIN",
@@ -51,9 +52,9 @@ function FlamencoHome() {
                     <div className=" flex items-center justify-center h-full pt-3">
                         <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
-                
-                <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduFla} />
-                <ColeccionesMarcas marca={marca} />
+
+                    <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduFla} />
+                    <ColeccionesMarcas marca={marca} />
                 </body>
                 <Footer />
             </CartProvider>
