@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import { CartProvider } from '../CartContext';
 import CarruselColecciones from '../ComponentesBrands/CarruselColecciones';
+
 const imageSet = {
   'ARE': [
     [
