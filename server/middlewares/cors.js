@@ -12,20 +12,19 @@ const ACCEPTED_ORIGINS = [
   'https://cjmw.eu',
   'https://www.cjmw.eu',
   'https://bassari.eu',
-  'https://www.bassari.eu' // Añadido para aceptar con y sin www
+  'https://www.bassari.eu'
 ];
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
   origin: (origin, callback) => {
-    if (acceptedOrigins.includes(origin)) {
+    if (!origin || acceptedOrigins.includes(origin)) {
       return callback(null, true);
     }
-
-    // Permitir solicitudes si origin es null o undefined (como en solicitudes locales)
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    return callback(new Error('Not allowed by CORS'));
-  }
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,  // Permitir cookies si es necesario
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Permitir estos encabezados
+  preflightContinue: false, // Detener el manejo preflight aquí
+  optionsSuccessStatus: 204, // Estado de respuesta exitoso para solicitudes preflight
 });
