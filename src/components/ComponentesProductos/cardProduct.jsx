@@ -162,6 +162,7 @@ const CardProduct = () => {
                 );
                 setIsFiltered(false);
                 setIsSearching(false);
+                setClearButtonVisible(false); // Ocultar el botón cuando se muestran todos los productos
             }
 
             if (!response.ok) {

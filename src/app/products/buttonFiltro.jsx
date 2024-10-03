@@ -8,11 +8,13 @@ function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
     const [filters, setFilters] = useState({ brands: [], colors: [], collections: [], fabricTypes: [], fabricPatterns: [] });
     const itemsPerPage = 16;
 
+    // Aplicar filtros y obtener los productos filtrados
     const applyFilters = (selectedFilters) => {
         setFilters(selectedFilters);
         fetchFilteredProducts(selectedFilters, page);
     };
 
+    // Fetch de los productos filtrados desde el backend
     const fetchFilteredProducts = async (filters, pageNumber = 1) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
@@ -31,6 +33,7 @@ function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
                 throw new Error('Invalid data format: Expected an array of products');
             }
 
+            // Obtener imágenes de cada producto
             const productsWithImages = await Promise.all(
                 data.products.map(async (product) => {
                     const [imageBuena, imageBaja] = await Promise.all([
@@ -54,7 +57,7 @@ function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
 
     return (
         <>
-            {/* Botón flotante en la parte inferior izquierda */}
+            {/* Botón flotante para abrir el modal de filtros */}
             <div className="fixed bottom-5 left-5 z-20">
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -83,6 +86,7 @@ function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
                 isOpen={isModalOpen}
                 close={() => setIsModalOpen(false)}
                 applyFilters={applyFilters}
+                currentFilters={filters} // Pasar filtros actuales al modal
                 clearFiltersCallback={clearFiltersCallback} // Pasamos la función de limpiar filtros
             />
         </>

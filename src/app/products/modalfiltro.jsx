@@ -90,7 +90,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                 <h2 className="text-center text-2xl font-bold">FILTROS</h2>
                 <div className="flex justify-end">
                     <button className="relative overflow-hidden m-4" onClick={close}>
-                        <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200 justify-end' />
+                        <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200 justify-end' alt="Cerrar" />
                     </button>
                 </div>
                 <div className='grid xl:grid-cols-4 md:grid-cols-2 gap-3 gap-y-6'>

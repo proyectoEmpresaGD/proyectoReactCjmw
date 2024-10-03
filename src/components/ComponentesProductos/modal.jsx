@@ -306,7 +306,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5% pb-32">
-                <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] md:h-auto overflow-auto shadow-lg relative max-h-[95vh] mt-[50%] md:mt-[15%] lg:[15%] 2xl:mt-[15]">
+                <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[80vh] 2xl:h-[80vh]  md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[50%] md:mt-[15%] lg:[15%] 2xl:mt-[15%]">
                     <div className="flex justify-center absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />

@@ -14,9 +14,7 @@ import 'tailwindcss/tailwind.css';
 export const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
-
     const { itemCount } = useCart();
-
 
     const [showCart, setShowCart] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
@@ -59,10 +57,8 @@ export const Header = () => {
         '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOBASSARI_01.png',
     };
 
-    // Default corporate logo
     const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png';
 
-    // Determine current logo based on location
     const logoSrc = brandLogos[location.pathname] || defaultLogo;
 
     const closeAllDropdowns = () => {
@@ -141,7 +137,11 @@ export const Header = () => {
 
         if (query.length >= 3) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${query}`);
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${query}`, {
+                    headers: {
+                        'Cache-Control': 's-maxage=3600, stale-while-revalidate',
+                    },
+                });
                 if (!response.ok) {
                     throw new Error('Error fetching suggestions');
                 }

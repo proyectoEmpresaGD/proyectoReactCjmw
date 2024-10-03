@@ -9,6 +9,7 @@ const pool = new pg.Pool({
 });
 
 export class ProductModel {
+
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
     let accumulatedProducts = [];
     let excludedNames = [];
@@ -69,12 +70,32 @@ export class ProductModel {
     }
   }
 
-  static async getById({ id }) {
+  // Obtener producto por ID
+  static async getById({ id, res }) {
+    const cacheKey = `product:${id}`;
+    if (res && res.cache) {
+      const cachedResponse = await res.cache.get(cacheKey);
+      if (cachedResponse) {
+        res.set('Cache-Control', 'public, max-age=3600');
+        return cachedResponse;
+      }
+    }
+
     const { rows } = await pool.query('SELECT * FROM productos WHERE "codprodu" = $1;', [id]);
-    return rows.length > 0 ? rows[0] : null;
+
+    if (rows.length > 0) {
+      if (res && res.cache) {
+        await res.cache.set(cacheKey, rows[0]);
+      }
+      res?.set('Cache-Control', 'public, max-age=3600');
+      return rows[0];
+    }
+
+    return null;
   }
 
-  static async create({ input }) {
+  // Crear producto
+  static async create({ input, res }) {
     const { CodProdu, DesProdu, CodFamil, Comentario, UrlImagen } = input;
 
     const { rows } = await pool.query(
@@ -84,10 +105,15 @@ export class ProductModel {
       [CodProdu, DesProdu, CodFamil, Comentario, UrlImagen]
     );
 
+    if (res && res.cache) {
+      await res.cache.flushAll(); // Invalidar caché si es necesario
+    }
+
     return rows[0];
   }
 
-  static async update({ id, input }) {
+  // Actualizar producto
+  static async update({ id, input, res }) {
     const fields = Object.keys(input).map((key, index) => `"${key}" = $${index + 2}`).join(", ");
     const values = Object.values(input);
 
@@ -96,32 +122,59 @@ export class ProductModel {
       [id, ...values]
     );
 
+    if (res && res.cache) {
+      await res.cache.del(`product:${id}`);
+      await res.cache.flushAll();
+    }
+
     return rows[0];
   }
 
-  static async delete({ id }) {
+  // Eliminar producto
+  static async delete({ id, res }) {
     const { rows } = await pool.query('DELETE FROM productos WHERE "codprodu" = $1 RETURNING *;', [id]);
+
+    if (res && res.cache) {
+      await res.cache.del(`product:${id}`);
+      await res.cache.flushAll();
+    }
+
     return rows[0];
   }
+  // Búsqueda de productos
+  static async search({ query, limit = 10, offset = 0, res }) {
+    const cacheKey = `search:${query}:${offset}:${limit}`;
+    if (res && res.cache) {
+      const cachedResponse = await res.cache.get(cacheKey);
+      if (cachedResponse) {
+        res.set('Cache-Control', 'public, max-age=3600');
+        return cachedResponse;
+      }
+    }
 
-  static async search({ query, limit = 10, offset = 0 }) {
     const searchQuery = `
-      SELECT DISTINCT ON ("nombre") *
-      FROM productos
-      WHERE "nombre" ILIKE $1
-        AND "nombre" IS NOT NULL 
-        AND "nombre" != '' 
-        AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)')
-        AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
-        AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
-      ORDER BY "nombre", "codprodu"
-      LIMIT $2 OFFSET $3;
-    `;
+        SELECT DISTINCT ON ("nombre") *
+        FROM productos
+        WHERE "nombre" ILIKE $1
+          AND "nombre" IS NOT NULL 
+          AND "nombre" != '' 
+          AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)')
+          AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
+          AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
+        ORDER BY "nombre", "codprodu"
+        LIMIT $2 OFFSET $3;
+      `;
     const offsetValue = offset || 0;
     const searchString = `%${query}%`;
 
     try {
       const { rows } = await pool.query(searchQuery, [searchString, limit, offsetValue]);
+
+      if (res && res.cache) {
+        await res.cache.set(cacheKey, { products: rows, total: rows.length });
+        res.set('Cache-Control', 'public, max-age=3600');
+      }
+
       return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error searching products:', error);
@@ -129,9 +182,26 @@ export class ProductModel {
     }
   }
 
-  static async getByCodFamil(codfamil) {
+  static async getByCodFamil(codfamil, res) {
+    const cacheKey = `products:family:${codfamil}`;
+
+    // Asegurarse de que res.cache exista antes de acceder a él
+    if (res?.cache) {
+      const cachedResponse = await res.cache.get(cacheKey);
+      if (cachedResponse) {
+        res.set('Cache-Control', 'public, max-age=3600');
+        return cachedResponse;
+      }
+    }
+
     try {
       const { rows } = await pool.query('SELECT * FROM productos WHERE "codfamil" = $1;', [codfamil]);
+
+      if (res?.cache) {
+        await res.cache.set(cacheKey, rows);
+        res.set('Cache-Control', 'public, max-age=3600');
+      }
+
       return rows;
     } catch (error) {
       console.error('Error fetching products by codfamil:', error);
@@ -139,6 +209,8 @@ export class ProductModel {
     }
   }
 
+
+  // Obtener filtros de productos
   static async getFilters() {
     try {
       const { rows: brands } = await pool.query('SELECT DISTINCT codmarca FROM productos');
@@ -164,8 +236,16 @@ export class ProductModel {
     }
   }
 
-  // Filtro para productos basados en el tipo (ej. "PAPEL PARED")
-  static async getByType({ type, limit = 16, offset = 0 }) {
+  // Filtro por tipo de producto
+  static async getByType({ type, limit = 16, offset = 0, res }) {
+    const cacheKey = `products:type:${type}:${offset}:${limit}`;
+    const cachedResponse = await res?.cache.get(cacheKey);
+
+    if (cachedResponse) {
+      res.set('Cache-Control', 'public, max-age=3600');
+      return cachedResponse;
+    }
+
     try {
       let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE 1=1';
       const params = [];
@@ -181,6 +261,8 @@ export class ProductModel {
       params.push(limit, offset);
 
       const { rows } = await pool.query(query, params);
+      await res?.cache.set(cacheKey, rows);
+      res.set('Cache-Control', 'public, max-age=3600');
       return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error filtering products by type:', error);
@@ -188,45 +270,46 @@ export class ProductModel {
     }
   }
 
+  // Aplicar filtros a productos
+  static async filter(filters, limit = 16, offset = 0, res) {
+    const cacheKey = `products:filter:${JSON.stringify(filters)}:${offset}:${limit}`;
+    if (res && res.cache) {
+      const cachedResponse = await res.cache.get(cacheKey);
+      if (cachedResponse) {
+        res.set('Cache-Control', 'public, max-age=3600');
+        return cachedResponse;
+      }
+    }
 
-  // Método para aplicar filtros a los productos
-  static async filter(filters, limit = 16, offset = 0) {
     let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
     let params = [];
     let index = 1;
 
-    // Aplicar filtro por marca si está presente
     if (filters.brand && filters.brand.length > 0) {
       query += ` AND "codmarca" = ANY($${index++})`;
       params.push(filters.brand);
     }
 
-    // Aplicar filtro por colección si está presente
     if (filters.collection && filters.collection.length > 0) {
       query += ` AND "coleccion" ILIKE $${index++}`;
       params.push(`%${filters.collection}%`);
     }
 
-    // Aplicar filtro por color si está presente
     if (filters.color && filters.color.length > 0) {
       query += ` AND "colorprincipal" = ANY($${index++})`;
       params.push(filters.color);
     }
 
-    // Aplicar filtro por tipo de tela si está presente
     if (filters.fabricType && filters.fabricType.length > 0) {
       query += ` AND "tipo" = ANY($${index++})`;
       params.push(filters.fabricType);
     }
 
-    // Aplicar filtro por estilo específico desde el submenú
     if (filters.fabricPattern && filters.fabricPattern.length > 0) {
-      // Filtros específicos por estilo: TELAS CON FLORES, WALLPAPER, WALLCOVERING, etc.
       query += ` AND "estilo" = ANY($${index++})`;
       params.push(filters.fabricPattern);
     }
 
-    // Aplicar filtro por uso si está presente (Outdoor, FR)
     if (filters.uso && filters.uso.length > 0) {
       let usoConditions = [];
       if (filters.uso.includes('FR')) {
@@ -240,7 +323,6 @@ export class ProductModel {
       }
     }
 
-    // Aplicar filtro por martindale si está presente
     if (filters.martindale && filters.martindale.length > 0) {
       query += ` AND "martindale" = ANY($${index++})`;
       params.push(filters.martindale);
@@ -251,6 +333,12 @@ export class ProductModel {
 
     try {
       const { rows } = await pool.query(query, params);
+
+      if (res && res.cache) {
+        await res.cache.set(cacheKey, rows);
+        res.set('Cache-Control', 'public, max-age=3600');
+      }
+
       return { products: rows, total: rows.length };
     } catch (error) {
       console.error('Error filtering products:', error);
@@ -258,7 +346,7 @@ export class ProductModel {
     }
   }
 
-
+  // Obtener colecciones por marca
   static async getCollectionsByBrand(brand) {
     try {
       const query = `
@@ -269,12 +357,13 @@ export class ProductModel {
       `;
 
       const { rows } = await pool.query(query, [brand]);
+      const collections = rows.map(row => row.coleccion);
 
-      // Asegúrate de devolver solo los nombres de las colecciones
-      return rows.map(row => row.coleccion);
+      return collections;
     } catch (error) {
       console.error('Error fetching collections by brand:', error);
       throw new Error('Error fetching collections by brand');
     }
   }
+
 }

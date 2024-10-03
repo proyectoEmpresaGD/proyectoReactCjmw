@@ -311,6 +311,10 @@ function ColeccionesMarcas({ marca }) {
     fetchCollectionsByBrand();
   }, [marca]);
 
+  const handleCollectionClick = (coleccion) => {
+    navigate(`/products?collection=${coleccion}`);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -322,10 +326,6 @@ function ColeccionesMarcas({ marca }) {
   if (colecciones.length === 0) {
     return <div>No collections found for {marca}</div>;
   }
-
-  const handleCollectionClick = (coleccion) => {
-    navigate(`/products?collection=${coleccion}`);
-  };
 
   return (
     <CartProvider>
@@ -363,9 +363,6 @@ function ColeccionesMarcas({ marca }) {
           ))}
         </div>
       </div>
-
-
-
     </CartProvider>
   );
 }

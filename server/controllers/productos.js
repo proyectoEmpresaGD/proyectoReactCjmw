@@ -7,7 +7,12 @@ export class ProductController {
       const requiredLimit = parseInt(limit, 10) || 16; // Asegura que el límite por defecto sea 16
       const pageParsed = parseInt(page, 10) || 1;
       const offset = (pageParsed - 1) * requiredLimit;
+
+      // Obtenemos los productos
       const products = await ProductModel.getAll({ CodFamil, CodSubFamil, requiredLimit, offset });
+
+      // Cache-Control para cachear la respuesta en el edge de Vercel
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate'); // 1 hora de caché en edge
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -18,28 +23,40 @@ export class ProductController {
     try {
       const { brand } = req.query;
 
+      // Validación del parámetro 'brand'
       if (!brand || typeof brand !== 'string' || brand.trim() === '') {
-        return res.status(400).json({ message: 'A valid brand parameter is required' });
+        return res.status(400).json({ message: 'A valid brand parameter is required. Please provide a brand.' });
       }
 
-      const collections = await ProductModel.getCollectionsByBrand(brand);
+      // Obtener las colecciones del modelo
+      const collections = await ProductModel.getCollectionsByBrand(brand.trim());
 
+      // Si no se encuentran colecciones
       if (collections.length === 0) {
-        return res.status(404).json({ message: `No collections found for brand ${brand}` });
+        return res.status(404).json({ message: `No collections found for the brand '${brand}'` });
       }
 
+      // Configurar la caché y devolver las colecciones
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
       return res.json(collections);
+
     } catch (error) {
-      console.error('Error fetching collections by brand:', error);
-      return res.status(500).json({ error: 'Error fetching collections by brand', details: error.message });
+      // Manejo del error
+      console.error(`Error fetching collections for brand '${req.query.brand}':`, error);
+      return res.status(500).json({
+        error: 'Error fetching collections by brand',
+        details: error.message || 'Unknown error',
+      });
     }
   }
+
 
   async getById(req, res) {
     try {
       const { id } = req.params;
       const product = await ProductModel.getById({ id });
       if (product) {
+        res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
         res.json(product);
       } else {
         res.status(404).json({ message: 'Product not found' });
@@ -52,6 +69,9 @@ export class ProductController {
   async create(req, res) {
     try {
       const newProduct = await ProductModel.create({ input: req.body });
+
+      // Invalidar caché al crear un producto
+      res.set('Cache-Control', 'no-store'); // Evitar caché
       res.status(201).json(newProduct);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -63,6 +83,8 @@ export class ProductController {
       const { id } = req.params;
       const updatedProduct = await ProductModel.update({ id, input: req.body });
       if (updatedProduct) {
+        // Invalidar caché al actualizar un producto
+        res.set('Cache-Control', 'no-store'); // Evitar caché
         res.json(updatedProduct);
       } else {
         res.status(404).json({ message: 'Product not found' });
@@ -77,6 +99,8 @@ export class ProductController {
       const { id } = req.params;
       const result = await ProductModel.delete({ id });
       if (result) {
+        // Invalidar caché al eliminar un producto
+        res.set('Cache-Control', 'no-store'); // Evitar caché
         res.json({ message: 'Product deleted' });
       } else {
         res.status(404).json({ message: 'Product not found' });
@@ -86,7 +110,6 @@ export class ProductController {
     }
   }
 
-  // Controlador search en el backend
   async search(req, res) {
     try {
       const { query, limit, page } = req.query;
@@ -109,6 +132,7 @@ export class ProductController {
         return res.status(404).json({ message: 'No products found for the search query' });
       }
 
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
       res.json({
         products,
         pagination: {
@@ -127,6 +151,7 @@ export class ProductController {
     try {
       const { codfamil } = req.params;
       const products = await ProductModel.getByCodFamil(codfamil);
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -136,6 +161,7 @@ export class ProductController {
   async getFilters(req, res) {
     try {
       const filters = await ProductModel.getFilters();
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
       res.json(filters);
     } catch (error) {
       console.error('Error fetching filters:', error);
@@ -161,6 +187,7 @@ export class ProductController {
           ['ARE', 'FLA', 'CJM', 'HAR', 'BAS'].includes(product.codmarca)
       );
 
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
       res.json({
         products: validProducts,
         pagination: {
@@ -188,6 +215,7 @@ export class ProductController {
 
     try {
       const { products, total } = await ProductModel.getByType({ type, limit, offset });
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
       res.json({
         products,
         pagination: {
