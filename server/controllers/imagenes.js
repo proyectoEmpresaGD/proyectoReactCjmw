@@ -2,24 +2,34 @@ import { ImagenModel } from '../models/Postgres/imagenes.js';
 import { validateImagen, validatePartialImagen } from '../schemas/imagenes.js';
 
 export class ImagenController {
+    // Obtener todas las imágenes
     async getAll(req, res) {
         try {
             const { empresa, ejercicio, limit, page } = req.query;
             const limitParsed = parseInt(limit, 10) || 10;
             const pageParsed = parseInt(page, 10) || 1;
             const offset = (pageParsed - 1) * limitParsed;
-            const images = await ImagenModel.getAll({ empresa, ejercicio, limit: limitParsed, offset });
+            const images = await ImagenModel.getAll({ empresa, ejercicio, limit: limitParsed, offset, res });
+
+            // Verificación para agregar encabezado de cache-control
+            if (res && res.cache) {
+                res.set('Cache-Control', 'public, max-age=3600');
+            }
             res.json(images);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
+    // Obtener una imagen por ID
     async getById(req, res) {
         try {
             const { codprodu, codclaarchivo } = req.params;
-            const image = await ImagenModel.getById({ codprodu, codclaarchivo });
+            const image = await ImagenModel.getById({ codprodu, codclaarchivo, res });
             if (image) {
+                if (res && res.cache) {
+                    res.set('Cache-Control', 'public, max-age=3600');
+                }
                 res.json(image);
             } else {
                 res.status(404).json({ message: 'Image not found' });
@@ -29,11 +39,15 @@ export class ImagenController {
         }
     }
 
+    // Obtener una imagen por código de producto y clasificación de archivo
     async getByCodproduAndCodclaarchivo(req, res) {
         try {
             const { codprodu, codclaarchivo } = req.params;
-            const image = await ImagenModel.getByCodproduAndCodclaarchivo({ codprodu, codclaarchivo });
+            const image = await ImagenModel.getByCodproduAndCodclaarchivo({ codprodu, codclaarchivo, res });
             if (image) {
+                if (res && res.cache) {
+                    res.set('Cache-Control', 'public, max-age=3600');
+                }
                 res.json(image);
             } else {
                 res.status(404).json({ message: 'Image not found' });
@@ -43,19 +57,21 @@ export class ImagenController {
         }
     }
 
+    // Crear una nueva imagen
     async create(req, res) {
         try {
             const validationResult = validateImagen(req.body);
             if (!validationResult.success) {
                 return res.status(400).json({ error: validationResult.error.errors });
             }
-            const newImage = await ImagenModel.create({ input: req.body });
+            const newImage = await ImagenModel.create({ input: req.body, res });
             res.status(201).json(newImage);
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
     }
 
+    // Actualizar una imagen existente
     async update(req, res) {
         try {
             const { codprodu, codclaarchivo } = req.params;
@@ -63,7 +79,7 @@ export class ImagenController {
             if (!validationResult.success) {
                 return res.status(400).json({ error: validationResult.error.errors });
             }
-            const updatedImage = await ImagenModel.update({ codprodu, codclaarchivo, input: req.body });
+            const updatedImage = await ImagenModel.update({ codprodu, codclaarchivo, input: req.body, res });
             if (updatedImage) {
                 res.json(updatedImage);
             } else {
@@ -74,10 +90,11 @@ export class ImagenController {
         }
     }
 
+    // Eliminar una imagen
     async delete(req, res) {
         try {
             const { codprodu, codclaarchivo } = req.params;
-            const result = await ImagenModel.delete({ codprodu, codclaarchivo });
+            const result = await ImagenModel.delete({ codprodu, codclaarchivo, res });
             if (result) {
                 res.json({ message: 'Image deleted' });
             } else {

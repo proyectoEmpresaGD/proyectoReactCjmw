@@ -12,7 +12,7 @@ const ACCEPTED_ORIGINS = [
   'https://cjmw.eu',
   'https://www.cjmw.eu',
   'https://bassari.eu',
-  'https://www.bassari.eu' // Añadido para aceptar con y sin www
+  'https://www.bassari.eu', // Añadido para aceptar con y sin www
 ];
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
@@ -27,5 +27,5 @@ export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => c
     }
 
     return callback(new Error('Not allowed by CORS'));
-  }
+  },
 });

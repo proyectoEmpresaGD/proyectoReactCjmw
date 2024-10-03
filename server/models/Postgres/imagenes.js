@@ -9,7 +9,20 @@ const pool = new pg.Pool({
 });
 
 export class ImagenModel {
-    static async getAll({ empresa, ejercicio, limit = 10, offset = 0 }) {
+    // Obtener todas las imágenes
+    static async getAll({ empresa, ejercicio, limit = 10, offset = 0, res }) {
+        const cacheKey = `images:${empresa || 'all'}:${ejercicio || 'all'}:${limit}:${offset}`;
+        let cachedResponse;
+
+        // Verificación de la existencia de cache
+        if (res && res.cache) {
+            cachedResponse = await res.cache.get(cacheKey);
+            if (cachedResponse) {
+                res.set('Cache-Control', 'public, max-age=3600');
+                return cachedResponse;
+            }
+        }
+
         let query = 'SELECT * FROM imagenesocproductos';
         let params = [];
 
@@ -32,6 +45,13 @@ export class ImagenModel {
 
         try {
             const { rows } = await pool.query(query, params);
+
+            // Cachear solo si existe res.cache
+            if (res && res.cache) {
+                await res.cache.set(cacheKey, rows);
+                res.set('Cache-Control', 'public, max-age=3600');
+            }
+
             return rows;
         } catch (error) {
             console.error('Error fetching images:', error);
@@ -39,52 +59,139 @@ export class ImagenModel {
         }
     }
 
-    static async getById({ codprodu, codclaarchivo }) {
-        const { rows } = await pool.query('SELECT * FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2;', [codprodu, codclaarchivo]);
-        return rows.length > 0 ? rows[0] : null;
-    }
+    // Obtener una imagen por ID
+    static async getById({ codprodu, codclaarchivo, res }) {
+        const cacheKey = `image:${codprodu}:${codclaarchivo}`;
+        let cachedResponse;
 
-    static async getByCodproduAndCodclaarchivo({ codprodu, codclaarchivo }) {
+        // Verificación de la existencia de cache
+        if (res && res.cache) {
+            cachedResponse = await res.cache.get(cacheKey);
+            if (cachedResponse) {
+                res.set('Cache-Control', 'public, max-age=3600');
+                return cachedResponse;
+            }
+        }
+
         try {
             const { rows } = await pool.query(
                 'SELECT * FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2;',
                 [codprodu, codclaarchivo]
             );
-            return rows.length > 0 ? rows[0] : null;
+
+            if (rows.length > 0) {
+                if (res && res.cache) {
+                    await res.cache.set(cacheKey, rows[0]);
+                    res.set('Cache-Control', 'public, max-age=3600');
+                }
+                return rows[0];
+            }
+
+            return null;
         } catch (error) {
-            console.error('Error fetching image:', error);
-            throw new Error('Error fetching image');
+            console.error('Error fetching image by ID:', error);
+            throw new Error('Error fetching image by ID');
         }
     }
 
-    static async create({ input }) {
-        const { empresa, ejercicio, codprodu, linea, descripcion, codclaarchivo, ficadjunto, tipdocasociado, fecalta, ultfeccompra, ultfecventa, ultfecactprc } = input;
+    // Obtener una imagen por código de producto y clasificación de archivo
+    static async getByCodproduAndCodclaarchivo({ codprodu, codclaarchivo, res }) {
+        const cacheKey = `image:${codprodu}:${codclaarchivo}`;
+        let cachedResponse;
 
-        const { rows } = await pool.query(
-            `INSERT INTO imagenesocproductos ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc")
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-       RETURNING *;`,
-            [empresa, ejercicio, codprodu, linea, descripcion, codclaarchivo, ficadjunto, tipdocasociado, fecalta, ultfeccompra, ultfecventa, ultfecactprc]
-        );
+        // Verificación de la existencia de cache
+        if (res && res.cache) {
+            cachedResponse = await res.cache.get(cacheKey);
+            if (cachedResponse) {
+                res.set('Cache-Control', 'public, max-age=3600');
+                return cachedResponse;
+            }
+        }
 
-        return rows[0];
+        try {
+            const { rows } = await pool.query(
+                'SELECT * FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2;',
+                [codprodu, codclaarchivo]
+            );
+
+            if (rows.length > 0) {
+                if (res && res.cache) {
+                    await res.cache.set(cacheKey, rows[0]);
+                    res.set('Cache-Control', 'public, max-age=3600');
+                }
+                return rows[0];
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error fetching image by product and classification:', error);
+            throw new Error('Error fetching image by product and classification');
+        }
     }
 
-    static async update({ codprodu, codclaarchivo, input }) {
+    // Crear una nueva imagen
+    static async create({ input, res }) {
+        const { empresa, ejercicio, codprodu, linea, descripcion, codclaarchivo, ficadjunto, tipdocasociado, fecalta, ultfeccompra, ultfecventa, ultfecactprc } = input;
+
+        try {
+            const { rows } = await pool.query(
+                `INSERT INTO imagenesocproductos ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc")
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                RETURNING *;`,
+                [empresa, ejercicio, codprodu, linea, descripcion, codclaarchivo, ficadjunto, tipdocasociado, fecalta, ultfeccompra, ultfecventa, ultfecactprc]
+            );
+
+            if (res && res.cache) {
+                await res.cache.flushAll(); // Invalidar caché después de crear la imagen
+            }
+
+            return rows[0];
+        } catch (error) {
+            console.error('Error creating image:', error);
+            throw new Error('Error creating image');
+        }
+    }
+
+    // Actualizar una imagen
+    static async update({ codprodu, codclaarchivo, input, res }) {
         const fields = Object.keys(input).map((key, index) => `"${key}" = $${index + 3}`).join(", ");
         const values = Object.values(input);
 
-        const { rows } = await pool.query(
-            `UPDATE imagenesocproductos SET ${fields} WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;`,
-            [codprodu, codclaarchivo, ...values]
-        );
+        try {
+            const { rows } = await pool.query(
+                `UPDATE imagenesocproductos SET ${fields} WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;`,
+                [codprodu, codclaarchivo, ...values]
+            );
 
-        return rows[0];
+            if (res && res.cache) {
+                await res.cache.del(`image:${codprodu}:${codclaarchivo}`); // Invalidar caché después de la actualización
+                await res.cache.flushAll(); // Invalidar otros caches si es necesario
+            }
+
+            return rows[0];
+        } catch (error) {
+            console.error('Error updating image:', error);
+            throw new Error('Error updating image');
+        }
     }
 
-    static async delete({ codprodu, codclaarchivo }) {
-        const { rows } = await pool.query('DELETE FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;', [codprodu, codclaarchivo]);
+    // Eliminar una imagen
+    static async delete({ codprodu, codclaarchivo, res }) {
+        try {
+            const { rows } = await pool.query(
+                'DELETE FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;',
+                [codprodu, codclaarchivo]
+            );
 
-        return rows[0];
+            if (res && res.cache) {
+                await res.cache.del(`image:${codprodu}:${codclaarchivo}`); // Invalidar caché después de la eliminación
+                await res.cache.flushAll(); // Invalidar otros caches si es necesario
+            }
+
+            return rows[0];
+        } catch (error) {
+            console.error('Error deleting image:', error);
+            throw new Error('Error deleting image');
+        }
     }
 }
