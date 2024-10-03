@@ -53,6 +53,8 @@ const CardProduct = () => {
     }, [searchQuery, productId, type, fabricPattern, uso, fabricType, collection, page, filters]);
 
     const loadProductImages = async (product) => {
+        const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp'; // URL de imagen por defecto
+
         const [imageBuena, imageBaja] = await Promise.all([
             fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then((res) =>
                 res.ok ? res.json() : null
@@ -64,8 +66,8 @@ const CardProduct = () => {
 
         return {
             ...product,
-            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url',
+            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrl,
+            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrl,
         };
     };
 
@@ -173,7 +175,7 @@ const CardProduct = () => {
             const productsData = data.products || data;
 
             if (productsData.length === 0) {
-                setError('No products found');
+                setError('No se encontraron productos');
             } else {
                 const productsWithImages = await loadProductsImages(productsData);
                 setProducts(productsWithImages);
@@ -238,16 +240,26 @@ const CardProduct = () => {
         setModalOpen(true);
     };
 
-    const handleClearSearch = () => {
-        setFilters(null);
-        setIsFiltered(false);
-        setIsSearching(false);
-        setActiveCategory(null);
-        setPage(1);
-        setFilterCleared(true);
-        setClearButtonVisible(false); // Ocultar el botón de limpiar filtro
-        navigate('/products');
-        fetchProducts(1);
+    // Función mejorada para limpiar filtros y recargar productos
+    const handleClearSearch = async () => {
+        try {
+            setLoading(true); // Mostrar un loader mientras se limpia
+            setFilters(null);
+            setIsFiltered(false);
+            setIsSearching(false);
+            setActiveCategory(null);
+            setPage(1);
+            setFilterCleared(true);
+            setClearButtonVisible(false); // Ocultar el botón de limpiar filtro
+
+            navigate('/products');
+            await fetchProducts(1); // Recargar los productos sin filtros
+        } catch (error) {
+            console.error('Error al limpiar los filtros:', error);
+            setError('No se pudieron limpiar los filtros. Inténtelo de nuevo.');
+        } finally {
+            setLoading(false); // Ocultar el loader
+        }
     };
 
     const handlePageChange = (newPage) => {
@@ -278,7 +290,8 @@ const CardProduct = () => {
                 <div className="fixed bottom-4 right-5 z-20">
                     <button
                         onClick={handleClearSearch}
-                        className="rounded-full p-3 bg-[#D2B48C] text-white shadow-md flex items-center justify-center hover:bg-[#C19A6B] relative"
+                        disabled={loading} // Deshabilitar mientras se está limpiando
+                        className={`rounded-full p-3 bg-[#D2B48C] text-white shadow-md flex items-center justify-center hover:bg-[#C19A6B] relative ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         <FaTimes />
                         {/* Tooltip para pantallas grandes */}

@@ -24,6 +24,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     useEffect(() => {
         const fetchRelatedProducts = async () => {
             try {
+                const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp'
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${product.codfamil}`);
                 const data = await response.json();
                 const productsWithImages = await Promise.all(
@@ -37,8 +38,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
                             return {
                                 ...product,
-                                imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-                                imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                                imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrl,
+                                imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrl
                             };
                         })
                 );
@@ -53,6 +54,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     useEffect(() => {
         const fetchImages = async () => {
             try {
+                const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
                 const [buenaResponse, bajaResponse] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`),
                     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`)
@@ -63,11 +65,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
                 setSelectedProduct({
                     ...product,
-                    imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url',
-                    imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : 'default_baja_image_url'
+                    imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : defaultImageUrl,
+                    imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : defaultImageUrl
                 });
 
-                setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : 'default_buena_image_url');
+                setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : defaultImageUrl);
             } catch (error) {
                 console.error('Error fetching images:', error);
             }
