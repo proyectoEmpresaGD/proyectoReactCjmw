@@ -22,12 +22,11 @@ function Contacts() {
     const telefonoHolanda = "+34-111-222-333"
     return (
         <>
-            <section className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862] xl:pt-[8%] lg:pt-[12%] md:pt-[10%] sm:pt-[15%]  pt-[24%]">
+            <section className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862] xl:pt-[8%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%]  pt-[24%]">
                 <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <div className="max-w-2xl mx-auto text-center  ">
                         <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl ">Contáctanos</h2>
                     </div>
-
                     <div className="max-w-6xl mx-auto mt-12 overflow-hidden bg-white rounded-md shadow-md lg:mt-20">
                         <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
                             <div className="lg:col-span-3">
@@ -311,7 +310,7 @@ function Contacts() {
                     </div>
                 </div>
             </section>
-            <GeocodingService />
+            {/* <GeocodingService /> */}
         </>
     )
 }

@@ -398,9 +398,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 </div>
 
                                 <div className="text-center mt-2 mb-2">
-                                    <button onClick={handleMapClick} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-3 rounded-md transition duration-200 mx-1">
+                                    {/* <button onClick={handleMapClick} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-3 rounded-md transition duration-200 mx-1">
                                         Dónde comprar
-                                    </button>
+                                    </button> */}
                                     <button onClick={handleAddToCart} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-2 rounded-md transition duration-200 mx-1 mt-2">
                                         Adquirir muestra
                                     </button>

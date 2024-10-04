@@ -34,7 +34,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
         <section>
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                 <header className="text-center">
-                    <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">New Collection</h2>
+                    <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Telas de las ultimas colecciones</h2>
                 </header>
 
                 <ul className="mt-8 grid grid-cols-1 gap-7 lg:grid-cols-3">
@@ -55,7 +55,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
                                     onClick={() => handleShopNowClick(0)} // Manejar clic en Shop Now
                                     className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
                                 >
-                                    Shop Now
+                                    Ver Producto
                                 </span>
                             </div>
                         </a>
@@ -75,10 +75,10 @@ const NewCollection = ({ images, titles, productCodes }) => {
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
                                 <h3 className="text-xl font-medium text-white">{titles[1]}</h3>
                                 <span
-                                    onClick={() => handleShopNowClick(1)} // Manejar clic en Shop Now
+                                    onClick={() => handleShopNowClick(1)}
                                     className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
                                 >
-                                    Shop Now
+                                    Ver Producto
                                 </span>
                             </div>
                         </a>
@@ -98,10 +98,10 @@ const NewCollection = ({ images, titles, productCodes }) => {
                             <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
                                 <h3 className="text-xl font-medium text-white">{titles[2]}</h3>
                                 <span
-                                    onClick={() => handleShopNowClick(2)} // Manejar clic en Shop Now
+                                    onClick={() => handleShopNowClick(2)} // Manejar clic en Ver Producto
                                     className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
                                 >
-                                    Shop Now
+                                    Ver Producto
                                 </span>
                             </div>
                         </a>
