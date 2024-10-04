@@ -19,6 +19,8 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
     const [activeTab, setActiveTab] = useState('marcas');
 
+    const tiposInvalidos = ["JAQUARD","VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO" ]
+    const dibujosInvalidos = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA"]
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -28,8 +30,8 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
                 setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM", "BAS"]));
                 setCollections(filterValidData(data.collections));
-                setFabricTypes(filterValidData(data.fabricTypes));
-                setFabricPatterns(filterValidData(data.fabricPatterns));
+                setFabricTypes(filterValidData(data.fabricTypes,[], tiposInvalidos));
+                setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
                 setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
                 setColors(filterValidData(data.colors).filter(color => allowedColors.includes(color.toUpperCase())));
             } catch (error) {
@@ -39,6 +41,20 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
         fetchData();
     }, []);
+
+    
+
+    const filterValidData = (data, validOptions = [], invalidOptions = []) => {
+        const hasTilde = str => /[áéíóúÁÉÍÓÚ]/.test(str);
+        return [...new Set(data.filter(item =>
+            item &&
+            (!validOptions.length || validOptions.includes(item)) && 
+            (!invalidOptions.length || !invalidOptions.includes(item)) &&
+            !item.includes(";") &&
+            item === item.toUpperCase() &&
+            !hasTilde(item)
+        ))];
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -51,17 +67,6 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
             document.body.classList.remove('overflow-hidden');
         };
     }, [isOpen]);
-
-    const filterValidData = (data, validOptions = []) => {
-        const hasTilde = str => /[áéíóúÁÉÍÓÚ]/.test(str);
-        return [...new Set(data.filter(item =>
-            item &&
-            (!validOptions.length || validOptions.includes(item)) &&
-            !item.includes(";") &&
-            item === item.toUpperCase() &&
-            !hasTilde(item)
-        ))];
-    };
 
     const handleApplyFilters = () => {
         const filtersToApply = {
