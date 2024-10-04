@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 
 function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
-    // Colores principales permitidos
     const allowedColors = ['GRIS', 'NEGRO', 'VERDE', 'BEIGE', 'BLANCO', 'MARRON', 'AZUL', 'AMARILLO', 'NARANJA', 'ROJO', 'MORADO', 'VIOLETA', 'ROSA'];
 
-    // Filtros seleccionados por el usuario
     const [selectedBrands, setSelectedBrands] = useState(currentFilters?.brand || []);
     const [selectedColors, setSelectedColors] = useState(currentFilters?.color || []);
     const [selectedCollections, setSelectedCollections] = useState(currentFilters?.collection || []);
@@ -12,7 +10,6 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     const [selectedFabricPatterns, setSelectedFabricPatterns] = useState(currentFilters?.fabricPattern || []);
     const [selectedMartindale, setSelectedMartindale] = useState(currentFilters?.martindale || []);
 
-    // Datos de filtros para mostrar en el modal
     const [brands, setBrands] = useState([]);
     const [collections, setCollections] = useState([]);
     const [fabricTypes, setFabricTypes] = useState([]);
@@ -20,22 +17,22 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     const [martindaleValues, setMartindaleValues] = useState([]);
     const [colors, setColors] = useState([]);
 
-    // Campos de búsqueda
     const [collectionSearch, setCollectionSearch] = useState('');
     const [fabricTypeSearch, setFabricTypeSearch] = useState('');
     const [fabricPatternSearch, setFabricPatternSearch] = useState('');
 
-    // Función para cargar los datos de los filtros desde el backend
+    const [activeTab, setActiveTab] = useState('marcas');
+
+    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filters`);
-                if (!response.ok) {
-                    throw new Error('Error fetching filters');
-                }
+                if (!response.ok) throw new Error('Error fetching filters');
                 const data = await response.json();
 
-                setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM", "BAS"])); // Filtrar por marcas específicas
+                setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM", "BAS"]));
                 setCollections(filterValidData(data.collections));
                 setFabricTypes(filterValidData(data.fabricTypes));
                 setFabricPatterns(filterValidData(data.fabricPatterns));
@@ -49,12 +46,17 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         fetchData();
     }, []);
 
-    // Función para procesar datos válidos (sin duplicados ni valores vacíos)
     const filterValidData = (data, validOptions = []) => {
-        return [...new Set(data.filter(item => item && (!validOptions.length || validOptions.includes(item))))];
+        const hasTilde = str => /[áéíóúÁÉÍÓÚ]/.test(str); // Verifica si hay tildes
+        return [...new Set(data.filter(item =>
+            item &&
+            (!validOptions.length || validOptions.includes(item)) &&
+            !item.includes(";") && // Excluye nombres que contengan ";"
+            item === item.toUpperCase() && // Excluye nombres en minúsculas
+            !hasTilde(item) // Excluye nombres que contengan tildes
+        ))];
     };
 
-    // Aplicar los filtros seleccionados
     const handleApplyFilters = () => {
         const filtersToApply = {
             brand: selectedBrands,
@@ -65,10 +67,9 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
             martindale: selectedMartindale,
         };
         applyFilters(filtersToApply);
-        close(); // Cerrar el modal después de aplicar filtros
+        close();
     };
 
-    // Función para manejar la selección de checkboxes
     const handleCheckboxChange = (setSelected, selected, value) => {
         if (selected.includes(value)) {
             setSelected(selected.filter(item => item !== value));
@@ -77,86 +78,128 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         }
     };
 
-    // Filtro basado en el campo de búsqueda, validando que el item sea una cadena
-    const filterItems = (items, search) => {
-        return items.filter(item => typeof item === 'string' && item.toLowerCase().includes(search.toLowerCase()));
+    const removeSelectedItem = (setSelected, selected, value) => {
+        setSelected(selected.filter(item => item !== value));
     };
 
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg xl:max-w-[70%] max-w-[90%] h-[95%] w-full m-4 overflow-y-auto">
+            {/* Mantener el tamaño fijo y ocupar todo el espacio */}
+            <div className="bg-white p-6 rounded-lg w-full max-w-[90%] lg:max-w-[70%] max-h-[95%]  overflow-y-auto">
                 <h2 className="text-center text-2xl font-bold">FILTROS</h2>
                 <div className="flex justify-end">
                     <button className="relative overflow-hidden m-4" onClick={close}>
                         <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200 justify-end' alt="Cerrar" />
                     </button>
                 </div>
-                <div className='grid xl:grid-cols-4 md:grid-cols-2 gap-3 gap-y-6'>
-                    {/* Marcas */}
-                    <FilterSection
-                        title="Marcas"
-                        items={brands}
-                        selectedItems={selectedBrands}
-                        handleCheckboxChange={handleCheckboxChange}
-                        setSelected={setSelectedBrands}
-                    />
 
-                    {/* Colecciones */}
-                    <FilterSection
-                        title="Colecciones"
-                        items={filterItems(collections, collectionSearch)}
-                        selectedItems={selectedCollections}
-                        handleCheckboxChange={handleCheckboxChange}
-                        setSelected={setSelectedCollections}
-                        searchPlaceholder="Buscar Colección"
-                        searchValue={collectionSearch}
-                        setSearchValue={setCollectionSearch}
-                    />
-
-                    {/* Colores */}
-                    <ColorGrid
-                        title="Colores"
-                        items={colors}
-                        selectedItems={selectedColors}
-                        handleCheckboxChange={handleCheckboxChange}
-                        setSelected={setSelectedColors}
-                    />
-
-                    {/* Tipos de Tela */}
-                    <FilterSection
-                        title="Tipos de Tela"
-                        items={filterItems(fabricTypes, fabricTypeSearch)}
-                        selectedItems={selectedFabricTypes}
-                        handleCheckboxChange={handleCheckboxChange}
-                        setSelected={setSelectedFabricTypes}
-                        searchPlaceholder="Buscar Tipo de Tela"
-                        searchValue={fabricTypeSearch}
-                        setSearchValue={setFabricTypeSearch}
-                    />
-
-                    {/* Dibujo de la Tela */}
-                    <FilterSection
-                        title="Dibujo de la Tela"
-                        items={filterItems(fabricPatterns, fabricPatternSearch)}
-                        selectedItems={selectedFabricPatterns}
-                        handleCheckboxChange={handleCheckboxChange}
-                        setSelected={setSelectedFabricPatterns}
-                        searchPlaceholder="Buscar Dibujo de la Tela"
-                        searchValue={fabricPatternSearch}
-                        setSearchValue={setFabricPatternSearch}
-                    />
-
-                    {/* Martindale (sin buscador) */}
-                    <FilterSection
-                        title="Martindale"
-                        items={martindaleValues}
-                        selectedItems={selectedMartindale}
-                        handleCheckboxChange={handleCheckboxChange}
-                        setSelected={setSelectedMartindale}
-                    />
+                {/* Filtros seleccionados */}
+                <div className="mb-4 flex items-center flex-wrap">
+                    <h3 className="text-lg font-semibold mr-2">Filtros seleccionados:</h3>
+                    <div className="flex flex-wrap">
+                        {selectedBrands.map((item, index) => (
+                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {item} <button onClick={() => removeSelectedItem(setSelectedBrands, selectedBrands, item)} className="ml-2">X</button>
+                            </span>
+                        ))}
+                        {selectedColors.map((item, index) => (
+                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {item} <button onClick={() => removeSelectedItem(setSelectedColors, selectedColors, item)} className="ml-2">X</button>
+                            </span>
+                        ))}
+                        {selectedCollections.map((item, index) => (
+                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {item} <button onClick={() => removeSelectedItem(setSelectedCollections, selectedCollections, item)} className="ml-2">X</button>
+                            </span>
+                        ))}
+                        {selectedFabricTypes.map((item, index) => (
+                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {item} <button onClick={() => removeSelectedItem(setSelectedFabricTypes, selectedFabricTypes, item)} className="ml-2">X</button>
+                            </span>
+                        ))}
+                        {selectedFabricPatterns.map((item, index) => (
+                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {item} <button onClick={() => removeSelectedItem(setSelectedFabricPatterns, selectedFabricPatterns, item)} className="ml-2">X</button>
+                            </span>
+                        ))}
+                        {selectedMartindale.map((item, index) => (
+                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {item} <button onClick={() => removeSelectedItem(setSelectedMartindale, selectedMartindale, item)} className="ml-2">X</button>
+                            </span>
+                        ))}
+                    </div>
                 </div>
+
+                {/* TabPanel */}
+                <div className="mb-4 flex justify-around border-b-2 border-gray-300 overflow-x-auto">
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'marcas' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('marcas')}>Marcas</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colores' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('colores')}>Colores</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colecciones' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('colecciones')}>Colecciones</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'tela' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('tela')}>Tipos de Tela</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'dibujo' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('dibujo')}>Dibujo de Tela</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'martindale' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('martindale')}>Martindale</button>
+                </div>
+
+                {/* Tab Content con altura fija y scroll */}
+                <div className="h-[350px] overflow-y-auto"> {/* h-64 es un ejemplo, puedes ajustar la altura según tus necesidades */}
+                    {activeTab === 'marcas' && (
+                        <FilterSection
+                            title="Marcas"
+                            items={brands}
+                            selectedItems={selectedBrands}
+                            handleCheckboxChange={handleCheckboxChange}
+                            setSelected={setSelectedBrands}
+                        />
+                    )}
+                    {activeTab === 'colores' && (
+                        <ColorGrid
+                            title="Colores"
+                            items={colors}
+                            selectedItems={selectedColors}
+                            handleCheckboxChange={handleCheckboxChange}
+                            setSelected={setSelectedColors}
+                        />
+                    )}
+                    {activeTab === 'colecciones' && (
+                        <FilterSection
+                            title="Colecciones"
+                            items={collections}
+                            selectedItems={selectedCollections}
+                            handleCheckboxChange={handleCheckboxChange}
+                            setSelected={setSelectedCollections}
+                        />
+                    )}
+                    {activeTab === 'tela' && (
+                        <FilterSection
+                            title="Tipos de Tela"
+                            items={fabricTypes}
+                            selectedItems={selectedFabricTypes}
+                            handleCheckboxChange={handleCheckboxChange}
+                            setSelected={setSelectedFabricTypes}
+                        />
+                    )}
+                    {activeTab === 'dibujo' && (
+                        <FilterSection
+                            title="Dibujo de la Tela"
+                            items={fabricPatterns}
+                            selectedItems={selectedFabricPatterns}
+                            handleCheckboxChange={handleCheckboxChange}
+                            setSelected={setSelectedFabricPatterns}
+                        />
+                    )}
+                    {activeTab === 'martindale' && (
+                        <FilterSection
+                            title="Martindale"
+                            items={martindaleValues}
+                            selectedItems={selectedMartindale}
+                            handleCheckboxChange={handleCheckboxChange}
+                            setSelected={setSelectedMartindale}
+                        />
+                    )}
+                </div>
+
 
                 <div className="mt-4 flex justify-end">
                     <button onClick={handleApplyFilters} className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
@@ -167,11 +210,19 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         </div>
     );
 }
+const brandDisplayNames = {
+    ARE: "ARENA",
+    HAR: "HARBOUR",
+    FLA: "FLAMENCO",
+    CJM: "CJM",
+    BAS: "BASSARI",
+    // Agrega más marcas según lo que necesites
+};
 
-// Componente reutilizable para las secciones de filtro con búsqueda
+// Componente reutilizable para las secciones de filtro
 function FilterSection({ title, items, selectedItems, handleCheckboxChange, setSelected, searchPlaceholder, searchValue, setSearchValue }) {
     return (
-        <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+        <div className='overflow-y-auto flex flex-col border-2 border-gray-300 rounded-md p-3'>
             <h3 className="font-semibold mx-auto">{title}</h3>
             {searchPlaceholder && (
                 <input
@@ -182,19 +233,20 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
             )}
-            <div>
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-2">
                 {items.map((item) => (
-                    <label key={item} className="block">
+                    <label key={item} className="block ">
                         <input
                             type="checkbox"
                             name={title.toLowerCase()}
                             checked={selectedItems.includes(item)}
                             onChange={() => handleCheckboxChange(setSelected, selectedItems, item)}
                         />
-                        {item}
+                        {brandDisplayNames[item] || item} {/* Mostrar nombre alternativo si existe, si no el original */}
                     </label>
                 ))}
             </div>
+
         </div>
     );
 }
@@ -202,14 +254,14 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
 // Componente reutilizable para mostrar colores
 function ColorGrid({ title, items, selectedItems, handleCheckboxChange, setSelected }) {
     return (
-        <div className='overflow-y-auto xl:min-h-[250px] xl:max-h-[250px] flex flex-col border-2 border-gray-300 rounded-md p-3 xl:pb-[10%]'>
+        <div className='overflow-y-auto flex flex-col border-2 border-gray-300 rounded-md p-3'>
             <h3 className="font-semibold mx-auto">{title}</h3>
-            <div className="grid xl:grid-cols-4 grid-cols-3 gap-2 mx-auto">
+            <div className="grid grid-cols-4 gap-2 mx-auto">
                 {items.map((item) => (
                     <div
                         key={item}
                         className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedItems.includes(item) ? 'ring-2 ring-white' : ''}`}
-                        style={{ backgroundColor: getColor(item), border: item.toUpperCase() === 'BLANCO' ? '1px solid #D1D1D1' : 'none' }} // Borde gris claro para color blanco
+                        style={{ backgroundColor: getColor(item), border: item.toUpperCase() === 'BLANCO' ? '1px solid #D1D1D1' : 'none' }}
                         onClick={() => handleCheckboxChange(setSelected, selectedItems, item)}
                     >
                         {selectedItems.includes(item) && (
