@@ -353,7 +353,7 @@ export const Header = () => {
                             )}
                         </div>
 
-                        <div className="relative language" ref={languageRef}>
+                        {/* <div className="relative language" ref={languageRef}>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
                                 <FaGlobe size={24} />
                             </button>
@@ -377,7 +377,7 @@ export const Header = () => {
                                     />
                                 </div>
                             )}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

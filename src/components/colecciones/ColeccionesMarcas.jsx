@@ -27,9 +27,9 @@ const imageSet = {
       "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/DUNE/AMASTISTA%20ALOE_7_11zon_6_11zon.webp",
     ],
     [
-      "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/MIKONOS%20NOIR%202_10_11zon_11zon.webp",
-      "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MOODBOARD/MOOD%20BOARD%20TOUCH%202_12_11zon_11_11zon.webp",
-      "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20BURNT%20ORANGE_5_11zon_4_11zon.webp",
+      "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/FENICIA/ARE01804%20FENICIA%20MARINE%20ARTISTICA_3_11zon_3_11zon.webp",
+      "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/FENICIA/ARE01805%20FENICIA%20SUNSHINE%20ARTISTICA_2_11zon_1_11zon.webp",
+      "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/FENICIA/ARE01806%20FENICIA%20ROUGE%20ARTISTICA_1_11zon_2_11zon.webp",
     ],
     [
       "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20DUCK%20EGG%202_6_11zon_5_11zon.webp",
@@ -74,7 +74,7 @@ const imageSet = {
     [
       "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/RUSTICA/SACO%20GARNET_1_11zon_2_11zon.webp",
       "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/RUSTICA/SACO%20GARNET(1)_3_11zon_1_11zon.webp",
-      "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/RUSTICA/RUSTICA_2_11zon_3_11zon.webp",
+      
     ],
     [
       "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/STONE/STONE%20CANAIMA_3_11zon_3_11zon.webp",
