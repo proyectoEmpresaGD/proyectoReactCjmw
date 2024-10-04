@@ -19,7 +19,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
     const [activeTab, setActiveTab] = useState('marcas');
 
-    const tiposInvalidos = ["JAQUARD","VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA" ]
+    const tiposInvalidos = ["JAQUARD","VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS" ]
     const dibujosInvalidos = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM","RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO","TERCIOPELO", "PANA",]
     useEffect(() => {
         const fetchData = async () => {
