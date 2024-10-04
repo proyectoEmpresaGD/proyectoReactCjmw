@@ -17,13 +17,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     const [martindaleValues, setMartindaleValues] = useState([]);
     const [colors, setColors] = useState([]);
 
-    const [collectionSearch, setCollectionSearch] = useState('');
-    const [fabricTypeSearch, setFabricTypeSearch] = useState('');
-    const [fabricPatternSearch, setFabricPatternSearch] = useState('');
-
     const [activeTab, setActiveTab] = useState('marcas');
-
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,14 +40,26 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        return () => {
+            document.body.classList.remove('overflow-hidden');
+        };
+    }, [isOpen]);
+
     const filterValidData = (data, validOptions = []) => {
-        const hasTilde = str => /[áéíóúÁÉÍÓÚ]/.test(str); // Verifica si hay tildes
+        const hasTilde = str => /[áéíóúÁÉÍÓÚ]/.test(str);
         return [...new Set(data.filter(item =>
             item &&
             (!validOptions.length || validOptions.includes(item)) &&
-            !item.includes(";") && // Excluye nombres que contengan ";"
-            item === item.toUpperCase() && // Excluye nombres en minúsculas
-            !hasTilde(item) // Excluye nombres que contengan tildes
+            !item.includes(";") &&
+            item === item.toUpperCase() &&
+            !hasTilde(item)
         ))];
     };
 
@@ -85,65 +91,56 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-            {/* Mantener el tamaño fijo y ocupar todo el espacio */}
-            <div className="bg-white p-6 rounded-lg w-full max-w-[90%] lg:max-w-[70%] max-h-[95%]  overflow-y-auto">
-                <h2 className="text-center text-2xl font-bold">FILTROS</h2>
-                <div className="flex justify-end">
-                    <button className="relative overflow-hidden m-4" onClick={close}>
-                        <img src="close.svg" className='w-6 h-6 hover:scale-125 duration-200 justify-end' alt="Cerrar" />
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center transition-all ease-in-out duration-300">
+            <div className="bg-white p-6 rounded-lg w-full max-w-[90%] lg:max-w-[70%] max-h-[95%] overflow-y-auto shadow-lg border border-gray-200">
+                <div className="relative flex items-center justify-between">
+                    <h2 className="absolute left-1/2 transform -translate-x-1/2 text-3xl font-semibold mb-4 text-gray-700">
+                        FILTROS
+                    </h2>
+                    <button className="ml-auto relative overflow-hidden m-4" onClick={close}>
+                        <img src="close.svg" className="w-6 h-6 hover:scale-125 transition-transform duration-200" alt="Cerrar" />
                     </button>
                 </div>
 
                 {/* Filtros seleccionados */}
-                <div className="mb-4 flex items-center flex-wrap">
-                    <h3 className="text-lg font-semibold mr-2">Filtros seleccionados:</h3>
-                    <div className="flex flex-wrap">
+                <div className="mb-4 flex items-center flex-wrap border-b pb-2 border-gray-300">
+                    <h3 className="text-lg font-semibold mr-2 text-gray-600">Filtros seleccionados:</h3>
+                    <div className="flex flex-wrap gap-2">
                         {selectedBrands.map((item, index) => (
-                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                                {item} <button onClick={() => removeSelectedItem(setSelectedBrands, selectedBrands, item)} className="ml-2">X</button>
-                            </span>
+                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedBrands, selectedBrands, item)} />
                         ))}
                         {selectedColors.map((item, index) => (
-                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                                {item} <button onClick={() => removeSelectedItem(setSelectedColors, selectedColors, item)} className="ml-2">X</button>
-                            </span>
+                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedColors, selectedColors, item)} />
                         ))}
                         {selectedCollections.map((item, index) => (
-                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                                {item} <button onClick={() => removeSelectedItem(setSelectedCollections, selectedCollections, item)} className="ml-2">X</button>
-                            </span>
+                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedCollections, selectedCollections, item)} />
                         ))}
                         {selectedFabricTypes.map((item, index) => (
-                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                                {item} <button onClick={() => removeSelectedItem(setSelectedFabricTypes, selectedFabricTypes, item)} className="ml-2">X</button>
-                            </span>
+                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedFabricTypes, selectedFabricTypes, item)} />
                         ))}
                         {selectedFabricPatterns.map((item, index) => (
-                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                                {item} <button onClick={() => removeSelectedItem(setSelectedFabricPatterns, selectedFabricPatterns, item)} className="ml-2">X</button>
-                            </span>
+                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedFabricPatterns, selectedFabricPatterns, item)} />
                         ))}
                         {selectedMartindale.map((item, index) => (
-                            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                                {item} <button onClick={() => removeSelectedItem(setSelectedMartindale, selectedMartindale, item)} className="ml-2">X</button>
-                            </span>
+                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedMartindale, selectedMartindale, item)} />
                         ))}
                     </div>
                 </div>
 
                 {/* TabPanel */}
-                <div className="mb-4 flex justify-around border-b-2 border-gray-300 overflow-x-auto">
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'marcas' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('marcas')}>Marcas</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colores' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('colores')}>Colores</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colecciones' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('colecciones')}>Colecciones</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'tela' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('tela')}>Tipos de Tela</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'dibujo' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('dibujo')}>Dibujo de Tela</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'martindale' ? 'border-b-4 border-blue-500' : ''}`} onClick={() => setActiveTab('martindale')}>Martindale</button>
+                <div className="mb-4 flex justify-around border-b-2 border-gray-300 overflow-x-auto text-gray-600">
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'marcas' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('marcas')}>Marcas</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colores' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('colores')}>Colores</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colecciones' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('colecciones')}>Colecciones</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'tela' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('tela')}>Tipos de Tela</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'dibujo' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('dibujo')}>Dibujo de Tela</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'martindale' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('martindale')}>Martindale</button>
                 </div>
 
-                {/* Tab Content con altura fija y scroll */}
-                <div className="h-[350px] overflow-y-auto"> {/* h-64 es un ejemplo, puedes ajustar la altura según tus necesidades */}
+                <div className="sm:hidden text-center text-sm text-gray-500">Desliza hacia los lados para ver más opciones</div>
+
+                {/* Tab Content */}
+                <div className="h-[350px] overflow-y-auto">
                     {activeTab === 'marcas' && (
                         <FilterSection
                             title="Marcas"
@@ -200,9 +197,8 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                     )}
                 </div>
 
-
-                <div className="mt-4 flex justify-end">
-                    <button onClick={handleApplyFilters} className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                <div className="mt-4 flex justify-center ">
+                    <button onClick={handleApplyFilters} className="bg-[#D2B48C] w-[100%] lg:w-[30%] hover:bg-[#C19A6B] text-white font-bold py-2 px-6 rounded-md shadow-md transition-all duration-200 transform">
                         Aplicar Filtros
                     </button>
                 </div>
@@ -210,43 +206,39 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         </div>
     );
 }
-const brandDisplayNames = {
-    ARE: "ARENA",
-    HAR: "HARBOUR",
-    FLA: "FLAMENCO",
-    CJM: "CJM",
-    BAS: "BASSARI",
-    // Agrega más marcas según lo que necesites
-};
+
+// Componente reutilizable para los tags de filtros seleccionados
+function FilterTag({ item, onRemove }) {
+    return (
+        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 transition-colors hover:bg-gray-300">
+            {item} <button onClick={onRemove} className="ml-2 text-gray-500 hover:text-gray-700">X</button>
+        </span>
+    );
+}
 
 // Componente reutilizable para las secciones de filtro
-function FilterSection({ title, items, selectedItems, handleCheckboxChange, setSelected, searchPlaceholder, searchValue, setSearchValue }) {
+function FilterSection({ title, items, selectedItems, handleCheckboxChange, setSelected }) {
     return (
-        <div className='overflow-y-auto flex flex-col border-2 border-gray-300 rounded-md p-3'>
-            <h3 className="font-semibold mx-auto">{title}</h3>
-            {searchPlaceholder && (
-                <input
-                    type="text"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-2"
-                    placeholder={searchPlaceholder}
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                />
-            )}
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-2">
+        <div className="overflow-y-auto flex flex-col border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
+            <h3 className="font-semibold mx-auto mb-3 text-lg text-gray-600">{title}</h3>
+            {/* Ajustamos las columnas para pantallas pequeñas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {items.map((item) => (
-                    <label key={item} className="block ">
+                    <label key={item} className="flex items-center space-x-2 cursor-pointer">
                         <input
                             type="checkbox"
                             name={title.toLowerCase()}
                             checked={selectedItems.includes(item)}
                             onChange={() => handleCheckboxChange(setSelected, selectedItems, item)}
+                            className="appearance-none checked:bg-[#D2B48C] border-2 border-gray-400 checked:border-none rounded-full w-5 h-5 transition duration-200 ease-in-out"
                         />
-                        {brandDisplayNames[item] || item} {/* Mostrar nombre alternativo si existe, si no el original */}
+                        {/* Aplicamos el ajuste de texto para pantallas pequeñas */}
+                        <span className="text-gray-700 break-words w-full max-w-[150px]">
+                            {item}
+                        </span>
                     </label>
                 ))}
             </div>
-
         </div>
     );
 }
@@ -254,18 +246,18 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
 // Componente reutilizable para mostrar colores
 function ColorGrid({ title, items, selectedItems, handleCheckboxChange, setSelected }) {
     return (
-        <div className='overflow-y-auto flex flex-col border-2 border-gray-300 rounded-md p-3'>
-            <h3 className="font-semibold mx-auto">{title}</h3>
-            <div className="grid grid-cols-4 gap-2 mx-auto">
+        <div className="overflow-y-auto flex flex-col border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
+            <h3 className="font-semibold mx-auto mb-3 text-lg text-gray-600">{title}</h3>
+            <div className="grid grid-cols-4 gap-4 mx-auto">
                 {items.map((item) => (
                     <div
                         key={item}
-                        className={`w-10 h-10 hover:scale-105 duration-200 cursor-pointer flex items-center justify-center ${selectedItems.includes(item) ? 'ring-2 ring-white' : ''}`}
+                        className={`w-10 h-10 cursor-pointer flex items-center justify-center transition duration-300 transform hover:scale-105 ${selectedItems.includes(item) ? 'ring-4 ring-[#D2B48C] scale-110' : ''}`}
                         style={{ backgroundColor: getColor(item), border: item.toUpperCase() === 'BLANCO' ? '1px solid #D1D1D1' : 'none' }}
                         onClick={() => handleCheckboxChange(setSelected, selectedItems, item)}
                     >
                         {selectedItems.includes(item) && (
-                            <div className="w-10 h-10 border-2 border-black"></div>
+                            <div className="w-4 h-4 bg-white rounded-full"></div>
                         )}
                     </div>
                 ))}
