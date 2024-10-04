@@ -16,13 +16,13 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
 
     // Definición de nombres personalizados para mostrar en el submenú
     const customNames = [
-        "Flores",
-        "Lisos ",
-        "Rayas ",
-        "Visillos ",
-        "Geométricos",
-        "Terciopelo",
-        "Fr",
+        "FLORES",
+        "LISOS",
+        "RAYAS",
+        "VISILLOS",
+        "GEOMÉTRICOS",
+        "TERCIOPELO",
+        "FR",
         "OUTDOOR",
         ...(type !== 'tela' ? ["WALLPAPER", "WALLCOVERING"] : []),
     ];

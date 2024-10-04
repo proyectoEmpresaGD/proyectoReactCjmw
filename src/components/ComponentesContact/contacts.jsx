@@ -32,7 +32,7 @@ function Contacts() {
                         <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
                             <div className="lg:col-span-3">
                                 <div className="p-6 sm:p-10 bg-cover lg:h-[130vh]">
-                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/FLAMENCO%20AMBIENTE/JARAPA%20INDIGO.jpg" alt="" />
+                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/JARAPA/Varni_Cushion_578_Brkt%20copy_2_11zon_5_11zon.webp" alt="" />
                                 </div>
                             </div>
 

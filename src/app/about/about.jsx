@@ -15,7 +15,7 @@ function About() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                                 <div className="flex items-center justify-center lg:justify-start">
                                     <div className="w-full max-w-lg border rounded-lg overflow-hidden shadow-lg hover:scale-105 transform transition-transform duration-500">
-                                        <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/CJM%20AMBIENTE/ANNUM%20ANTHRACITE.jpg" alt="Tu imagen" className="w-full h-auto object-cover" />
+                                        <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SET%20OF%20THREADS/ANNUM%20ANTHRACITE_8_11zon_1_11zon.webp" alt="Tu imagen" className="w-full h-auto object-cover" />
                                     </div>
                                 </div>
                                 <div className="lg:pl-10">
@@ -43,7 +43,7 @@ function About() {
                             </div>
                             <div className="flex items-center justify-center lg:justify-end">
                                 <div className="w-full max-w-lg border rounded-lg overflow-hidden shadow-lg hover:scale-105 transform transition-transform duration-500">
-                                    <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/ARENA%20AMBIENTE/ATMOSPHERE%20MOSS.jpg" alt="Hecho en España" className="w-full h-auto object-cover" />
+                                    <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/ATMOSPHERE/ATMOSPHERE%20MOSS_3_11zon_7_11zon.webp" alt="Hecho en España" className="w-full h-auto object-cover" />
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,7 @@ function About() {
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="flex items-center justify-center lg:justify-start">
                                 <div className="w-full max-w-lg border rounded-lg overflow-hidden shadow-lg hover:scale-105 transform transition-transform duration-500">
-                                    <img src="https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/JARAPA/Jarapa/Buenas/Vani_Living_326_Brkt_Portrait%20copy.jpg" alt="Headquarters" className="w-full h-auto object-cover" />
+                                    <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/JARAPA/Vani_Living_326_Brkt_Portrait%20copy_3_11zon_6_11zon.webp" alt="Headquarters" className="w-full h-auto object-cover" />
                                 </div>
                             </div>
                             <div className="text-gray-800 text-lg text-justify">
