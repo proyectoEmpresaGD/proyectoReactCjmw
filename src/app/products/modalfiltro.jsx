@@ -24,7 +24,16 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     const [fabricTypeSearch, setFabricTypeSearch] = useState('');
     const [fabricPatternSearch, setFabricPatternSearch] = useState('');
 
-    const tiposInvalidos = ["JAQUARD", "VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
+    // Mapeo de códigos de marca a nombres visibles
+    const brandNamesMap = {
+        ARE: 'Arena',
+        HAR: 'Harbour',
+        FLA: 'Flamenco',
+        CJM: 'CJM',
+        BAS: 'Bassari',
+    };
+
+    const tiposInvalidos = ["JAQUARD", "TEJIDO ", "VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
     const dibujosInvalidos = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM", "RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO", "TERCIOPELO", "PANA"];
 
     useEffect(() => {
@@ -37,7 +46,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
             if (!response.ok) throw new Error('Error fetching filters');
             const data = await response.json();
 
-            setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM", "BAS"]));
+            setBrands(filterValidData(data.brands, Object.keys(brandNamesMap)));
             setCollections(filterValidData(data.collections));
             setFabricTypes(filterValidData(data.fabricTypes, [], tiposInvalidos));
             setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
@@ -74,9 +83,10 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
     // Actualizar filtros según la marca seleccionada
     const updateFiltersByBrand = async (brand) => {
-        if (brand) {
+        const brandCode = Object.keys(brandNamesMap).find(key => brandNamesMap[key] === brand) || brand;
+        if (brandCode) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filtersByBrand?brand=${brand}`);
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filtersByBrand?brand=${brandCode}`);
                 if (!response.ok) throw new Error('Error fetching brand-specific filters');
                 const data = await response.json();
 
@@ -89,14 +99,13 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                 console.error('Error fetching filters by brand:', error);
             }
         } else {
-            // Si no hay marcas seleccionadas, recuperar todos los filtros
             fetchAllFilters();
         }
     };
 
     const handleApplyFilters = () => {
         const filtersToApply = {
-            brand: selectedBrands,
+            brand: selectedBrands.map(brand => Object.keys(brandNamesMap).find(key => brandNamesMap[key] === brand) || brand),
             color: selectedColors,
             collection: selectedCollections,
             fabricType: selectedFabricTypes,
@@ -113,12 +122,12 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
             setSelected(updatedSelection);
 
             if (setSelected === setSelectedBrands && updatedSelection.length === 0) {
-                updateFiltersByBrand(null);  // Si no quedan marcas seleccionadas, resetear filtros
+                updateFiltersByBrand(null);
             }
         } else {
             setSelected([...selected, value]);
             if (setSelected === setSelectedBrands) {
-                updateFiltersByBrand(value);  // Actualizar filtros al seleccionar una marca
+                updateFiltersByBrand(value);
             }
         }
     };
@@ -128,7 +137,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         setSelected(updatedSelection);
 
         if (setSelected === setSelectedBrands && updatedSelection.length === 0) {
-            updateFiltersByBrand(null);  // Si no quedan marcas seleccionadas, resetear filtros
+            updateFiltersByBrand(null);
         }
     };
 
@@ -179,10 +188,10 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                 {/* TabPanel */}
                 <div className="mb-4 flex justify-around border-b-2 border-gray-300 overflow-x-auto text-gray-600">
                     <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'marcas' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('marcas')}>Marcas</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colores' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('colores')}>Colores</button>
                     <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colecciones' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('colecciones')}>Colecciones</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'tela' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('tela')}>Tipos de Tela</button>
                     <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'dibujo' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('dibujo')}>Dibujo de Tela</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'tela' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('tela')}>Tipos de Tela</button>
+                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colores' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('colores')}>Colores</button>
                     <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'martindale' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('martindale')}>Martindale</button>
                 </div>
 
@@ -193,19 +202,10 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                     {activeTab === 'marcas' && (
                         <FilterSection
                             title="Marcas"
-                            items={brands}
+                            items={brands.map(brand => brandNamesMap[brand] || brand)}
                             selectedItems={selectedBrands}
                             handleCheckboxChange={handleCheckboxChange}
                             setSelected={setSelectedBrands}
-                        />
-                    )}
-                    {activeTab === 'colores' && (
-                        <ColorGrid
-                            title="Colores"
-                            items={colors}
-                            selectedItems={selectedColors}
-                            handleCheckboxChange={handleCheckboxChange}
-                            setSelected={setSelectedColors}
                         />
                     )}
                     {activeTab === 'colecciones' && (
@@ -223,6 +223,24 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                                 selectedItems={selectedCollections}
                                 handleCheckboxChange={handleCheckboxChange}
                                 setSelected={setSelectedCollections}
+                            />
+                        </>
+                    )}
+                    {activeTab === 'dibujo' && (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Buscar dibujos..."
+                                value={fabricPatternSearch}
+                                onChange={(e) => setFabricPatternSearch(e.target.value)}
+                                className="mb-4 p-2 border rounded-md w-full"
+                            />
+                            <FilterSection
+                                title="Dibujo de la Tela"
+                                items={filteredFabricPatterns}
+                                selectedItems={selectedFabricPatterns}
+                                handleCheckboxChange={handleCheckboxChange}
+                                setSelected={setSelectedFabricPatterns}
                             />
                         </>
                     )}
@@ -244,23 +262,14 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                             />
                         </>
                     )}
-                    {activeTab === 'dibujo' && (
-                        <>
-                            <input
-                                type="text"
-                                placeholder="Buscar dibujos..."
-                                value={fabricPatternSearch}
-                                onChange={(e) => setFabricPatternSearch(e.target.value)}
-                                className="mb-4 p-2 border rounded-md w-full"
-                            />
-                            <FilterSection
-                                title="Dibujo de la Tela"
-                                items={filteredFabricPatterns}
-                                selectedItems={selectedFabricPatterns}
-                                handleCheckboxChange={handleCheckboxChange}
-                                setSelected={setSelectedFabricPatterns}
-                            />
-                        </>
+                    {activeTab === 'colores' && (
+                        <ColorGrid
+                            title="Colores"
+                            items={colors}
+                            selectedItems={selectedColors}
+                            handleCheckboxChange={handleCheckboxChange}
+                            setSelected={setSelectedColors}
+                        />
                     )}
                     {activeTab === 'martindale' && (
                         <FilterSection

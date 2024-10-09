@@ -11,14 +11,14 @@ const images = [
 ];
 
 const texts = [
-    'https://bassari.eu/ImagenesTelasCjmw/Iconos/logoArena.png',
-    'https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png',
-    'https://bassari.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png',
-    'https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM-new-transparente.svg',
-    'https://bassari.eu/ImagenesTelasCjmw/Iconos/LOGOBASSARI_BLANCO.png'
+    'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Arena%20blanco%20transparente.png',
+    'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Harbour%20transparente%20BLANCO.png',
+    'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png',
+    'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJM%20marca%20blanco.png',
+    'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOBASSARI_01.png'
 ];
 
-const names =[
+const names = [
     "ARENA",
     "HARBOUR",
     "FLAMENCO",
@@ -26,7 +26,7 @@ const names =[
     "BASSARI",
 ]
 
-const rutas= [
+const rutas = [
     "arenaHome",
     "harbourHome",
     "flamencoHome",
