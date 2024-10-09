@@ -19,36 +19,40 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
     const [activeTab, setActiveTab] = useState('marcas');
 
-    const tiposInvalidos = ["JAQUARD","VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS" ]
-    const dibujosInvalidos = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM","RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO","TERCIOPELO", "PANA",]
+    // Estados de búsqueda
+    const [collectionSearch, setCollectionSearch] = useState('');
+    const [fabricTypeSearch, setFabricTypeSearch] = useState('');
+    const [fabricPatternSearch, setFabricPatternSearch] = useState('');
+
+    const tiposInvalidos = ["JAQUARD", "VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
+    const dibujosInvalidos = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM", "RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO", "TERCIOPELO", "PANA"];
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filters`);
-                if (!response.ok) throw new Error('Error fetching filters');
-                const data = await response.json();
-
-                setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM", "BAS"]));
-                setCollections(filterValidData(data.collections));
-                setFabricTypes(filterValidData(data.fabricTypes,[], tiposInvalidos));
-                setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
-                setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
-                setColors(filterValidData(data.colors).filter(color => allowedColors.includes(color.toUpperCase())));
-            } catch (error) {
-                console.error('Error fetching filters:', error);
-            }
-        };
-
-        fetchData();
+        fetchAllFilters();  // Fetch inicial
     }, []);
 
-    
+    const fetchAllFilters = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filters`);
+            if (!response.ok) throw new Error('Error fetching filters');
+            const data = await response.json();
+
+            setBrands(filterValidData(data.brands, ["ARE", "HAR", "FLA", "CJM", "BAS"]));
+            setCollections(filterValidData(data.collections));
+            setFabricTypes(filterValidData(data.fabricTypes, [], tiposInvalidos));
+            setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
+            setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
+            setColors(filterValidData(data.colors).filter(color => allowedColors.includes(color.toUpperCase())));
+        } catch (error) {
+            console.error('Error fetching filters:', error);
+        }
+    };
 
     const filterValidData = (data, validOptions = [], invalidOptions = []) => {
         const hasTilde = str => /[áéíóúÁÉÍÓÚ]/.test(str);
         return [...new Set(data.filter(item =>
             item &&
-            (!validOptions.length || validOptions.includes(item)) && 
+            (!validOptions.length || validOptions.includes(item)) &&
             (!invalidOptions.length || !invalidOptions.includes(item)) &&
             !item.includes(";") &&
             item === item.toUpperCase() &&
@@ -68,6 +72,28 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         };
     }, [isOpen]);
 
+    // Actualizar filtros según la marca seleccionada
+    const updateFiltersByBrand = async (brand) => {
+        if (brand) {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filtersByBrand?brand=${brand}`);
+                if (!response.ok) throw new Error('Error fetching brand-specific filters');
+                const data = await response.json();
+
+                // Filtrar los datos obtenidos por la marca seleccionada
+                setCollections(filterValidData(data.collections));
+                setFabricTypes(filterValidData(data.fabricTypes, [], tiposInvalidos));
+                setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
+                setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
+            } catch (error) {
+                console.error('Error fetching filters by brand:', error);
+            }
+        } else {
+            // Si no hay marcas seleccionadas, recuperar todos los filtros
+            fetchAllFilters();
+        }
+    };
+
     const handleApplyFilters = () => {
         const filtersToApply = {
             brand: selectedBrands,
@@ -83,15 +109,33 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
     const handleCheckboxChange = (setSelected, selected, value) => {
         if (selected.includes(value)) {
-            setSelected(selected.filter(item => item !== value));
+            const updatedSelection = selected.filter(item => item !== value);
+            setSelected(updatedSelection);
+
+            if (setSelected === setSelectedBrands && updatedSelection.length === 0) {
+                updateFiltersByBrand(null);  // Si no quedan marcas seleccionadas, resetear filtros
+            }
         } else {
             setSelected([...selected, value]);
+            if (setSelected === setSelectedBrands) {
+                updateFiltersByBrand(value);  // Actualizar filtros al seleccionar una marca
+            }
         }
     };
 
     const removeSelectedItem = (setSelected, selected, value) => {
-        setSelected(selected.filter(item => item !== value));
+        const updatedSelection = selected.filter(item => item !== value);
+        setSelected(updatedSelection);
+
+        if (setSelected === setSelectedBrands && updatedSelection.length === 0) {
+            updateFiltersByBrand(null);  // Si no quedan marcas seleccionadas, resetear filtros
+        }
     };
+
+    // Filtrar colecciones, tipos de tela, y patrones de tela según el término de búsqueda
+    const filteredCollections = collections.filter(collection => collection.toLowerCase().includes(collectionSearch.toLowerCase()));
+    const filteredFabricTypes = fabricTypes.filter(fabricType => fabricType.toLowerCase().includes(fabricTypeSearch.toLowerCase()));
+    const filteredFabricPatterns = fabricPatterns.filter(fabricPattern => fabricPattern.toLowerCase().includes(fabricPatternSearch.toLowerCase()));
 
     if (!isOpen) return null;
 
@@ -165,31 +209,58 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                         />
                     )}
                     {activeTab === 'colecciones' && (
-                        <FilterSection
-                            title="Colecciones"
-                            items={collections}
-                            selectedItems={selectedCollections}
-                            handleCheckboxChange={handleCheckboxChange}
-                            setSelected={setSelectedCollections}
-                        />
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Buscar colecciones..."
+                                value={collectionSearch}
+                                onChange={(e) => setCollectionSearch(e.target.value)}
+                                className="mb-4 p-2 border rounded-md w-full"
+                            />
+                            <FilterSection
+                                title="Colecciones"
+                                items={filteredCollections}
+                                selectedItems={selectedCollections}
+                                handleCheckboxChange={handleCheckboxChange}
+                                setSelected={setSelectedCollections}
+                            />
+                        </>
                     )}
                     {activeTab === 'tela' && (
-                        <FilterSection
-                            title="Tipos de Tela"
-                            items={fabricTypes}
-                            selectedItems={selectedFabricTypes}
-                            handleCheckboxChange={handleCheckboxChange}
-                            setSelected={setSelectedFabricTypes}
-                        />
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Buscar tipos de tela..."
+                                value={fabricTypeSearch}
+                                onChange={(e) => setFabricTypeSearch(e.target.value)}
+                                className="mb-4 p-2 border rounded-md w-full"
+                            />
+                            <FilterSection
+                                title="Tipos de Tela"
+                                items={filteredFabricTypes}
+                                selectedItems={selectedFabricTypes}
+                                handleCheckboxChange={handleCheckboxChange}
+                                setSelected={setSelectedFabricTypes}
+                            />
+                        </>
                     )}
                     {activeTab === 'dibujo' && (
-                        <FilterSection
-                            title="Dibujo de la Tela"
-                            items={fabricPatterns}
-                            selectedItems={selectedFabricPatterns}
-                            handleCheckboxChange={handleCheckboxChange}
-                            setSelected={setSelectedFabricPatterns}
-                        />
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Buscar dibujos..."
+                                value={fabricPatternSearch}
+                                onChange={(e) => setFabricPatternSearch(e.target.value)}
+                                className="mb-4 p-2 border rounded-md w-full"
+                            />
+                            <FilterSection
+                                title="Dibujo de la Tela"
+                                items={filteredFabricPatterns}
+                                selectedItems={selectedFabricPatterns}
+                                handleCheckboxChange={handleCheckboxChange}
+                                setSelected={setSelectedFabricPatterns}
+                            />
+                        </>
                     )}
                     {activeTab === 'martindale' && (
                         <FilterSection
@@ -202,7 +273,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                     )}
                 </div>
 
-                <div className="mt-4 flex justify-center ">
+                <div className="mt-4 flex justify-center">
                     <button onClick={handleApplyFilters} className="bg-[#D2B48C] w-[100%] lg:w-[30%] hover:bg-[#C19A6B] text-white font-bold py-2 px-6 rounded-md shadow-md transition-all duration-200 transform">
                         Aplicar Filtros
                     </button>
@@ -226,7 +297,6 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
     return (
         <div className="overflow-y-auto flex flex-col border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
             <h3 className="font-semibold mx-auto mb-3 text-lg text-gray-600">{title}</h3>
-            {/* Ajustamos las columnas para pantallas pequeñas */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {items.map((item) => (
                     <label key={item} className="flex items-center space-x-2 cursor-pointer">
@@ -237,7 +307,6 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
                             onChange={() => handleCheckboxChange(setSelected, selectedItems, item)}
                             className="appearance-none checked:bg-[#D2B48C] border-2 border-gray-400 checked:border-none rounded-full w-5 h-5 transition duration-200 ease-in-out"
                         />
-                        {/* Aplicamos el ajuste de texto para pantallas pequeñas */}
                         <span className="text-gray-700 break-words w-full max-w-[150px]">
                             {item}
                         </span>

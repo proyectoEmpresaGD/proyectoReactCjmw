@@ -229,4 +229,86 @@ export class ProductController {
       res.status(500).json({ error: 'Error filtering products by type', details: error.message });
     }
   }
+  // Buscar colecciones
+  async searchCollections(req, res) {
+    try {
+      const { searchTerm } = req.query;
+      if (!searchTerm || searchTerm.trim() === '') {
+        return res.status(400).json({ message: 'Search term is required' });
+      }
+
+      const collections = await ProductModel.searchCollections(searchTerm.trim());
+      if (collections.length === 0) {
+        return res.status(404).json({ message: 'No collections found' });
+      }
+
+      res.json(collections);
+    } catch (error) {
+      console.error('Error searching collections:', error);
+      res.status(500).json({ error: 'Error searching collections', details: error.message });
+    }
+  }
+
+  // Buscar tipos de tela
+  async searchFabricTypes(req, res) {
+    try {
+      const { searchTerm } = req.query;
+      if (!searchTerm || searchTerm.trim() === '') {
+        return res.status(400).json({ message: 'Search term is required' });
+      }
+
+      const fabricTypes = await ProductModel.searchFabricTypes(searchTerm.trim());
+      if (fabricTypes.length === 0) {
+        return res.status(404).json({ message: 'No fabric types found' });
+      }
+
+      res.json(fabricTypes);
+    } catch (error) {
+      console.error('Error searching fabric types:', error);
+      res.status(500).json({ error: 'Error searching fabric types', details: error.message });
+    }
+  }
+
+  // Buscar patrones de tela
+  async searchFabricPatterns(req, res) {
+    try {
+      const { searchTerm } = req.query;
+      if (!searchTerm || searchTerm.trim() === '') {
+        return res.status(400).json({ message: 'Search term is required' });
+      }
+
+      const fabricPatterns = await ProductModel.searchFabricPatterns(searchTerm.trim());
+      if (fabricPatterns.length === 0) {
+        return res.status(404).json({ message: 'No fabric patterns found' });
+      }
+
+      res.json(fabricPatterns);
+    } catch (error) {
+      console.error('Error searching fabric patterns:', error);
+      res.status(500).json({ error: 'Error searching fabric patterns', details: error.message });
+    }
+  }
+
+
+  async getFiltersByBrand(req, res) {
+    try {
+      const { brand } = req.query;
+
+      if (!brand) {
+        return res.status(400).json({ message: 'Brand is required' });
+      }
+
+      const filters = await ProductModel.getFiltersByBrand(brand);
+
+      if (!filters) {
+        return res.status(404).json({ message: 'No filters found for this brand' });
+      }
+
+      res.json(filters);
+    } catch (error) {
+      console.error('Error fetching filters by brand:', error);
+      res.status(500).json({ message: 'Error fetching filters by brand', error });
+    }
+  }
+
 }

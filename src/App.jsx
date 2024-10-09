@@ -25,11 +25,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contacto />} />
-        <Route path="/harbourHome" element={<HarbourHome />} />
-        <Route path="/cjmHome" element={<CjmHome />} />
-        <Route path="/arenaHome" element={<ArenaHome />} />
-        <Route path="/flamencoHome" element={<FlamencoHome />} />
-        <Route path="/bassariHome" element={<BassariHome />} />
+        <Route path="/harbour" element={<HarbourHome />} />
+        <Route path="/cjm" element={<CjmHome />} />
+        <Route path="/arena" element={<ArenaHome />} />
+        <Route path="/flamenco" element={<FlamencoHome />} />
+        <Route path="/bassari" element={<BassariHome />} />
         <Route path="/BlogHome/:newsId" element={<BlogHome />} />
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
