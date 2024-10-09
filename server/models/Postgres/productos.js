@@ -366,4 +366,76 @@ export class ProductModel {
     }
   }
 
+  static async searchCollections(searchTerm) {
+    try {
+      const query = `
+        SELECT DISTINCT UPPER(coleccion) AS coleccion
+        FROM productos
+        WHERE coleccion ILIKE $1
+        AND nombre IS NOT NULL
+      `;
+      const searchValue = `%${searchTerm}%`;
+      const { rows } = await pool.query(query, [searchValue]);
+      return rows.map(row => row.coleccion);
+    } catch (error) {
+      console.error('Error searching collections:', error);
+      throw new Error('Error searching collections');
+    }
+  }
+
+  // Buscar tipos de tela por término
+  static async searchFabricTypes(searchTerm) {
+    try {
+      const query = `
+        SELECT DISTINCT UPPER(tipo) AS tipo
+        FROM productos
+        WHERE tipo ILIKE $1
+        AND nombre IS NOT NULL
+      `;
+      const searchValue = `%${searchTerm}%`;
+      const { rows } = await pool.query(query, [searchValue]);
+      return rows.map(row => row.tipo);
+    } catch (error) {
+      console.error('Error searching fabric types:', error);
+      throw new Error('Error searching fabric types');
+    }
+  }
+
+  // Buscar patrones de tela por término
+  static async searchFabricPatterns(searchTerm) {
+    try {
+      const query = `
+        SELECT DISTINCT UPPER(estilo) AS estilo
+        FROM productos
+        WHERE estilo ILIKE $1
+        AND nombre IS NOT NULL
+      `;
+      const searchValue = `%${searchTerm}%`;
+      const { rows } = await pool.query(query, [searchValue]);
+      return rows.map(row => row.estilo);
+    } catch (error) {
+      console.error('Error searching fabric patterns:', error);
+      throw new Error('Error searching fabric patterns');
+    }
+  }
+
+  static async getFiltersByBrand(brand) {
+    try {
+      const { rows: collections } = await pool.query('SELECT DISTINCT coleccion FROM productos WHERE codmarca = $1', [brand]);
+      const { rows: fabricTypes } = await pool.query('SELECT DISTINCT tipo FROM productos WHERE codmarca = $1', [brand]);
+      const { rows: fabricPatterns } = await pool.query('SELECT DISTINCT estilo FROM productos WHERE codmarca = $1', [brand]);
+      const { rows: martindaleValues } = await pool.query('SELECT DISTINCT martindale FROM productos WHERE codmarca = $1', [brand]);
+
+      return {
+        collections: collections.map(c => c.coleccion),
+        fabricTypes: fabricTypes.map(f => f.tipo),
+        fabricPatterns: fabricPatterns.map(p => p.estilo),
+        martindaleValues: martindaleValues.map(m => m.martindale),
+      };
+    } catch (error) {
+      console.error('Error fetching filters by brand:', error);
+      throw new Error('Error fetching filters by brand');
+    }
+  }
+
 }
