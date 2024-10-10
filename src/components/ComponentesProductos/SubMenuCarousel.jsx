@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
     // Definición de las categorías originales del submenú (valores de filtro)
     const originalCategories = [
-        "TELAS CON FLORES",
+        "FLORAL",
         "LISO",
         "RAYAS",
         "VISILLO",

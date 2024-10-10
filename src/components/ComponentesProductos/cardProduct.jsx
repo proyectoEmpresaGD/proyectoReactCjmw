@@ -29,20 +29,30 @@ const CardProduct = () => {
     const [totalProducts, setTotalProducts] = useState(0);
     const [filters, setFilters] = useState(null);
     const [isFiltered, setIsFiltered] = useState(false);
-    const [isSearching, setIsSearching] = useState(!!searchQuery);
-    const [clearButtonVisible, setClearButtonVisible] = useState(false); // Para controlar la visibilidad del botón de limpiar filtro
-    const [filterCleared, setFilterCleared] = useState(false); // Estado inicializado correctamente
+    const [isSearching, setIsSearching] = useState(!!searchQuery || !!productId);  // Asegurar búsqueda por sugerencia
+    const [clearButtonVisible, setClearButtonVisible] = useState(false);
+    const [filterCleared, setFilterCleared] = useState(false);
     const [activeCategory, setActiveCategory] = useState(null);
     const itemsPerPage = 16;
 
-    // Actualización de la visibilidad del botón de "Limpiar Filtro"
+    // Función para verificar si hay filtros aplicados o búsqueda
+    const hasFiltersApplied = () => {
+        return (
+            (filters && Object.keys(filters).length > 0) ||
+            searchQuery ||
+            productId || // Verifica si hay búsqueda por sugerencia
+            type ||
+            fabricPattern ||
+            uso ||
+            fabricType ||
+            collection
+        );
+    };
+
+    // Verificar si hay filtros o búsqueda aplicada, observando cambios en location.search
     useEffect(() => {
-        if (isFiltered || isSearching) {
-            setClearButtonVisible(true);
-        } else {
-            setClearButtonVisible(false);
-        }
-    }, [isFiltered, isSearching, filters]);
+        setClearButtonVisible(hasFiltersApplied());
+    }, [filters, searchQuery, productId, type, fabricPattern, uso, fabricType, collection, location.search]);
 
     useEffect(() => {
         if (productId) {
@@ -53,7 +63,7 @@ const CardProduct = () => {
     }, [searchQuery, productId, type, fabricPattern, uso, fabricType, collection, page, filters]);
 
     const loadProductImages = async (product) => {
-        const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp'; // URL de imagen por defecto
+        const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
 
         const [imageBuena, imageBaja] = await Promise.all([
             fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then((res) =>
@@ -79,7 +89,6 @@ const CardProduct = () => {
             let filterParams = {};
 
             if (searchQuery && !filters) {
-                // Petición de búsqueda, si no hay filtros aplicados
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`
                 );
@@ -146,8 +155,7 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else if (filters) {
-                // Si hay filtros activos, desactivar la búsqueda y aplicar los filtros
-                setIsSearching(false); // Desactivamos la búsqueda
+                setIsSearching(false);
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
@@ -158,13 +166,12 @@ const CardProduct = () => {
                 );
                 setIsFiltered(true);
             } else {
-                // Obtener todos los productos si no hay búsqueda ni filtros
                 response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`
                 );
                 setIsFiltered(false);
                 setIsSearching(false);
-                setClearButtonVisible(false); // Ocultar el botón cuando se muestran todos los productos
+                setClearButtonVisible(false);
             }
 
             if (!response.ok) {
@@ -209,6 +216,7 @@ const CardProduct = () => {
             setProducts([productWithImages]);
             setTotalProducts(1);
             setIsFiltered(true);
+            setClearButtonVisible(true);  // Asegurar que se muestre el botón al seleccionar una sugerencia
         } catch (error) {
             setError(error.message);
         } finally {
@@ -220,9 +228,9 @@ const CardProduct = () => {
         setProducts(filteredProducts);
         setFilters(selectedFilters);
         setIsFiltered(true);
-        setIsSearching(false); // Al aplicar un filtro, desactivamos la búsqueda
+        setIsSearching(false);
         setPage(1);
-        setFilterCleared(false); // Restablecer bandera al aplicar filtros
+        setFilterCleared(false);
     };
 
     const handleAddToCart = (product) => {
@@ -240,25 +248,24 @@ const CardProduct = () => {
         setModalOpen(true);
     };
 
-    // Función mejorada para limpiar filtros y recargar productos
-    const handleClearSearch = async () => {
+    const clearFilters = async () => {
         try {
-            setLoading(true); // Mostrar un loader mientras se limpia
+            setLoading(true);
             setFilters(null);
             setIsFiltered(false);
             setIsSearching(false);
             setActiveCategory(null);
             setPage(1);
             setFilterCleared(true);
-            setClearButtonVisible(false); // Ocultar el botón de limpiar filtro
+            setClearButtonVisible(false);
 
             navigate('/products');
-            await fetchProducts(1); // Recargar los productos sin filtros
+            await fetchProducts(1);
         } catch (error) {
             console.error('Error al limpiar los filtros:', error);
             setError('No se pudieron limpiar los filtros. Inténtelo de nuevo.');
         } finally {
-            setLoading(false); // Ocultar el loader
+            setLoading(false);
         }
     };
 
@@ -275,6 +282,8 @@ const CardProduct = () => {
             navigate(`/products?uso=FR`);
         } else if (category === 'TERCIOPELO') {
             navigate(`/products?fabricType=TERCIOPELO`);
+        } else if (category === 'VISILLO') {
+            navigate(`/products?fabricType=VISILLO`);
         } else if (category === 'WALLPAPER') {
             navigate(`/products?fabricPattern=WALLPAPER`);
         } else if (category === 'WALLCOVERING') {
@@ -289,17 +298,15 @@ const CardProduct = () => {
             {clearButtonVisible && (
                 <div className="fixed bottom-4 right-5 z-20">
                     <button
-                        onClick={handleClearSearch}
-                        disabled={loading} // Deshabilitar mientras se está limpiando
+                        onClick={clearFilters}
+                        disabled={loading}
                         className={`rounded-full p-3 bg-[#D2B48C] text-white shadow-md flex items-center justify-center hover:bg-[#C19A6B] relative ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         <FaTimes />
-                        {/* Tooltip para pantallas grandes */}
                         <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs bg-black text-white py-1 px-2 rounded-lg hidden sm:block">
                             Limpiar Filtro
                         </span>
                     </button>
-                    {/* Texto debajo para pantallas pequeñas */}
                     <span className="block text-xs text-center mt-1 sm:hidden">
                         Limpiar Filtro
                     </span>
