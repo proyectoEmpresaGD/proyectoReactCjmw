@@ -246,7 +246,7 @@ export const Header = () => {
                                 <div className="bg-slate-100 absolute w-full top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 z-50 flex flex-col justify-center items-center">
                                     <button onMouseDown={() => handleLinkClick('/arena')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</button>
                                     <button onMouseDown={() => handleLinkClick('/harbour')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</button>
-                                    <button onMouseDown={() => handleLinkClick('/cjmHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</button>
+                                    <button onMouseDown={() => handleLinkClick('/cjm')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</button>
                                     <button onMouseDown={() => handleLinkClick('/flamenco')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Flamenco</button>
                                     <button onMouseDown={() => handleLinkClick('/bassari')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Bassari</button>
                                 </div>

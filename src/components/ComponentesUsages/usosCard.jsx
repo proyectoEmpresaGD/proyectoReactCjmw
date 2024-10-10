@@ -267,7 +267,7 @@ function renderCard(instruction) {
     return (
         <div key={instruction.id} className="flex flex-col items-center">
             <div className="h-full max-w-sm w-full bg-white rounded-lg shadow-lg p-3 hover:shadow-xl transition-shadow duration-300 ease-in-out justify-between ">
-                <img src={`${instruction.iconPath}`} className="h-10 w-10 mx-auto" alt={instruction.title} />
+                <img src={`${instruction.iconPath}`} className="h-10 w-15 mx-auto" alt={instruction.title} />
                 <div>
                     <div className="font-bold text-lg mb-1 text-center pt-2">{instruction.title}</div>
                     {instruction.details.map((line, index) => (
