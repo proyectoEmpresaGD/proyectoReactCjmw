@@ -29,7 +29,7 @@ const CardProduct = () => {
     const [totalProducts, setTotalProducts] = useState(0);
     const [filters, setFilters] = useState(null);
     const [isFiltered, setIsFiltered] = useState(false);
-    const [isSearching, setIsSearching] = useState(!!searchQuery || !!productId);  // Asegurar búsqueda por sugerencia
+    const [isSearching, setIsSearching] = useState(!!searchQuery || !!productId);
     const [clearButtonVisible, setClearButtonVisible] = useState(false);
     const [filterCleared, setFilterCleared] = useState(false);
     const [activeCategory, setActiveCategory] = useState(null);
@@ -40,7 +40,7 @@ const CardProduct = () => {
         return (
             (filters && Object.keys(filters).length > 0) ||
             searchQuery ||
-            productId || // Verifica si hay búsqueda por sugerencia
+            productId ||
             type ||
             fabricPattern ||
             uso ||
@@ -259,7 +259,7 @@ const CardProduct = () => {
             setFilterCleared(true);
             setClearButtonVisible(false);
 
-            navigate('/products');
+            navigate('/products', { replace: true });
             await fetchProducts(1);
         } catch (error) {
             console.error('Error al limpiar los filtros:', error);
