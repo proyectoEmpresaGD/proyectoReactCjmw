@@ -119,6 +119,7 @@ const CarruselHome = ({ images, texts, names, routes }) => {
                                 alt="" 
                                 onClick={() => handleClick(index)} // Manejador de clic para navegar
                                 className="cursor-pointer" // Añadir cursor de puntero para indicar que es clickeable
+                                style={names[index] === "CJM" ? { width: '350px', height: 'auto' } : { width: '550px', height: 'auto' }}
                             />
                         </div>
                     </div>
