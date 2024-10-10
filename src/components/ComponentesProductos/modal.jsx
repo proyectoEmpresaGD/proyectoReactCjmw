@@ -21,7 +21,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const [isZooming, setIsZooming] = useState(false);
     const [showIconMeaning, setShowIconMeaning] = useState(''); // Nuevo estado para mostrar significado del icono
 
-    const dobleMedida = ['INMACULADA', 'LORENA', 'ANTILLA JUTE', 'CALCUTA', 'CAYMAN', 'ZAHARA', 'BOLONIA', 'LIENZO', 'VARADERO' , 'DIAMANTE', 'IMPERIAL', 'PUMMERIN', 'TOPKAPI', 'TULUM', 'MOIRE', 'AHURA'];
+    const dobleMedida = ['INMACULADA', 'LORENA', 'ANTILLA JUTE', 'CALCUTA', 'CAYMAN', 'ZAHARA', 'BOLONIA', 'LIENZO', 'VARADERO', 'DIAMANTE', 'IMPERIAL', 'PUMMERIN', 'TOPKAPI', 'TULUM', 'MOIRE', 'AHURA'];
 
     useEffect(() => {
         const fetchRelatedProducts = async () => {
@@ -167,13 +167,13 @@ const Modal = ({ isOpen, close, product, alt }) => {
     };
 
     const mantenimientoImages = {
-        "LAVAR A 30°": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',
-        "LAVAR A 40°": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
-        "LAVAR A 90°": '',
+        "LAVAR A 30º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',
+        "LAVAR A 40º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
+        "LAVAR A 90º": '',
         "NO LAVAR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",
-        "PLANCHAR A 120°": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',
-        "PLANCHAR A 160°": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',
-        "PLANCHAR A 210°": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',
+        "PLANCHAR A 120º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',
+        "PLANCHAR A 160º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',
+        "PLANCHAR A 210º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',
         "NO PLANCHAR": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20planchar.jpg',
         "LAVAR A MANO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',
         "NO USAR LEJIA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lejia.jpg',
@@ -281,7 +281,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     const settings = {
         dots: false,
-        infinite: relatedProducts.length > 3, // Si hay más de 3 productos, el carrusel será infinito
+        infinite: relatedProducts.length > 4, // Si hay más de 3 productos, el carrusel será infinito
         speed: 500,
         slidesToShow: relatedProducts.length === 1 ? 1 : relatedProducts.length === 2 ? 2 : relatedProducts.length === 3 ? 3 : 4,
         slidesToScroll: relatedProducts.length === 1 ? 1 : relatedProducts.length === 2 ? 2 : relatedProducts.length === 3 ? 3 : 4,
@@ -310,7 +310,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5% pb-32">
-            <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[70vh] 2xl:max-h-[80vh] 2xl:h-auto md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[50%] md:mt-[15%] lg:[15%] 2xl:mt-[15%]">
+                <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[70vh] 2xl:max-h-[80vh] 2xl:h-auto md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[50%] md:mt-[15%] lg:[15%] 2xl:mt-[15%]">
                     <div className="flex justify-center absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
@@ -319,16 +319,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     <h2 className="text-center text-3xl font-semibold mb-2 md:mb-4 text-gray-800 mt-7 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
 
                     <div className="grid lg:grid-cols-6 md:grid-cols-7 sm:md:grid-cols-6 grid-cols-1 justify-center mx-auto " onClick={e => e.stopPropagation()}>
-                        <div className="relative group w-full h-[90%] lg:w-[100%] lg:h-[75%] 2xl:h-[70%] md:h-[50%] overflow-hidden col-span-2 md:col-span-3 lg:col-span-2">
+                        <div className="relative group w-full h-[100%] lg:w-[100%] lg:h-[75%] 2xl:h-[95%] md:h-[50%] overflow-hidden col-span-2 md:col-span-3 lg:col-span-2">
                             <img
                                 src={selectedImage}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                }}
                                 alt={alt}
-                                className="w-full h-full object-contain rounded-md"
+                                className="w-full h-full object-cover rounded-md aspect-[16/9]" // Ajusta la relación de aspecto a 16:9
                                 onLoad={handleImageLoad}
                                 onError={handleImageError}
                                 onMouseMove={moveLens}
