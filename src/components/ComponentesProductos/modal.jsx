@@ -21,6 +21,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const [isZooming, setIsZooming] = useState(false);
     const [showIconMeaning, setShowIconMeaning] = useState(''); // Nuevo estado para mostrar significado del icono
 
+    const dobleMedida = ['INMACULADA', 'LORENA', 'ANTILLA JUTE', 'CALCUTA', 'CAYMAN', 'ZAHARA', 'BOLONIA', 'LIENZO', 'VARADERO' , 'DIAMANTE', 'IMPERIAL', 'PUMMERIN', 'TOPKAPI', 'TULUM', 'MOIRE', 'AHURA'];
+
     useEffect(() => {
         const fetchRelatedProducts = async () => {
             try {
@@ -279,25 +281,25 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     const settings = {
         dots: false,
-        infinite: true,
+        infinite: relatedProducts.length > 3, // Si hay más de 3 productos, el carrusel será infinito
         speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 4,
+        slidesToShow: relatedProducts.length === 1 ? 1 : relatedProducts.length === 2 ? 2 : relatedProducts.length === 3 ? 3 : 4,
+        slidesToScroll: relatedProducts.length === 1 ? 1 : relatedProducts.length === 2 ? 2 : relatedProducts.length === 3 ? 3 : 4,
         nextArrow: <SampleNextArrow />,
         prevArrow: <SamplePrevArrow />,
         responsive: [
             {
                 breakpoint: 768,
                 settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
+                    slidesToShow: relatedProducts.length === 1 ? 1 : relatedProducts.length === 2 ? 2 : 3,
+                    slidesToScroll: relatedProducts.length === 1 ? 1 : relatedProducts.length === 2 ? 2 : 3,
                 }
             },
             {
                 breakpoint: 480,
                 settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2,
+                    slidesToShow: relatedProducts.length === 1 ? 1 : 2,
+                    slidesToScroll: relatedProducts.length === 1 ? 1 : 2,
                 }
             }
         ]
@@ -308,7 +310,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5% pb-32">
-            <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[80vh] 2xl:h-auto md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[50%] md:mt-[15%] lg:[15%] 2xl:mt-[15%]">
+            <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[70vh] 2xl:max-h-[80vh] 2xl:h-auto md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[50%] md:mt-[15%] lg:[15%] 2xl:mt-[15%]">
                     <div className="flex justify-center absolute top-4 right-4">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
@@ -398,7 +400,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 </div>
 
                                 <div className="text-center mt-2 mb-2">
-                                    {/* <button onClick={handleMapClick} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-3 rounded-md transition duration-200 mx-1">
+                                    {/* <button onCli<ck={handleMapClick} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-3 rounded-md transition duration-200 mx-1">
                                         Dónde comprar
                                     </button> */}
                                     <button onClick={handleAddToCart} className=" bg-black hover:bg-white text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-2 rounded-md transition duration-200 mx-1 mt-2">
@@ -438,7 +440,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         </div>
                                         <div className="grid grid-cols-2 md:justify-start md:text-start md:text-sm text-sm lg:text-md">
                                             <p>Ancho:</p>
-                                            <p>{selectedProduct.ancho}</p>
+                                            {/* Comprobación de si el producto está en la lista de dobleMedida */}
+                                            <p>{dobleMedida.includes(selectedProduct.nombre) ? '140/280 cm' : selectedProduct.ancho}</p>
                                         </div>
                                     </div>
 
