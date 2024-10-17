@@ -27,11 +27,11 @@ const names = [
 ]
 
 const rutas = [
-    "arenaHome",
-    "harbourHome",
-    "flamencoHome",
-    "cjmHome",
-    "bassariHome",
+    "arena",
+    "harbour",
+    "flamenco",
+    "cjm",
+    "bassari",
 ]
 
 
