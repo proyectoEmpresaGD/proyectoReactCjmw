@@ -6,6 +6,7 @@ import Modal from '../ComponentesProductos/modal';
 import Filtro from '../../app/products/buttonFiltro';
 import SubMenuCarousel from './SubMenuCarousel';
 import { FaTimes } from 'react-icons/fa';
+import CryptoJS from 'crypto-js';
 
 const CardProduct = () => {
     const location = useLocation();
@@ -15,9 +16,12 @@ const CardProduct = () => {
     const productId = searchParams.get('productId');
     const type = searchParams.get('type');
     const fabricPattern = searchParams.get('fabricPattern');
+    const secretKey = 'R2tyY1|YO.Bp!bK£BCl7l*?ZC1dT+q~6cAT-4|nx2z`0l3}78U';
+    const encryptedProductId = searchParams.get('pid');
     const uso = searchParams.get('uso');
     const fabricType = searchParams.get('fabricType');
     const collection = searchParams.get('collection');
+
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
@@ -35,12 +39,19 @@ const CardProduct = () => {
     const [activeCategory, setActiveCategory] = useState(null);
     const itemsPerPage = 16;
 
+
+
+    const decryptedProductId = encryptedProductId
+        ? CryptoJS.AES.decrypt(encryptedProductId, secretKey).toString(CryptoJS.enc.Utf8)
+        : null;
+
+    const productIdEnlace = decryptedProductId;
     // Función para verificar si hay filtros aplicados o búsqueda
     const hasFiltersApplied = () => {
         return (
             (filters && Object.keys(filters).length > 0) ||
             searchQuery ||
-            productId ||
+            productIdEnlace ||
             type ||
             fabricPattern ||
             uso ||
@@ -52,15 +63,34 @@ const CardProduct = () => {
     // Verificar si hay filtros o búsqueda aplicada, observando cambios en location.search
     useEffect(() => {
         setClearButtonVisible(hasFiltersApplied());
-    }, [filters, searchQuery, productId, type, fabricPattern, uso, fabricType, collection, location.search]);
+    }, [filters, searchQuery, productIdEnlace, type, fabricPattern, uso, fabricType, collection, location.search]);
 
     useEffect(() => {
-        if (productId) {
-            fetchProductsById(productId);
+        if (productIdEnlace) {
+            fetchProductsById(productIdEnlace);
         } else {
             fetchProducts(page);
         }
-    }, [searchQuery, productId, type, fabricPattern, uso, fabricType, collection, page, filters]);
+    }, [searchQuery, productIdEnlace, type, fabricPattern, uso, fabricType, collection, page, filters]);
+
+    const fetchProductsById = async (id) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`);
+            if (!response.ok) {
+                throw new Error('Error fetching product by ID');
+            }
+            const product = await response.json();
+            const productWithImages = await loadProductImages(product);
+            setSelectedProduct(productWithImages);
+            setModalOpen(true);  // Abrir la modal automáticamente con el producto cargado
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const loadProductImages = async (product) => {
         const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
@@ -203,7 +233,16 @@ const CardProduct = () => {
         );
     };
 
-    const fetchProductsById = async (id) => {
+    const handleFilteredProducts = (filteredProducts, selectedFilters) => {
+        setProducts(filteredProducts);
+        setFilters(selectedFilters);
+        setIsFiltered(true);
+        setIsSearching(false);
+        setPage(1);
+        setFilterCleared(false);
+    };
+
+    const fetchProductById = async (id) => {
         setLoading(true);
         setError(null);
         try {
@@ -213,10 +252,8 @@ const CardProduct = () => {
             }
             const product = await response.json();
             const productWithImages = await loadProductImages(product);
-            setProducts([productWithImages]);
-            setTotalProducts(1);
-            setIsFiltered(true);
-            setClearButtonVisible(true);  // Asegurar que se muestre el botón al seleccionar una sugerencia
+            setSelectedProduct(productWithImages);
+            setModalOpen(true); // Abrir la modal automáticamente con el producto cargado
         } catch (error) {
             setError(error.message);
         } finally {
@@ -224,14 +261,19 @@ const CardProduct = () => {
         }
     };
 
-    const handleFilteredProducts = (filteredProducts, selectedFilters) => {
-        setProducts(filteredProducts);
-        setFilters(selectedFilters);
-        setIsFiltered(true);
-        setIsSearching(false);
-        setPage(1);
-        setFilterCleared(false);
-    };
+    useEffect(() => {
+        if (productId) {
+            fetchProductById(productId); // Si hay un `productId` en la URL, cargar ese producto y abrir la modal
+        } else {
+            fetchProducts(page);
+        }
+    }, [searchQuery, productId, type, fabricPattern, uso, fabricType, collection, page, filters]);
+
+    useEffect(() => {
+        setClearButtonVisible(hasFiltersApplied());
+    }, [filters, searchQuery, productId, type, fabricPattern, uso, fabricType, collection, location.search]);
+
+
 
     const handleAddToCart = (product) => {
         addToCart({
@@ -251,6 +293,7 @@ const CardProduct = () => {
     const clearFilters = async () => {
         try {
             setLoading(true);
+            // Limpiar el estado de los filtros
             setFilters(null);
             setIsFiltered(false);
             setIsSearching(false);
@@ -259,7 +302,10 @@ const CardProduct = () => {
             setFilterCleared(true);
             setClearButtonVisible(false);
 
+            // Reiniciar los parámetros de búsqueda en la URL
             navigate('/products', { replace: true });
+
+            // Fetch sin filtros
             await fetchProducts(1);
         } catch (error) {
             console.error('Error al limpiar los filtros:', error);

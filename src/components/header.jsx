@@ -187,7 +187,7 @@ export const Header = () => {
         setSearchQuery(item.nombre);
         setShowSearchBar(false);
         setFiltersActive(true);
-        navigate(`/products?productId=${item.codprodu}`);
+        navigate(`/products?search=${searchQuery}`);
     };
 
     const handleLanguageChange = (selectedOption) => {
