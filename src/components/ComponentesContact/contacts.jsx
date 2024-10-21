@@ -22,7 +22,7 @@ function Contacts() {
     const telefonoHolanda = "+34-111-222-333"
     return (
         <>
-            <section className=" bg-gradient-to-r from-[#ebdecf] to-[#8a7862] xl:pt-[8%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%]  pt-[24%]">
+            <section className=" bg-gradient-to-r bg-gray-300 xl:pt-[8%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%]  pt-[24%]">
                 <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <div className="max-w-2xl mx-auto text-center  ">
                         <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl ">Contáctanos</h2>
@@ -52,7 +52,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-1 text-base text-gray-900">Avenida de europa 19</span>
+                                                                    <span className="block ml-1 text-base text-gray-900">Avenida de Europa 19</span>
                                                                 </div>
                                                             </div>
 
@@ -68,7 +68,8 @@ function Contacts() {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button onClick={() => enviarCorreo(direccionMontilla)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contáctenos</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            {/* className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span> */}
+                                                            <button onClick={() => enviarCorreo(direccionMontilla)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -82,7 +83,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900">C/ Juan Álvarez mendizabal 53</span>
+                                                                    <span className="block ml-3 text-base text-gray-900">C/ Juan Álvarez Mendizabal 53</span>
                                                                 </div>
                                                             </div>
 
@@ -98,7 +99,7 @@ function Contacts() {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button onClick={() => enviarCorreo(direccionMadrid)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contáctenos</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button onClick={() => enviarCorreo(direccionMadrid)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -114,7 +115,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900">Aribau 228 bajos 1º</span>
+                                                                    <span className="block ml-3 text-base text-gray-900">Aribau 228 Bajos 1º</span>
                                                                 </div>
                                                             </div>
 
@@ -130,7 +131,7 @@ function Contacts() {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button onClick={() => enviarCorreo(direccionBarcelona)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contáctenos</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button onClick={() => enviarCorreo(direccionBarcelona)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -146,7 +147,7 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900">Nieuve showroo, ETC DESIGN CENTER 1e Etage Stand 32</span>
+                                                                    <span className="block ml-3 text-base text-gray-900">Nieuve showroom, ETC DESIGN CENTER 1e Etage Stand 32</span>
                                                                 </div>
                                                             </div>
 
@@ -162,7 +163,7 @@ function Contacts() {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button onClick={() => enviarCorreo(direccionHolanda)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-gray-400 px-8 py-2 text-neutral-50"><span className="relative z-10">Contáctenos</span><span className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span></span></button>
+                                                            <button onClick={() => enviarCorreo(direccionHolanda)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
                                                         </div>
                                                     </div>
                                                 </div>
