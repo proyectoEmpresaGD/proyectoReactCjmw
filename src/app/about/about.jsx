@@ -5,10 +5,11 @@ import { CartProvider } from '../../components/CartContext';
 function About() {
     return (
         <>
+        {/* bg-gradient-to-r from-[#ebdecf] to-[#a78d6e] */}
             <CartProvider>
                 <Header />
                 {/* Gradiente en todo el cuerpo */}
-                <div className="min-h-screen xl:pt-[4%] lg:pt-[8%] md:pt-[6%] sm:pt-[8%] pt-[10%] bg-gradient-to-r from-[#ebdecf] to-[#a78d6e]">
+                <div className="min-h-screen xl:pt-[4%] lg:pt-[8%] md:pt-[6%] sm:pt-[8%] pt-[10%]">
                     {/* Sección "CJM: Transformando espacios con telas de calidad" */}
                     <section className="py-20 lg:py-12 bg-ivory font-Corinthia">
                         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
@@ -19,9 +20,9 @@ function About() {
                                     </div>
                                 </div>
                                 <div className="lg:pl-10">
-                                    <div className="text-center lg:text-left">
+                                    <div className="text-justify">
                                         <p className="text-sm font-semibold tracking-widest text-gray-800 uppercase mb-2">De un vistazo</p>
-                                        <h2 className="text-center font-semibold text-gray-600 text-2xl mb-6">CJM: Transformando espacios con telas de calidad</h2>
+                                        <h2 className="text-justify font-semibold text-gray-600 text-2xl mb-6">CJM: Transformando espacios con telas de calidad</h2>
                                         <p className="text-lg leading-relaxed text-gray-800 mt-6">CJM es responsable del negocio global de CJM, HARBOUR, ARENA y FLAMENCO, nuestras cuatro marcas de textiles decorativos. Fundada el 23 de noviembre de 2000 por la familia Caracuel Jiménez Marqués, la empresa se centra en el desarrollo, producción y venta de telas para mobiliario interior y exterior de uso doméstico o para el mercado contract.</p>
                                         <p className="text-lg leading-relaxed text-gray-800 mt-6">En CJM, la fabricación y el diseño de telas de calidad van de la mano. Nuestras dos divisiones comerciales están en constante expansión global, estando presentes en más de 30 países en cuatro continentes.</p>
                                         <p className="text-lg leading-relaxed text-gray-800 mt-6">Ecología y sostenibilidad significan crear valor duradero para nuestros clientes, empleados y la sociedad. La base de la estrategia empresarial sostenible de CJM es la responsabilidad respecto a los efectos en el medio ambiente en el desarrollo de sus telas e instalaciones decorativas.</p>

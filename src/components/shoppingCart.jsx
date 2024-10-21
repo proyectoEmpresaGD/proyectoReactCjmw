@@ -34,7 +34,7 @@ const ShoppingCart = ({ onClose }) => {
                             <img src={item.image} alt={item.name} className="h-16 w-16 rounded-full object-cover mr-4" />
                             <div>
                                 <h5 className="text-md font-semibold">{item.name}</h5>
-                                <p className="text-sm text-gray-600">{`Size: ${item.size}, Color: ${item.color}`}</p>
+                                <p className="text-sm text-gray-600">{`Ancho: ${item.size}, Color: ${item.color}`}</p>
                                 <p className="text-sm font-semibold">€{item.price}</p>
                             </div>
                         </div>

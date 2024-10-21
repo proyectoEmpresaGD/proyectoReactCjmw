@@ -49,14 +49,8 @@ const NewCollection = ({ images, titles, productCodes }) => {
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 0 ? 'scale-105' : 'scale-100'} transition duration-500`}
                             />
-                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
+                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6 "onClick={() => handleShopNowClick(0)}>
                                 <h3 className="text-xl font-medium text-white">{titles[0]}</h3>
-                                <span
-                                    onClick={() => handleShopNowClick(0)} // Manejar clic en Shop Now
-                                    className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
-                                >
-                                    Ver Producto
-                                </span>
                             </div>
                         </a>
                     </li>
@@ -72,14 +66,8 @@ const NewCollection = ({ images, titles, productCodes }) => {
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 1 ? 'scale-105' : 'scale-100'} transition duration-500`}
                             />
-                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
+                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6" onClick={() => handleShopNowClick(1)}>
                                 <h3 className="text-xl font-medium text-white">{titles[1]}</h3>
-                                <span
-                                    onClick={() => handleShopNowClick(1)}
-                                    className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
-                                >
-                                    Ver Producto
-                                </span>
                             </div>
                         </a>
                     </li>
@@ -95,14 +83,8 @@ const NewCollection = ({ images, titles, productCodes }) => {
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 2 ? 'scale-105' : 'scale-100'} transition duration-500`}
                             />
-                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6">
+                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6" onClick={() => handleShopNowClick(2)}>
                                 <h3 className="text-xl font-medium text-white">{titles[2]}</h3>
-                                <span
-                                    onClick={() => handleShopNowClick(2)} // Manejar clic en Ver Producto
-                                    className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium uppercase tracking-wide text-white cursor-pointer"
-                                >
-                                    Ver Producto
-                                </span>
                             </div>
                         </a>
                     </li>

@@ -87,8 +87,8 @@ const Footer = () => {
                     </a>
                     <Link
                         to="/contact"
-                        className="font-semibold rounded-full px-6 py-2 transition-colors hover:bg-gray-700 hover:text-white transform hover:scale-105 inline-block"
-                        style={{ backgroundColor: "#3182CE" }} // Color de fondo del botón
+                        className="font-semibold rounded-md px-6 py-2 transition-colors text-white hover:bg-white bg-black hover:text-black transform hover:scale-105 inline-block"
+                        
                     >
                         Contáctanos
                     </Link>

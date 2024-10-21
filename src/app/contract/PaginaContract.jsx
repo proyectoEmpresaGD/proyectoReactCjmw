@@ -25,7 +25,7 @@ function Contract() {
                                     />
                                 </div>
                                 <div className="lg:pl-10 text-justify">
-                                    <div className="text-left">
+                                    <div className="text-justify">
                                         <h2 className="text-4xl font-bold mb-4 text-black">
                                             The Team
                                         </h2>
