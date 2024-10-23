@@ -16,37 +16,59 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const [selectedImage, setSelectedImage] = useState('');
     const [selectedProduct, setSelectedProduct] = useState(product);
     const [relatedProducts, setRelatedProducts] = useState([]);
+    const [anchoOptions, setAnchoOptions] = useState([]);
+    const [productsForCarousel, setProductsForCarousel] = useState([]);
+    const [selectedAncho, setSelectedAncho] = useState(''); // Estado para el ancho seleccionado
     const lensRef = useRef(null);
     const resultRef = useRef(null);
     const [zoomFactor, setZoomFactor] = useState(2);
     const [isZooming, setIsZooming] = useState(false);
-    const [showIconMeaning, setShowIconMeaning] = useState(''); // Nuevo estado para mostrar significado del icono
+    const [showIconMeaning, setShowIconMeaning] = useState('');
 
     const dobleMedida = ['INMACULADA', 'LORENA', 'ANTILLA JUTE', 'CALCUTA', 'CAYMAN', 'ZAHARA', 'BOLONIA', 'LIENZO', 'VARADERO', 'DIAMANTE', 'IMPERIAL', 'PUMMERIN', 'TOPKAPI', 'TULUM', 'MOIRE', 'AHURA'];
 
     useEffect(() => {
         const fetchRelatedProducts = async () => {
             try {
-                const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp'
+                const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${product.codfamil}`);
                 const data = await response.json();
-                const productsWithImages = await Promise.all(
-                    data
-                        .filter(p => p.nombre === product.nombre) // Filtrar productos con el mismo nombre
-                        .map(async (product) => {
-                            const [imageBuena, imageBaja] = await Promise.all([
-                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
-                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
-                            ]);
 
-                            return {
-                                ...product,
-                                imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrl,
-                                imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrl
-                            };
-                        })
+                // Recoger todos los productos con el mismo nombre para que estén disponibles
+                const allProducts = data.filter(p => p.nombre === product.nombre);
+
+                // Filtrar productos por nombre y eliminar duplicados por tonalidad para el carrusel
+                const uniqueProductsForCarousel = allProducts.reduce((unique, item) => {
+                    if (!unique.some(p => p.tonalidad === item.tonalidad)) {
+                        unique.push(item);
+                    }
+                    return unique;
+                }, []);
+
+                setProductsForCarousel(uniqueProductsForCarousel); // Pasamos los productos al carrusel
+
+                const productsWithImages = await Promise.all(
+                    allProducts.map(async (product) => {
+                        const [imageBuena, imageBaja] = await Promise.all([
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                        ]);
+
+                        return {
+                            ...product,
+                            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrl,
+                            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrl
+                        };
+                    })
                 );
+
                 setRelatedProducts(productsWithImages);
+
+                // Obtener las opciones de ancho para los productos con la misma tonalidad
+                const uniqueAnchos = [...new Set(allProducts.map(p => p.ancho))];
+                setAnchoOptions(uniqueAnchos);
+                setSelectedAncho(Math.min(...uniqueAnchos)); // Seleccionamos el menor ancho por defecto
+
             } catch (error) {
                 console.error('Error fetching related products:', error);
             }
@@ -54,13 +76,29 @@ const Modal = ({ isOpen, close, product, alt }) => {
         fetchRelatedProducts();
     }, [product.codfamil, product.nombre]);
 
+    const handleAnchoChange = (e) => {
+        const newAncho = e.target.value;
+        setSelectedAncho(newAncho);
+
+        // Buscar el producto con el mismo nombre, tonalidad y ancho seleccionado, pero basado en el `selectedProduct`
+        const newSelectedProduct = relatedProducts.find(
+            p => p.nombre === selectedProduct.nombre && p.tonalidad === selectedProduct.tonalidad && p.ancho === newAncho
+        );
+
+        if (newSelectedProduct) {
+            // Actualizamos el producto seleccionado con el nuevo producto basado en el ancho
+            setSelectedProduct(newSelectedProduct);
+            setSelectedImage(newSelectedProduct.imageBuena || newSelectedProduct.imageBaja);
+        }
+    };
+
     useEffect(() => {
         const fetchImages = async () => {
             try {
                 const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
                 const [buenaResponse, bajaResponse] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`),
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`)
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`),
                 ]);
 
                 const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
@@ -74,7 +112,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
                 setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : defaultImageUrl);
             } catch (error) {
-                console.error('Error fetching images:', error);
+                console.log('Error fetching images:', error);
             }
         };
 
@@ -82,9 +120,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     }, [product.codprodu]);
 
-    const handleMapClick = () => {
-        setModalMapaOpen(true);
-    };
+    // const handleMapClick = () => {
+    //     setModalMapaOpen(true);
+    // };
 
     const moveLens = (e) => {
         if (!resultRef.current || !imageLoaded) return;
@@ -212,8 +250,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 src={`${usoImages[uso]}`}
                 alt={uso}
                 className="w-6 h-6 mx-1 cursor-pointer"
-                title={`Click para ver el significado de ${uso}`} // Agregar tooltip
-                onClick={() => setShowIconMeaning(uso)} // Al hacer clic, mostrar el significado
+                title={`Click para ver el significado de ${uso}`}
+                onClick={() => setShowIconMeaning(uso)}
             />
         ));
     };
@@ -236,10 +274,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
             name: selectedProduct.nombre,
             price: 3,
             image: selectedProduct.imageBaja,
-            quantity: 1
+            color: selectedProduct.colorprincipal,
+            quantity: 1,
+            ancho: selectedProduct.ancho,
         });
-        setShowAddedMessage(true);
-        setTimeout(() => setShowAddedMessage(false), 2000);
     };
 
     const SamplePrevArrow = ({ className, style, onClick }) => {
@@ -254,30 +292,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
         );
     };
 
-    const settings = {
-        dots: false,
-        infinite: relatedProducts.length > 4, // Si hay más de 3 productos, el carrusel será infinito
-        speed: 500,
-        slidesToShow: 2,
-        slidesToScroll: 1,
-        vertical: true,  
-        verticalSwiping: true,  
-        arrows: false,  
-        rows: 3,
-        slidesPerRow: 1,
-        responsive: [
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                    rows: 3,
-                    vertical: true,  // Seguimos usando el scroll vertical en pantallas pequeñas
-                    verticalSwiping: true,
-                }
-            },
-        ]
-    };
+    
 
     if (!isOpen) return null;
 
@@ -285,16 +300,12 @@ const Modal = ({ isOpen, close, product, alt }) => {
         <CartProvider>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5% pb-32">
                 <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[90vh] 2xl:max-h-[80vh] 2xl:h-auto md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[54%] md:mt-[23%] 2xl:mt-[15%]">
+                    <ShareButton selectedProduct={selectedProduct} />
                     <div className="flex justify-center absolute top-4 right-3">
                         <button className="relative " onClick={close}>
                             <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
                         </button>
                     </div>
-
-                    <ShareButton selectedProduct={selectedProduct} />
-
-
-
                     <h2 className="text-center text-3xl font-semibold mb-2 md:mb-4 text-gray-800 mt-7 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:md:grid-cols-1 grid-cols-1 justify-center mx-auto" onClick={e => e.stopPropagation()}>
                         {/* Ficha Técnica */}
@@ -322,7 +333,18 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         <strong>Estilo:</strong> {selectedProduct.estilo}
                                     </div>
                                     <div className="text-left">
-                                        <strong>Ancho:</strong> {dobleMedida.includes(selectedProduct.nombre) ? '140/280 cm' : selectedProduct.ancho}
+                                        <strong>Ancho:</strong>
+                                        <select
+                                            value={selectedAncho}
+                                            onChange={handleAnchoChange}
+                                            className="border border-gray-300 rounded-md p-1 ml-2"
+                                        >
+                                            {anchoOptions.map((ancho, index) => (
+                                                <option key={index} value={ancho}>
+                                                    {ancho}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className="text-left">
                                         <strong>Martindale:</strong> {selectedProduct.martindale}
@@ -368,31 +390,31 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 ref={resultRef}
                                 className="relative w-full overflow-hidden rounded-md"
                                 onMouseMove={moveLens}
-                                onMouseEnter={() => setZoomFactor(2)}  
-                                onMouseLeave={() => setZoomFactor(1)}  
+                                onMouseEnter={() => setZoomFactor(2)}
+                                onMouseLeave={() => setZoomFactor(1)}
                                 style={{
                                     transition: 'transform 0.3s ease-in-out',
                                     position: 'relative',
-                                    maxWidth: '550px',            
-                                    maxHeight: '435px',           
-                                    width: '550px',               
-                                    height: '390px',               
+                                    maxWidth: '550px',
+                                    maxHeight: '435px',
+                                    width: '550px',
+                                    height: '390px',
                                 }}
                             >
                                 <img
                                     src={selectedImage}
                                     alt={alt}
                                     className="w-full h-full object-cover rounded-md"
-                                    
+
                                     style={{
-                                        transform: `scale(${zoomFactor})`,  
-                                        transformOrigin: 'center',          
+                                        transform: `scale(${zoomFactor})`,
+                                        transformOrigin: 'center',
                                         transition: 'transform 0.3s ease-in-out',
-                                        objectFit: 'cover',                 
-                                        maxWidth: '550px',                  
-                                        maxHeight: '435px',                 
-                                        width: '550px',                     
-                                        height: '390px',                    
+                                        objectFit: 'cover',
+                                        maxWidth: '550px',
+                                        maxHeight: '435px',
+                                        width: '550px',
+                                        height: '390px',
                                     }}
                                 />
                             </div>
@@ -408,10 +430,20 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         </div>
 
                         <div className='col-span-1 order-2 lg:order-3 w-full xl:pt-0 md:pl-7 lg:pl-6 xl:pl-8 lg:p-4 md:p-4 text-center md:text-start justify-start'>
+                        <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-0">
+                                <div className="flex items-center justify-start mb-2 mt-4 bg-black text-white rounded-md px-2 md:mt-2 lg:mt-0">
+                                    <div className="flex items-center justify-center text-white font-semibold rounded-full w-9 h-9">
+                                        {productsForCarousel.length}
+                                    </div>
+                                    <p className="ml-2 text-md">
+                                        {productsForCarousel.length === 1 ? 'Color disponible' : 'Colores disponibles'}
+                                    </p>
+                                </div>
+                            </div>
                             <div className="col-span-1">
                                 <Slider {...{
                                     dots: false,
-                                    infinite: relatedProducts.length > 6,
+                                    infinite: productsForCarousel.length > 6, // Si hay más de 6 productos, el carrusel será infinito
                                     speed: 500,
                                     slidesToShow: 2,
                                     slidesToScroll: 2,
@@ -430,34 +462,32 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         },
                                     ]
                                 }}>
-                                    {relatedProducts.map((colorProduct, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative px-1 cursor-pointer"
-                                            onClick={() => handleColorClick(colorProduct)}
-                                        >
-                                            <img
-                                                src={colorProduct.imageBaja}
-                                                alt={colorProduct.nombre}
-                                                className="w-full h-32 object-cover rounded-md"
-                                            />
-                                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                                <p className="text-white text-center">{colorProduct.nombre} {colorProduct.tonalidad}</p>
+                                    {relatedProducts
+                                        // Filtrar los productos para eliminar duplicados por tonalidad
+                                        .filter((product, index, self) =>
+                                            product.tonalidad && index === self.findIndex((p) => (
+                                                p.tonalidad && p.tonalidad.trim().toLowerCase() === product.tonalidad.trim().toLowerCase()
+                                            ))
+                                        )
+                                        .map((colorProduct, index) => (
+                                            <div
+                                                key={index}
+                                                className="relative px-1 cursor-pointer"
+                                                onClick={() => handleColorClick(colorProduct)}
+                                            >
+                                                <img
+                                                    src={colorProduct.imageBaja}
+                                                    alt={colorProduct.nombre}
+                                                    className="w-full h-32 object-cover rounded-md"
+                                                />
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                                    <p className="text-white text-center">{colorProduct.nombre} {colorProduct.tonalidad}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </Slider>
                             </div>
-                            <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-0">
-                                <div className="flex items-center justify-start mb-2 mt-4 md:mt-2 lg:mt-0">
-                                    <div className="flex items-center justify-center bg-gray-300 text-black font-semibold rounded-full w-9 h-9">
-                                        {relatedProducts.length}
-                                    </div>
-                                    <p className="ml-2 text-md">
-                                        {relatedProducts.length === 1 ? 'Color disponible' : 'Colores disponibles'}
-                                    </p>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                     {/* Mostrar el significado del icono seleccionado */}
