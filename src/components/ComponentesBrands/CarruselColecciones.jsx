@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { carruselConfig } from '../../Constants/constants'; // Importar las constantes
 
 const CarruselColecciones = ({ imageSets = [] }) => {
   const [randomImage, setRandomImage] = useState(null);
@@ -6,10 +7,9 @@ const CarruselColecciones = ({ imageSets = [] }) => {
   // Selecciona una imagen aleatoria del array de imágenes al montar el componente o si imageSets cambia
   useEffect(() => {
     if (imageSets.length > 0) {
-      // Si imageSets es un array de arrays, lo aplana en una sola lista de imágenes
       const images = Array.isArray(imageSets[0]) ? imageSets.flat() : imageSets;
       const randomIndex = Math.floor(Math.random() * images.length);
-      setRandomImage(images[randomIndex]); // Selecciona una imagen aleatoria
+      setRandomImage(images[randomIndex]); 
     }
   }, [imageSets]);
 
@@ -20,16 +20,15 @@ const CarruselColecciones = ({ imageSets = [] }) => {
           <div className="image-container h-full w-full object-cover rounded-md mx-auto">
             <img
               src={randomImage}
-              alt="Random Display"
+              alt={carruselConfig.imageAltText} // Usar el texto alternativo desde las constantes
               className="object-cover w-full h-full rounded-md"
             />
           </div>
         </div>
       ) : (
-        <p>No images available</p>
+        <p>{carruselConfig.noImagesText}</p> // Usar el texto de error desde las constantes
       )}
     </div>
-
   );
 };
 

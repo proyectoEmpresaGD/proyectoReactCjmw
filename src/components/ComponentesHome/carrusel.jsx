@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Fade } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
+import { textosCarrusel } from '../../Constants/constants'; // Importar los textos desde el archivo de constantes
 
 const shuffleArray = (array) => {
   let shuffledArray = array.slice(); // Copia el array original
@@ -21,24 +22,13 @@ const rotateArray = (array, index) => {
 
 const CarruselColecciones = ({ images }) => {
   const [shuffledImages, setShuffledImages] = useState([]);
-  const [texts, setTexts] = useState([
-    "Texto para la imagen 1",
-    "Texto para la imagen 2",
-    "Texto para la imagen 3",
-    "Texto para la imagen 4",
-    "Texto para la imagen 5",
-    "Texto para la imagen 6",
-    "Texto para la imagen 7",
-    "Texto para la imagen 8"
-  ]);
 
   useEffect(() => {
     const shuffled = shuffleArray(images);
     const randomStartIndex = getRandomStartIndex(shuffled.length);
     const rotatedImages = rotateArray(shuffled, randomStartIndex);
-    const rotatedTexts = rotateArray(texts, randomStartIndex);
+    const rotatedTexts = rotateArray(textosCarrusel, randomStartIndex); // Usar textos desde constantes
     setShuffledImages(rotatedImages);
-    setTexts(rotatedTexts); // Rota los textos para que coincidan con las imágenes
   }, [images]);
 
   return (
@@ -51,14 +41,10 @@ const CarruselColecciones = ({ images }) => {
         onChange={() => { }} // Corregido el valor de onChange
         onStart={() => { }} // Corregido el valor de onStart
       >
-        {images.map((image, index) => (
+        {shuffledImages.map((image, index) => (
           <div key={index} className="each-fade-effect lg:h-[100vh] sm:h-[50vh] relative">
             <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
               <img src={image} alt="" className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center" />
-              {/* <div className="absolute bottom-20 left-0 w-[35%] mx-auto right-0 bg-black bg-opacity-60 p-4 text-center z-20">
-                <h3 className="text-lg font-semibold text-white">{texts[index]}</h3>
-                <p className="text-sm text-white">Descripción adicional si es necesario.</p>
-              </div> */}
             </div>
           </div>
         ))}

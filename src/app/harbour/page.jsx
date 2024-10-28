@@ -3,7 +3,6 @@ import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
-import { Link } from "react-router-dom";
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
 
 function shuffleArray(array) {

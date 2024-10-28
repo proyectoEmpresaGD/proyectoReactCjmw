@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useCart } from '../components/CartContext'; // Asegúrate de ajustar la ruta según tu estructura de carpetas
+import { useCart } from '../components/CartContext';
+import { cartConfig, cartTexts } from '../Constants/constants'; // Importar constantes
 
 const ShoppingCart = ({ onClose }) => {
     const { cartItems, addToCart, removeFromCart } = useCart();
     const [showCart, setShowCart] = useState(false);
 
     useEffect(() => {
-        // Cuando el componente se monta, esperamos un pequeño tiempo y luego mostramos el carrito
         const timer = setTimeout(() => {
             setShowCart(true);
-        }, 100);
+        }, cartConfig.cartOpenDelay); // Usar constante del delay
 
-        // Limpiamos el temporizador en caso de que el componente se desmonte antes de que se muestre el carrito
         return () => clearTimeout(timer);
     }, []);
 
@@ -20,7 +19,7 @@ const ShoppingCart = ({ onClose }) => {
     return (
         <div className={`fixed top-0 right-0 z-50 w-full max-w-md h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${showCart ? 'translate-x-0' : 'translate-x-full'}`}>
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold">Shopping Cart</h2>
+                <h2 className="text-lg font-semibold">{cartTexts.cartTitle}</h2>
                 <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -34,7 +33,7 @@ const ShoppingCart = ({ onClose }) => {
                             <img src={item.image} alt={item.name} className="h-16 w-16 rounded-full object-cover mr-4" />
                             <div>
                                 <h5 className="text-md font-semibold">{item.name}</h5>
-                                <p className="text-sm text-gray-600">{`Ancho: ${item.ancho}, Color: ${item.color}`}</p>
+                                <p className="text-sm text-gray-600">{`${cartTexts.width}: ${item.ancho}, ${cartTexts.color}: ${item.color}`}</p>
                                 <p className="text-sm font-semibold">€{item.price}</p>
                             </div>
                         </div>
@@ -53,11 +52,11 @@ const ShoppingCart = ({ onClose }) => {
             </div>
             <div className="p-4 border-t border-gray-200">
                 <div className="flex justify-between items-center">
-                    <span className="text-base text-gray-600">Total:</span>
+                    <span className="text-base text-gray-600">{cartTexts.totalLabel}</span>
                     <span className="text-lg font-semibold">€{totalPrice}</span>
                 </div>
                 <button onClick={() => console.log("Proceeding to checkout...")} className="w-full mt-4 bg-gray-500  duration-150 text-white  font-bold py-2 px-4 rounded">
-                    Proximamente disponible
+                    {cartTexts.checkoutPlaceholder}
                 </button>
             </div>
         </div>

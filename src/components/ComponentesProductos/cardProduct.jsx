@@ -7,6 +7,7 @@ import Filtro from '../../app/products/buttonFiltro';
 import SubMenuCarousel from './SubMenuCarousel';
 import { FaTimes } from 'react-icons/fa';
 import CryptoJS from 'crypto-js';
+import { secretKey, itemsPerPage, defaultImageUrl, apiUrl } from '../../Constants/constants';
 
 const CardProduct = () => {
     const location = useLocation();
@@ -16,12 +17,10 @@ const CardProduct = () => {
     const productId = searchParams.get('productId');
     const type = searchParams.get('type');
     const fabricPattern = searchParams.get('fabricPattern');
-    const secretKey = 'R2tyY1|YO.Bp!bK£BCl7l*?ZC1dT+q~6cAT-4|nx2z`0l3}78U';
     const encryptedProductId = searchParams.get('pid');
     const uso = searchParams.get('uso');
     const fabricType = searchParams.get('fabricType');
     const collection = searchParams.get('collection');
-
 
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
@@ -37,16 +36,13 @@ const CardProduct = () => {
     const [clearButtonVisible, setClearButtonVisible] = useState(false);
     const [filterCleared, setFilterCleared] = useState(false);
     const [activeCategory, setActiveCategory] = useState(null);
-    const itemsPerPage = 16;
-
-
 
     const decryptedProductId = encryptedProductId
         ? CryptoJS.AES.decrypt(encryptedProductId, secretKey).toString(CryptoJS.enc.Utf8)
         : null;
 
     const productIdEnlace = decryptedProductId;
-    // Función para verificar si hay filtros aplicados o búsqueda
+
     const hasFiltersApplied = () => {
         return (
             (filters && Object.keys(filters).length > 0) ||
@@ -60,7 +56,6 @@ const CardProduct = () => {
         );
     };
 
-    // Verificar si hay filtros o búsqueda aplicada, observando cambios en location.search
     useEffect(() => {
         setClearButtonVisible(hasFiltersApplied());
     }, [filters, searchQuery, productIdEnlace, type, fabricPattern, uso, fabricType, collection, location.search]);
@@ -77,14 +72,14 @@ const CardProduct = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`);
+            const response = await fetch(`${apiUrl}/api/products/${id}`);
             if (!response.ok) {
                 throw new Error('Error fetching product by ID');
             }
             const product = await response.json();
             const productWithImages = await loadProductImages(product);
             setSelectedProduct(productWithImages);
-            setModalOpen(true);  // Abrir la modal automáticamente con el producto cargado
+            setModalOpen(true);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -93,13 +88,11 @@ const CardProduct = () => {
     };
 
     const loadProductImages = async (product) => {
-        const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
-
         const [imageBuena, imageBaja] = await Promise.all([
-            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then((res) =>
+            fetch(`${apiUrl}/api/images/${product.codprodu}/Buena`).then((res) =>
                 res.ok ? res.json() : null
             ),
-            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then((res) =>
+            fetch(`${apiUrl}/api/images/${product.codprodu}/Baja`).then((res) =>
                 res.ok ? res.json() : null
             ),
         ]);
@@ -120,14 +113,14 @@ const CardProduct = () => {
 
             if (searchQuery && !filters) {
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`
+                    `${apiUrl}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`
                 );
                 setIsSearching(true);
                 setIsFiltered(false);
             } else if (type) {
                 filterParams = { fabricType: type === 'papel' ? ['PAPEL PARED'] : [] };
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -139,7 +132,7 @@ const CardProduct = () => {
             } else if (fabricPattern) {
                 filterParams = { fabricPattern: [fabricPattern] };
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -151,7 +144,7 @@ const CardProduct = () => {
             } else if (uso) {
                 filterParams = { uso: [uso] };
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -163,7 +156,7 @@ const CardProduct = () => {
             } else if (fabricType) {
                 filterParams = { fabricType: [fabricType] };
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -175,7 +168,7 @@ const CardProduct = () => {
             } else if (collection) {
                 filterParams = { collection: [collection] };
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -187,7 +180,7 @@ const CardProduct = () => {
             } else if (filters) {
                 setIsSearching(false);
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                    `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -197,7 +190,7 @@ const CardProduct = () => {
                 setIsFiltered(true);
             } else {
                 response = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/products?limit=${itemsPerPage}&page=${pageNumber}`
+                    `${apiUrl}/api/products?limit=${itemsPerPage}&page=${pageNumber}`
                 );
                 setIsFiltered(false);
                 setIsSearching(false);
@@ -246,14 +239,14 @@ const CardProduct = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`);
+            const response = await fetch(`${apiUrl}/api/products/${id}`);
             if (!response.ok) {
                 throw new Error('Error fetching product by ID');
             }
             const product = await response.json();
             const productWithImages = await loadProductImages(product);
             setSelectedProduct(productWithImages);
-            setModalOpen(true); // Abrir la modal automáticamente con el producto cargado
+            setModalOpen(true);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -263,7 +256,7 @@ const CardProduct = () => {
 
     useEffect(() => {
         if (productId) {
-            fetchProductById(productId); // Si hay un `productId` en la URL, cargar ese producto y abrir la modal
+            fetchProductById(productId);
         } else {
             fetchProducts(page);
         }
@@ -272,8 +265,6 @@ const CardProduct = () => {
     useEffect(() => {
         setClearButtonVisible(hasFiltersApplied());
     }, [filters, searchQuery, productId, type, fabricPattern, uso, fabricType, collection, location.search]);
-
-
 
     const handleAddToCart = (product) => {
         addToCart({
@@ -293,7 +284,6 @@ const CardProduct = () => {
     const clearFilters = async () => {
         try {
             setLoading(true);
-            // Limpiar el estado de los filtros
             setFilters(null);
             setIsFiltered(false);
             setIsSearching(false);
@@ -301,11 +291,7 @@ const CardProduct = () => {
             setPage(1);
             setFilterCleared(true);
             setClearButtonVisible(false);
-
-            // Reiniciar los parámetros de búsqueda en la URL
             navigate('/products', { replace: true });
-
-            // Fetch sin filtros
             await fetchProducts(1);
         } catch (error) {
             console.error('Error al limpiar los filtros:', error);
@@ -377,7 +363,7 @@ const CardProduct = () => {
                                 src={product.imageBaja}
                                 alt={product.nombre}
                                 onError={(e) => {
-                                    e.target.src = 'default_buena_image_url';
+                                    e.target.src = defaultImageUrl;
                                 }}
                             />
                             <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-lg md:hidden">

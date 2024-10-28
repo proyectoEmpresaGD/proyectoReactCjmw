@@ -25,21 +25,21 @@ function ArenaHome() {
     ]
 
     const imagesNewCollections = [
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20C43%20(2)_11_11zon_20_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20DAMSON%20%20(2)_12_11zon_21_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/TULUM%20C01%20(2)_27_11zon_22_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/JEWEL/JEWEL%20DUCK%20EGG%204_2_11zon_1_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MONTANA/NEBRASCA%20SAND%202_12_11zon_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MONTANA/APACHE%20CHERRY%202_4_11zon_11zon.webp",
     ]
 
     const titles = [
-        "MIKONOS",
-        "TOUCH",
-        "CIRRUS",
+        "JEWEL",
+        "NEBRASCA",
+        "APACHE",
     ]
 
     const CodProduAre = [
-        "ARE01058",
-        "ARE00192",
-        "ARE00851",
+        "ARE01319",
+        "ARE01607",
+        "ARE01559",
     ]
 
     return (
