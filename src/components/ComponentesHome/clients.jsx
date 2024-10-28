@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { clientLogos } from '../../Constants/constants';
 
 const Clients = () => {
     return (
@@ -7,34 +8,15 @@ const Clients = () => {
                 <strong>Estas son nuestras marcas</strong>
             </h1>
             <div className="flex flex-col md:flex-row items-center flex-wrap gap-24 md:grid md:grid-cols-2 md:gap-20 lg:grid lg:grid-cols-4 lg:gap-24 xl:grid xl:grid-cols-4 xl:gap-24">
-            <Link to="/arenaHome" rel="noopener noreferrer" className="md:justify-center md:items-center mx-auto">
-            <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoArena.png"
-                        className="w-48 h-48 object-contain transition-transform transform hover:scale-105"
-                        alt="Client Logo 4"
-                    />
-            </Link>
-            <Link to="/cjmHome" rel="noopener noreferrer" className="md:justify-center md:items-center mx-auto">
-            <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoCJM.png"
-                        className="w-20 h-20 object-contain transition-transform transform hover:scale-105 "
-                        alt="Client Logo 1"
-                    />
-            </Link>
-            <Link to="/flamencoHome" rel="noopener noreferrer" className="md:justify-center md:items-center mx-auto">
-            <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png"
-                        className="w-48 h-48 object-contain transition-transform transform hover:scale-105"
-                        alt="Client Logo 2"
-                    />
-            </Link>
-            <Link to="/harbourHome" rel="noopener noreferrer" className="md:justify-center md:items-center mx-auto">
-            <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png"
-                        className="w-48 h-48 object-contain transition-transform transform hover:scale-105"
-                        alt="Client Logo 3"
-            />
-            </Link>    
+                {clientLogos.map((logo, index) => (
+                    <Link key={index} to={logo.link} rel="noopener noreferrer" className="md:justify-center md:items-center mx-auto">
+                        <img
+                            src={logo.imgSrc}
+                            className={`${logo.imgSize} object-contain transition-transform transform hover:scale-105`}
+                            alt={logo.imgAlt}
+                        />
+                    </Link>
+                ))}
             </div>
         </div>
     );

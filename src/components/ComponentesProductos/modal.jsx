@@ -8,6 +8,7 @@ import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
 import { CartProvider } from "../CartContext";
 import { Link } from "react-router-dom";
 import ShareButton from './ShareButton';
+import { defaultImageUrlModalProductos, mantenimientoImages, usoImages } from '../../Constants/constants';
 
 const Modal = ({ isOpen, close, product, alt }) => {
     const { addToCart } = useCart();
@@ -18,7 +19,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [anchoOptions, setAnchoOptions] = useState([]);
     const [productsForCarousel, setProductsForCarousel] = useState([]);
-    const [selectedAncho, setSelectedAncho] = useState(''); // Estado para el ancho seleccionado
+    const [selectedAncho, setSelectedAncho] = useState('');
     const lensRef = useRef(null);
     const resultRef = useRef(null);
     const [zoomFactor, setZoomFactor] = useState(2);
@@ -30,14 +31,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
     useEffect(() => {
         const fetchRelatedProducts = async () => {
             try {
-                const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${product.codfamil}`);
                 const data = await response.json();
 
-                // Recoger todos los productos con el mismo nombre para que estén disponibles
                 const allProducts = data.filter(p => p.nombre === product.nombre);
-
-                // Filtrar productos por nombre y eliminar duplicados por tonalidad para el carrusel
                 const uniqueProductsForCarousel = allProducts.reduce((unique, item) => {
                     if (!unique.some(p => p.tonalidad === item.tonalidad)) {
                         unique.push(item);
@@ -45,7 +42,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     return unique;
                 }, []);
 
-                setProductsForCarousel(uniqueProductsForCarousel); // Pasamos los productos al carrusel
+                setProductsForCarousel(uniqueProductsForCarousel);
 
                 const productsWithImages = await Promise.all(
                     allProducts.map(async (product) => {
@@ -56,18 +53,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
                         return {
                             ...product,
-                            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrl,
-                            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrl
+                            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrlModalProductos,
+                            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrlModalProductos
                         };
                     })
                 );
 
                 setRelatedProducts(productsWithImages);
-
-                // Obtener las opciones de ancho para los productos con la misma tonalidad
                 const uniqueAnchos = [...new Set(allProducts.map(p => p.ancho))];
                 setAnchoOptions(uniqueAnchos);
-                setSelectedAncho(Math.min(...uniqueAnchos)); // Seleccionamos el menor ancho por defecto
+                setSelectedAncho(Math.min(...uniqueAnchos));
 
             } catch (error) {
                 console.error('Error fetching related products:', error);
@@ -80,13 +75,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
         const newAncho = e.target.value;
         setSelectedAncho(newAncho);
 
-        // Buscar el producto con el mismo nombre, tonalidad y ancho seleccionado, pero basado en el `selectedProduct`
         const newSelectedProduct = relatedProducts.find(
             p => p.nombre === selectedProduct.nombre && p.tonalidad === selectedProduct.tonalidad && p.ancho === newAncho
         );
 
         if (newSelectedProduct) {
-            // Actualizamos el producto seleccionado con el nuevo producto basado en el ancho
             setSelectedProduct(newSelectedProduct);
             setSelectedImage(newSelectedProduct.imageBuena || newSelectedProduct.imageBaja);
         }
@@ -95,7 +88,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
                 const [buenaResponse, bajaResponse] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`),
                     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`),
@@ -106,11 +98,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
                 setSelectedProduct({
                     ...product,
-                    imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : defaultImageUrl,
-                    imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : defaultImageUrl
+                    imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : defaultImageUrlModalProductos,
+                    imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : defaultImageUrlModalProductos
                 });
 
-                setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : defaultImageUrl);
+                setSelectedImage(buenaImage ? `https://${buenaImage.ficadjunto}` : defaultImageUrlModalProductos);
             } catch (error) {
                 console.log('Error fetching images:', error);
             }
@@ -120,38 +112,28 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     }, [product.codprodu]);
 
-    // const handleMapClick = () => {
-    //     setModalMapaOpen(true);
-    // };
-
     const moveLens = (e) => {
         if (!resultRef.current || !imageLoaded) return;
 
         const result = resultRef.current;
         const img = e.target;
 
-        // Obtener las coordenadas y dimensiones de la imagen
         const { left, top, width, height } = img.getBoundingClientRect();
         const x = e.clientX - left;
         const y = e.clientY - top;
 
-        // Limitar las posiciones dentro de la imagen
         const posX = Math.max(100, Math.min(x, width));
         const posY = Math.max(100, Math.min(y, height));
 
-        // Calcular la proporción del cursor respecto al tamaño de la imagen
         const ratioX = posX / width;
         const ratioY = posY / height;
 
-        // Calcular el movimiento de la imagen ampliada
         const zoomedImageWidth = width * zoomFactor;
         const zoomedImageHeight = height * zoomFactor;
 
-        // Limitar el movimiento para que la imagen no se salga del contenedor
         const moveX = Math.max(0, Math.min(ratioX * (zoomedImageWidth - width), zoomedImageWidth - width));
         const moveY = Math.max(0, Math.min(ratioY * (zoomedImageHeight - height), zoomedImageHeight - height));
 
-        // Aplicar el movimiento y el zoom a la imagen dentro del contenedor
         result.firstChild.style.transform = `translate(-${moveX}px, -${moveY}px) scale(${zoomFactor})`;
     };
 
@@ -179,41 +161,15 @@ const Modal = ({ isOpen, close, product, alt }) => {
         }
     };
 
-    const mantenimientoImages = {
-        "LAVAR A 30º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',
-        "LAVAR A 40º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
-        "LAVAR A 90º": '',
-        "NO LAVAR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",
-        "PLANCHAR A 120º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',
-        "PLANCHAR A 160º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',
-        "PLANCHAR A 210º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',
-        "NO PLANCHAR": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20planchar.jpg',
-        "LAVAR A MANO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',
-        "NO USAR LEJIA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lejia.jpg',
-        "LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20en%20seco.jpg',
-        "NO LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar%20en%20seco.jpg',
-        "NO USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20usar%20secadora.jpg',
-        "USAR LEJIA": '',
-        "EASYCLEAN": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',
-        "USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Usar%20secadora.jpg',
-        "SECADO VERTICAL": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Secado%20vertical.jpg',
-    };
+    const getMantenimientoImages = (mantenimiento) => {
+        if (!mantenimiento) return "?";
 
-    const parseMantenimientoXML = (mantenimientoXML) => {
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(mantenimientoXML, "text/xml");
+        const xmlDoc = parser.parseFromString(mantenimiento, "text/xml");
 
         const valores = xmlDoc.getElementsByTagName("Valor");
 
         const mantenimientoList = Array.from(valores).map(node => node.textContent.trim());
-
-        return mantenimientoList;
-    };
-
-    const getMantenimientoImages = (mantenimiento) => {
-        if (!mantenimiento) return "?";
-
-        const mantenimientoList = parseMantenimientoXML(mantenimiento);
 
         return mantenimientoList
             .filter(mantenimiento => mantenimientoImages[mantenimiento])
@@ -223,22 +179,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     src={mantenimientoImages[mantenimiento]}
                     alt={mantenimiento}
                     className="w-6 h-6 mx-1 cursor-pointer"
-                    title={`Click para ver el significado de ${mantenimiento}`} // Agregar tooltip
-                    onClick={() => setShowIconMeaning(mantenimiento)} // Al hacer clic, mostrar el significado
+                    title={`Click para ver el significado de ${mantenimiento}`}
+                    onClick={() => setShowIconMeaning(mantenimiento)}
                 />
             ));
-    };
-
-    const usoImages = {
-        "TAPICERIA DECORATIVA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria%20decorativa.jpg',
-        "TAPICERIA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria.jpg',
-        'CORTINAS': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Cortinas.jpg',
-        "ESTORES": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Estores.jpg',
-        "COLCHAS": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Colchas.jpg',
-        "ALFOMBRAS": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Alfombras.jpg',
-        "FR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg",
-        "OUTDOOR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg",
-        "IMO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg",
     };
 
     const getUsoImages = (usos) => {
@@ -292,8 +236,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
         );
     };
 
-    
-
     if (!isOpen) return null;
 
     return (
@@ -311,9 +253,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         {/* Ficha Técnica */}
                         <div className="justify-start xl:p-2 lg:p-2 md:p-2 md:text-sm text-sm lg:text-md text-center md:text-start w-full order-3 md:order-3 lg:order-1">
                             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:mx-auto just lg:grid-cols-1 gap-x-8 gap-y-3 ">
-                                <h1 className="font-bold text-black mx-auto text-center mb-4 mt-[2rem] md:mt-[0rem] ">Ficha Técnica</h1>
+                                <h1 className="font-bold text-black mx-auto text-sm md:text-xl text-center mb-4 mt-[2rem] md:mt-[0rem] ">Ficha Técnica</h1>
                                 <div className="grid grid-cols-2  md:grid-cols-2 mx-auto justify-center gap-x-12 gap-y-2 w-full md:w-4/4">
-
                                     <div className="text-left">
                                         <strong>Marca:</strong> {selectedProduct.codmarca}
                                     </div>
@@ -361,8 +302,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <div className="text-left">
                                         <strong>Rapord Vertical:</strong> {parseFloat(selectedProduct.repminver).toFixed(2)} cm
                                     </div>
-
-                                    {/* Segunda fila: Usos y Mantenimiento en el centro */}
                                     <div className="col-span-2 flex flex-col items-center justify-center mt-4">
                                         <div className="w-full md:w-1/2">
                                             <h3 className="text-center font-semibold">Usos</h3>
@@ -385,7 +324,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             </div>
                         </div>
                         <div className="relative group w-full h-[100%] overflow-hidden order-1 lg:order-2">
-                            {/* Contenedor de la imagen */}
                             <div
                                 ref={resultRef}
                                 className="relative w-full overflow-hidden rounded-md"
@@ -418,8 +356,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     }}
                                 />
                             </div>
-                            {/* Botón centrado debajo de la imagen */}
-                            <div className="flex justify-center w-full mt-4 mb-4"> {/* Centramos el botón horizontalmente */}
+                            <div className="flex justify-center w-full mt-4 mb-4">
                                 <button
                                     onClick={handleAddToCart}
                                     className="bg-black hover:bg-white w-[100%] text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-2 rounded-md transition duration-200 mx-1"
@@ -428,9 +365,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 </button>
                             </div>
                         </div>
-
                         <div className='col-span-1 order-2 lg:order-3 w-full xl:pt-0 md:pl-7 lg:pl-6 xl:pl-8 lg:p-4 md:p-4 text-center md:text-start justify-start'>
-                        <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-0">
+                            <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-0">
                                 <div className="flex items-center justify-start mb-2 mt-4 bg-black text-white rounded-md px-2 md:mt-2 lg:mt-0">
                                     <div className="flex items-center justify-center text-white font-semibold rounded-full w-9 h-9">
                                         {productsForCarousel.length}
@@ -443,10 +379,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             <div className="col-span-1">
                                 <Slider {...{
                                     dots: false,
-                                    infinite: productsForCarousel.length > 6, // Si hay más de 6 productos, el carrusel será infinito
+                                    infinite: relatedProducts.length > 6, // Solo bucle si hay suficientes productos
                                     speed: 500,
-                                    slidesToShow: 2,
-                                    slidesToScroll: 2,
+                                    slidesToShow: Math.min(relatedProducts.length, 2), // Ajuste en función del total
+                                    slidesToScroll: 1,
                                     rows: 3,
                                     slidesPerRow: 1,
                                     nextArrow: <SampleNextArrow />,
@@ -455,7 +391,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         {
                                             breakpoint: 768,
                                             settings: {
-                                                slidesToShow: 2,
+                                                slidesToShow: Math.min(relatedProducts.length, 2),
                                                 slidesToScroll: 1,
                                                 rows: 1,
                                             }
@@ -463,7 +399,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     ]
                                 }}>
                                     {relatedProducts
-                                        // Filtrar los productos para eliminar duplicados por tonalidad
                                         .filter((product, index, self) =>
                                             product.tonalidad && index === self.findIndex((p) => (
                                                 p.tonalidad && p.tonalidad.trim().toLowerCase() === product.tonalidad.trim().toLowerCase()
@@ -487,10 +422,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                         ))}
                                 </Slider>
                             </div>
-                            
                         </div>
                     </div>
-                    {/* Mostrar el significado del icono seleccionado */}
                     {showIconMeaning && (
                         <div className="fixed bottom-10 left-10 bg-white p-4 rounded-md shadow-md">
                             <h3 className="text-lg font-bold">Significado del Icono</h3>
@@ -503,7 +436,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
                 )}
             </div>
-        </CartProvider >
+        </CartProvider>
     );
 };
 

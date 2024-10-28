@@ -15,7 +15,7 @@ const texts = [
     'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Harbour%20transparente%20BLANCO.png',
     'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png',
     'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJM%20marca%20blanco%20Portada.png',
-    'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOBASSARI_01.png'
+    'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png'
 ];
 
 const names = [

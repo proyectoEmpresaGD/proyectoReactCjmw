@@ -11,6 +11,9 @@ import ScrollToTop from './ScrollToTop';
 import Select from 'react-select';
 import 'tailwindcss/tailwind.css';
 
+// Importar constantes desde el archivo de constantes
+import { languageOptions, brandLogos, defaultLogo } from "../Constants/constants";
+
 export const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -39,25 +42,6 @@ export const Header = () => {
     const menuRef = useRef(null);
     const brandsRef = useRef(null);
     const productsRef = useRef(null);
-
-    const languageOptions = [
-        { value: 'en', label: 'English' },
-        { value: 'es', label: 'Spanish' },
-        { value: 'fr', label: 'French' },
-        { value: 'de', label: 'German' },
-        { value: 'it', label: 'Italian' }
-    ];
-
-    // Map URLs to logos
-    const brandLogos = {
-        '/arenaHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoArena.png',
-        '/harbourHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoHarbour.png',
-        '/cjmHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png',
-        '/flamencoHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoFlamenco.png',
-        '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOBASSARI_01.png',
-    };
-
-    const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png';
 
     const logoSrc = brandLogos[location.pathname] || defaultLogo;
 
@@ -243,7 +227,7 @@ export const Header = () => {
                                 {showBrandsDropdown ? <RiArrowDropUpLine size={16} className="ml-2" /> : <RiArrowDropDownLine size={16} className="ml-2" />}
                             </button>
                             {showBrandsDropdown && (
-                                <div className="bg-slate-100 absolute w-full top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 z-50 flex flex-col justify-center items-center">
+                                <div className="bg-slate-100 absolute w-full top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 z-50 flex flex-col justify-start items-start">
                                     <button onMouseDown={() => handleLinkClick('/arenaHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Arena</button>
                                     <button onMouseDown={() => handleLinkClick('/harbourHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">Harbour</button>
                                     <button onMouseDown={() => handleLinkClick('/cjmHome')} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">CJM</button>
@@ -255,17 +239,17 @@ export const Header = () => {
 
                         <div className="relative" ref={productsRef}>
                             <button
-                                className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
+                                className="flex items-start text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
                                 onClick={() => toggleDropdown('products')}
                             >
                                 <span>Productos</span>
                                 {showProductsDropdown ? <RiArrowDropUpLine size={16} className="ml-2" /> : <RiArrowDropDownLine size={16} className="ml-2" />}
                             </button>
                             {showProductsDropdown && (
-                                <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50 flex flex-col justify-center items-center">
-                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-center">Todos los productos</button>
-                                    <button onMouseDown={() => handleLinkClick('/products?type=papel')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-center">Papeles</button>
-                                    <button onMouseDown={() => handleLinkClick('/products?type=tela')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-center">Telas</button>
+                                <div className="bg-slate-100 absolute  top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50 flex flex-col justify-start items-start">
+                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-start pl-4">Todos los productos</button>
+                                    <button onMouseDown={() => handleLinkClick('/products?type=papel')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-start pl-4">Papeles</button>
+                                    <button onMouseDown={() => handleLinkClick('/products?type=tela')} className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-start pl-4">Telas</button>
                                 </div>
                             )}
                         </div>
@@ -352,32 +336,6 @@ export const Header = () => {
                                 </div>
                             )}
                         </div>
-
-                        {/* <div className="relative language" ref={languageRef}>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
-                                <FaGlobe size={24} />
-                            </button>
-                            {showLanguageDropdown && (
-                                <div className="absolute top-full right-0 bg-white shadow-lg rounded-md py-2 w-40 z-50">
-                                    <Select
-                                        options={languageOptions}
-                                        value={selectedLanguage}
-                                        onChange={handleLanguageChange}
-                                        menuPlacement="auto"
-                                        styles={{
-                                            control: (provided) => ({
-                                                ...provided,
-                                                cursor: 'pointer',
-                                            }),
-                                            menu: (provided) => ({
-                                                ...provided,
-                                                zIndex: 9999,
-                                            }),
-                                        }}
-                                    />
-                                </div>
-                            )}
-                        </div> */}
                     </div>
                 </div>
 

@@ -1,50 +1,42 @@
-
-import GeocodingService from "../../components/ComponentesContact/map"
+import { contactInfo, contactTexts } from '../../Constants/constants';
+import GeocodingService from "../../components/ComponentesContact/map";
 
 function Contacts() {
-
-    const direccionMontilla = "Avenida de europa 19";
-    const direccionMadrid = "C/ Juan Álvarez mendizabal 53";
-    const direccionBarcelona = "Aribau 228 bajos 1º";
-    const direccionHolanda = "Nieuve showroo, ETC DESIGN CENTER 1e Etage Stand 32";
-
-    const enviarCorreo = () => {
-        window.open('https://mail.google.com/mail/?view=cm&fs=1&to=pedidos@cjmw.eu'); //Reemplaza el destinatario por el correo al que le quieras enviar el gmail
+    const enviarCorreo = (correo) => {
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${correo}`);
     };
 
     const llamarNumero = (telefono) => {
         window.open(`tel:${telefono}`);
     };
 
-    const telefonoMontilla = "+34-957-656-475"
-    const telefonoMadrid = "+34-666-538-245"
-    const telefonoBarcelona = "+31-614-446-800"
-    const telefonoHolanda = "+34-111-222-333"
     return (
-        <>
-            <section className=" bg-gradient-to-r bg-gray-300 xl:pt-[8%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%]  pt-[24%]">
-                <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                    <div className="max-w-2xl mx-auto text-center  ">
-                        <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl ">Contáctanos</h2>
-                    </div>
-                    <div className="max-w-6xl mx-auto mt-12 overflow-hidden bg-white rounded-md shadow-md lg:mt-20">
-                        <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
-                            <div className="lg:col-span-3">
-                                <div className="p-6 sm:p-10 bg-cover lg:h-[130vh]">
-                                    <img className=" object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg" src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/JARAPA/Varni_Cushion_578_Brkt%20copy_2_11zon_5_11zon.webp" alt="" />
-                                </div>
+        <section className="bg-gradient-to-r bg-gray-300 xl:pt-[8%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%] pt-[24%]">
+            <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+                <div className="max-w-2xl mx-auto text-center">
+                    <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{contactTexts.sectionTitle}</h2>
+                </div>
+
+                <div className="max-w-6xl mx-auto mt-12 overflow-hidden bg-white rounded-md shadow-md lg:mt-20">
+                    <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
+                        <div className="lg:col-span-3">
+                            <div className="p-6 sm:p-10 bg-cover lg:h-[130vh]">
+                                <img className="object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg"
+                                    src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/JARAPA/Varni_Cushion_578_Brkt%20copy_2_11zon_5_11zon.webp" alt="" />
                             </div>
+                        </div>
 
-                            <div className="bg-white lg:col-span-2">
-                                <div className="h-full p-6 sm:p-10">
-                                    <div className="flex flex-col justify-between h-full">
-                                        <div>
-                                            <h4 className="relative text-2xl font-semibold mx-auto text-center text-black">Visita nuestros showrooms</h4>
+                        <div className="bg-white lg:col-span-2">
+                            <div className="h-full p-6 sm:p-10">
+                                <div className="flex flex-col justify-between h-full">
+                                    <div>
+                                        <h4 className="relative text-2xl font-semibold mx-auto text-center text-black">{contactTexts.showroomTitle}</h4>
 
-                                            <div className=' mt-8 space-y-5 mx-auto text-center '>
-                                                <div className='block relative mx-auto text-center justify-center  '>
-                                                    <h2 className=' relative mx-auto text-center  lg:text-3xl'><strong>MONTILLA</strong></h2>
-                                                    <div className=' block mx-auto text-start mt-5 '>
+                                        {Object.values(contactInfo).map((info, index) => (
+                                            <div key={index} className='mt-8 space-y-5 mx-auto text-center'>
+                                                <div className='block relative mx-auto text-center justify-center'>
+                                                    <h2 className='relative mx-auto text-center lg:text-3xl'><strong>{info.nombre}</strong></h2>
+                                                    <div className='block mx-auto text-start mt-5'>
                                                         <div className="mt-4 mx-auto text-center space-y-5">
                                                             <div className="flex mx-auto text-start">
                                                                 <div className="flex mx-auto text-center">
@@ -52,127 +44,34 @@ function Contacts() {
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
-                                                                    <span className="block ml-1 text-base text-gray-900">Avenida de Europa 19</span>
+                                                                    <span className="block ml-1 text-base text-gray-900">{info.direccion}</span>
                                                                 </div>
                                                             </div>
 
-                                                            <div className="flex justify-center items-center ">
+                                                            <div className="flex justify-center items-center">
                                                                 <div className="flex">
-                                                                    <button onClick={() => llamarNumero(telefonoMontilla)} className="flex items-center">
+                                                                    <button onClick={() => llamarNumero(info.telefono)} className="flex items-center">
                                                                         <svg className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                                                         </svg>
                                                                     </button>
                                                                     <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+34-957-656-475</span>
+                                                                        <span className="text-base text-gray-900">{info.telefono}</span>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                            {/* className="absolute inset-0 overflow-hidden rounded-md"><span className="absolute left-0 aspect-square w-full origin-center -translate-x-full rounded-full bg-gray-500 transition-all duration-500 group-hover:-translate-x-0 group-hover:scale-150"></span> */}
-                                                            <button onClick={() => enviarCorreo(direccionMontilla)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className='block relative mx-auto text-center justify-center '>
-                                                    <h2 className=' relative mx-auto text-center lg:text-3xl'><strong>MADRID</strong></h2>
-                                                    <div className=' block mx-auto text-start mt-5 '>
-                                                        <div className="mt-4 mx-auto text-center space-y-5">
-                                                            <div className="flex mx-auto text-start">
-                                                                <div className="flex mx-auto text-center">
-                                                                    <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                    </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900">C/ Juan Álvarez Mendizabal 53</span>
                                                                 </div>
                                                             </div>
 
-                                                            <div className="flex justify-center items-center ">
-                                                                <div className="flex">
-                                                                    <button onClick={() => llamarNumero(telefonoMadrid)} className="flex items-center">
-                                                                        <svg className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                                                        </svg>
-                                                                    </button>
-                                                                    <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+34-673-342-185</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <button onClick={() => enviarCorreo(direccionMadrid)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
+                                                            <button onClick={() => enviarCorreo(info.direccion)} className="group relative mx-auto h-12 overflow-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">{contactTexts.contactButtonText}</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className=' mt-8 space-y-7'>
-                                                <div className='block relative mx-auto text-center justify-center '>
-                                                    <h2 className=' relative mx-auto text-center lg:text-3xl'><strong>BARCELONA</strong></h2>
-                                                    <div className=' block mx-auto text-start mt-5 '>
-                                                        <div className="mt-4 mx-auto text-center space-y-5">
-                                                            <div className="flex mx-auto text-start">
-                                                                <div className="flex mx-auto text-center">
-                                                                    <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                    </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900">Aribau 228 Bajos 1º</span>
-                                                                </div>
-                                                            </div>
+                                        ))}
+                                    </div>
 
-                                                            <div className="flex justify-center items-center ">
-                                                                <div className="flex">
-                                                                    <button onClick={() => llamarNumero(telefonoBarcelona)} className="flex items-center">
-                                                                        <svg className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                                                        </svg>
-                                                                    </button>
-                                                                    <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+34-666-538-045</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <button onClick={() => enviarCorreo(direccionBarcelona)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className=' mt-8 space-y-7'>
-                                                <div className='block relative mx-auto text-center justify-center '>
-                                                    <h2 className=' relative mx-auto text-center lg:text-3xl '><strong>HOLANDA</strong></h2>
-                                                    <div className=' block mx-auto text-start mt-5 '>
-                                                        <div className="mt-4 mx-auto text-center space-y-5">
-                                                            <div className="flex mx-auto text-start">
-                                                                <div className="flex mx-auto text-center">
-                                                                    <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                    </svg>
-                                                                    <span className="block ml-3 text-base text-gray-900">Nieuve showroom, ETC DESIGN CENTER 1e Etage Stand 32</span>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="flex justify-center items-center ">
-                                                                <div className="flex">
-                                                                    <button onClick={() => llamarNumero(telefonoHolanda)} className="flex items-center">
-                                                                        <svg className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                                                        </svg>
-                                                                    </button>
-                                                                    <div className="ml-3">
-                                                                        <span className="text-base text-gray-900">+31-614-446-800</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <button onClick={() => enviarCorreo(direccionHolanda)} className="group relative mx-auto h-12 overflow-hidden overflow-x-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">Contáctenos</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-8 lg:mt-3">
-                                            <hr className="border-gray-200" />
-                                            <div className="flex items-center justify-between mt-7">
+                                    <div className="mt-8 lg:mt-3">
+                                        <hr className="border-gray-200" />
+                                        <div className="flex items-center justify-between mt-7">
                                                 <p className="text-lg font-semibold text-black">Siguenos en</p>
 
                                                 <ul className="flex items-center justify-end space-x-3">
@@ -268,51 +167,17 @@ function Contacts() {
                                                             </svg>
                                                         </a>
                                                     </li>
-
-                                                    <li>
-                                                        <a
-                                                            href="https://github.com/DavidSM14"
-                                                            title=""
-                                                            className="
-                                                    flex
-                                                    items-center
-                                                    justify-center
-                                                    text-gray-800
-                                                    transition-all
-                                                    duration-200
-                                                    bg-transparent
-                                                    border border-gray-300
-                                                    rounded-full
-                                                    w-7
-                                                    h-7
-                                                    focus:bg-blue-600
-                                                    hover:text-white
-                                                    focus:text-white
-                                                    hover:bg-blue-600 hover:border-blue-600
-                                                    focus:border-blue-600
-                                                "
-                                                        >
-                                                            <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                                                <path
-                                                                    fillRule="evenodd"
-                                                                    clipRule="evenodd"
-                                                                    d="M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.582 9.582 0 0 1 2.496-.336 9.554 9.554 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2z"
-                                                                ></path>
-                                                            </svg>
-                                                        </a>
-                                                    </li>
                                                 </ul>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-            {/* <GeocodingService /> */}
-        </>
-    )
+            </div>
+        </section>
+    );
 }
-export default Contacts
+
+export default Contacts;
