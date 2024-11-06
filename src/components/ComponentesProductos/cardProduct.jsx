@@ -118,7 +118,7 @@ const CardProduct = () => {
                 setIsSearching(true);
                 setIsFiltered(false);
             } else if (type) {
-                filterParams = { fabricType: type === 'papel' ? ['PAPEL PARED'] : [] };
+                filterParams = { fabricType: type === 'papel' ? ['PAPEL PINTADO'] : [] };
                 response = await fetch(
                     `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
