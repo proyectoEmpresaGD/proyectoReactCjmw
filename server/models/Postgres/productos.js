@@ -252,9 +252,9 @@ export class ProductModel {
       let index = 1;
 
       if (type === 'papeles') {
-        query += ` AND "tipo" = 'PAPEL PARED'`;
+        query += ` AND "tipo" = 'PAPEL PINTADO'`;
       } else if (type === 'telas') {
-        query += ` AND "tipo" != 'PAPEL PARED'`;
+        query += ` AND "tipo" != 'PAPEL PINTADO'`;
       }
 
       query += ` LIMIT $${index++} OFFSET $${index}`;
