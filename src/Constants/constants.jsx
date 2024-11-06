@@ -725,6 +725,10 @@ export const usoImages = {
     "FR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg",
     "OUTDOOR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg",
     "IMO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg",
+    "CASADO LIBRE": "",
+    "RESISTENCIA MODERADA SOL": "",
+    "SEPARABLE EN SECO": "",
+    "ADHESIVO SOBRE EL PAPEL": "",
 };
 
 //
