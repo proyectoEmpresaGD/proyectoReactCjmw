@@ -383,9 +383,11 @@ return (
                                     </div>
                                 </div>
                                 {usoMantenimientoIcons.length > 0 && (
+                                    <Link to="/usages">
                                     <div className="flex col-span-2 mb-2 w-full items-center mt-4">
                                         {usoMantenimientoIcons}
                                     </div>
+                                    </Link>
                                 )}
                             </div>
                         </div>
