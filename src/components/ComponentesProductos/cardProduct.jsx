@@ -7,7 +7,7 @@ import Filtro from '../../app/products/buttonFiltro';
 import SubMenuCarousel from './SubMenuCarousel';
 import { FaTimes } from 'react-icons/fa';
 import CryptoJS from 'crypto-js';
-import { secretKey, itemsPerPage, defaultImageUrl, apiUrl } from '../../Constants/constants';
+import { secretKey, itemsPerPage, defaultImageUrl, apiUrl, scrollPosition } from '../../Constants/constants';
 
 const CardProduct = () => {
     const location = useLocation();
@@ -301,9 +301,14 @@ const CardProduct = () => {
         }
     };
 
+    const scrollToTop = () => {
+        window.scrollTo(scrollPosition.x, scrollPosition.y); 
+    };
+
     const handlePageChange = (newPage) => {
         setPage(newPage);
         fetchProducts(newPage);
+        scrollToTop();
     };
 
     const handleCategoryFilter = (category) => {

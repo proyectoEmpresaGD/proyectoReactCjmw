@@ -70,7 +70,7 @@ export const brandLogos = {
     '/harbourHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoHarbour.png',
     '/cjmHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png',
     '/flamencoHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoFlamenco.png',
-    '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOBASSARI_01.png',
+    '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png',
 };
 
 // Logo predeterminado
@@ -729,6 +729,14 @@ export const usoImages = {
     "RESISTENCIA MODERADA SOL": "",
     "SEPARABLE EN SECO": "",
     "ADHESIVO SOBRE EL PAPEL": "",
+};
+
+export const marcasMap = {
+    "ARE": "ARENA",
+    "CJM": "CJM",
+    "FLA": "FLAMENCO",
+    "HAR": "HARBOUR",
+    "BAS": "BASSARI",
 };
 
 //
