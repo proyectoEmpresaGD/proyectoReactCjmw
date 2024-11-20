@@ -37,7 +37,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${product.codfamil}`);
                 const data = await response.json();
-
                 const allProducts = data.filter(p => p.nombre === product.nombre);
                 const uniqueProductsForCarousel = allProducts.reduce((unique, item) => {
                     if (!unique.some(p => p.tonalidad === item.tonalidad)) {
@@ -290,10 +289,9 @@ const getUsoDestacados = (usos) => {
 };
 
 const usoMantenimientoIcons = [
-    ...getUsoDestacados(selectedProduct.uso),
-    ...getMantenimientoDestacados(selectedProduct.mantenimiento)
+    ...(selectedProduct?.uso ? getUsoDestacados(selectedProduct.uso) : []),
+    ...(selectedProduct?.mantenimiento ? getMantenimientoDestacados(selectedProduct.mantenimiento) : []),
 ];
-
 if (!isOpen) return null;
 
 return (
@@ -439,9 +437,9 @@ return (
                         <div className="col-span-1">
                             <Slider {...{
                                 dots: false,
-                                infinite: relatedProducts.length > 6, // Solo bucle si hay suficientes productos
+                                infinite: relatedProducts.length > 9,
                                 speed: 500,
-                                slidesToShow: Math.min(relatedProducts.length, 2), // Ajuste en función del total
+                                slidesToShow: Math.min(relatedProducts.length, 2),
                                 slidesToScroll: 1,
                                 rows: 3,
                                 slidesPerRow: 1,
@@ -473,7 +471,7 @@ return (
                                             <img
                                                 src={colorProduct.imageBaja}
                                                 alt={colorProduct.nombre}
-                                                className="w-full h-32 object-cover rounded-md"
+                                                className="w-full h-[125.5px] object-cover rounded-md"
                                             />
                                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
                                                 <p className="text-white text-center">{colorProduct.nombre} {colorProduct.tonalidad}</p>
@@ -481,12 +479,12 @@ return (
                                         </div>
                                     ))}
                             </Slider>
-                            <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-0">
-                                <div className="flex items-center justify-start mb-2 mt-4 bg-black text-white rounded-md px-2 md:mt-2 lg:mt-0">
+                            <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-[9px]">
+                                <div className="flex bg-black w-[100%] text-white border-2 border-black font-semibold items-center py-[2px] px-2 rounded-md transition duration-200 mx-1">
                                     <div className="flex items-center justify-center text-white font-semibold rounded-full w-9 h-9">
                                         {productsForCarousel.length}
                                     </div>
-                                    <p className="ml-2 text-md">
+                                    <p className="ml-2  text-md">
                                         {productsForCarousel.length === 1 ? 'Color disponible' : 'Colores disponibles'}
                                     </p>
                                 </div>
