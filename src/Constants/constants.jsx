@@ -198,9 +198,9 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20DUCK%20EGG%203_1_11zon_6_11zon.webp",
         ],
         [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20KANNATURA/SAND%20RAY%201500X1500X72_14_11zon.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20KANNATURA/THI%201500x1500x72_20_11zon.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20KANNATURA/SIKETY%201500x1500x72_16_11zon.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01697%20NAHI%201500x1500x72.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01698%20TIMIZ%201500x1500x72.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01706%20SIKETY%201500x1500x72.jpg",
         ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20LINOTTO/artistica/ARE01458%20%20%20%20LINOTTO%20COTTON%20ARTISTICA-1200.jpg",
@@ -282,8 +282,9 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20VARADERO%202_4_11zon_5_11zon.webp"
         ],
         [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CARIBEAN/artistica/HAR01919%20%20%20%20CARIBBEAN%20LATTE%20OUTDOOR%20300%20CM%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CARIBEAN/artistica/HAR01922%20%20%20%20CARIBBEAN%20ONYX%20OUTDOOR%20300%20CM%20ARTISTICA-1200.jpg"
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01530%20BALTIC%20IVORY%20ARTISTICA.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01582%20BALTIC%20SOFT%20SKY%20ARTISTICA.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01584%20BALTIC%20PUMICE%20ARTISTICA.jpg"
         ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01865%20CRUST%20SAPHIRE%20ARTISTICA-1200.jpg",
@@ -297,11 +298,16 @@ export const imageSet = {
 
         ],
         [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/GOTLAND/RIVIERA.jpg"
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01652%20%20%20%20PARABAN%20CLOUD%20FR%20300%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01655%20%20%20%20PARABAN%20ALUMINIUM%20FR%20300%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01656%20%20%20%20PARABAN%20IRON%20FR%20300%20CM%20ARTISTICA-1200.jpg"
         ],
         [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20MACAO/buena%20calidad/HAR01465%20MACAO%20COIN%20150%20CM.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20MACAO/buena%20calidad/HAR01470%20MACAO%20ALABASTER%20150%20CM.jpg"
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CARIBEAN/artistica/HAR01922%20%20%20%20CARIBBEAN%20ONYX%20OUTDOOR%20300%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CARIBEAN/artistica/HAR01918%20%20%20%20CARIBBEAN%20CLAY%20OUTDOOR%20300%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/PALM%20BEACH/artistica/HAR01952%20PALM%20BEACH%20INDIGO%20ARTISTICA.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/PARTY/artistica/HAR01907%20%20%20%20PARTY%20BANANA%20OUTDOOR%20300%20CMARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/REEF/artistica/HAR01946%20REEF%20INDIGO%20ARTISTICA.jpg"
         ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/HARBOUR%20AMBIENTE/HAIMA%20MARINE.jpg"
@@ -311,6 +317,14 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/SANTORINI%20NOIR%202_4_11zon_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/CAPRI%20SPRING%20GREEN%20jpg_6_11zon_11zon.webp"
         ],
+       [
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/GOTLAND/RIVIERA_1_11zon_1_11zon.webp"
+       ],
+       [
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01865%20CRUST%20SAPHIRE%20ARTISTICA-1200.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/CRUST/artistica/HAR01868%20CRUST%20TANGERINE%20ARTISTICA-1200.jpg"
+       ] 
+
 
     ],
     'FLA': [
