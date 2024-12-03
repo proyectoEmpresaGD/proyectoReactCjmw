@@ -182,7 +182,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
             name: selectedProduct.nombre,
             price: 3,
             image: selectedProduct.imageBaja,
-            color: selectedProduct.colorprincipal,
+            color: selectedProduct.tonalidad,
             quantity: 1,
             ancho: selectedProduct.ancho,
         });
