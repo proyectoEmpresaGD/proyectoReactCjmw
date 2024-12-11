@@ -273,7 +273,6 @@ const CardProduct = () => {
             price: 3,
             image: product.imageBaja,
             quantity: 1,
-            color: product.tonalidad,
         });
     };
 
@@ -323,9 +322,11 @@ const CardProduct = () => {
         } else if (category === 'VISILLO') {
             navigate(`/products?fabricType=VISILLO`);
         } else if (category === 'WALLPAPER') {
-            navigate(`/products?fabricType=PAPEL PINTADO`);
+            navigate(`/products?fabricPattern=WALLPAPER`);
+        } else if (category === 'WALLCOVERING') {
+            navigate(`/products?fabricPattern=WALLCOVERING`);
         } else {
-            navigate(`/products?fabricType=${category}`);
+            navigate(`/products?fabricPattern=${category}`);
         }
     };
 
