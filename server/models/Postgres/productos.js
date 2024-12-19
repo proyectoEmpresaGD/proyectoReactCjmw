@@ -12,7 +12,7 @@ export class ProductModel {
 
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
     let accumulatedProducts = [];
-    let excludedNames = [];
+    let excludedNames = ['DUKE','POISON', 'AGDAL','COSY','MARRAKESH','MAJORELLE','MAMOUNIA','KUTUBIA','MENARA','KASBAH','RIAD'];
 
     try {
       while (accumulatedProducts.length < requiredLimit) {
@@ -354,6 +354,7 @@ export class ProductModel {
         FROM productos
         WHERE codmarca = $1
         AND nombre IS NOT NULL
+        AND coleccion NOT IN ('MARRAKESH','COSY', 'DUKE', 'POLAR')
       `;
 
       const { rows } = await pool.query(query, [brand]);
