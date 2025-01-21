@@ -533,7 +533,7 @@ export const contactInfo = {
     },
     madrid: {
         direccion: "C/ Juan Álvarez Mendizabal 53",
-        telefono: "+34-666-538-245",
+        telefono: "+34-673 342 185",
         nombre: "MADRID",
     },
     barcelona: {
