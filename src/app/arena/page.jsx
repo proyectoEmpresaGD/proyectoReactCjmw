@@ -47,7 +47,7 @@ function ArenaHome() {
         {
             imageUrl:
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_ARENA.png",
-            pdfUrl: "public/pdfs/CAT_ARENA_PURITTY_CJM_23_OK.pdf",
+            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/CAT_ARENA_PURITTY_CJM_23_OK.pdf",
             title: "PURITTY",
             description: "Volver a la esencia para reinventar nuestras colecciones atenporales. Descúbrelas.",
         },

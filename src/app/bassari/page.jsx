@@ -49,7 +49,7 @@ function BassariHome() {
         {
             imageUrl:
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_BASSARI.jpg",
-            pdfUrl: "public/pdfs/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf",
+            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf",
             title: "AFRICAN SOUL",
             description: "Un viaje al lugar más remoto del Senegal inspira estas colecciones. Descúbrelas.",
         },

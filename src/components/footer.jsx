@@ -43,24 +43,6 @@ const Footer = () => {
                         Sobre Nosotros
                     </Link>
                     <a
-                        href="#"
-                        className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
-                    >
-                        Prensa
-                    </a>
-                    <a
-                        href="#"
-                        className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
-                    >
-                        Inversores
-                    </a>
-                    <Link
-                        to={NAVIGATION_LINKS.events}
-                        className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
-                    >
-                        Eventos
-                    </Link>
-                    <a
                         href={PDF_LINKS.terminosCompra}
                         className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                         target="_blank"

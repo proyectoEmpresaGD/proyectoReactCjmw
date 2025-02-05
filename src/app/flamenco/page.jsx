@@ -48,14 +48,14 @@ function FlamencoHome() {
         {
             imageUrl:
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_FLAMENCO.png",
-            pdfUrl: "public/pdfs/BROCHURE_FLAMENCO_WEB.pdf",
+            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_FLAMENCO_WEB.pdf",
             title: "FLAMENCO",
             description: "El lugar donde ele mestizaje de culturas inspira nuestras colecciones. Descúbrelas",
         },
         {
             imageUrl:
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_RIVIERA.png",
-            pdfUrl: "public/pdfs/FLA_RIVIERA_BROCHURE_OK.pdf",
+            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/FLA_RIVIERA_BROCHURE_OK.pdf",
             title: "RIVIERA",
             description: "Colores vibrantes y fibras naturales para viajar a la época colonial. Descúbrelas",
         },

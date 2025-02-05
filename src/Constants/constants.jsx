@@ -831,17 +831,17 @@ export const empresaLinks = [
 // Enlaces de la sección Políticas
 export const politicasLinks = [
     {
-        href: "public/pdfs/LSSI TÉRMINOS Y CONDICIONES DE COMPRA, CJM WORLDWIDE S.L..pdf",
+        href: "https://bassari.eu/ImagenesTelasCjmw/PDF/NORMATIVA%20PAGINA%20WEB/LSSI%20T%C3%89RMINOS%20Y%20CONDICIONES%20DE%20COMPRA%2C%20CJM%20WORLDWIDE%20S.L..pdf",
         text: "Términos de Compra",
         downloadName: "LSSI_TÉRMINOS_Y_CONDICIONES_DE_COMPRA_CJM_WORLDWIDE_S.L..pdf",
     },
     {
-        href: "public/pdfs/LSSI POLITICA DE COOKIES, CJM WORLDWIDE S.L..pdf",
+        href: "https://bassari.eu/ImagenesTelasCjmw/PDF/NORMATIVA%20PAGINA%20WEB/LSSI%20POLITICA%20DE%20COOKIES%2C%20CJM%20WORLDWIDE%20S.L..pdf",
         text: "Política de Cookies",
         downloadName: "LSSI_POLITICA_DE_COOKIES_CJM_WORLDWIDE_S.L..pdf",
     },
     {
-        href: "public/pdfs/LSSI POLITICA DE PRIVACIDAD, CJM WORLDWIDE S.L..pdf",
+        href: "https://bassari.eu/ImagenesTelasCjmw/PDF/NORMATIVA%20PAGINA%20WEB/LSSI%20POLITICA%20DE%20PRIVACIDAD%2C%20CJM%20WORLDWIDE%20S.L..pdf",
         text: "Política de Privacidad",
         downloadName: "LSSI_POLITICA_DE_PRIVACIDAD_CJM_WORLDWIDE_S.L..pdf",
     },
