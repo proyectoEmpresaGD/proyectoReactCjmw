@@ -48,7 +48,7 @@ const brochures = [
     {
         imageUrl:
             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BROCHURE_CARIBBEANPARTY.png",
-        pdfUrl: "public/pdfs/HAR_CARIBBEAN_PARTY_BROUCHURE_SOLOTITULARES.pdf",
+        pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/HAR_CARIBBEAN_PARTY_BROUCHURE_SOLOTITULARES.pdf",
         title: "CARIBBEAN PARTY",
         description: "Colores vibrantes y fibras naturales para viajar a la época colonial. Descúbrelas",
     },

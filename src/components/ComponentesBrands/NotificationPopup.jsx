@@ -89,7 +89,7 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                             download
                             className="flex items-center text-gray-800 hover:text-gray-600 transition"
                         >
-                            <Download size={22} />
+                            <Download size={22}/>
                         </a>
                     </div>
 
