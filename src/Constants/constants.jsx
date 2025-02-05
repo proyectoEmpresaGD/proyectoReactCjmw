@@ -23,12 +23,12 @@ export const getInitialCart = () => JSON.parse(localStorage.getItem(CART_STORAGE
 
 
 // Constantes de URLs para logos
-export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logo.png";
+export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJMlogo.png";
 
 // Redes Sociales
 export const SOCIAL_MEDIA_LINKS = {
-    instagram: "#",
-    facebook: "#",
+    instagram: "https://www.instagram.com/cjmwfabrics/",
+    facebook: "https://www.facebook.com/cjmwfabrics/",
     twitter: "#",
 };
 
@@ -78,8 +78,8 @@ export const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/lo
 
 // Íconos de redes sociales
 export const socialMediaIcons = [
-    { icon: 'RiInstagramLine', link: '#' },
-    { icon: 'RiFacebookLine', link: '#' },
+    { icon: 'RiInstagramLine', link: 'https://www.instagram.com/cjmwfabrics/' },
+    { icon: 'RiFacebookLine', link: 'https://www.facebook.com/cjmwfabrics/' },
     { icon: 'RiTwitterXFill', link: '#' }
 ];
 
@@ -269,8 +269,6 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01530%20BALTIC%20IVORY%20ARTISTICA.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01582%20BALTIC%20SOFT%20SKY%20ARTISTICA.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01584%20BALTIC%20PUMICE%20ARTISTICA.jpg"
-
-
         ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/BARENTS%20ROYAL%20BLUE_7_11zon_1_11zon.webp"
@@ -285,12 +283,10 @@ export const imageSet = {
         ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CARIBEAN/artistica/HAR01922%20%20%20%20CARIBBEAN%20ONYX%20OUTDOOR%20300%20CM%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CARIBEAN/artistica/HAR01918%20%20%20%20CARIBBEAN%20CLAY%20OUTDOOR%20300%20CM%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/PALM%20BEACH/artistica/HAR01952%20PALM%20BEACH%20INDIGO%20ARTISTICA.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/PARTY/artistica/HAR01907%20%20%20%20PARTY%20BANANA%20OUTDOOR%20300%20CMARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/REEF/artistica/HAR01946%20REEF%20INDIGO%20ARTISTICA.jpg",
-
-
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01953%20CARIBBEAN%20PARTY%20PALM%20BEACH%20MARSHMALLOW_MANTEL.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01894%20CARIBBEAN%20PARTY%20ICE%20CREAM%20INDIGO_TEJIDO%20LISO.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01923%20CARIBBEAN%20PARTY%20CARIBBEAN%20INDIGO.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR1942%20CARIBBEAN%20PARTY%20JUNGLE%20INDIGO.%20SILLA%20TRASERA.%20COJIN%20CABECERO%20CARIBBEAN%20INDIGO.jpg",
         ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01865%20CRUST%20SAPHIRE%20ARTISTICA-1200.jpg",
@@ -369,16 +365,27 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20LACQUER%20RRE%20(6)_14_11zon_23_11zon.webp"
         ],
         [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/SAN%20FERNANDO%20CORAL(CABECERO)ROCIO%20DUSTY%20PINK%20Y%20SALMON%20(COJINES)%20SANLUCAR%20BLOSSOM%20(PRIMER%20COJIN)_WEB.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/CHIPIONA%20ROUGE(COJIN)%20Y%20JARA%20ROUGE(BUTACA).jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/SANLUCAR%20BLOSSOM.jpg"
+        ],
+        
+        [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/LUXURY%20DREAPS/LA%20RETE%20BILLBERRY(2)_4_11zon_5_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/LUXURY%20DREAPS/LA%20RETE%20DEEP%20TEAL(6)_5_11zon_1_11zon.webp"
         ],
+        // [
+        //     "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/(DE%20IZQUIERDA%20A%20DERECHA)KUTUBIA%20OCEAN%20MENARA%20COBALT%20RIAD%20DENIM%20MARRAKECH%20COBALT%20AGDAL%20ROYAL%20BLUE%20MAMOUNIA%20AZURE.JPG"
+        // ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/BORNEO_3_11zon_28_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/IMPERIAL_4_11zon_29_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/LUMIERE_8_11zon_3_11zon.webp",
         ],
         [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/RIVIERA/RIVIERA.jpeg"
+            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/RIVIERA/RIVIERA.jpeg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001218%20COLONIAL%20DAMASK%20PRING%20GREEN_03.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001208%20GUANAHANI%20SPRING%20GREEN_02.jpg"
         ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/SISAL/Cover%20Front_4_11zon_5_11zon.webp",
@@ -390,6 +397,11 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/TEDDY/Artistica/FLA001377%20TEDDY%20SALMON%20ARTISTICA-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/TEDDY/Artistica/FLA001375%20TEDDY%20BUFF%20ARTISTICA-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/TEDDY/Artistica/FLA001368%20TEDDY%20CHARCOAL%20ARTISTICA-1200.jpg",
+        ],
+        [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/VELLUTISSIMO/buena%20calidad/FLA000407%20VELLUTISSIMO%20EVERGREEN%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/VELLUTISSIMO/buena%20calidad/FLA000415%20VELLUTISSIMO%20PAPRIKA%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/VELLUTISSIMO/buena%20calidad/FLA000402%20VELLUTISSIMO%20CANVAS%20300%20CM.jpg"
         ],
     ],
     'CJM': [
@@ -530,21 +542,25 @@ export const contactInfo = {
         direccion: "Avenida de Europa 19",
         telefono: "+34-957-656-475",
         nombre: "MONTILLA",
+        correo: "info@cjmw.eu"
     },
     madrid: {
         direccion: "C/ Juan Álvarez Mendizabal 53",
         telefono: "+34-673 342 185",
         nombre: "MADRID",
+        correo: "info@cjmw.eu"
     },
     barcelona: {
         direccion: "Aribau 228 Bajos 1º",
         telefono: "+34-666-538-045",
         nombre: "BARCELONA",
+        correo: "info@cjmw.eu"
     },
     holanda: {
         direccion: "Nieuve showroom, ETC DESIGN CENTER 1e Etage Stand 32",
         telefono: "+31-614-446-800",
         nombre: "HOLANDA",
+        correo: "info@cjmw.eu"
     },
 };
 
@@ -742,10 +758,10 @@ export const usoImages = {
     "FR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg",
     "OUTDOOR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg",
     "IMO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg",
-    "CASADO LIBRE": "",
-    "RESISTENCIA MODERADA SOL": "",
-    "SEPARABLE EN SECO": "",
-    "ADHESIVO SOBRE EL PAPEL": "",
+    "CASADO LIBRE": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/CASADO%20LIBRE.jpg",
+    "RESISTENCIA MODERADA SOL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/RESISTENCIA%20MODERADA%20AL%20SOL.jpg",
+    "SEPARABLE EN SECO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/SEPARABLE%20EN%20SECO.jpg",
+    "ADHESIVO SOBRE EL PAPEL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg",
 };
 
 export const marcasMap = {
@@ -798,8 +814,8 @@ export const inactiveButtonClass = "bg-gray-100 text-gray-700 hover:bg-blue-100"
 
 // Iconos de redes sociales
 export const socialIcons = [
-    { href: "#", icon: "RiInstagramLine" },
-    { href: "#", icon: "RiFacebookLine" },
+    { href: "https://www.instagram.com/cjmwfabrics/", icon: "RiInstagramLine" },
+    { href: "https://www.facebook.com/cjmwfabrics/", icon: "RiFacebookLine" },
     { href: "#", icon: "RiTwitterXFill" },
 ];
 
@@ -1056,6 +1072,39 @@ export const usageInstructions = [
             "Adecuado para el exterior.",
             "Las telas outdoor están diseñadas para resistir condiciones exteriores como sol, lluvia y humedad.",
             "Son duraderas, resistentes a rayos UV y moho, y fáciles de mantener, ideales para muebles de jardín y toldos.",
+        ],
+    },
+    {
+        id: 9,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg',
+        title: "Adhesivo sobre el papel",
+        details: [
+            "El papel tapiz debe colgarse aplicando esta pasta directamente en la parte posterior del papel y dejandolo tiempo para que penetre en el papel antes de aplicarlo en la pared.",
+            "Este tipo de papel es la forma tradicional de colgar papel tapiz, sin embargo, requiere algunos pasos mas para colgar el papel tapiz que otros tipos de tecnicas adhesivas para papel tapiz.",
+        ],
+    },
+    {
+        id: 10,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/CASADO%20LIBRE.jpg',
+        title: "Casado libre",
+        details: [
+            "Este tipo de papel tapiz no necesita alineación. Simplemente cuelgue el papel tapiz de la forma que desee y el patrón se alineará, lo que significa que, como resultado, se desperciará menos papel tapiz",
+        ],
+    },
+    {
+        id: 11,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/RESISTENCIA%20MODERADA%20AL%20SOL.jpg',
+        title: "Resistencia al sol moderada",
+        details: [
+            "Evite colgar papeles pintados con solidez a la luz moderada/satisfactoria en zonas expuestas a una cantidad significativa de luz solar, ya que se desvanecerán más rapidamente",
+        ],
+    },
+    {
+        id: 12,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/SEPARABLE%20EN%20SECO.jpg',
+        title: "Separable en seco",
+        details: [
+            "El papel tapiz despegable solo permite que la capa superior del papel tapoz se desprenda de la pared, lo que significa que el papel posterior queda atrás cuando se despega. Este papel también se puede quiter cuando el papel tapiz esté seco",
         ],
     }
 ];

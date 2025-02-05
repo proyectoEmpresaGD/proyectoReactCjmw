@@ -4,6 +4,7 @@ import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
+import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
 
 function FlamencoHome() {
 
@@ -18,11 +19,11 @@ function FlamencoHome() {
     const marca = 'FLA';
 
     const images = [
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/FLAMENCO/GENESIS%20C01%20%20(3)_5_11zon_3_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/FLAMENCO/GENESIS%20DAMSON%20%20(2)_6_11zon_4_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/FLAMENCO/jarapa_7_11zon_5_11zon_1_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/FLAMENCO/LUMIERE_8_11zon_6_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/FLAMENCO/TULUM%20C01%20(2)_9_11zon_7_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001199%20SEA%20STRIPE%20SPRING%20GREEN.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001218%20COLONIAL%20DAMASK%20SPRING%20GREEN_01%20.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/FLA_GRAZALEMA_V2_12_WEB.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001248%20HAITI%20ESCARLET_3.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001273%20%20%20%20VERACRUZ%20PORCELAIN_04.jpg",
     ]
 
     const imagesNewCollections = [
@@ -40,22 +41,46 @@ function FlamencoHome() {
     const CodProduFla = [
         "FLA001206",
         "FLA001365",
-        "FLA001088"
+        "FLA001088",
     ]
+
+    const brochures = [
+        {
+            imageUrl:
+                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_FLAMENCO.png",
+            pdfUrl: "public/pdfs/BROCHURE_FLAMENCO_WEB.pdf",
+            title: "FLAMENCO",
+            description: "El lugar donde ele mestizaje de culturas inspira nuestras colecciones. Descúbrelas",
+        },
+        {
+            imageUrl:
+                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_RIVIERA.png",
+            pdfUrl: "public/pdfs/FLA_RIVIERA_BROCHURE_OK.pdf",
+            title: "RIVIERA",
+            description: "Colores vibrantes y fibras naturales para viajar a la época colonial. Descúbrelas",
+        },
+    ];
 
     return (
         <>
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
-                    <div className=" flex items-center justify-center h-full pt-3">
-                        <img className="h-20 md:h-32 xl:h-40" src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png" alt=""/>
-                    </div>
-                    <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduFla} />
-                    <ColeccionesMarcas marca={marca} />
+                <NotificationPopup brochures={brochures} />
+
+                <div className="flex items-center justify-center h-full pt-3">
+                    <img
+                        className="h-20 md:h-32 xl:h-40"
+                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png"
+                        alt="Logo Flamenco"
+                    />
+                </div>
+                <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduFla} />
+                <ColeccionesMarcas marca={marca} />
                 <Footer />
             </CartProvider>
         </>
     )
 }
 export default FlamencoHome
+

@@ -239,187 +239,181 @@ const Modal = ({ isOpen, close, product, alt }) => {
         ));
     };
 
-const IconoDestacables = ["FR", "OUTDOOR", "EASYCLEAN", "IMO"]; // Íconos específicos que deseas mostrar
+    const IconoDestacables = ["FR", "OUTDOOR", "EASYCLEAN", "IMO"]; // Íconos específicos que deseas mostrar
 
-const getMantenimientoDestacados = (mantenimiento) => {
-    if (!mantenimiento) return null;
+    const getMantenimientoDestacados = (mantenimiento) => {
+        if (!mantenimiento) return null;
 
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(mantenimiento, "text/xml");
-    const valores = xmlDoc.getElementsByTagName("Valor");
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(mantenimiento, "text/xml");
+        const valores = xmlDoc.getElementsByTagName("Valor");
 
-    const mantenimientoList = Array.from(valores)
-        .map(node => node.textContent.trim())
-        .filter(mantenimiento => IconoDestacables.includes(mantenimiento) && mantenimientoImages[mantenimiento]);
+        const mantenimientoList = Array.from(valores)
+            .map(node => node.textContent.trim())
+            .filter(mantenimiento => IconoDestacables.includes(mantenimiento) && mantenimientoImages[mantenimiento]);
 
-    return mantenimientoList.map((mantenimiento, index) => (
-        <div key={index} className="flex items-center mr-4 mb-2">
-            <img
-                src={mantenimientoImages[mantenimiento]}
-                alt={mantenimiento}
-                className="w-6 h-6 mr-2"
-                title={`Click para ver el significado de ${mantenimiento}`}
-                onClick={() => setShowIconMeaning(mantenimiento)}
-            />
-            <span>{mantenimiento}</span>
-        </div>
-    ));
-};
+        return mantenimientoList.map((mantenimiento, index) => (
+            <div key={index} className="flex items-center mr-4 mb-2">
+                <img
+                    src={mantenimientoImages[mantenimiento]}
+                    alt={mantenimiento}
+                    className="w-6 h-6 mr-2"
+                    title={`Click para ver el significado de ${mantenimiento}`}
+                    onClick={() => setShowIconMeaning(mantenimiento)}
+                />
+                <span>{mantenimiento}</span>
+            </div>
+        ));
+    };
 
-const getUsoDestacados = (usos) => {
-    if (!usos) return null;
+    const getUsoDestacados = (usos) => {
+        if (!usos) return null;
 
-    const usoList = usos
-        .split(';')
-        .map(uso => uso.trim())
-        .filter(uso => IconoDestacables.includes(uso) && usoImages[uso]);
+        const usoList = usos
+            .split(';')
+            .map(uso => uso.trim())
+            .filter(uso => IconoDestacables.includes(uso) && usoImages[uso]);
 
-    return usoList.map((uso, index) => (
-        <div key={index} className="flex items-center mr-4 mb-2">
-            <img
-                src={usoImages[uso]}
-                alt={uso}
-                className="w-6 h-6 mr-2"
-                title={`Click para ver el significado de ${uso}`}
-                onClick={() => setShowIconMeaning(uso)}
-            />
-            <span>{uso}</span>
-        </div>
-    ));
-};
+        return usoList.map((uso, index) => (
+            <div key={index} className="flex items-center mr-4 mb-2">
+                <img
+                    src={usoImages[uso]}
+                    alt={uso}
+                    className="w-6 h-6 mr-2"
+                    title={`Click para ver el significado de ${uso}`}
+                    onClick={() => setShowIconMeaning(uso)}
+                />
+                <span>{uso}</span>
+            </div>
+        ));
+    };
 
-const usoMantenimientoIcons = [
-    ...(selectedProduct?.uso ? getUsoDestacados(selectedProduct.uso) : []),
-    ...(selectedProduct?.mantenimiento ? getMantenimientoDestacados(selectedProduct.mantenimiento) : []),
-];
-if (!isOpen) return null;
+    const usoMantenimientoIcons = [
+        ...(selectedProduct?.uso ? getUsoDestacados(selectedProduct.uso) : []),
+        ...(selectedProduct?.mantenimiento ? getMantenimientoDestacados(selectedProduct.mantenimiento) : []),
+    ];
+    if (!isOpen) return null;
 
-return (
-    <CartProvider>
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5% pb-32">
-            <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[90vh] 2xl:max-h-[80vh] 2xl:h-auto md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[54%] md:mt-[23%] 2xl:mt-[15%]">
-                <ShareButton selectedProduct={selectedProduct} />
-                <div className="flex justify-center absolute top-4 right-3">
-                    <button className="relative " onClick={close}>
-                        <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
-                    </button>
-                </div>
-                <h2 className="text-center text-3xl font-semibold mb-2 md:mb-4 text-gray-800 mt-7 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
-                <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:md:grid-cols-1 grid-cols-1 justify-center mx-auto" onClick={e => e.stopPropagation()}>
-                    {/* Ficha Técnica */}
-                    <div className="justify-start xl:p-2 lg:p-2 md:p-2 md:text-sm text-sm lg:text-md text-center md:text-start w-full order-3 md:order-3 lg:order-1">
-                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:mx-auto just lg:grid-cols-1 gap-x-8 gap-y-3 ">
-                            <h1 className="font-bold text-black mx-auto text-sm md:text-xl text-center mb-4 mt-[2rem] md:mt-[0rem] ">Ficha Técnica</h1>
-                            <div className="grid grid-cols-2  md:grid-cols-2 mx-auto justify-center gap-x-8 gap-y-2 w-full md:w-4/4">
-                                <div className=' h-[90%]'>
-                                    <div className="text-left">
-                                        <strong>Marca:</strong> {getNombreMarca(selectedProduct.codmarca)}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Colección:</strong> {selectedProduct.coleccion}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Tonalidad:</strong> {selectedProduct.tonalidad}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Color:</strong> {selectedProduct.colorprincipal}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Tipo:</strong> {selectedProduct.tipo}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Estilo:</strong> {selectedProduct.estilo}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Ancho:</strong>
-                                        <select
-                                            value={selectedAncho}
-                                            onChange={handleAnchoChange}
-                                            className="border border-gray-300 rounded-md p-1 ml-2"
-                                        >
-                                            {anchoOptions.map((ancho, index) => (
-                                                <option key={index} value={ancho}>
-                                                    {ancho}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Martindale:</strong> {selectedProduct.martindale}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Gramaje:</strong> {selectedProduct.gramaje}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Composición:</strong> {selectedProduct.composicion}
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Rapord Horizontal:</strong> {parseFloat(selectedProduct.repminhor).toFixed(2)} cm
-                                    </div>
-                                    <div className="text-left mt-1">
-                                        <strong>Rapord Vertical:</strong> {parseFloat(selectedProduct.repminver).toFixed(2)} cm
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="items-start justify-start ">
-                                        <div className="w-full md:w-1/2">
-                                            <h3 className="text-start font-semibold">Usos</h3>
-                                            <Link to="/usages">
-                                                <div className="flex justify-start items-start mt-2">
-                                                    {getUsoImages(selectedProduct.uso)}
-                                                </div>
-                                            </Link>
+    return (
+        <CartProvider>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 p-2 h-[100%] mt-5% pb-32">
+                <div className="bg-white px-7 pt-3 xl:w-[90%] 2xl:max-w-[90%] w-[95%] md:max-w-[95%] m-4 h-[90vh] xl:max-h-[70vh] 2xl:max-h-[80vh] 2xl:h-auto md:h-auto overflow-auto xl:overflow-hidden shadow-lg relative max-h-[95vh] mt-[54%] md:mt-[23%] 2xl:mt-[15%]">
+                    <ShareButton selectedProduct={selectedProduct} />
+                    <div className="flex justify-center absolute top-4 right-3">
+                        <button className="relative " onClick={close}>
+                            <img src="/close.svg" className='w-8 h-8 hover:scale-125 duration-200' alt="Close" />
+                        </button>
+                    </div>
+                    <h2 className="text-center text-3xl font-semibold mb-2 md:mb-4 text-gray-800 mt-7 md:mt-0">{selectedProduct.nombre} {selectedProduct.tonalidad}</h2>
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:md:grid-cols-1 grid-cols-1 justify-center mx-auto" onClick={e => e.stopPropagation()}>
+                        {/* Ficha Técnica */}
+                        <div className="justify-start xl:p-2 lg:p-2 md:p-2 md:text-sm text-sm lg:text-md text-center md:text-start w-full order-3 md:order-3 lg:order-1">
+                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:mx-auto just lg:grid-cols-1 gap-x-8 gap-y-3 ">
+                                <h1 className="font-bold text-black mx-auto text-sm md:text-xl text-center mb-4 mt-[2rem] md:mt-[0rem] ">Ficha Técnica</h1>
+                                <div className="grid grid-cols-2  md:grid-cols-2 mx-auto justify-center  gap-y-2 w-full md:w-4/4">
+                                    <div className=''>
+                                        <div className="text-left">
+                                            <strong>Marca:</strong> {getNombreMarca(selectedProduct.codmarca)}
                                         </div>
-                                        <div className="w-full md:w-1/2 mt-2">
-                                            <h3 className="text-start font-semibold">Mantenimiento</h3>
-                                            <Link to="/usages">
-                                                <div className="flex justify-start items-start mt-2">
-                                                    {getMantenimientoImages(selectedProduct.mantenimiento)}
-                                                </div>
-                                            </Link>
+                                        <div className="text-left mt-1">
+                                            <strong>Colección:</strong> {selectedProduct.coleccion}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Tonalidad:</strong> {selectedProduct.tonalidad}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Color:</strong> {selectedProduct.colorprincipal}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Tipo:</strong> {selectedProduct.tipo}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Estilo:</strong> {selectedProduct.estilo}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Ancho:</strong>
+                                            <select
+                                                value={selectedAncho}
+                                                onChange={handleAnchoChange}
+                                                className="border border-gray-300 rounded-md p-1 ml-2"
+                                            >
+                                                {anchoOptions.map((ancho, index) => (
+                                                    <option key={index} value={ancho}>
+                                                        {ancho}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Martindale:</strong> {selectedProduct.martindale}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Gramaje:</strong> {selectedProduct.gramaje}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Composición:</strong> {selectedProduct.composicion}
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Rapord Horizontal:</strong> {parseFloat(selectedProduct.repminhor).toFixed(2)} cm
+                                        </div>
+                                        <div className="text-left mt-1">
+                                            <strong>Rapord Vertical:</strong> {parseFloat(selectedProduct.repminver).toFixed(2)} cm
                                         </div>
                                     </div>
-                                </div>
-                                {usoMantenimientoIcons.length > 0 && (
-                                    <Link to="/usages">
-                                    <div className="flex col-span-2 mb-2 w-full items-center mt-4">
-                                        {usoMantenimientoIcons}
+                                    <div>
+                                        <div className="items-start justify-start ">
+                                        
+                                            <div className="w-full md:w-1/2">
+                                                <h3 className="text-start font-semibold">Usos</h3>
+                                                <Link to="/usages">
+                                                    <div className="flex justify-start items-start mt-2">
+                                                        {getUsoImages(selectedProduct.uso)}
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                            <div className="w-full md:w-1/2 mt-2">
+                                                <h3 className="text-start font-semibold">Mantenimiento</h3>
+                                                <Link to="/usages">
+                                                    <div className="flex justify-start items-start mt-2">
+                                                        {getMantenimientoImages(selectedProduct.mantenimiento)}
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        </div>
                                     </div>
-                                    </Link>
-                                )}
+                                    {usoMantenimientoIcons.length > 0 && (
+                                        <Link to="/usages">
+                                            <div className="flex col-span-2 mb-2 w-full items-center mt-4">
+                                                {usoMantenimientoIcons}
+                                            </div>
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="relative group w-full h-[100%] overflow-hidden order-1 lg:order-2">
-                        <div
-                            ref={resultRef}
-                            className="relative w-full overflow-hidden rounded-md"
-                            onMouseMove={moveLens}
-                            onMouseEnter={() => setZoomFactor(2)}
-                            onMouseLeave={() => setZoomFactor(1)}
-                            style={{
-                                transition: 'transform 0.3s ease-in-out',
-                                position: 'relative',
-                                maxWidth: '550px',
-                                maxHeight: '435px',
-                                width: '550px',
-                                height: '390px',
-                            }}
-                        >
-                            <img
+                        <div className="w-full order-1 lg:order-2 overflow-hidden relative">
+                            <div
+                                ref={resultRef}
+                                className="relative w-full overflow-hidden rounded-md max-h-[452px]"
+                                onMouseMove={moveLens}
+                                onMouseEnter={() => setZoomFactor(2)}
+                                onMouseLeave={() => setZoomFactor(1)}
+                                style={{
+                                    transition: 'transform 0.3s ease-in-out',
+                                    position: 'relative'
+                                }}
+                            >
+                                <img
                                 src={selectedImage}
                                 alt={alt}
-                                className="w-full h-full object-cover rounded-md"
+                                className="w-full h-[290px] md:h-[408px] lg:h-[390px]  sm:h-[390px] sm:max-h-[435px] object-cover rounded-md"
 
                                 style={{
                                     transform: `scale(${zoomFactor})`,
                                     transformOrigin: 'center',
                                     transition: 'transform 0.3s ease-in-out',
                                     objectFit: 'cover',
-                                    maxWidth: '550px',
-                                    maxHeight: '435px',
-                                    width: '550px',
-                                    height: '390px',
+                                   
                                 }}
                             />
                         </div>
@@ -431,81 +425,81 @@ return (
                                 Adquirir muestra
                             </button>
                         </div>
-                    </div>
-                    <div className='col-span-1 order-2 lg:order-3 w-full xl:pt-0 md:pl-7 lg:pl-6 xl:pl-8 lg:p-4 md:p-4 text-center md:text-start justify-start'>
+                        </div>
+                        <div className='col-span-1 order-2 lg:order-3 w-full xl:pt-0 md:pl-7 lg:pl-6 xl:pl-8 lg:p-4 md:p-4 text-center md:text-start justify-start'>
 
-                        <div className="col-span-1">
-                            <Slider {...{
-                                dots: false,
-                                infinite: relatedProducts.length > 9,
-                                speed: 500,
-                                slidesToShow: Math.min(relatedProducts.length, 2),
-                                slidesToScroll: 1,
-                                rows: 3,
-                                slidesPerRow: 1,
-                                nextArrow: <SampleNextArrow />,
-                                prevArrow: <SamplePrevArrow />,
-                                responsive: [
-                                    {
-                                        breakpoint: 768,
-                                        settings: {
-                                            slidesToShow: Math.min(relatedProducts.length, 2),
-                                            slidesToScroll: 1,
-                                            rows: 1,
-                                        }
-                                    },
-                                ]
-                            }}>
-                                {relatedProducts
-                                    .filter((product, index, self) =>
-                                        product.tonalidad && index === self.findIndex((p) => (
-                                            p.tonalidad && p.tonalidad.trim().toLowerCase() === product.tonalidad.trim().toLowerCase()
-                                        ))
-                                    )
-                                    .map((colorProduct, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative px-1 cursor-pointer"
-                                            onClick={() => handleColorClick(colorProduct)}
-                                        >
-                                            <img
-                                                src={colorProduct.imageBaja}
-                                                alt={colorProduct.nombre}
-                                                className="w-full h-[125.5px] object-cover rounded-md"
-                                            />
-                                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                                <p className="text-white text-center">{colorProduct.nombre} {colorProduct.tonalidad}</p>
+                            <div className="col-span-1">
+                                <Slider {...{
+                                    dots: false,
+                                    infinite: relatedProducts.length > 9,
+                                    speed: 500,
+                                    slidesToShow: Math.min(relatedProducts.length, 2),
+                                    slidesToScroll: 1,
+                                    rows: 3,
+                                    slidesPerRow: 1,
+                                    nextArrow: <SampleNextArrow />,
+                                    prevArrow: <SamplePrevArrow />,
+                                    responsive: [
+                                        {
+                                            breakpoint: 768,
+                                            settings: {
+                                                slidesToShow: Math.min(relatedProducts.length, 2),
+                                                slidesToScroll: 1,
+                                                rows: 1,
+                                            }
+                                        },
+                                    ]
+                                }}>
+                                    {relatedProducts
+                                        .filter((product, index, self) =>
+                                            product.tonalidad && index === self.findIndex((p) => (
+                                                p.tonalidad && p.tonalidad.trim().toLowerCase() === product.tonalidad.trim().toLowerCase()
+                                            ))
+                                        )
+                                        .map((colorProduct, index) => (
+                                            <div
+                                                key={index}
+                                                className="relative px-1 cursor-pointer"
+                                                onClick={() => handleColorClick(colorProduct)}
+                                            >
+                                                <img
+                                                    src={colorProduct.imageBaja}
+                                                    alt={colorProduct.nombre}
+                                                    className="w-full h-[125.5px] object-cover rounded-md"
+                                                />
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                                    <p className="text-white text-center">{colorProduct.nombre} {colorProduct.tonalidad}</p>
+                                                </div>
                                             </div>
+                                        ))}
+                                </Slider>
+                                <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-[9px] h-[3rem]">
+                                    <div className="flex bg-black w-[100%] text-white border-2 border-black font-semibold items-center py-[2px] px-2 rounded-md transition duration-200 mx-1 h-full">
+                                        <div className="flex items-center justify-center text-white font-semibold rounded-full w-9 h-9">
+                                            {productsForCarousel.length}
                                         </div>
-                                    ))}
-                            </Slider>
-                            <div className="flex items-center justify-evenly mb-2 mt-4 md:mt-2 lg:mt-[9px]">
-                                <div className="flex bg-black w-[100%] text-white border-2 border-black font-semibold items-center py-[2px] px-2 rounded-md transition duration-200 mx-1">
-                                    <div className="flex items-center justify-center text-white font-semibold rounded-full w-9 h-9">
-                                        {productsForCarousel.length}
+                                        <p className="flex ml-2 text-md">
+                                            {productsForCarousel.length === 1 ? "Color disponible" : "Colores disponibles"}
+                                        </p>
                                     </div>
-                                    <p className="ml-2  text-md">
-                                        {productsForCarousel.length === 1 ? 'Color disponible' : 'Colores disponibles'}
-                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {showIconMeaning && (
+                        <div className="fixed bottom-10 left-10 bg-white p-4 rounded-md shadow-md">
+                            <h3 className="text-lg font-bold">Significado del Icono</h3>
+                            <p>{showIconMeaning}</p>
+                            <button className="text-blue-500 mt-2" onClick={() => setShowIconMeaning('')}>Cerrar</button>
+                        </div>
+                    )}
                 </div>
-                {showIconMeaning && (
-                    <div className="fixed bottom-10 left-10 bg-white p-4 rounded-md shadow-md">
-                        <h3 className="text-lg font-bold">Significado del Icono</h3>
-                        <p>{showIconMeaning}</p>
-                        <button className="text-blue-500 mt-2" onClick={() => setShowIconMeaning('')}>Cerrar</button>
-                    </div>
+                {modalMapaOpen && (
+                    <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
                 )}
             </div>
-            {modalMapaOpen && (
-                <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
-            )}
-        </div>
-    </CartProvider>
-);
+        </CartProvider>
+    );
 };
 
 export default Modal;

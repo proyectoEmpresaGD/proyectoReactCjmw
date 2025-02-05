@@ -30,6 +30,7 @@
     "intersection-observer": "^0.12.2",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.474.0",
     "node-cache": "^5.1.2",
     "pg": "^8.11.5",
     "postgres": "^3.4.4",

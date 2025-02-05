@@ -1,5 +1,5 @@
 import { contactInfo, contactTexts } from '../../Constants/constants';
-import GeocodingService from "../../components/ComponentesContact/map";
+//import GeocodingService from "../../components/ComponentesContact/map";
 
 function Contacts() {
     const enviarCorreo = (correo) => {
@@ -61,7 +61,7 @@ function Contacts() {
                                                                 </div>
                                                             </div>
 
-                                                            <button onClick={() => enviarCorreo(info.direccion)} className="group relative mx-auto h-12 overflow-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">{contactTexts.contactButtonText}</button>
+                                                            <button onClick={() => enviarCorreo(info.correo)} className="group relative mx-auto h-12 overflow-hidden rounded-md bg-black hover:bg-white w-[50%] text-white hover:text-black border-2 border-black hover:border-gray-400 transition duration-200">{contactTexts.contactButtonText}</button>
                                                         </div>
                                                     </div>
                                                 </div>

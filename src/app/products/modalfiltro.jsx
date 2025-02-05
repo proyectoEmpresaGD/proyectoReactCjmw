@@ -35,7 +35,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
 
     const tiposInvalidos = ["JAQUARD", "TEJIDO ", "VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
     const dibujosInvalidos = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM", "RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO", "TERCIOPELO", "PANA"];
-
+    const coleccionesInvalidas = ["MARRAKECH","MARRAKESH"];
     useEffect(() => {
         fetchAllFilters();  // Fetch inicial
     }, []);
@@ -47,7 +47,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
             const data = await response.json();
 
             setBrands(filterValidData(data.brands, Object.keys(brandNamesMap)));
-            setCollections(filterValidData(data.collections));
+            setCollections(filterValidData(data.collections, [], coleccionesInvalidas));
             setFabricTypes(filterValidData(data.fabricTypes, [], tiposInvalidos));
             setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
             setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
@@ -91,7 +91,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                 const data = await response.json();
 
                 // Filtrar los datos obtenidos por la marca seleccionada
-                setCollections(filterValidData(data.collections));
+                setCollections(filterValidData(data.collections, [], coleccionesInvalidas));
                 setFabricTypes(filterValidData(data.fabricTypes, [], tiposInvalidos));
                 setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
                 setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));

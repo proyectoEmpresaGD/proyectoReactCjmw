@@ -12,7 +12,7 @@ export class ProductModel {
 
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
     let accumulatedProducts = [];
-    let excludedNames = ['DUKE','POISON', 'AGDAL','COSY','MARRAKESH','MAJORELLE','MAMOUNIA','KUTUBIA','MENARA','KASBAH','RIAD'];
+    let excludedNames = ['DUKE','POISON','AGDAL','MARRAKECH','MAJORELLE','MAMOUNIA','KUTUBIA','MENARA','KASBAH','RIAD','COSY'];
 
     try {
       while (accumulatedProducts.length < requiredLimit) {
@@ -158,7 +158,7 @@ export class ProductModel {
         WHERE "nombre" ILIKE $1
           AND "nombre" IS NOT NULL 
           AND "nombre" != '' 
-          AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)')
+          AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|AGDAL|MARRAKECH|MAJORELLE|MAMOUNIA|KUTUBIA|MENARA|KASBAH|RIAD|COSY|\d+)')
           AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
           AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
         ORDER BY "nombre", "codprodu"
@@ -252,9 +252,9 @@ export class ProductModel {
       let index = 1;
 
       if (type === 'papeles') {
-        query += ` AND "tipo" = 'PAPEL PINTADO'`;
+        query += ` AND "tipo" = 'WALLPAPER'`;
       } else if (type === 'telas') {
-        query += ` AND "tipo" != 'PAPEL PINTADO'`;
+        query += ` AND "tipo" != 'WALLPAPER'`;
       }
 
       query += ` LIMIT $${index++} OFFSET $${index}`;
@@ -354,7 +354,7 @@ export class ProductModel {
         FROM productos
         WHERE codmarca = $1
         AND nombre IS NOT NULL
-        AND coleccion NOT IN ('MARRAKESH','COSY', 'DUKE', 'POLAR')
+        AND coleccion NOT IN ('MARRAKESH','COSY', 'DUKE', 'POLAR','MARRAKECH')
       `;
 
       const { rows } = await pool.query(query, [brand]);
