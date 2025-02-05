@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Eye, Download, X } from "lucide-react";
+import { Eye, X } from "lucide-react";
 
 const NotificationPopup = ({ brochures = [], logoUrl }) => {
     const [isOpen, setIsOpen] = useState(true);
@@ -22,6 +22,7 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
         setCurrentIndex(index);
     };
 
+
     const currentBrochure = brochures[currentIndex];
 
     return (
@@ -37,7 +38,7 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                         <X size={16} />
                     </button>
 
-                    {/* Logo (Ahora es una prop independiente) */}
+                    {/* Logo */}
                     {logoUrl && (
                         <img
                             src={logoUrl}
@@ -46,16 +47,14 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                         />
                     )}
 
-                    {/* Imagen del Brochure (Asegurado mismo tamaño para todos) */}
-                    <div className="flex justify-center w-full">
-                        <img
-                            src={currentBrochure.imageUrl}
-                            alt={currentBrochure.title}
-                            className="w-full max-h-[350px] object-contain rounded-md"
-                        />
-                    </div>
+                    {/* Imagen del Brochure */}
+                    <img
+                        src={currentBrochure.imageUrl}
+                        alt={currentBrochure.title}
+                        className="w-full max-h-[350px] object-contain rounded-md"
+                    />
 
-                    {/* Indicadores de paginación (Puntos) */}
+                    {/* Indicadores de paginación */}
                     {brochures.length > 1 && (
                         <div className="flex justify-center space-x-2 mt-3">
                             {brochures.map((_, index) => (
@@ -63,8 +62,8 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                                     key={index}
                                     onClick={() => handleSelectBrochure(index)}
                                     className={`w-3 h-3 rounded-full transition ${index === currentIndex
-                                            ? "bg-gray-800 scale-110"
-                                            : "bg-gray-300 hover:bg-gray-400"
+                                        ? "bg-gray-800 scale-110"
+                                        : "bg-gray-300 hover:bg-gray-400"
                                         }`}
                                 />
                             ))}
@@ -73,7 +72,7 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
 
                     {/* Iconos de Interacción */}
                     <div className="flex justify-end w-full mt-3 space-x-4 pr-2">
-                        {/* Ver PDF */}
+                        {/* Ver PDF (OJO 👁️ - Abre el PDF en una nueva pestaña) */}
                         <a
                             href={currentBrochure.pdfUrl}
                             target="_blank"
@@ -83,14 +82,6 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                             <Eye size={22} />
                         </a>
 
-                        {/* Descargar PDF */}
-                        <a
-                            href={currentBrochure.pdfUrl}
-                            download
-                            className="flex items-center text-gray-800 hover:text-gray-600 transition"
-                        >
-                            <Download size={22}/>
-                        </a>
                     </div>
 
                     {/* Texto del Brochure */}
@@ -125,7 +116,7 @@ NotificationPopup.propTypes = {
             description: PropTypes.string,
         })
     ).isRequired,
-    logoUrl: PropTypes.string.isRequired, // Ahora el logo es una prop independiente
+    logoUrl: PropTypes.string.isRequired,
 };
 
 export default NotificationPopup;
