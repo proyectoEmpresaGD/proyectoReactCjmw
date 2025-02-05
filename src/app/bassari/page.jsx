@@ -4,6 +4,7 @@ import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
+import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
 
 function BassariHome() {
 
@@ -44,11 +45,22 @@ function BassariHome() {
         "BAS00128"
     ]
 
+    const brochures = [
+        {
+            imageUrl:
+                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_BASSARI.jpg",
+            pdfUrl: "public/pdfs/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf",
+            title: "AFRICAN SOUL",
+            description: "Un viaje al lugar más remoto del Senegal inspira estas colecciones. Descúbrelas.",
+        },
+    ];
+
     return (
         <>
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
+                <NotificationPopup brochures={brochures} />
                 <body className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full mt-[2%]">
                         <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />

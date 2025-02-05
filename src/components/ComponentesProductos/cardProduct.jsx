@@ -118,7 +118,7 @@ const CardProduct = () => {
                 setIsSearching(true);
                 setIsFiltered(false);
             } else if (type) {
-                filterParams = { fabricType: type === 'papel' ? ['PAPEL PINTADO'] : [] };
+                filterParams = { fabricType: type === 'papel' ? ['WALLPAPER'] : [] };
                 response = await fetch(
                     `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
@@ -322,9 +322,7 @@ const CardProduct = () => {
         } else if (category === 'VISILLO') {
             navigate(`/products?fabricType=VISILLO`);
         } else if (category === 'WALLPAPER') {
-            navigate(`/products?fabricPattern=WALLPAPER`);
-        } else if (category === 'WALLCOVERING') {
-            navigate(`/products?fabricPattern=WALLCOVERING`);
+            navigate(`/products?fabricType=WALLPAPER`);
         } else {
             navigate(`/products?fabricPattern=${category}`);
         }

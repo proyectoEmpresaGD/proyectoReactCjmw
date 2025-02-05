@@ -11,7 +11,7 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
         "TERCIOPELO",
         "FR",
         "OUTDOOR",
-        ...(type !== 'tela' ? ["WALLPAPER", "WALLCOVERING"] : []),
+        ...(type !== 'tela' ? ["WALLPAPER"] : []),
     ];
 
     // Definición de nombres personalizados para mostrar en el submenú
@@ -24,7 +24,7 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
         "TERCIOPELO",
         "FR",
         "OUTDOOR",
-        ...(type !== 'tela' ? ["WALLPAPER", "WALLCOVERING"] : []),
+        ...(type !== 'tela' ? ["WALLPAPER"] : []),
     ];
 
     // Función para manejar el clic en una categoría personalizada
