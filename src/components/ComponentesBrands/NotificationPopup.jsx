@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Eye, X } from "lucide-react";
+import { Eye, Download, X } from "lucide-react";
 
 const NotificationPopup = ({ brochures = [], logoUrl }) => {
     const [isOpen, setIsOpen] = useState(true);
@@ -22,6 +22,9 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
         setCurrentIndex(index);
     };
 
+    const handleDownload = () => {
+        window.open(currentBrochure.pdfUrl, "_blank"); // ✅ Solución más estable (abre en nueva pestaña)
+    };
 
     const currentBrochure = brochures[currentIndex];
 
@@ -82,6 +85,13 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                             <Eye size={22} />
                         </a>
 
+                        {/* Descargar PDF (Abre en nueva pestaña para que el usuario descargue) */}
+                        <button
+                            onClick={handleDownload}
+                            className="flex items-center text-gray-800 hover:text-gray-600 transition"
+                        >
+                            <Download size={22} />
+                        </button>
                     </div>
 
                     {/* Texto del Brochure */}
@@ -116,7 +126,11 @@ NotificationPopup.propTypes = {
             description: PropTypes.string,
         })
     ).isRequired,
-    logoUrl: PropTypes.string.isRequired,
+    logoUrl: PropTypes.string, // ✅ Ahora es opcional
+};
+
+NotificationPopup.defaultProps = {
+    logoUrl: "", // ✅ Evita warnings en consola
 };
 
 export default NotificationPopup;
