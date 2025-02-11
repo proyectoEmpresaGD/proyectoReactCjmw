@@ -49,13 +49,13 @@ function ArenaHome() {
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_ARENA.png",
             pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/CAT_ARENA_PURITTY_CJM_23_OK.pdf",
             title: "PURITTY",
-            description: "Volver a la esencia para reinventar nuestras colecciones atenporales. Descúbrelas.",
+            description: "Volver a la esencia para reinventar nuestras colecciones atemporales. Descúbrelas.",
         },
     ];
 
     return (
         <>
-        {/* bg-gradient-to-r from-[#ebdecf] to-[#a78d6e] */}
+            {/* bg-gradient-to-r from-[#ebdecf] to-[#a78d6e] */}
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
