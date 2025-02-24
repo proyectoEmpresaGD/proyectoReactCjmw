@@ -49,7 +49,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
                                 alt=""
                                 className={`aspect-square w-full object-cover transform ${hoveredItem === 0 ? 'scale-105' : 'scale-100'} transition duration-500`}
                             />
-                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6 "onClick={() => handleShopNowClick(0)}>
+                            <div className="absolute inset-0 flex flex-col items-start justify-end p-6 " onClick={() => handleShopNowClick(0)}>
                                 <h3 className="text-xl font-medium text-white">{titles[0]}</h3>
                             </div>
                         </a>

@@ -1,6 +1,6 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-
+import { ImagenModel } from './imagenes.js';
 dotenv.config();
 
 const pool = new pg.Pool({
@@ -12,7 +12,7 @@ export class ProductModel {
 
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
     let accumulatedProducts = [];
-    let excludedNames = ['DUKE','POISON','AGDAL','MARRAKECH','MAJORELLE','MAMOUNIA','KUTUBIA','MENARA','KASBAH','RIAD','COSY'];
+    let excludedNames = ['DUKE', 'POISON', 'AGDAL', 'MARRAKECH', 'MAJORELLE', 'MAMOUNIA', 'KUTUBIA', 'MENARA', 'KASBAH', 'RIAD', 'COSY'];
 
     try {
       while (accumulatedProducts.length < requiredLimit) {
@@ -141,7 +141,9 @@ export class ProductModel {
 
     return rows[0];
   }
-  // Búsqueda de productos
+
+  // Búsqueda de productos (modificada para buscar en nombre, desprodu, coleccion, tonalidad y codprodu)
+  // y para añadir la imagen correspondiente a cada producto
   static async search({ query, limit = 10, offset = 0, res }) {
     const cacheKey = `search:${query}:${offset}:${limit}`;
     if (res && res.cache) {
@@ -152,35 +154,64 @@ export class ProductModel {
       }
     }
 
-    const searchQuery = `
-        SELECT DISTINCT ON ("nombre") *
-        FROM productos
-        WHERE "nombre" ILIKE $1
-          AND "nombre" IS NOT NULL 
-          AND "nombre" != '' 
-          AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|AGDAL|MARRAKECH|MAJORELLE|MAMOUNIA|KUTUBIA|MENARA|KASBAH|RIAD|COSY|\d+)')
-          AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
-          AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
-        ORDER BY "nombre", "codprodu"
-        LIMIT $2 OFFSET $3;
-      `;
-    const offsetValue = offset || 0;
+    // Preparamos la cadena de búsqueda
     const searchString = `%${query}%`;
 
+    // Consulta mejorada: buscar en "nombre", "desprodu", "coleccion", "tonalidad" y "codprodu"
+    const searchQuery = `
+    SELECT *
+    FROM productos
+    WHERE (
+      "nombre" ILIKE $1 OR 
+      "desprodu" ILIKE $1 OR 
+      "coleccion" ILIKE $1 OR 
+      "tonalidad" ILIKE $1 OR
+      "codprodu" ILIKE $1
+    )
+      AND "nombre" IS NOT NULL
+      AND "nombre" != ''
+      -- Excluir productos basados en ciertos patrones en 'nombre'
+      AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\\d+)')
+      -- Excluir productos basados en ciertos patrones en 'desprodu'
+      AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
+      -- Limitar a las marcas permitidas
+      AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
+    ORDER BY "nombre", "codprodu"
+    LIMIT $2 OFFSET $3;
+  `;
+
     try {
-      const { rows } = await pool.query(searchQuery, [searchString, limit, offsetValue]);
+      const { rows } = await pool.query(searchQuery, [searchString, limit, offset]);
+
+      // Para cada producto, obtenemos su imagen correspondiente (clasificación "Baja")
+      const productsWithImages = await Promise.all(
+        rows.map(async (product) => {
+          // Aquí se llama al método de imágenes; se asume que defaultImageUrl está importado en el archivo
+          let imageObj = await ImagenModel.getByCodproduAndCodclaarchivo({
+            codprodu: product.codprodu,
+            codclaarchivo: 'Baja',
+            res,
+          });
+          return {
+            ...product,
+            image: imageObj && imageObj.ficadjunto ? `https://${imageObj.ficadjunto}` : defaultImageUrl,
+          };
+        })
+      );
 
       if (res && res.cache) {
-        await res.cache.set(cacheKey, { products: rows, total: rows.length });
+        await res.cache.set(cacheKey, { products: productsWithImages, total: productsWithImages.length });
         res.set('Cache-Control', 'public, max-age=3600');
       }
 
-      return { products: rows, total: rows.length };
+      return { products: productsWithImages, total: productsWithImages.length };
     } catch (error) {
       console.error('Error searching products:', error);
       throw new Error('Error searching products');
     }
   }
+
+
 
   static async getByCodFamil(codfamil, res) {
     const cacheKey = `products:family:${codfamil}`;
