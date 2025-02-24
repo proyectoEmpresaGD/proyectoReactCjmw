@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Modal from '../ComponentesProductos/modal';
+import Modal from './modal';
 import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
-    // Definición de las categorías originales del submenú (valores de filtro)
+    // Categorías originales del submenú (valores de filtro)
     const originalCategories = [
         "FLORAL",
         "LISO",
@@ -14,7 +14,7 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
         ...(type !== 'tela' ? ["WALLPAPER"] : []),
     ];
 
-    // Definición de nombres personalizados para mostrar en el submenú
+    // Nombres personalizados para mostrar en el submenú
     const customNames = [
         "FLORES",
         "LISOS",
@@ -27,10 +27,16 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
         ...(type !== 'tela' ? ["WALLPAPER"] : []),
     ];
 
-    // Función para manejar el clic en una categoría personalizada
+    // Al pulsar una categoría:
+    // - Si ya está activa, se desmarca (envía null)
+    // - Si no, se envía el filtro seleccionado.
     const handleFilterClick = (index) => {
-        const originalCategory = originalCategories[index]; // Obtener el nombre original
-        onFilterClick(originalCategory); // Filtrar usando el nombre original
+        const originalCategory = originalCategories[index];
+        if (activeCategory === originalCategory) {
+            onFilterClick(null);
+        } else {
+            onFilterClick(originalCategory);
+        }
     };
 
     return (
@@ -39,11 +45,11 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
                 <button
                     key={index}
                     onClick={() => handleFilterClick(index)}
-                    className={`px-5 py-2  text-md font-semibold transition-all duration-300 whitespace-nowrap rounded-md 
+                    className={`px-5 py-2 text-md font-semibold transition-all duration-300 whitespace-nowrap rounded-md 
                         ${activeCategory === originalCategories[index] ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-blue-100'}`}
                     aria-label={`Filtrar por ${customName}`}
                 >
-                    {customName} {/* Mostrar el nombre personalizado */}
+                    {customName}
                 </button>
             ))}
         </div>

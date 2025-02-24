@@ -6,6 +6,7 @@ const ACCEPTED_ORIGINS = [
   'https://movies.com',
   'https://midu.dev',
   'http://localhost:5173',
+  'http://localhost:5174',
   'https://translate.google.com',
   'https://proyecto-react-cjmw-neon.vercel.app',
   'https://cjmw-worldwide.vercel.app',

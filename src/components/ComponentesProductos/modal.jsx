@@ -362,7 +362,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     </div>
                                     <div>
                                         <div className="items-start justify-start ">
-                                        
+
                                             <div className="w-full md:w-1/2">
                                                 <h3 className="text-start font-semibold">Usos</h3>
                                                 <Link to="/usages">
@@ -404,27 +404,27 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 }}
                             >
                                 <img
-                                src={selectedImage}
-                                alt={alt}
-                                className="w-full h-[290px] md:h-[408px] lg:h-[390px]  sm:h-[390px] sm:max-h-[435px] object-cover rounded-md"
+                                    src={selectedImage}
+                                    alt={alt}
+                                    className="w-full h-[290px] md:h-[408px] lg:h-[390px]  sm:h-[390px] sm:max-h-[435px] object-cover rounded-md"
 
-                                style={{
-                                    transform: `scale(${zoomFactor})`,
-                                    transformOrigin: 'center',
-                                    transition: 'transform 0.3s ease-in-out',
-                                    objectFit: 'cover',
-                                   
-                                }}
-                            />
-                        </div>
-                        <div className="flex justify-center w-full mt-4 mb-4">
-                            <button
-                                onClick={handleAddToCart}
-                                className="bg-black hover:bg-white w-[100%] text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-2 rounded-md transition duration-200 mx-1"
-                            >
-                                Adquirir muestra
-                            </button>
-                        </div>
+                                    style={{
+                                        transform: `scale(${zoomFactor})`,
+                                        transformOrigin: 'center',
+                                        transition: 'transform 0.3s ease-in-out',
+                                        objectFit: 'cover',
+
+                                    }}
+                                />
+                            </div>
+                            <div className="flex justify-center w-full mt-4 mb-4">
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="bg-black hover:bg-white w-[100%] text-white hover:text-black border-2 border-black hover:border-gray-400 hover:rounded-xl font-semibold py-2 px-2 rounded-md transition duration-200 mx-1"
+                                >
+                                    Adquirir muestra
+                                </button>
+                            </div>
                         </div>
                         <div className='col-span-1 order-2 lg:order-3 w-full xl:pt-0 md:pl-7 lg:pl-6 xl:pl-8 lg:p-4 md:p-4 text-center md:text-start justify-start'>
 

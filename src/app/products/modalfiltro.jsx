@@ -1,8 +1,23 @@
 import { useState, useEffect } from 'react';
 
 function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
-    const allowedColors = ['GRIS', 'NEGRO', 'VERDE', 'BEIGE', 'BLANCO', 'MARRON', 'AZUL', 'AMARILLO', 'NARANJA', 'ROJO', 'MORADO', 'VIOLETA', 'ROSA'];
+    const allowedColors = [
+        'GRIS',
+        'NEGRO',
+        'VERDE',
+        'BEIGE',
+        'BLANCO',
+        'MARRON',
+        'AZUL',
+        'AMARILLO',
+        'NARANJA',
+        'ROJO',
+        'MORADO',
+        'VIOLETA',
+        'ROSA',
+    ];
 
+    // Estados de selección inicializados con los filtros actuales, si existen.
     const [selectedBrands, setSelectedBrands] = useState(currentFilters?.brand || []);
     const [selectedColors, setSelectedColors] = useState(currentFilters?.color || []);
     const [selectedCollections, setSelectedCollections] = useState(currentFilters?.collection || []);
@@ -10,6 +25,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     const [selectedFabricPatterns, setSelectedFabricPatterns] = useState(currentFilters?.fabricPattern || []);
     const [selectedMartindale, setSelectedMartindale] = useState(currentFilters?.martindale || []);
 
+    // Opciones disponibles
     const [brands, setBrands] = useState([]);
     const [collections, setCollections] = useState([]);
     const [fabricTypes, setFabricTypes] = useState([]);
@@ -17,9 +33,10 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     const [martindaleValues, setMartindaleValues] = useState([]);
     const [colors, setColors] = useState([]);
 
+    // Pestañas para agrupar filtros
     const [activeTab, setActiveTab] = useState('marcas');
 
-    // Estados de búsqueda
+    // Estados de búsqueda dentro de cada pestaña
     const [collectionSearch, setCollectionSearch] = useState('');
     const [fabricTypeSearch, setFabricTypeSearch] = useState('');
     const [fabricPatternSearch, setFabricPatternSearch] = useState('');
@@ -33,11 +50,48 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         BAS: 'Bassari',
     };
 
-    const tiposInvalidos = ["JAQUARD", "TEJIDO ", "VISILLO FR", "TERCIOPLEO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
-    const dibujosInvalidos = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM", "RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO", "TERCIOPELO", "PANA"];
-    const coleccionesInvalidas = ["MARRAKECH","MARRAKESH"];
+    const tiposInvalidos = [
+        "JAQUARD",
+        "TEJIDO ",
+        "VISILLO FR",
+        "TERCIOPLEO",
+        "RAYA",
+        "BUCLE",
+        "PANA",
+        "TEJIDO",
+        "FALSO LISO",
+        "PAPEL PARED",
+        "TERCIOPELO FR",
+        "FLORES",
+        "ESTAMAPADO",
+        "ESPIGA",
+        "RAYAS"
+    ];
+    const dibujosInvalidos = [
+        "TELAS CON FLORES",
+        "WALLCOVERING",
+        "TERCIOPELO FR",
+        "BLACKOUT",
+        "RAFIA",
+        "KILM",
+        "RAYA",
+        "IKAT ",
+        "WALLPAPER",
+        "FLORES",
+        "ANIMAL",
+        "LISOS",
+        "ESTAMPADO",
+        "GEOMETRICA",
+        "ESPIGAS",
+        "VISILLO",
+        "TEJIDO",
+        "TERCIOPELO",
+        "PANA"
+    ];
+    const coleccionesInvalidas = ["MARRAKECH", "MARRAKESH"];
+
     useEffect(() => {
-        fetchAllFilters();  // Fetch inicial
+        fetchAllFilters();
     }, []);
 
     const fetchAllFilters = async () => {
@@ -50,51 +104,66 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
             setCollections(filterValidData(data.collections, [], coleccionesInvalidas));
             setFabricTypes(filterValidData(data.fabricTypes, [], tiposInvalidos));
             setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
-            setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
-            setColors(filterValidData(data.colors).filter(color => allowedColors.includes(color.toUpperCase())));
+            setMartindaleValues(
+                data.martindaleValues.filter((value) => value).sort((a, b) => b - a)
+            );
+            setColors(
+                filterValidData(data.colors).filter((color) =>
+                    allowedColors.includes(color.toUpperCase())
+                )
+            );
         } catch (error) {
             console.error('Error fetching filters:', error);
         }
     };
 
     const filterValidData = (data, validOptions = [], invalidOptions = []) => {
-        const hasTilde = str => /[áéíóúÁÉÍÓÚ]/.test(str);
-        return [...new Set(data.filter(item =>
-            item &&
-            (!validOptions.length || validOptions.includes(item)) &&
-            (!invalidOptions.length || !invalidOptions.includes(item)) &&
-            !item.includes(";") &&
-            item === item.toUpperCase() &&
-            !hasTilde(item)
-        ))];
+        const hasTilde = (str) => /[áéíóúÁÉÍÓÚ]/.test(str);
+        return [
+            ...new Set(
+                data.filter(
+                    (item) =>
+                        item &&
+                        (!validOptions.length || validOptions.includes(item)) &&
+                        (!invalidOptions.length || !invalidOptions.includes(item)) &&
+                        !item.includes(";") &&
+                        item === item.toUpperCase() &&
+                        !hasTilde(item)
+                )
+            ),
+        ];
     };
 
+    // Control del body para evitar scroll cuando el modal está abierto
     useEffect(() => {
         if (isOpen) {
             document.body.classList.add('overflow-hidden');
         } else {
             document.body.classList.remove('overflow-hidden');
         }
-
         return () => {
             document.body.classList.remove('overflow-hidden');
         };
     }, [isOpen]);
 
-    // Actualizar filtros según la marca seleccionada
+    // Si se cambia la marca, se actualizan los filtros relacionados.
     const updateFiltersByBrand = async (brand) => {
-        const brandCode = Object.keys(brandNamesMap).find(key => brandNamesMap[key] === brand) || brand;
+        const brandCode = Object.keys(brandNamesMap).find(
+            (key) => brandNamesMap[key] === brand
+        ) || brand;
         if (brandCode) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filtersByBrand?brand=${brandCode}`);
+                const response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/filtersByBrand?brand=${brandCode}`
+                );
                 if (!response.ok) throw new Error('Error fetching brand-specific filters');
                 const data = await response.json();
-
-                // Filtrar los datos obtenidos por la marca seleccionada
                 setCollections(filterValidData(data.collections, [], coleccionesInvalidas));
                 setFabricTypes(filterValidData(data.fabricTypes, [], tiposInvalidos));
                 setFabricPatterns(filterValidData(data.fabricPatterns, [], dibujosInvalidos));
-                setMartindaleValues(data.martindaleValues.filter(value => value).sort((a, b) => b - a));
+                setMartindaleValues(
+                    data.martindaleValues.filter((value) => value).sort((a, b) => b - a)
+                );
             } catch (error) {
                 console.error('Error fetching filters by brand:', error);
             }
@@ -103,9 +172,14 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         }
     };
 
+    // Al aplicar filtros, se arma el objeto de filtros y se ejecuta el callback.
     const handleApplyFilters = () => {
         const filtersToApply = {
-            brand: selectedBrands.map(brand => Object.keys(brandNamesMap).find(key => brandNamesMap[key] === brand) || brand),
+            brand: selectedBrands.map(
+                (brand) =>
+                    Object.keys(brandNamesMap).find((key) => brandNamesMap[key] === brand) ||
+                    brand
+            ),
             color: selectedColors,
             collection: selectedCollections,
             fabricType: selectedFabricTypes,
@@ -116,11 +190,11 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
         close();
     };
 
+    // Función genérica para manejar cambios en checkboxes.
     const handleCheckboxChange = (setSelected, selected, value) => {
         if (selected.includes(value)) {
-            const updatedSelection = selected.filter(item => item !== value);
+            const updatedSelection = selected.filter((item) => item !== value);
             setSelected(updatedSelection);
-
             if (setSelected === setSelectedBrands && updatedSelection.length === 0) {
                 updateFiltersByBrand(null);
             }
@@ -133,18 +207,23 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     };
 
     const removeSelectedItem = (setSelected, selected, value) => {
-        const updatedSelection = selected.filter(item => item !== value);
+        const updatedSelection = selected.filter((item) => item !== value);
         setSelected(updatedSelection);
-
         if (setSelected === setSelectedBrands && updatedSelection.length === 0) {
             updateFiltersByBrand(null);
         }
     };
 
-    // Filtrar colecciones, tipos de tela, y patrones de tela según el término de búsqueda
-    const filteredCollections = collections.filter(collection => collection.toLowerCase().includes(collectionSearch.toLowerCase()));
-    const filteredFabricTypes = fabricTypes.filter(fabricType => fabricType.toLowerCase().includes(fabricTypeSearch.toLowerCase()));
-    const filteredFabricPatterns = fabricPatterns.filter(fabricPattern => fabricPattern.toLowerCase().includes(fabricPatternSearch.toLowerCase()));
+    // Filtros de búsqueda internos para colecciones, tipos de tela y patrones.
+    const filteredCollections = collections.filter((collection) =>
+        collection.toLowerCase().includes(collectionSearch.toLowerCase())
+    );
+    const filteredFabricTypes = fabricTypes.filter((fabricType) =>
+        fabricType.toLowerCase().includes(fabricTypeSearch.toLowerCase())
+    );
+    const filteredFabricPatterns = fabricPatterns.filter((fabricPattern) =>
+        fabricPattern.toLowerCase().includes(fabricPatternSearch.toLowerCase())
+    );
 
     if (!isOpen) return null;
 
@@ -156,7 +235,11 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                         FILTROS
                     </h2>
                     <button className="ml-auto relative overflow-hidden m-4" onClick={close}>
-                        <img src="close.svg" className="w-6 h-6 hover:scale-125 transition-transform duration-200" alt="Cerrar" />
+                        <img
+                            src="close.svg"
+                            className="w-6 h-6 hover:scale-125 transition-transform duration-200"
+                            alt="Cerrar"
+                        />
                     </button>
                 </div>
 
@@ -165,44 +248,100 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                     <h3 className="text-lg font-semibold mr-2 text-gray-600">Filtros seleccionados:</h3>
                     <div className="flex flex-wrap gap-2">
                         {selectedBrands.map((item, index) => (
-                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedBrands, selectedBrands, item)} />
+                            <FilterTag
+                                key={index}
+                                item={item}
+                                onRemove={() => removeSelectedItem(setSelectedBrands, selectedBrands, item)}
+                            />
                         ))}
                         {selectedColors.map((item, index) => (
-                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedColors, selectedColors, item)} />
+                            <FilterTag
+                                key={index}
+                                item={item}
+                                onRemove={() => removeSelectedItem(setSelectedColors, selectedColors, item)}
+                            />
                         ))}
                         {selectedCollections.map((item, index) => (
-                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedCollections, selectedCollections, item)} />
+                            <FilterTag
+                                key={index}
+                                item={item}
+                                onRemove={() => removeSelectedItem(setSelectedCollections, selectedCollections, item)}
+                            />
                         ))}
                         {selectedFabricTypes.map((item, index) => (
-                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedFabricTypes, selectedFabricTypes, item)} />
+                            <FilterTag
+                                key={index}
+                                item={item}
+                                onRemove={() => removeSelectedItem(setSelectedFabricTypes, selectedFabricTypes, item)}
+                            />
                         ))}
                         {selectedFabricPatterns.map((item, index) => (
-                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedFabricPatterns, selectedFabricPatterns, item)} />
+                            <FilterTag
+                                key={index}
+                                item={item}
+                                onRemove={() => removeSelectedItem(setSelectedFabricPatterns, selectedFabricPatterns, item)}
+                            />
                         ))}
                         {selectedMartindale.map((item, index) => (
-                            <FilterTag key={index} item={item} onRemove={() => removeSelectedItem(setSelectedMartindale, selectedMartindale, item)} />
+                            <FilterTag
+                                key={index}
+                                item={item}
+                                onRemove={() => removeSelectedItem(setSelectedMartindale, selectedMartindale, item)}
+                            />
                         ))}
                     </div>
                 </div>
 
                 {/* TabPanel */}
                 <div className="mb-4 flex justify-around border-b-2 border-gray-300 overflow-x-auto text-gray-600">
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'marcas' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('marcas')}>Marcas</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colecciones' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('colecciones')}>Colecciones</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'dibujo' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('dibujo')}>Dibujo de Tela</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'tela' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('tela')}>Tipos de Tela</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colores' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('colores')}>Colores</button>
-                    <button className={`py-2 px-4 flex-shrink-0 ${activeTab === 'martindale' ? 'border-b-4 border-[#D2B48C]' : ''}`} onClick={() => setActiveTab('martindale')}>Martindale</button>
+                    <button
+                        className={`py-2 px-4 flex-shrink-0 ${activeTab === 'marcas' ? 'border-b-4 border-[#D2B48C]' : ''}`}
+                        onClick={() => setActiveTab('marcas')}
+                    >
+                        Marcas
+                    </button>
+                    <button
+                        className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colecciones' ? 'border-b-4 border-[#D2B48C]' : ''}`}
+                        onClick={() => setActiveTab('colecciones')}
+                    >
+                        Colecciones
+                    </button>
+                    <button
+                        className={`py-2 px-4 flex-shrink-0 ${activeTab === 'dibujo' ? 'border-b-4 border-[#D2B48C]' : ''}`}
+                        onClick={() => setActiveTab('dibujo')}
+                    >
+                        Dibujo de Tela
+                    </button>
+                    <button
+                        className={`py-2 px-4 flex-shrink-0 ${activeTab === 'tela' ? 'border-b-4 border-[#D2B48C]' : ''}`}
+                        onClick={() => setActiveTab('tela')}
+                    >
+                        Tipos de Tela
+                    </button>
+                    <button
+                        className={`py-2 px-4 flex-shrink-0 ${activeTab === 'colores' ? 'border-b-4 border-[#D2B48C]' : ''}`}
+                        onClick={() => setActiveTab('colores')}
+                    >
+                        Colores
+                    </button>
+                    <button
+                        className={`py-2 px-4 flex-shrink-0 ${activeTab === 'martindale' ? 'border-b-4 border-[#D2B48C]' : ''}`}
+                        onClick={() => setActiveTab('martindale')}
+                    >
+                        Martindale
+                    </button>
                 </div>
 
-                <div className="sm:hidden text-center text-sm text-gray-500">Desliza hacia los lados para ver más opciones</div>
+                <div className="sm:hidden text-center text-sm text-gray-500">
+                    Desliza hacia los lados para ver más opciones
+                </div>
 
                 {/* Tab Content */}
                 <div className="h-[350px] overflow-y-auto">
                     {activeTab === 'marcas' && (
                         <FilterSection
                             title="Marcas"
-                            items={brands.map(brand => brandNamesMap[brand] || brand)}
+                            items={brands.map((brand) => brandNamesMap[brand] || brand)}
                             selectedItems={selectedBrands}
                             handleCheckboxChange={handleCheckboxChange}
                             setSelected={setSelectedBrands}
@@ -283,7 +422,10 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
                 </div>
 
                 <div className="mt-4 flex justify-center">
-                    <button onClick={handleApplyFilters} className="bg-[#D2B48C] w-[100%] lg:w-[30%] hover:bg-[#C19A6B] text-white font-bold py-2 px-6 rounded-md shadow-md transition-all duration-200 transform">
+                    <button
+                        onClick={handleApplyFilters}
+                        className="bg-[#D2B48C] w-[100%] lg:w-[30%] hover:bg-[#C19A6B] text-white font-bold py-2 px-6 rounded-md shadow-md transition-all duration-200 transform"
+                    >
                         Aplicar Filtros
                     </button>
                 </div>
@@ -292,7 +434,7 @@ function FiltroModal({ isOpen, close, applyFilters, currentFilters }) {
     );
 }
 
-// Componente reutilizable para los tags de filtros seleccionados
+// Componente para mostrar cada tag de filtro seleccionado
 function FilterTag({ item, onRemove }) {
     return (
         <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 transition-colors hover:bg-gray-300">
@@ -301,7 +443,7 @@ function FilterTag({ item, onRemove }) {
     );
 }
 
-// Componente reutilizable para las secciones de filtro
+// Componente para las secciones de filtro (checkboxes)
 function FilterSection({ title, items, selectedItems, handleCheckboxChange, setSelected }) {
     return (
         <div className="overflow-y-auto flex flex-col border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
@@ -326,7 +468,7 @@ function FilterSection({ title, items, selectedItems, handleCheckboxChange, setS
     );
 }
 
-// Componente reutilizable para mostrar colores
+// Componente para mostrar el grid de colores
 function ColorGrid({ title, items, selectedItems, handleCheckboxChange, setSelected }) {
     return (
         <div className="overflow-y-auto flex flex-col border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
