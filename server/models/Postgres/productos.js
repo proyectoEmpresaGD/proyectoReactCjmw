@@ -142,9 +142,10 @@ export class ProductModel {
     return rows[0];
   }
 
-  // Búsqueda de productos (modificada para buscar en nombre, desprodu, coleccion, tonalidad y codprodu)
-  // y para añadir la imagen correspondiente a cada producto
   static async search({ query, limit = 10, offset = 0, res }) {
+    if (!query || query.trim() === '') {
+      return { products: [], total: 0 };
+    }
     const cacheKey = `search:${query}:${offset}:${limit}`;
     if (res && res.cache) {
       const cachedResponse = await res.cache.get(cacheKey);
@@ -154,39 +155,30 @@ export class ProductModel {
       }
     }
 
-    // Preparamos la cadena de búsqueda
     const searchString = `%${query}%`;
-
-    // Consulta mejorada: buscar en "nombre", "desprodu", "coleccion", "tonalidad" y "codprodu"
     const searchQuery = `
-    SELECT *
-    FROM productos
-    WHERE (
-      "nombre" ILIKE $1 OR 
-      "desprodu" ILIKE $1 OR 
-      "coleccion" ILIKE $1 OR 
-      "tonalidad" ILIKE $1 OR
-      "codprodu" ILIKE $1
-    )
+      SELECT *
+      FROM productos
+      WHERE (
+        unaccent(UPPER("nombre")) LIKE unaccent(UPPER($1)) OR 
+        unaccent(UPPER("desprodu")) LIKE unaccent(UPPER($1)) OR 
+        unaccent(UPPER("coleccion")) LIKE unaccent(UPPER($1)) OR 
+        unaccent(UPPER("tonalidad")) LIKE unaccent(UPPER($1)) OR
+        unaccent(UPPER("codprodu")) LIKE unaccent(UPPER($1))
+      )
       AND "nombre" IS NOT NULL
       AND "nombre" != ''
-      -- Excluir productos basados en ciertos patrones en 'nombre'
       AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\\d+)')
-      -- Excluir productos basados en ciertos patrones en 'desprodu'
       AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
-      -- Limitar a las marcas permitidas
       AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
-    ORDER BY "nombre", "codprodu"
-    LIMIT $2 OFFSET $3;
-  `;
+      ORDER BY "nombre", "codprodu"
+      LIMIT $2 OFFSET $3;
+    `;
 
     try {
       const { rows } = await pool.query(searchQuery, [searchString, limit, offset]);
-
-      // Para cada producto, obtenemos su imagen correspondiente (clasificación "Baja")
       const productsWithImages = await Promise.all(
         rows.map(async (product) => {
-          // Aquí se llama al método de imágenes; se asume que defaultImageUrl está importado en el archivo
           let imageObj = await ImagenModel.getByCodproduAndCodclaarchivo({
             codprodu: product.codprodu,
             codclaarchivo: 'Baja',
@@ -198,18 +190,17 @@ export class ProductModel {
           };
         })
       );
-
       if (res && res.cache) {
         await res.cache.set(cacheKey, { products: productsWithImages, total: productsWithImages.length });
         res.set('Cache-Control', 'public, max-age=3600');
       }
-
       return { products: productsWithImages, total: productsWithImages.length };
     } catch (error) {
       console.error('Error searching products:', error);
       throw new Error('Error searching products');
     }
   }
+
 
 
 
