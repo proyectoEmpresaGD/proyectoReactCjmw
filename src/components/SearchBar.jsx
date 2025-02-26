@@ -1,4 +1,3 @@
-// SearchBar.jsx
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { RiSearchLine, RiCloseLine } from 'react-icons/ri';
 import debounce from 'lodash.debounce';
@@ -83,8 +82,9 @@ const SearchBar = ({ closeSearchBar }) => {
 
     const debouncedFetch = useCallback(debounce(fetchAllSuggestions, 300), []);
 
+    // Convertir el input a mayúsculas siempre
     const handleChange = (e) => {
-        const val = e.target.value;
+        const val = e.target.value.toUpperCase();
         setQuery(val);
         debouncedFetch(val);
     };
@@ -129,7 +129,7 @@ const SearchBar = ({ closeSearchBar }) => {
     }, []);
 
     const selectProductSuggestion = (item) => {
-        const displayText = `${item.nombre} (${item.coleccion || 'Sin colección'}, ${item.tonalidad || 'Sin tonalidad'})`;
+        const displayText = `${item.nombre} (${item.coleccion || 'SIN COLECCIÓN'}, ${item.tonalidad || 'SIN TONALIDAD'})`;
         setQuery(displayText);
         addToHistory(displayText);
         navigate(`/products?productId=${encodeURIComponent(item.codprodu)}`);
@@ -140,7 +140,7 @@ const SearchBar = ({ closeSearchBar }) => {
     };
 
     const selectCollectionSuggestion = (col) => {
-        const displayText = `Colección: ${col}`;
+        const displayText = `COLECCIÓN: ${col}`;
         setQuery(displayText);
         addToHistory(displayText);
         navigate(`/products?collection=${encodeURIComponent(col)}`);
@@ -175,8 +175,9 @@ const SearchBar = ({ closeSearchBar }) => {
                 <input
                     ref={inputRef}
                     type="text"
+                    style={{ textTransform: 'uppercase' }}
                     className="flex-grow bg-transparent focus:outline-none text-gray-800 placeholder-gray-400"
-                    placeholder="Buscar telas... (ej. SAN FERNANDO, GRAZALEMA, FLA000860)"
+                    placeholder="BUSCAR TELAS... (EJ. SAN FERNANDO, GRAZALEMA, FLA000860)"
                     value={query}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
@@ -191,7 +192,7 @@ const SearchBar = ({ closeSearchBar }) => {
                 )}
             </div>
             {query.length > 0 && query.length < 3 && (
-                <div className="mt-1 text-xs text-gray-500">Escribe al menos 3 caracteres para buscar.</div>
+                <div className="mt-1 text-xs text-gray-500">ESCRIBE AL MENOS 3 CARACTERES PARA BUSCAR.</div>
             )}
             <AnimatePresence>
                 {query.length >= 3 && (
@@ -205,12 +206,12 @@ const SearchBar = ({ closeSearchBar }) => {
                         variants={dropdownVariants}
                     >
                         {isLoading ? (
-                            <div className="px-4 py-2 text-center text-sm text-gray-600">Cargando...</div>
+                            <div className="px-4 py-2 text-center text-sm text-gray-600">CARGANDO...</div>
                         ) : totalSuggestions > 0 ? (
                             <>
                                 {productSuggestions.length > 0 && (
                                     <div>
-                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">Productos</div>
+                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">PRODUCTOS</div>
                                         <ul>
                                             {productSuggestions.map((item, idx) => (
                                                 <li
@@ -218,8 +219,7 @@ const SearchBar = ({ closeSearchBar }) => {
                                                     ref={(el) => (suggestionRefs.current[idx] = el)}
                                                     role="option"
                                                     aria-selected={activeIndex === idx}
-                                                    className={`flex items-center px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === idx ? 'bg-gray-100' : ''
-                                                        }`}
+                                                    className={`flex items-center px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === idx ? 'bg-gray-100' : ''}`}
                                                     onClick={() => selectProductSuggestion(item)}
                                                 >
                                                     <img
@@ -231,7 +231,7 @@ const SearchBar = ({ closeSearchBar }) => {
                                                     <div>
                                                         <p className="font-medium text-gray-800">{item.nombre}</p>
                                                         <p className="text-xs text-gray-500">
-                                                            {item.coleccion || 'Sin colección'} · {item.tonalidad || 'Sin tonalidad'}
+                                                            {item.coleccion || 'SIN COLECCIÓN'} · {item.tonalidad || 'SIN TONALIDAD'}
                                                         </p>
                                                     </div>
                                                 </li>
@@ -241,7 +241,7 @@ const SearchBar = ({ closeSearchBar }) => {
                                 )}
                                 {collectionSuggestions.length > 0 && (
                                     <div>
-                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">Colecciones</div>
+                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">COLECCIONES</div>
                                         <ul>
                                             {collectionSuggestions.map((col, idx) => {
                                                 const globalIndex = productSuggestions.length + idx;
@@ -251,11 +251,10 @@ const SearchBar = ({ closeSearchBar }) => {
                                                         ref={(el) => (suggestionRefs.current[globalIndex] = el)}
                                                         role="option"
                                                         aria-selected={activeIndex === globalIndex}
-                                                        className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === globalIndex ? 'bg-gray-100' : ''
-                                                            }`}
+                                                        className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === globalIndex ? 'bg-gray-100' : ''}`}
                                                         onClick={() => selectCollectionSuggestion(col)}
                                                     >
-                                                        <p className="font-medium text-gray-800">Colección: {col}</p>
+                                                        <p className="font-medium text-gray-800">COLECCIÓN: {col}</p>
                                                     </li>
                                                 );
                                             })}
@@ -266,12 +265,12 @@ const SearchBar = ({ closeSearchBar }) => {
                                     className="sticky bottom-0 bg-white border-t text-center cursor-pointer hover:bg-gray-100 px-4 py-3"
                                     onClick={() => submitSearch(query)}
                                 >
-                                    <span className="font-medium text-blue-600">Ver todos los resultados</span>
+                                    <span className="font-medium text-blue-600">VER TODOS LOS RESULTADOS</span>
                                 </div>
                             </>
                         ) : (
                             <div className="px-4 py-2 text-center text-sm text-gray-600">
-                                No se encontraron resultados. Intenta buscar por <strong>nombre, colección</strong>, <strong>tonalidad</strong> o <strong>código de producto</strong>.
+                                NO SE ENCONTRARON RESULTADOS. INTENTA BUSCAR POR <strong>NOMBRE, COLECCIÓN</strong>, <strong>TONALIDAD</strong> O <strong>CÓDIGO DE PRODUCTO</strong>.
                             </div>
                         )}
                     </motion.div>
@@ -279,7 +278,7 @@ const SearchBar = ({ closeSearchBar }) => {
             </AnimatePresence>
             {history.length > 0 && query.length < 3 && (
                 <div className="absolute z-50 w-full bg-white shadow-lg rounded-lg mt-1 overflow-y-auto max-h-60">
-                    <div className="px-4 py-2 border-b font-semibold text-gray-700">Búsquedas recientes</div>
+                    <div className="px-4 py-2 border-b font-semibold text-gray-700">BÚSQUEDAS RECIENTES</div>
                     <ul>
                         {history.map((term, idx) => (
                             <li

@@ -50,7 +50,7 @@ function FlamencoHome() {
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_FLAMENCO.png",
             pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_FLAMENCO_WEB.pdf",
             title: "FLAMENCO",
-            description: "El lugar donde ele mestizaje de culturas inspira nuestras colecciones. Descúbrelas",
+            description: "El lugar donde el mestizaje de culturas inspira nuestras colecciones. Descúbrelas",
         },
         {
             imageUrl:
