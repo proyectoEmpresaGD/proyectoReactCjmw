@@ -128,6 +128,9 @@ export class ProductController {
         offset,
       });
 
+      // Log para verificar los resultados recibidos
+      console.log("[DEBUG] Controller search results count:", products.length);
+
       if (products.length === 0) {
         return res.status(404).json({ message: 'No products found for the search query' });
       }
@@ -146,6 +149,7 @@ export class ProductController {
       res.status(500).json({ error: 'Error searching products', details: error.message });
     }
   }
+
 
   async getByCodFamil(req, res) {
     try {

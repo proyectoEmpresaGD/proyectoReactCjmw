@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
@@ -14,7 +14,6 @@ import {
     scrollPosition
 } from '../../Constants/constants';
 
-// Importamos íconos de react-icons (Font Awesome, por ejemplo)
 import {
     FaAngleDoubleLeft,
     FaAngleLeft,
@@ -22,7 +21,6 @@ import {
     FaAngleDoubleRight
 } from 'react-icons/fa';
 
-// Componente LazyImage: carga la imagen solo cuando es visible
 const LazyImage = ({ src, alt, className }) => {
     const [visible, setVisible] = useState(false);
     const imgRef = useRef(null);
@@ -61,7 +59,6 @@ const CardProduct = () => {
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
 
-    // Parámetros de URL
     const searchQuery = searchParams.get('search');
     const productId = searchParams.get('productId');
     const type = searchParams.get('type');
@@ -73,7 +70,6 @@ const CardProduct = () => {
 
     const { addToCart } = useCart();
 
-    // Estados de productos, carga, errores, paginación y filtros
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -91,6 +87,15 @@ const CardProduct = () => {
         : null;
     const productIdEnlace = decryptedProductId;
 
+    // Sincroniza el estado "page" con el parámetro "page" de la URL
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const pageParam = parseInt(params.get('page'), 10) || 1;
+        if (page !== pageParam) {
+            setPage(pageParam);
+        }
+    }, [location.search, page]);
+
     // Actualizar activeCategory cuando cambia la URL
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -101,7 +106,6 @@ const CardProduct = () => {
         setActiveCategory(newActive);
     }, [location.search]);
 
-    // Construye el objeto de filtros combinando URL y estado local
     const buildAppliedFilters = () => {
         let applied = { ...filters };
         if (searchQuery) applied.search = searchQuery;
@@ -113,7 +117,6 @@ const CardProduct = () => {
         return applied;
     };
 
-    // Función para cargar imágenes de un producto
     const loadProductImages = async (product) => {
         const [imageBuena, imageBaja] = await Promise.all([
             fetch(`${apiUrl}/api/images/${product.codprodu}/Buena`).then((res) =>
@@ -134,21 +137,18 @@ const CardProduct = () => {
         return Promise.all(products.map(loadProductImages));
     };
 
-    // Función para cargar productos (paginación en el servidor)
     const fetchProducts = async (pageNumber = 1, appliedFilters = {}) => {
         setLoading(true);
         setError(null);
         try {
             let response;
             if (searchQuery && Object.keys(appliedFilters).length === 1 && appliedFilters.search) {
-                // Búsqueda simple
                 response = await fetch(
                     `${apiUrl}/api/products/search?query=${searchQuery}&limit=${itemsPerPage}&page=${pageNumber}`
                 );
                 setIsSearching(true);
                 setIsFiltered(false);
             } else if (Object.keys(appliedFilters).length > 0) {
-                // Filtros
                 response = await fetch(
                     `${apiUrl}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
                     {
@@ -160,7 +160,6 @@ const CardProduct = () => {
                 setIsFiltered(true);
                 setIsSearching(false);
             } else {
-                // Sin filtros
                 response = await fetch(
                     `${apiUrl}/api/products?limit=${itemsPerPage}&page=${pageNumber}`
                 );
@@ -179,7 +178,6 @@ const CardProduct = () => {
                 const productsWithImages = await loadProductsImages(productsData);
                 setProducts(productsWithImages);
 
-                // Si el backend retorna "total", se usa; si no, se calcula.
                 const computedTotal =
                     data.total !== undefined
                         ? data.total
@@ -195,7 +193,6 @@ const CardProduct = () => {
         }
     };
 
-    // Cargar producto por ID
     const fetchProductsById = async (id) => {
         setLoading(true);
         setError(null);
@@ -213,7 +210,6 @@ const CardProduct = () => {
         }
     };
 
-    // Efecto: cargar productos
     useEffect(() => {
         if (productIdEnlace) {
             fetchProductsById(productIdEnlace);
@@ -236,15 +232,14 @@ const CardProduct = () => {
         filters
     ]);
 
-    // Maneja filtros aplicados desde el modal
+    // Al aplicar un filtro, se reinicia la página a 1 y se actualiza la URL
     const handleFilteredProducts = (filteredProducts, selectedFilters) => {
         setProducts(filteredProducts);
         setFilters(selectedFilters);
         setIsFiltered(true);
         setIsSearching(false);
         setPage(1);
-        setActiveCategory(null);
-        navigate('/products');
+        navigate('/products?page=1');
     };
 
     const handleAddToCart = (product) => {
@@ -264,12 +259,15 @@ const CardProduct = () => {
 
     const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
+    // Actualizamos la URL al cambiar de página para mantener la sincronización
     const handlePageChange = (newPage) => {
         setPage(newPage);
+        const params = new URLSearchParams(location.search);
+        params.set('page', newPage);
+        navigate(`/products?${params.toString()}`);
         window.scrollTo(scrollPosition.x, scrollPosition.y);
     };
 
-    // Filtra por categoría del submenú
     const handleCategoryFilter = (category) => {
         setFilters({});
         if (category === 'OUTDOOR') {
@@ -332,7 +330,6 @@ const CardProduct = () => {
                 <div className="text-center text-red-500">{error}</div>
             )}
 
-            {/* Paginación adaptativa */}
             {totalPages > 1 && (
                 <div className="mt-8 w-full flex justify-center">
                     <Pagination
@@ -361,9 +358,7 @@ const CardProduct = () => {
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     if (totalPages <= 1) return null;
 
-    // Máximo de botones de página en escritorio
     const maxPageButtons = 5;
-
     let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     let endPage = startPage + maxPageButtons - 1;
     if (endPage > totalPages) {
@@ -376,10 +371,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         pageNumbers.push(i);
     }
 
-    // Versión de escritorio
     const DesktopPagination = () => (
         <div className="hidden md:flex items-center space-x-1 bg-white shadow-md rounded-full px-4 py-2">
-            {/* First */}
             <button
                 onClick={() => onPageChange(1)}
                 disabled={currentPage === 1}
@@ -387,8 +380,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             >
                 <FaAngleDoubleLeft className="w-4 h-4" />
             </button>
-
-            {/* Prev */}
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -396,32 +387,21 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             >
                 <FaAngleLeft className="w-4 h-4" />
             </button>
-
-            {/* Elipsis al inicio */}
             {startPage > 1 && (
                 <span className="px-2 text-gray-500 select-none">...</span>
             )}
-
-            {/* Números de página */}
             {pageNumbers.map((num) => (
                 <button
                     key={num}
                     onClick={() => onPageChange(num)}
-                    className={`px-3 py-1 rounded-full transition-colors duration-200 ${num === currentPage
-                        ? 'bg-[#D2B48C] text-white'
-                        : 'text-gray-600 hover:bg-gray-100'
-                        }`}
+                    className={`px-3 py-1 rounded-full transition-colors duration-200 ${num === currentPage ? 'bg-[#D2B48C] text-white' : 'text-gray-600 hover:bg-gray-100'}`}
                 >
                     {num}
                 </button>
             ))}
-
-            {/* Elipsis al final */}
             {endPage < totalPages && (
                 <span className="px-2 text-gray-500 select-none">...</span>
             )}
-
-            {/* Next */}
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
@@ -429,8 +409,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             >
                 <FaAngleRight className="w-4 h-4" />
             </button>
-
-            {/* Last */}
             <button
                 onClick={() => onPageChange(totalPages)}
                 disabled={currentPage === totalPages}
@@ -441,7 +419,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         </div>
     );
 
-    // Versión móvil
     const MobilePagination = () => (
         <div className="flex md:hidden items-center space-x-3 bg-white shadow-md rounded-full px-4 py-2">
             <button
@@ -451,11 +428,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             >
                 <FaAngleLeft className="w-4 h-4" />
             </button>
-
             <span className="text-sm font-semibold text-gray-700">
                 {currentPage} / {totalPages}
             </span>
-
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
