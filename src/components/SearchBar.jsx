@@ -27,18 +27,20 @@ const SearchBar = ({ closeSearchBar }) => {
     const inputRef = useRef(null);
     const suggestionRefs = useRef([]);
 
-    // API: obtener sugerencias de productos (usa ILIKE en el backend para ser insensible a mayúsculas)
+    console.log("[DEBUG] SearchBar mounted. Current query:", query);
+
+    // API: obtener sugerencias de productos (se muestran todos los resultados devueltos)
     const fetchProductSuggestions = async (q) => {
         try {
             const normalized = normalizeQuery(q);
-            const res = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${encodeURIComponent(normalized)}`,
-                { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } }
-            );
+            const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${encodeURIComponent(normalized)}`;
+            console.log("[DEBUG] Fetching products from:", url);
+            const res = await fetch(url, { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } });
             if (!res.ok) throw new Error('Error fetching product suggestions');
             const data = await res.json();
+            console.log("[DEBUG] Products fetched:", data);
             if (Array.isArray(data.products) && data.products.length > 0) {
-                setProductSuggestions(data.products.slice(0, 5));
+                setProductSuggestions(data.products);
             } else {
                 setProductSuggestions([]);
             }
@@ -48,18 +50,18 @@ const SearchBar = ({ closeSearchBar }) => {
         }
     };
 
-    // API: obtener sugerencias de colecciones
+    // API: obtener sugerencias de colecciones (se muestran todas las colecciones devueltas)
     const fetchCollectionSuggestions = async (q) => {
         try {
             const normalized = normalizeQuery(q);
-            const res = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/products/searchCollections?searchTerm=${encodeURIComponent(normalized)}`,
-                { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } }
-            );
+            const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/searchCollections?searchTerm=${encodeURIComponent(normalized)}`;
+            console.log("[DEBUG] Fetching collections from:", url);
+            const res = await fetch(url, { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } });
             if (!res.ok) throw new Error('Error fetching collection suggestions');
             const data = await res.json();
+            console.log("[DEBUG] Collections fetched:", data);
             if (Array.isArray(data) && data.length > 0) {
-                setCollectionSuggestions(data.slice(0, 5));
+                setCollectionSuggestions(data);
             } else {
                 setCollectionSuggestions([]);
             }
@@ -132,7 +134,8 @@ const SearchBar = ({ closeSearchBar }) => {
         const displayText = `${item.nombre} (${item.coleccion || 'SIN COLECCIÓN'}, ${item.tonalidad || 'SIN TONALIDAD'})`;
         setQuery(displayText);
         addToHistory(displayText);
-        navigate(`/products?productId=${encodeURIComponent(item.codprodu)}`);
+        // Reiniciamos la paginación forzando page=1
+        navigate(`/products?productId=${encodeURIComponent(item.codprodu)}&page=1`);
         setActiveIndex(-1);
         setProductSuggestions([]);
         setCollectionSuggestions([]);
@@ -143,7 +146,8 @@ const SearchBar = ({ closeSearchBar }) => {
         const displayText = `COLECCIÓN: ${col}`;
         setQuery(displayText);
         addToHistory(displayText);
-        navigate(`/products?collection=${encodeURIComponent(col)}`);
+        // Reiniciamos la paginación forzando page=1
+        navigate(`/products?collection=${encodeURIComponent(col)}&page=1`);
         setActiveIndex(-1);
         setProductSuggestions([]);
         setCollectionSuggestions([]);
@@ -154,7 +158,8 @@ const SearchBar = ({ closeSearchBar }) => {
         const normalized = normalizeQuery(q);
         if (normalized === '') return;
         addToHistory(normalized);
-        navigate(`/products?search=${encodeURIComponent(normalized)}`);
+        // Reiniciamos la paginación forzando page=1
+        navigate(`/products?search=${encodeURIComponent(normalized)}&page=1`);
         setProductSuggestions([]);
         setCollectionSuggestions([]);
         if (closeSearchBar) closeSearchBar();

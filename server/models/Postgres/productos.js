@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { ImagenModel } from './imagenes.js';
 dotenv.config();
 
+
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
@@ -12,7 +13,7 @@ export class ProductModel {
 
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
     let accumulatedProducts = [];
-    let excludedNames = ['DUKE', 'POISON', 'AGDAL', 'MARRAKECH', 'MAJORELLE', 'MAMOUNIA', 'KUTUBIA', 'MENARA', 'KASBAH', 'RIAD', 'COSY'];
+    let excludedNames = ['DUKE', 'MARRAKECH', 'MAJORELLE', 'MAMOUNIA', 'KUTUBIA', 'KASBAH', 'RIAD', 'COSY'];
 
     try {
       while (accumulatedProducts.length < requiredLimit) {
@@ -157,28 +158,37 @@ export class ProductModel {
 
     const searchString = `%${query}%`;
     const searchQuery = `
-      SELECT *
-      FROM productos
-      WHERE (
-        unaccent(UPPER("nombre")) LIKE unaccent(UPPER($1)) OR 
-        unaccent(UPPER("desprodu")) LIKE unaccent(UPPER($1)) OR 
-        unaccent(UPPER("coleccion")) LIKE unaccent(UPPER($1)) OR 
-        unaccent(UPPER("tonalidad")) LIKE unaccent(UPPER($1)) OR
-        unaccent(UPPER("codprodu")) LIKE unaccent(UPPER($1))
-      )
-      AND "nombre" IS NOT NULL
-      AND "nombre" != ''
-      AND NOT ("nombre" ~* '^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\\d+)')
-      AND NOT ("desprodu" ~* '(PERCHAS Y LIBROS|CUTTING|LIBROS|PERCHA|FUERA DE COLECCIÓN|PERCHAS|FUERA DE COLECCION)')
-      AND "codmarca" IN ('ARE', 'FLA', 'CJM', 'HAR', 'BAS')
-      ORDER BY "nombre", "codprodu"
-      LIMIT $2 OFFSET $3;
-    `;
+    SELECT *,
+           similarity(unaccent(UPPER("nombre")), unaccent(UPPER($1))) AS sim
+    FROM productos
+    WHERE (
+      unaccent(UPPER("nombre")) LIKE unaccent(UPPER($1))
+      OR unaccent(UPPER("coleccion")) LIKE unaccent(UPPER($1))
+    )
+    AND "nombre" IS NOT NULL
+    AND "nombre" != ''
+    ORDER BY sim DESC, "nombre", "codprodu"
+    LIMIT $2 OFFSET $3;
+  `;
+
+    console.log("[DEBUG] search method called");
+    console.log("Incoming query param:", query);
+    console.log("searchString:", searchString);
+    console.log("Executing query:", searchQuery);
 
     try {
       const { rows } = await pool.query(searchQuery, [searchString, limit, offset]);
+      console.log(`[DEBUG] Rows returned from DB: ${rows.length}`);
+
+      // Filtrar resultados con similitud mínima (umbral 0.3, por ejemplo)
+      let filteredRows = rows.filter(row => row.sim >= 0.3);
+      if (filteredRows.length === 0 && rows.length > 0) {
+        console.log("[DEBUG] Ningún resultado supera el umbral, usando el mejor resultado como fallback.");
+        filteredRows = [rows[0]];
+      }
+      const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
       const productsWithImages = await Promise.all(
-        rows.map(async (product) => {
+        filteredRows.map(async (product) => {
           let imageObj = await ImagenModel.getByCodproduAndCodclaarchivo({
             codprodu: product.codprodu,
             codclaarchivo: 'Baja',
@@ -186,10 +196,13 @@ export class ProductModel {
           });
           return {
             ...product,
-            image: imageObj && imageObj.ficadjunto ? `https://${imageObj.ficadjunto}` : defaultImageUrl,
+            image: imageObj && imageObj.ficadjunto
+              ? `https://${imageObj.ficadjunto}`
+              : defaultImageUrl,
           };
         })
       );
+      console.log("[DEBUG] Final productsWithImages count:", productsWithImages.length);
       if (res && res.cache) {
         await res.cache.set(cacheKey, { products: productsWithImages, total: productsWithImages.length });
         res.set('Cache-Control', 'public, max-age=3600');
@@ -200,6 +213,7 @@ export class ProductModel {
       throw new Error('Error searching products');
     }
   }
+
 
 
 
