@@ -34,7 +34,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
         <section>
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                 <header className="text-center">
-                    <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Telas de las ultimas colecciones</h2>
+                    <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Telas de las últimas colecciones</h2>
                 </header>
 
                 <ul className="mt-8 grid grid-cols-1 gap-7 lg:grid-cols-3">
