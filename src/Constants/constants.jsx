@@ -374,9 +374,9 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/LUXURY%20DREAPS/LA%20RETE%20BILLBERRY(2)_4_11zon_5_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/LUXURY%20DREAPS/LA%20RETE%20DEEP%20TEAL(6)_5_11zon_1_11zon.webp"
         ],
-        // [
-        //     "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/(DE%20IZQUIERDA%20A%20DERECHA)KUTUBIA%20OCEAN%20MENARA%20COBALT%20RIAD%20DENIM%20MARRAKECH%20COBALT%20AGDAL%20ROYAL%20BLUE%20MAMOUNIA%20AZURE.JPG"
-        // ],
+        [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/(DE%20IZQUIERDA%20A%20DERECHA)KUTUBIA%20OCEAN%20MENARA%20COBALT%20RIAD%20DENIM%20MARRAKECH%20COBALT%20AGDAL%20ROYAL%20BLUE%20MAMOUNIA%20AZURE.JPG"
+        ],
         [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/BORNEO_3_11zon_28_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/IMPERIAL_4_11zon_29_11zon.webp",
@@ -452,7 +452,6 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/COLONY/TROPICAL%20LEAVES%20EVERGREEN_12_11zon_15_11zon_2_11zon.webp",
         ],
         [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CHEVIOT/buena/CJM02527%20CHEVIOT%20NORDIC%20BLUE-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20OTOMAN/buena%20calidad/CJM02715%20%20%20%20OTOMAN%20MILK-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJMW%20COURDROY/buena%20calidad/CJM02485%20%20%20%20COURDROY%20OFF%20WHITE%20140%20CM-1200.jpg"
 

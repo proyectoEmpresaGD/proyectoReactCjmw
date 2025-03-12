@@ -28,70 +28,93 @@ const ShareButton = ({ selectedProduct }) => {
     };
 
     return (
-        <div className="">
-            {/* Botón de compartir */}
-            <div className="relative justify-center  top-2 left-0">
-                <button className="relative" onClick={handleToggleShareIcons}>
-                    <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/linked_services_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-                        className="w-7 h-7 hover:scale-125 duration-200"
-                        alt="Compartir"
-                    />
-                </button>
-            </div>
+        <div className="relative inline-block">
+            {/* Botón principal con ícono y texto "COMPARTIR" */}
+            <button
+                className="flex items-center space-x-2 pr-4 py-2
+                           rounded-md hover:bg-gray-100 transition-colors duration-200"
+                onClick={handleToggleShareIcons}
+                title="Compartir"
+            >
+                <img
+                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/linked_services_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                    alt="Icono Compartir"
+                    className="w-8 h-6"
+                />
+                <span className="text-sm font-medium text-gray-700">COMPARTIR</span>
+            </button>
 
-            {/* Iconos de redes sociales (se muestran u ocultan según el estado) */}
+            {/* Iconos de redes sociales (se muestran u ocultan según showIcons) */}
             {showIcons && (
-                <div className="flex space-x-2 mt-2 absolute top-12 left-4">
-
-                    {/* Enlace para Facebook */}
+                <div className="absolute left-0 mt-2 flex space-x-2 bg-white p-2 border border-gray-200 rounded shadow-md">
+                    {/* Facebook */}
                     <a
                         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Compartir en Facebook"
                     >
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/facebook.png" className="w-8 h-8" alt="Facebook" />
+                        <img
+                            src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/facebook.png"
+                            className="w-8 h-8 hover:scale-110 transition-transform"
+                            alt="Facebook"
+                        />
                     </a>
 
-                    {/* Enlace para Twitter */}
+                    {/* Twitter */}
                     <a
                         href={`https://twitter.com/share?url=${encodeURIComponent(currentUrl)}&text=Mira este producto!`}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Compartir en Twitter"
                     >
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/twitter.png" className="w-8 h-8" alt="Twitter" />
+                        <img
+                            src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/twitter.png"
+                            className="w-8 h-8 hover:scale-110 transition-transform"
+                            alt="Twitter"
+                        />
                     </a>
 
-                    {/* Enlace para WhatsApp */}
+                    {/* WhatsApp */}
                     <a
                         href={`https://api.whatsapp.com/send?text=${encodeURIComponent('¡Mira este producto! ' + currentUrl)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Compartir en WhatsApp"
                     >
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/whatsapp.png" className="w-8 h-8" alt="WhatsApp" />
+                        <img
+                            src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/whatsapp.png"
+                            className="w-8 h-8 hover:scale-110 transition-transform"
+                            alt="WhatsApp"
+                        />
                     </a>
 
-                    {/* Enlace para LinkedIn */}
+                    {/* LinkedIn */}
                     <a
                         href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(currentUrl)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Compartir en LinkedIn"
                     >
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/linkedin.png" className="w-8 h-8" alt="LinkedIn" />
+                        <img
+                            src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/linkedin.png"
+                            className="w-8 h-8 hover:scale-110 transition-transform"
+                            alt="LinkedIn"
+                        />
                     </a>
 
-                    {/* Enlace para Gmail */}
+                    {/* Gmail */}
                     <a
                         href={`mailto:?subject=Mira este producto&body=Consulta este enlace: ${encodeURIComponent(currentUrl)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Compartir por Gmail"
                     >
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/gmail.png" className="w-8 h-8" alt="Gmail" />
+                        <img
+                            src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ICONOS%20REDES%20SOCIALES/gmail.png"
+                            className="w-8 h-8 hover:scale-110 transition-transform"
+                            alt="Gmail"
+                        />
                     </a>
                 </div>
             )}

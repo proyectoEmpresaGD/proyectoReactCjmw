@@ -125,15 +125,15 @@ export const Header = () => {
             <ScrollToTop />
             <header
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isHovered ||
-                        showSearchBar ||
-                        showUserDropdown ||
-                        showBrandsDropdown ||
-                        showProductsDropdown ||
-                        showLanguageDropdown ||
-                        showCart ||
-                        showMenu
-                        ? 'bg-white shadow-md'
-                        : 'bg-transparent'
+                    showSearchBar ||
+                    showUserDropdown ||
+                    showBrandsDropdown ||
+                    showProductsDropdown ||
+                    showLanguageDropdown ||
+                    showCart ||
+                    showMenu
+                    ? 'bg-white shadow-md'
+                    : 'bg-transparent'
                     }`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
