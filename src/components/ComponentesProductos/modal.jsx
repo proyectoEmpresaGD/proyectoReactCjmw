@@ -408,7 +408,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         onClick={handleClose}
                         className="absolute top-[-15px] right-4 md:right-4 md:top-4 text-black font-bold text-xl hover:opacity-70"
                     >
-                        X
+                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="" />
                     </button>
 
                     {/* Encabezado: Imagen Izq + Info Der */}
@@ -433,7 +433,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 {selectedProduct?.tonalidad && (
                                     <p className="text-gray-600 text-sm mb-2">
                                         <strong></strong>
-                                        {selectedProduct.codprodu}
+                                        {selectedProduct.tonalidad}
                                     </p>
                                 )}
                                 <p className="text-gray-600 text-sm mb-2">
@@ -459,7 +459,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <div className="flex border-gray-300 rounded items-center space-x-3">
                                         <select
                                             id="quantity"
-                                            className="border rounded px-2 py-1 w-[50%]"
+                                            className="border rounded px-2 py-1 w-[40%]"
                                             value={quantity}
                                             onChange={(e) => setQuantity(Number(e.target.value))}
                                         >

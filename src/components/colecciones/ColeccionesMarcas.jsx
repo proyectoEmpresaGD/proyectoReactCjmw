@@ -23,6 +23,7 @@ function ColeccionesMarcas({ marca }) {
         }
         const data = await response.json();
         setColecciones(data);
+        console.log(data)
         setLoading(false);
       } catch (error) {
         console.error('Error fetching collections:', error);
