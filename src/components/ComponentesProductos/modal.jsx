@@ -433,7 +433,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 {selectedProduct?.tonalidad && (
                                     <p className="text-gray-600 text-sm mb-2">
                                         <strong></strong>
-                                        {selectedProduct.tonalidad}
+                                        {selectedProduct.codprodu}
                                     </p>
                                 )}
                                 <p className="text-gray-600 text-sm mb-2">

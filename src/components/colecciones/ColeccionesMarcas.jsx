@@ -8,7 +8,7 @@ function ColeccionesMarcas({ marca }) {
   const [colecciones, setColecciones] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const imageSetsForMarca = imageSet[marca] || [];
+  const imageSetsForMarca = imageSet[marca] || {};
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,9 +21,27 @@ function ColeccionesMarcas({ marca }) {
         if (!response.ok) {
           throw new Error(`Error fetching collections: ${response.statusText}`);
         }
-        const data = await response.json();
+        let data = await response.json();
+
+        // Excluir "REVOLTOSO" si la marca es "CJM"
+        if (marca === "CJM") {
+          data = data.filter(coleccion => coleccion !== "REVOLTOSO");
+        }
+
+        // Excluir "REVOLTOSO" si la marca es "CJM"
+        if (marca === "ARE") {
+          data = data.filter(coleccion => coleccion !== "VELVETY");
+        }
+
+        if (marca === "FLA") {
+          data = data.filter(coleccion => coleccion !== "REVOLTOSO VOL II");
+        }
+
+        if (marca === "HAR") {
+          data = data.filter(coleccion => coleccion !== "RUSTICA");
+        }
+
         setColecciones(data);
-        console.log(data)
         setLoading(false);
       } catch (error) {
         console.error('Error fetching collections:', error);
@@ -34,6 +52,9 @@ function ColeccionesMarcas({ marca }) {
 
     fetchCollectionsByBrand();
   }, [marca]);
+
+
+
 
   const handleCollectionClick = (coleccion) => {
     navigate(`/products?collection=${coleccion}`);
@@ -80,8 +101,8 @@ function ColeccionesMarcas({ marca }) {
               </div>
 
               {/* Mostrar el carrusel de imágenes correspondiente */}
-              {imageSetsForMarca[index] && (
-                <CarruselColecciones imageSets={imageSetsForMarca[index]} />
+              {imageSetsForMarca[coleccion] && (
+                <CarruselColecciones imageSets={imageSetsForMarca[coleccion]} />
               )}
             </div>
           ))}
