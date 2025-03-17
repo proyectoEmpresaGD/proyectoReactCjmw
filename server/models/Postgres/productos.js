@@ -390,7 +390,7 @@ export class ProductModel {
         FROM productos
         WHERE codmarca = $1
         AND nombre IS NOT NULL
-        AND coleccion NOT IN ('MARRAKESH','COSY', 'DUKE', 'POLAR', 'KANNATURA VOL II', 'RUSTICA')
+        AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY', 'KANNATURA VOL II')
       `;
 
       const { rows } = await pool.query(query, [brand]);

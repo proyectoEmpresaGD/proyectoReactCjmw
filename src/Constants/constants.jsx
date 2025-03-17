@@ -167,325 +167,330 @@ export const translationConfig = {
 //src\components\colecciones\ColeccionesMarcas.jsx
 
 export const imageSet = {
-    'ARE': [
-        [
+    'ARE': {
+        'ATMOSPHERE': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/ATMOSPHERE/ATMOSPHERE%20MOSS_3_11zon_7_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/ATMOSPHERE/BLIZZARD%20BLOSSOM_4_11zon_1_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/ATMOSPHERE/BLIZZARD%20SHELL_5_11zon_2_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/ATMOSPHERE/STORM%20DUSK_1_11zon_5_11zon.webp",
         ],
-        [
+        'CALCUTA': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/CALCUTA/MOODBOARD%20CALCUTA.jpg",
         ],
-        [
+        'CÔTE D´AZUR': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/COTE%20D%C2%B4AZUR/ANTIBES%20RUBY%202_8_11zon_9_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/COTE%20D%C2%B4AZUR/ANTIBES%20RUBY%203_9_11zon_10_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/COTE%20D%C2%B4AZUR/MONTECARLO%20RUBY%204_4_11zon_5_11zon.webp",
         ],
-        [
+        'DUNE': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/DUNE/DUNE%20SAHARA_5_11zon_4_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/DUNE/DUNE%20PATAGONIA_4_11zon_3_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/DUNE/AMASTISTA%20ALOE_7_11zon_6_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MOODBOARD/MOODBOARD%20DUNE_2_11zon_2_11zon.webp"
         ],
-        [
+        'FENICIA': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/FENICIA/ARE01804%20FENICIA%20MARINE%20ARTISTICA_3_11zon_3_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/FENICIA/ARE01805%20FENICIA%20SUNSHINE%20ARTISTICA_2_11zon_1_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/FENICIA/ARE01806%20FENICIA%20ROUGE%20ARTISTICA_1_11zon_2_11zon.webp",
         ],
-        [
+        'JEWEL': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20DUCK%20EGG%202_6_11zon_5_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20NORDIC%20BLUE_4_11zon_3_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20DUCK%20EGG%203_1_11zon_6_11zon.webp",
         ],
-        [
+        'KANNATURA': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01697%20NAHI%201500x1500x72.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01698%20TIMIZ%201500x1500x72.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01706%20SIKETY%201500x1500x72.jpg",
         ],
-        [
+        'LINOTTO': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20LINOTTO/artistica/ARE01458%20%20%20%20LINOTTO%20COTTON%20ARTISTICA-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20LINOTTO/artistica/ARE01459%20%20%20%20LINOTTO%20SNOW%20ARTISTICA-1200.jpg",
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/MIKONOS%20LINEN%20(2)%20(2)%20(2)_9_11zon_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/CAPRI%20SPRING%20GREEN%20jpg_6_11zon_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/PADDINGTON_3_11zon_11zon.webp",
+        'MEDITERRANEAN STRIPES': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/MIKONOS%20NOIR%202_10_11zon_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/CAPRI%20SPRING%20GREEN%20jpg_6_11zon_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/SANTORINI%20NOIR%202_4_11zon_11zon.webp",
         ],
-        [
+        'MONTANA': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MONTANA/COJINES%20MONTANA_5_11zon_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MONTANA/MAKALU%20RAVEN%20_7_11zon_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MONTANA/YELLOWSTONE%20PORCELAIN_3_11zon_11zon.webp",
         ],
-        [
+        'NOMAD': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/NOMAD/HABITAT%20SAND_8_11zon_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/NOMAD/LUNAR%20BURGUNDY_9_11zon_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/NOMAD/NOMAD%20BURGUNDY%203_10_11zon_11zon.webp",
         ],
-        [
+        'PAPIRO': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/PAPIRO/TERRA%20PORCELAIN%202_4_11zon_4_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/PAPIRO/TERRA%20PORCELAIN_6_11zon_6_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/PAPIRO/SMOKE%20ASH_3_11zon_3_11zon.webp",
         ],
-        [
+        'PURITTY': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/PURITTY/LEVANTINE(1)_9_11zon_5_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/PURITTY/SHROUD%20WHITE_18_11zon_14_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/PURITTY/TRELLIS%20OFF%20WHITE_6_11zon_2_11zon.webp",
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/RUSTICA/SACO%20GARNET_1_11zon_2_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/RUSTICA/SACO%20GARNET(1)_3_11zon_1_11zon.webp",
-
+        'STONE': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20STONE/buena%20calidad/ARE00149%20STONE%20C01%20ANCHO%20140.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20STONE/buena%20calidad/ARE00171%20STONE%20C23%20ANCHO%20140.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MOODBOARD/MOOD%20BOARD%20STONE_10_11zon_9_11zon.webp"
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/STONE/STONE%20CANAIMA_3_11zon_3_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/STONE/STONE%20TRANGO_1_11zon_1_11zon.webp",
-        ],
-        [
+        'STRATOS': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/STRATOS/SURIRI%20RAVEN_2_11zon_10_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/STRATOS/RINPA%20SOTATSU_9_11zon_6_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/STRATOS/NIMBOSILVA%20C06_6_11zon_3_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/STRATOS/ANTILLA%20VELVET%20C%2003_4_11zon_1_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/STRATOS/RINPA_10_11zon_7_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/STRATOS/SURIRI%20RAVEN%202_11_11zon_8_11zon.webp",
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TAIGA/TUNDRA%20KOLA%202_14_11zon_11_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TAIGA/ZAMFARA%20BAOBAB_4_11zon_1_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TAIGA/TUNDRA%2002_10_11zon_7_11zon.webp",
+        'TAIGA': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/TAIGA/TUNDRA%2002_10_11zon_7_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/TAIGA/SHIRA%20BIRDIE%20HOPE%202_6_11zon_3_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MOODBOARD/MOOD%20BOARD%20ZAMFARA%20_17_11zon_16_11zon.webp"
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TOUCH/TOUCH%20GRACE%203_4_11zon_6_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TOUCH/TOUCH%20BACALL%202_9_11zon_2_11zon.webp",
-
+        'TOUCH': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MOODBOARD/MOOD%20BOARD%20TOUCH%202_12_11zon_11_11zon.webp",
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TOUCH/TOUCH%20LILLIAN%20GISH_6_11zon_8_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TOUCH/TOUCH%20GRACE_5_11zon_7_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/TOUCH/TOUCH%20AUDREY_8_11zon_1_11zon.webp",
+        'RUSTICA': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/RUSTICA/SACO%20GARNET(1)_3_11zon_1_11zon.webp"
         ],
-    ],
-    'HAR': [
-        [
+    },
+    'HAR': {
+        'ARISTOS': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ARISTOS/ARISTOS%20MARINE_2_11zon.webp"
         ],
-        [
+        'BALTIC': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01530%20BALTIC%20IVORY%20ARTISTICA.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01582%20BALTIC%20SOFT%20SKY%20ARTISTICA.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/BALTIC/Artistica/HAR01584%20BALTIC%20PUMICE%20ARTISTICA.jpg"
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/BARENTS%20ROYAL%20BLUE_7_11zon_1_11zon.webp"
+        'BAUPRES': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20BAUPRES/buena%20calidad/HAR00957%20BAUPRES%20PAPRIKA%20FR%20OUT%20140%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20BAUPRES/buena%20calidad/HAR00958%20BAUPRES%20EVERGREEN%20FR%20OUT%20140%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20BAUPRES/buena%20calidad/HAR00962%20BAUPRES%20AZURE%20FR%20OUT%20140%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20BAUPRES/buena%20calidad/HAR00967%20BAUPRES%20ALUMINIUM%20FR%20OUT%20140%20CM.jpg"
         ],
-        [
+        'BLINDER': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/BLINDER/image00004_2_11zon_3_11zon.webp",
 
         ],
-        [
+        'BOLONIA&VARADERO': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20VARADERO_5_11zon_6_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/MOODBOARDS/MOOD%20BOARD%20VARADERO%202_4_11zon_5_11zon.webp"
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CARIBEAN/artistica/HAR01922%20%20%20%20CARIBBEAN%20ONYX%20OUTDOOR%20300%20CM%20ARTISTICA-1200.jpg",
+        'CRUST': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20CRUST/ARTISTICA%20WEB/CRUST%20CEDAR%20ARTISTICA.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20CRUST/ARTISTICA%20WEB/CRUST%20ROUGE%20ARTISTICA.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20CRUST/ARTISTICA%20WEB/CRUST%20TANGERINE%20ARTISTICA.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20CRUST/ARTISTICA%20WEB/CRUST%20FIRE%20ARTISTICA.jpg",
+        ],
+        'ETHNIC MOOD': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01865%20CRUST%20SAPHIRE%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01861%20CRUST%20SAND%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01868%20CRUST%20TANGERINE%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/HARBOUR%20AMBIENTE/HAIMA%20MARINE.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/DESERT%20GATE%20INDIGO.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202_1_11zon_4_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/ROOTS%20PORCELAIN.jpg"
+        ],
+        'GOTLAND': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/GOTLAND/RIVIERA.jpg"
+
+        ],
+        'LIENZO': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/buena%20calidad/HAR01199%20LIENZO%20C04%20ANCHO%20280.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/buena%20calidad/HAR01205%20LIENZO%20C10%20ANCHO%20280.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/buena%20calidad/HAR01210%20%20%20%20LIENZO%20C15%20ANCHO%20280.jpg"
+        ],
+        'MACAO': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/baja%20calidad/HAR01200%20LIENZO%20C05%20ANCHO%20280-280.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/baja%20calidad/HAR01205%20LIENZO%20C10%20ANCHO%20280-280.jpg",
+        ],
+        'OYSTER': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20CASTOR/buena%20calidad/HAR00076%20CASTOR%20C02%20STONE%20ANCHO%20284.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20OYSTER/buena%20calidad/HAR01181%20OYSTER%20STONE%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20OYSTER/buena%20calidad/HAR01183%20OYSTER%20GRAPHITE%20300%20CM.jpg"
+        ],
+        'PARABAN': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01652%20%20%20%20PARABAN%20CLOUD%20FR%20300%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01655%20%20%20%20PARABAN%20ALUMINIUM%20FR%20300%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01656%20%20%20%20PARABAN%20IRON%20FR%20300%20CM%20ARTISTICA-1200.jpg"
+        ],
+        'CARIBEAN PARTY': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01953%20CARIBBEAN%20PARTY%20PALM%20BEACH%20MARSHMALLOW_MANTEL.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01894%20CARIBBEAN%20PARTY%20ICE%20CREAM%20INDIGO_TEJIDO%20LISO.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01923%20CARIBBEAN%20PARTY%20CARIBBEAN%20INDIGO.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR1942%20CARIBBEAN%20PARTY%20JUNGLE%20INDIGO.%20SILLA%20TRASERA.%20COJIN%20CABECERO%20CARIBBEAN%20INDIGO.jpg",
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01865%20CRUST%20SAPHIRE%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01861%20CRUST%20SAND%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01868%20CRUST%20TANGERINE%20ARTISTICA-1200.jpg"
-        ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/DESERT%20GATE%20INDIGO.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202_1_11zon_4_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/ROOTS%20PORCELAIN.jpg"
-
-        ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01652%20%20%20%20PARABAN%20CLOUD%20FR%20300%20CM%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01655%20%20%20%20PARABAN%20ALUMINIUM%20FR%20300%20CM%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01656%20%20%20%20PARABAN%20IRON%20FR%20300%20CM%20ARTISTICA-1200.jpg"
-        ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/baja%20calidad/HAR01200%20LIENZO%20C05%20ANCHO%20280-280.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20LIENZO/baja%20calidad/HAR01205%20LIENZO%20C10%20ANCHO%20280-280.jpg",
-        ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/HARBOUR%20AMBIENTE/HAIMA%20MARINE.jpg"
-        ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/MIKONOS%20LINEN%20(2)%20(2)%20(2)_9_11zon_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/SANTORINI%20NOIR%202_4_11zon_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/CAPRI%20SPRING%20GREEN%20jpg_6_11zon_11zon.webp"
-        ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/GOTLAND/RIVIERA_1_11zon_1_11zon.webp"
-        ],
 
 
 
-    ],
-    'FLA': [
-        [
+    },
+    'FLA': {
+        'ARTISAN WEAVES': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/ARTISAN%20WEAVES/ALEXANDRIA%20ABYSS%20(4)_13_11zon_9_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/ARTISAN%20WEAVES/ALEXANDRIA%20BRICK_14_11zon_6_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/ARTISAN%20WEAVES/ALEXANDRIA%20ABYSS%20(3)_12_11zon_8_11zon.webp"
         ],
-        [
+        'BUCLÉ': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/BUCL%C3%89/BUCLE%20%20CANVAS_7_11zon_4_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/BUCL%C3%89/BUCLE%20LEAF%20(2)_2_11zon_9_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/BUCL%C3%89/BUCLE%20FOSSIL%20(2)_10_11zon_7_11zon.webp"
         ],
-        [
+        'COASTAL LINENS': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/COASTAL%20LINENS/GRANADELLA%20CLOUD(2)_3_11zon_7_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/COASTAL%20LINENS/GRANADELLA%20CLOUD(3)_4_11zon_8_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/COASTAL%20LINENS/AMBOLO%20BLUEBERRY%20(2)_6_11zon_1_11zon.webp"
         ],
-        [
+        'COURTYARD GARDEN': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/COURTYARD%20GARDEN/ADELFAS%20MOSS%20(3)_4_11zon_25_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/COURTYARD%20GARDEN/JARAPA%20(AMPLIADO)_20_11zon_12_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/COURTYARD%20GARDEN/WEB/Mockup_Dhalia_Lipstick.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/COURTYARD%20GARDEN/QUEEN%20DAHLIA%20JUNIPER%20(2)_32_11zon_24_11zon.webp"
         ],
-        [
+        'DIAMANTE': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/DIAMANTE/DIAMANTE%2002%20(AMPLIADO)_3_11zon_6_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/DIAMANTE/DIAMANTE%20C02%2002_6_11zon_3_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/DIAMANTE/DIAMANTE%20C02%20%20(3)_5_11zon_2_11zon.webp"
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/EAST%20COAST/NIAGARA%20SUNSHINE%20(2)_4_11zon_3_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/EAST%20COAST/JERSEY%20PUMICE%20(3)_3_11zon_2_11zon.webp",
+        'EAST COAST': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/EAST%20COAST/CHICAGO%20CLARET%20(2).jpg",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/EAST%20COAST/TIMES%20SQUARE%20AEGEAN_1_11zon_5_11zon.webp"
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/EASTERN%20MEMORIES/ESATER%20MEMORIES%20(AMPLIADA)(7)_5_11zon_7_11zon.webp",
+        'EASTERN MEMORIES': [
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/EASTERN%20MEMORIES/EASTERN%20MEMORIES%20(AMPLIADA).jpg",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/EASTERN%20MEMORIES/NAZARI%20AZURE%2001_12_11zon_14_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/EASTERN%20MEMORIES/NAZARI%20TANGERINE%20(2)_13_11zon_15_11zon.webp"
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20C01%20%20(2)_4_11zon_13_11zon.webp",
+        'GENESIS': [
+
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/MOODBOARDS/MOODBOARD%20GENESIS_2_11zon_5_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20LACQUER%20RRE%20(6)_14_11zon_23_11zon.webp"
+
         ],
-        [
+        'GRAZALEMA': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/SAN%20FERNANDO%20CORAL(CABECERO)ROCIO%20DUSTY%20PINK%20Y%20SALMON%20(COJINES)%20SANLUCAR%20BLOSSOM%20(PRIMER%20COJIN)_WEB.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/CHIPIONA%20ROUGE(COJIN)%20Y%20JARA%20ROUGE(BUTACA).jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/SANLUCAR%20BLOSSOM.jpg"
         ],
 
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/LUXURY%20DREAPS/LA%20RETE%20BILLBERRY(2)_4_11zon_5_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/LUXURY%20DREAPS/LA%20RETE%20DEEP%20TEAL(6)_5_11zon_1_11zon.webp"
+        'LUXURY DREAPS': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000348%20LA%20RETE%20LINEN%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000356%20LA%20RETE%20TURMERIC%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000350%20LA%20RETE%20SOFT%20SKY%20300%20CM.jpg",
         ],
-        [
+        'MARRAKECH': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/(DE%20IZQUIERDA%20A%20DERECHA)KUTUBIA%20OCEAN%20MENARA%20COBALT%20RIAD%20DENIM%20MARRAKECH%20COBALT%20AGDAL%20ROYAL%20BLUE%20MAMOUNIA%20AZURE.JPG"
         ],
-        [
+        'REVOLTOSO': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/BORNEO_3_11zon_28_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/IMPERIAL_4_11zon_29_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/LUMIERE_8_11zon_3_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20LACQUER%20RRE%20(6)_14_11zon_23_11zon.webp",
+            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/GENESIS/GENESIS%20C01%20%20(2)_4_11zon_13_11zon.webp",
         ],
-        // [
-        //     "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/PERRAULT%20LE%20PETIT.jpg",
-        //     "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/TOPKAPI.jpg",
-        //     "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/REVOLTOSO/PERRAULT%20LE%20CAT%20(2).jpg",
-        // ],
-        [
+        'RIVIERA': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/RIVIERA/RIVIERA.jpeg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001218%20COLONIAL%20DAMASK%20PRING%20GREEN_03.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001208%20GUANAHANI%20SPRING%20GREEN_02.jpg"
         ],
-        [
+        'SISAL': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/SISAL/Cover%20Front_4_11zon_5_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/SISAL/insert%20back_5_11zon_1_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/SISAL/insert%20front_1_11zon_2_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/SISAL/cover%20back_3_11zon_4_11zon.webp"
         ],
-        [
+        'TEDDY': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/TEDDY/Artistica/FLA001377%20TEDDY%20SALMON%20ARTISTICA-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/TEDDY/Artistica/FLA001375%20TEDDY%20BUFF%20ARTISTICA-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/TEDDY/Artistica/FLA001368%20TEDDY%20CHARCOAL%20ARTISTICA-1200.jpg",
         ],
-        [
+        'VELLUTISSIMO': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/VELLUTISSIMO/buena%20calidad/FLA000407%20VELLUTISSIMO%20EVERGREEN%20300%20CM.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/VELLUTISSIMO/buena%20calidad/FLA000415%20VELLUTISSIMO%20PAPRIKA%20300%20CM.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/VELLUTISSIMO/buena%20calidad/FLA000402%20VELLUTISSIMO%20CANVAS%20300%20CM.jpg"
         ],
-    ],
-    'CJM': [
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/VERANDA/VERANDA%20EVERGREEN_4_11zon_6_11zon.webp",
+    },
+    'CJM': {
+        'VERANDA': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/VERANDA/VERANDA%20EMERALD%20F1_3_11zon_5_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/VERANDA/VERANDA%20SUNSHINE%202_6_11zon_2_11zon.webp"
         ],
-        [
+        'SABANNA': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/MOODBOARDS/MOODBOARD%20SABANNA%2001_3_11zon_3_11zon.webp"
 
         ],
-        [
+        'TOKIO': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/TOKIO/COLECCI%C3%93N%20TOKIO_4_1.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/TOKIO/COLECCI%C3%93N%20TOKIO%202_3_4.webp"
 
         ],
 
-        [
+        'BOND': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20THUNDER/buena%20calidad/ARE00903%20THUNDER%20LINEN%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20THUNDER/buena%20calidad/ARE00902%20THUNDER%20PORCELAIN%20300%20CM.jpg"
+        ],
+
+        'VELVETY': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/VELVETY/VELVETY%20ALOE_9_11zon_1_11zon.webp",
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/VELVETY/VELVETY%20EVERGREEN_2_11zon_5_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/VELVETY/VELVETY%20LAVAROCK%202_5_11zon_8_11zon.webp"
 
         ],
-        [
+        'ROADS TO ASIA': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/ROAD%20TO%20ASIA/BOTANICAL%20KOMORI%20MAGNESIUM_7_11zon_4_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/ROAD%20TO%20ASIA/LINOUS%20HEMP_19_11zon_16_11zon.webp",
 
         ],
-        [
+        'FRESCO': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/MOODBOARDS/MOODBOARD%20FRESCO%2001_2_11zon_2_11zon.webp"
 
         ],
-        [
+        'SET OF THREADS': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/MOODBOARDS/MOODBOARD%20SET%20OF%20THREADS%2072px_1_11zon_1_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SET%20OF%20THREADS/ROKKI%20PUMICE_7_11zon_10_11zon.webp",
 
 
         ],
-        [
+        'URBAN CONTEMPORARY': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/URBAN%20CONTEMPORARY/LOFT%20ALUMINIUM%202_2_11zon_4_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/URBAN%20CONTEMPORARY/LOFT%20ALUMINIUM_3_11zon_1_11zon.webp"
 
         ],
 
-        [
+        'COLONY': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/COLONY/FIYI%20%20LAGOON_13_11zon_16_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/COLONY/TROPICAL%20LEAVES%20EVERGREEN_12_11zon_15_11zon_2_11zon.webp",
         ],
-        [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20OTOMAN/buena%20calidad/CJM02715%20%20%20%20OTOMAN%20MILK-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJMW%20COURDROY/buena%20calidad/CJM02485%20%20%20%20COURDROY%20OFF%20WHITE%20140%20CM-1200.jpg"
 
+        'TAYLORED': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJMW%20COURDROY/artistica/CJM02487%20%20%20%20COURDROY%20ALUMINIUM%20140%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20OTOMAN/artistica/CJM02718%20%20%20%20OTOMAN%20ALOE%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20PANAMERO/artistica/CJM02579%20%20%20%20PANAMERO%20ALUMINIUM%20140%20CM%20ARTISTICA-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20CHEVIOT/artistica/CHEVIOT%20MOSS%20ARTISTICA.jpg"
         ],
-        [
 
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/MEDITERRANEAN%20STRIPES/SANTORINI%20NOIR%202_4_11zon_11zon.webp"
-        ],
-        [
+        'SALT & PEPPER': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SALT%20AND%20PEPPER/SALT%20TANGERINE_1_11zon_1_11zon.webp"
-
         ],
-    ],
-    'BAS': [
-        [
+
+        'COLONY WALLPAPER': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20TROPICAL%20LEAVES%20WALLPAPER/buena%20calidad/CJM02829%20TROPICAL%20LEAVES%20MOLE%20140%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20BOTANICAL%20KOMORI%20WALLPAPER/buena%20calidad/CJM02838%20BOTANICAL%20KOMORI%20FLAME%20140%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/CJMW/CJM%20KIRIBATI%20WALLPAPER/buena%20calidad/CJM02835%20KIRIBATI%20SPRING%20GREEN%20140%20CM.jpg"
+        ]
+
+    },
+    'BAS': {
+        'KASSUMAY': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20IWOL%20ARGILE%20(COLCHA)%20WOLOF%20SAVANE%20(CORTINA)%20LOMPOUL%20ARGILE%20(COJINES%20TRASEROS)%20KAOLACK%20ARGILE(COJINES%20DELANTEROS)_3_11zon_3_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20KAOLACK%20MOUTARDE_2_11zon_9_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20KARABANE%20AMBRE%20ARGILE%20ET%20MOUTARDE_3_11zon_10_11zon.webp"
         ],
-        [
+        'TRIBAL': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20DAKAR%20BOUE%20SABLE%20ET%20GRIS%20NUAGE_6_11zon_11_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20DAKAR%20INDIGO_3_11zon_2_11zon.webp",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20KARITE%20AMBRE%20_2_11zon_13_11zon.webp"
         ],
-        [
+        'UNIVERS': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE_11zon_11zon_11zon.webp",
 
         ],
-    ],
+    },
 }
 
 export const coleccionesTexts = {
