@@ -321,7 +321,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             alt={m}
                             className="w-6 h-6 cursor-pointer"
                             title={`Click para ver el significado de ${m}`}
-                            onClick={() => setShowIconMeaning(m)}
+                            onClick={() => navigate('/usages')}
                         />
                     ))}
             </div>
@@ -341,7 +341,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             alt={uso}
                             className="w-6 h-6 cursor-pointer"
                             title={`Click para ver el significado de ${uso}`}
-                            onClick={() => setShowIconMeaning(uso)}
+                            onClick={() => navigate('/usages')}
                         />
                     )
                 ))}
@@ -433,7 +433,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 {selectedProduct?.tonalidad && (
                                     <p className="text-gray-600 text-sm mb-2">
                                         <strong></strong>
-                                        {selectedProduct.codprodu}
+                                        {selectedProduct.tonalidad}
                                     </p>
                                 )}
                                 <p className="text-gray-600 text-sm mb-2">
