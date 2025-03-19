@@ -13,7 +13,16 @@
 export const CART_STORAGE_KEY = 'cartItems';
 
 // Obtener el carrito inicial desde localStorage
-export const getInitialCart = () => JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+export const getInitialCart = () => {
+    try {
+        const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY));
+        return Array.isArray(savedCart) ? savedCart : [];
+    } catch (error) {
+        console.error("Error al obtener el carrito:", error);
+        return [];
+    }
+};
+
 
 
 //
@@ -128,7 +137,7 @@ export const cartTexts = {
     width: 'Ancho',
     color: 'Color',
     totalLabel: 'Total:',
-    checkoutPlaceholder: 'Proximamente disponible',  // Texto del botón de checkout
+    checkoutPlaceholder: 'Comprar',  // Texto del botón de checkout
 };
 
 //
@@ -780,6 +789,12 @@ export const marcasMap = {
     "HAR": "HARBOUR",
     "BAS": "BASSARI",
 };
+
+export const direccionLogos = {
+    "NON-DIRECTIONAL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/DIRECCIONES-TELAS/NON-DIRECTIONAL.png",
+    "NON-RAILROADED": "https://bassari.eu/ImagenesTelasCjmw/Iconos/DIRECCIONES-TELAS/NON-RAILROADED.png",
+    "RAILROADED": "https://bassari.eu/ImagenesTelasCjmw/Iconos/DIRECCIONES-TELAS/RAILROADED.png",
+}
 
 //
 //

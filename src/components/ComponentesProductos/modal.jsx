@@ -2,19 +2,19 @@ import { useState, useEffect } from 'react';
 import ModalMapa from "./modalMapa";
 import { useCart } from '../CartContext';
 import { CartProvider } from "../CartContext";
-import { Link } from "react-router-dom";
 import ShareButton from './ShareButton';
+import { useRef } from 'react';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import InnerImageZoom from 'react-inner-image-zoom';
-import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import {
     defaultImageUrlModalProductos,
     mantenimientoImages,
     usoImages,
-    marcasMap
+    marcasMap,
+    direccionLogos
 } from '../../Constants/constants';
 
 const Modal = ({ isOpen, close, product, alt }) => {
@@ -32,9 +32,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const [anchoOptions, setAnchoOptions] = useState([]);
     const [selectedAncho, setSelectedAncho] = useState('');
     const IconoDestacables = ["FR", "OUTDOOR", "EASYCLEAN", "IMO"];
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
+    const modalRef = useRef(null);
     // Productos de la misma colección para navegación (únicos por nombre)
     const [collectionProducts, setCollectionProducts] = useState([]);
     const [currentRecIndex, setCurrentRecIndex] = useState(0);
@@ -42,19 +42,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     // Estado para "TE PUEDE INTERESAR" – recomendado, sincronizado con la colección
     const [recommendedProducts, setRecommendedProducts] = useState([]);
 
-    // Estados para controlar el zoom mediante la ruleta en modo ampliado
-    const [customZoom, setCustomZoom] = useState(1);
-    const [isZoomed, setIsZoomed] = useState(false);
-    const handleWheel = (e) => {
-        e.preventDefault();
-        let newZoom = customZoom;
-        if (e.deltaY < 0) {
-            newZoom = Math.min(newZoom + 0.1, 3); // zoom máximo 3
-        } else {
-            newZoom = Math.max(newZoom - 0.1, 1); // zoom mínimo 1
-        }
-        setCustomZoom(newZoom);
-    };
+
 
     // Estado para el popup de "Producto agregado al carrito"
     const [addedToCart, setAddedToCart] = useState(false);
@@ -76,7 +64,11 @@ const Modal = ({ isOpen, close, product, alt }) => {
     // Actualiza el producto actual al hacer clic en "Ver detalle" en "TE PUEDE INTERESAR"
     const handleDetailClick = (productItem) => {
         setSelectedProduct(productItem);
-        window.scrollTo(0, 0);
+
+        // 🔥 Hacer scroll arriba en la modal
+        if (modalRef.current) {
+            modalRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     };
 
     // Carga la imagen principal del producto.
@@ -349,6 +341,20 @@ const Modal = ({ isOpen, close, product, alt }) => {
         );
     };
 
+    const getDireccionImage = (direccion) => {
+        if (!direccion || !direccionLogos[direccion]) return null;
+        return (
+            <div className='flex mt-2'>
+                <img
+                    src={direccionLogos[direccion]}
+                    alt={direccion}
+                    className={direccion === "RAILROADED" ? "w-8 h-6" : "w-6 h-7"} // Tamaños diferentes según el tipo
+                    onClick={() => navigate('/usages')}
+                />
+                <span className='ml-2'>{direccion}</span>
+            </div>
+        );
+    };
 
     const getMantenimientoDestacados = (mantenimiento) => {
         if (!mantenimiento) return null;
@@ -398,6 +404,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     return (
         <CartProvider>
             <div
+                ref={modalRef}
                 className="fixed inset-0 z-30 bg-white overflow-y-auto 4xl:pt-[3%] 3xl:pt-[4%] xl:pt-[6%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%] pt-[24%]"
             >
                 <div
@@ -640,7 +647,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 {selectedProduct?.gramaje ? `${selectedProduct.gramaje} gms` : "N/A"}
                             </div>
                             <div>
-                                <span className="font-medium">Ancho Tela:</span>{" "}
+                                <span className="font-medium">Ancho:</span>{" "}
                                 {anchoOptions.length > 1 ? (
                                     <select
                                         value={selectedProduct.ancho}
@@ -663,6 +670,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 {usoMantenimientoIcons}
                             </div>
                         )}
+                        {getDireccionImage(selectedProduct?.direcciontela)}
                     </div>
 
                     {/* OTROS DISEÑOS DE TELAS */}
@@ -671,6 +679,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">
                                 TE PUEDE INTERESAR
                             </h2>
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                                 {recommendedProducts.slice(0, 4).map((item) => (
                                     <div
@@ -689,6 +698,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     </div>
                                 ))}
                             </div>
+
                         </div>
                     )}
 
