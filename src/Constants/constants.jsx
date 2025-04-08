@@ -324,13 +324,17 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01655%20%20%20%20PARABAN%20ALUMINIUM%20FR%20300%20CM%20ARTISTICA-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01656%20%20%20%20PARABAN%20IRON%20FR%20300%20CM%20ARTISTICA-1200.jpg"
         ],
-        'CARIBEAN PARTY': [
+        'CARIBBEAN PARTY': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01953%20CARIBBEAN%20PARTY%20PALM%20BEACH%20MARSHMALLOW_MANTEL.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01894%20CARIBBEAN%20PARTY%20ICE%20CREAM%20INDIGO_TEJIDO%20LISO.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01923%20CARIBBEAN%20PARTY%20CARIBBEAN%20INDIGO.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR1942%20CARIBBEAN%20PARTY%20JUNGLE%20INDIGO.%20SILLA%20TRASERA.%20COJIN%20CABECERO%20CARIBBEAN%20INDIGO.jpg",
         ],
+        'BARENTS': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20SKAGERAK/buena%20calidad/HAR00635%20SKAGERAK%20MAGNESIUM%20FR%20OUTDOOR%20140%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20BARENTS/buena%20calidad/HAR00626%20%20%20%20BARENTS%20HEMP%20FR%20OUTDOOR%20140%20CM.jpg",
 
+        ],
 
 
     },
@@ -373,6 +377,7 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/MOODBOARDS/MOODBOARD%20GENESIS_2_11zon_5_11zon.webp",
 
         ],
+
         'GRAZALEMA': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/SAN%20FERNANDO%20CORAL(CABECERO)ROCIO%20DUSTY%20PINK%20Y%20SALMON%20(COJINES)%20SANLUCAR%20BLOSSOM%20(PRIMER%20COJIN)_WEB.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/CHIPIONA%20ROUGE(COJIN)%20Y%20JARA%20ROUGE(BUTACA).jpg",
@@ -385,7 +390,9 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000350%20LA%20RETE%20SOFT%20SKY%20300%20CM.jpg",
         ],
         'MARRAKECH': [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/(DE%20IZQUIERDA%20A%20DERECHA)KUTUBIA%20OCEAN%20MENARA%20COBALT%20RIAD%20DENIM%20MARRAKECH%20COBALT%20AGDAL%20ROYAL%20BLUE%20MAMOUNIA%20AZURE.JPG"
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_KUTUBIA%20APRICOT.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_COMPOTELAS.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_AGDAL_OLIVE%20.jpg"
         ],
         'REVOLTOSO': [
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/REVOLTOSO/BORNEO_3_11zon_28_11zon.webp",

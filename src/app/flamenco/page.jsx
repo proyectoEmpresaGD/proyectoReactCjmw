@@ -21,9 +21,12 @@ function FlamencoHome() {
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001199%20SEA%20STRIPE%20SPRING%20GREEN.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001218%20COLONIAL%20DAMASK%20SPRING%20GREEN_01%20.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/FLA_GRAZALEMA_V2_12_WEB.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001248%20HAITI%20ESCARLET_3.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001273%20%20%20%20VERACRUZ%20PORCELAIN_04.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/FLA_GRAZALEMA_BANNER_WEB_01.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_AGDAL_OLIVE%20.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_COMPOTELAS.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_KUTUBIA%20APRICOT.jpg"
     ]
 
     const imagesNewCollections = [

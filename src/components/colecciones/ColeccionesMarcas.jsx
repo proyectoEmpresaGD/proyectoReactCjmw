@@ -41,6 +41,10 @@ function ColeccionesMarcas({ marca }) {
           data = data.filter(coleccion => coleccion !== "RUSTICA");
         }
 
+        if (marca === "HAR") {
+          data = data.filter(coleccion => coleccion !== "CARIBEAN PARTY");
+        }
+
         setColecciones(data);
         setLoading(false);
       } catch (error) {
