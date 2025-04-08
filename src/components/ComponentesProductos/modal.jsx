@@ -240,6 +240,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/Buena`),
                 fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/Baja`)
             ]);
+
             const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
             const bajaImage = bajaResponse.ok ? await bajaResponse.json() : null;
             const updatedProduct = {
@@ -250,9 +251,13 @@ const Modal = ({ isOpen, close, product, alt }) => {
             setSelectedProduct(updatedProduct);
             setSelectedImage(updatedProduct.imageBuena || updatedProduct.imageBaja);
             setImageLoaded(false);
+            if (modalRef.current) {
+                modalRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         } catch (error) {
             console.error('Error fetching images for color product:', error);
         }
+
     };
 
     const handleClose = () => {
@@ -348,7 +353,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 <img
                     src={direccionLogos[direccion]}
                     alt={direccion}
-                    className={direccion === "RAILROADED" ? "w-8 h-6" : "w-6 h-7"} // Tamaños diferentes según el tipo
+                    className={direccion === "RAILROADED" ? "w-8 h-6" : "w-6 h-7"}
                     onClick={() => navigate('/usages')}
                 />
                 <span className='ml-2'>{direccion}</span>
@@ -440,7 +445,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 {selectedProduct?.tonalidad && (
                                     <p className="text-gray-600 text-sm mb-2">
                                         <strong></strong>
-                                        {selectedProduct.tonalidad}
+                                        {selectedProduct.codprodu}
                                     </p>
                                 )}
                                 <p className="text-gray-600 text-sm mb-2">
