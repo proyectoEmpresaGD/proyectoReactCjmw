@@ -24,6 +24,7 @@ export const createProductRouter = () => {
     productsRouter.get('/searchFabricPatterns', productController.searchFabricPatterns.bind(productController));
 
     // Rutas para operaciones específicas de un producto
+    productsRouter.get('/byCollection', productController.getByExactCollection.bind(productController));
     productsRouter.get('/:id', productController.getById.bind(productController));
     productsRouter.patch('/:id', productController.update.bind(productController));
     productsRouter.delete('/:id', productController.delete.bind(productController));

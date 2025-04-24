@@ -7,6 +7,9 @@ import { dirname, join } from 'path';
 import pg from 'pg';
 import nodemailer from 'nodemailer';
 import 'dotenv/config';
+import fetch from 'node-fetch';
+import { Buffer } from 'buffer';
+
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -22,6 +25,21 @@ app.use(json());
 app.use(corsMiddleware());
 app.disable('x-powered-by');
 app.use(urlencoded({ extended: true }));
+
+app.get('/api/proxy', async (req, res) => {
+  const imageUrl = req.query.url;
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) return res.status(response.status).send('Error al cargar la imagen');
+    const contentType = response.headers.get('content-type');
+    res.setHeader('Content-Type', contentType);
+    response.body.pipe(res);
+  } catch (err) {
+    console.error('Error en proxy de imagen:', err);
+    res.status(500).send('Error en el servidor proxy');
+  }
+});
+
 
 // Sirve archivos estáticos desde el directorio 'web'
 app.use(express.static(join(__dirname, 'web')));
