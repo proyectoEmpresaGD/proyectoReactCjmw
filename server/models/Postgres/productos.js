@@ -359,12 +359,15 @@ export class ProductModel {
   static async getByCollectionExact(coleccion) {
     const exclusion = this.getExcludedNamesClause(2);
     const query = `
-    SELECT * FROM productos
+    SELECT DISTINCT ON ("nombre") *
+    FROM productos
     WHERE coleccion = $1 AND nombre IS NOT NULL AND ${exclusion.clause}
+    ORDER BY "nombre", "codprodu"
   `;
     const { rows } = await pool.query(query, [coleccion, ...exclusion.values]);
     return rows;
   }
+
 
   static async getFiltersByBrand(brand) {
     try {
