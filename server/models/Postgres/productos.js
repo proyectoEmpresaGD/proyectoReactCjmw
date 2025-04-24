@@ -11,57 +11,49 @@ const pool = new pg.Pool({
 
 export class ProductModel {
 
+  static excludedNames = ["DAMASCO", "STORK", "BAMBOO"];
+
+  static getExcludedNamesClause(startIndex = 1) {
+    const placeholders = this.excludedNames.map((_, i) => `$${i + startIndex}`);
+    return {
+      clause: `"nombre" NOT IN (${placeholders.join(', ')})`,
+      values: [...this.excludedNames],
+    };
+  }
+
+
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
     let accumulatedProducts = [];
-    let excludedNames = [];
 
     try {
       while (accumulatedProducts.length < requiredLimit) {
-        let limit = requiredLimit;
-        let query = 'SELECT DISTINCT ON ("nombre") * FROM productos';
-        let params = [];
+        let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
+        const params = [];
+        let index = 1;
 
         if (CodFamil) {
-          query += ' WHERE "codfamil" = $1';
+          query += ` AND "codfamil" = $${index++}`;
           params.push(CodFamil);
         }
 
         if (CodSubFamil) {
-          if (params.length > 0) {
-            query += ' AND "codsubfamil" = $2';
-          } else {
-            query += ' WHERE "codsubfamil" = $1';
-          }
+          query += ` AND "codsubfamil" = $${index++}`;
           params.push(CodSubFamil);
         }
 
-        if (params.length > 0) {
-          query += ' AND "nombre" IS NOT NULL AND "nombre" != \'\'';
-        } else {
-          query += ' WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
-        }
+        const exclusion = this.getExcludedNamesClause(index);
+        query += ` AND ${exclusion.clause}`;
+        params.push(...exclusion.values);
+        index += exclusion.values.length;
 
-        if (excludedNames.length > 0) {
-          const excludedNamesPlaceholders = excludedNames.map((_, i) => `$${params.length + i + 1}`).join(', ');
-          query += ` AND "nombre" NOT IN (${excludedNamesPlaceholders})`;
-          params = [...params, ...excludedNames];
-        }
-
-        query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        params.push(limit, offset);
+        query += ` LIMIT $${index++} OFFSET $${index++}`;
+        params.push(requiredLimit, offset);
 
         const { rows } = await pool.query(query, params);
-        const validRows = rows.filter(row => row.nombre && row.nombre.trim() !== '');
-        const uniqueRows = validRows.filter(row => !excludedNames.includes(row.nombre));
+        if (rows.length === 0) break;
 
-        accumulatedProducts = [...accumulatedProducts, ...uniqueRows];
-        excludedNames = [...excludedNames, ...uniqueRows.map(row => row.nombre)];
-
-        if (uniqueRows.length < limit) {
-          break;
-        }
-
-        offset += uniqueRows.length;
+        accumulatedProducts.push(...rows);
+        offset += rows.length;
       }
 
       return accumulatedProducts.slice(0, requiredLimit);
@@ -147,102 +139,56 @@ export class ProductModel {
     if (!query || query.trim() === '') {
       return { products: [], total: 0 };
     }
-    const cacheKey = `search:${query}:${offset}:${limit}`;
-    if (res && res.cache) {
-      const cachedResponse = await res.cache.get(cacheKey);
-      if (cachedResponse) {
-        res.set('Cache-Control', 'public, max-age=3600');
-        return cachedResponse;
-      }
-    }
 
     const searchString = `%${query}%`;
-    const searchQuery = `
-    SELECT *,
-           similarity(unaccent(UPPER("nombre")), unaccent(UPPER($1))) AS sim
-    FROM productos
-    WHERE (
-      unaccent(UPPER("nombre")) LIKE unaccent(UPPER($1))
-      OR unaccent(UPPER("coleccion")) LIKE unaccent(UPPER($1))
-    )
-    AND "nombre" IS NOT NULL
-    AND "nombre" != ''
-    ORDER BY sim DESC, "nombre", "codprodu"
-    LIMIT $2 OFFSET $3;
-  `;
+    let sql = `
+      SELECT *, similarity(unaccent(UPPER("nombre")), unaccent(UPPER($1))) AS sim
+      FROM productos
+      WHERE (
+        unaccent(UPPER("nombre")) LIKE unaccent(UPPER($1)) OR
+        unaccent(UPPER("coleccion")) LIKE unaccent(UPPER($1))
+      )
+      AND "nombre" IS NOT NULL AND "nombre" != ''
+    `;
 
-    console.log("[DEBUG] search method called");
-    console.log("Incoming query param:", query);
-    console.log("searchString:", searchString);
-    console.log("Executing query:", searchQuery);
+    const exclusion = this.getExcludedNamesClause(2);
+    sql += ` AND ${exclusion.clause}`;
+    sql += ' ORDER BY sim DESC, "nombre", "codprodu" LIMIT $' + (2 + exclusion.values.length) + ' OFFSET $' + (3 + exclusion.values.length);
 
-    try {
-      const { rows } = await pool.query(searchQuery, [searchString, limit, offset]);
-      console.log(`[DEBUG] Rows returned from DB: ${rows.length}`);
+    const params = [searchString, ...exclusion.values, limit, offset];
 
-      // Filtrar resultados con similitud mínima (umbral 0.3, por ejemplo)
-      let filteredRows = rows.filter(row => row.sim >= 0.3);
-      if (filteredRows.length === 0 && rows.length > 0) {
-        console.log("[DEBUG] Ningún resultado supera el umbral, usando el mejor resultado como fallback.");
-        filteredRows = [rows[0]];
-      }
-      const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
-      const productsWithImages = await Promise.all(
-        filteredRows.map(async (product) => {
-          let imageObj = await ImagenModel.getByCodproduAndCodclaarchivo({
-            codprodu: product.codprodu,
-            codclaarchivo: 'Baja',
-            res,
-          });
-          return {
-            ...product,
-            image: imageObj && imageObj.ficadjunto
-              ? `https://${imageObj.ficadjunto}`
-              : defaultImageUrl,
-          };
-        })
-      );
-      console.log("[DEBUG] Final productsWithImages count:", productsWithImages.length);
-      if (res && res.cache) {
-        await res.cache.set(cacheKey, { products: productsWithImages, total: productsWithImages.length });
-        res.set('Cache-Control', 'public, max-age=3600');
-      }
-      return { products: productsWithImages, total: productsWithImages.length };
-    } catch (error) {
-      console.error('Error searching products:', error);
-      throw new Error('Error searching products');
-    }
+    const { rows } = await pool.query(sql, params);
+
+    const filteredRows = rows.filter(r => r.sim >= 0.3 || rows[0]);
+    const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
+
+    const productsWithImages = await Promise.all(
+      filteredRows.map(async (product) => {
+        let imageObj = await ImagenModel.getByCodproduAndCodclaarchivo({
+          codprodu: product.codprodu,
+          codclaarchivo: 'Baja',
+          res,
+        });
+
+        return {
+          ...product,
+          image: imageObj?.ficadjunto ? `https://${imageObj.ficadjunto}` : defaultImageUrl,
+        };
+      })
+    );
+
+    return { products: productsWithImages, total: productsWithImages.length };
   }
 
-
-
-
-
-  static async getByCodFamil(codfamil, res) {
-    const cacheKey = `products:family:${codfamil}`;
-
-    // Asegurarse de que res.cache exista antes de acceder a él
-    if (res?.cache) {
-      const cachedResponse = await res.cache.get(cacheKey);
-      if (cachedResponse) {
-        res.set('Cache-Control', 'public, max-age=3600');
-        return cachedResponse;
-      }
-    }
-
-    try {
-      const { rows } = await pool.query('SELECT * FROM productos WHERE "codfamil" = $1;', [codfamil]);
-
-      if (res?.cache) {
-        await res.cache.set(cacheKey, rows);
-        res.set('Cache-Control', 'public, max-age=3600');
-      }
-
-      return rows;
-    } catch (error) {
-      console.error('Error fetching products by codfamil:', error);
-      throw new Error('Error fetching products by codfamil');
-    }
+  static async getByCodFamil(codfamil) {
+    const exclusion = this.getExcludedNamesClause(2);
+    const query = `
+      SELECT * FROM productos
+      WHERE "codfamil" = $1 AND "nombre" IS NOT NULL AND "nombre" != ''
+      AND ${exclusion.clause}
+    `;
+    const { rows } = await pool.query(query, [codfamil, ...exclusion.values]);
+    return rows;
   }
 
 
@@ -273,134 +219,88 @@ export class ProductModel {
   }
 
   // Filtro por tipo de producto
-  static async getByType({ type, limit = 16, offset = 0, res }) {
-    const cacheKey = `products:type:${type}:${offset}:${limit}`;
-    const cachedResponse = await res?.cache.get(cacheKey);
-
-    if (cachedResponse) {
-      res.set('Cache-Control', 'public, max-age=3600');
-      return cachedResponse;
-    }
-
-    try {
-      let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE 1=1';
-      const params = [];
-      let index = 1;
-
-      if (type === 'papeles') {
-        query += ` AND "tipo" = 'WALLPAPER'`;
-      } else if (type === 'telas') {
-        query += ` AND "tipo" != 'WALLPAPER'`;
-      }
-
-      query += ` LIMIT $${index++} OFFSET $${index}`;
-      params.push(limit, offset);
-
-      const { rows } = await pool.query(query, params);
-      await res?.cache.set(cacheKey, rows);
-      res.set('Cache-Control', 'public, max-age=3600');
-      return { products: rows, total: rows.length };
-    } catch (error) {
-      console.error('Error filtering products by type:', error);
-      throw new Error('Error filtering products by type');
-    }
-  }
-
-  // Aplicar filtros a productos
-  static async filter(filters, limit = 16, offset = 0, res) {
-    const cacheKey = `products:filter:${JSON.stringify(filters)}:${offset}:${limit}`;
-    if (res && res.cache) {
-      const cachedResponse = await res.cache.get(cacheKey);
-      if (cachedResponse) {
-        res.set('Cache-Control', 'public, max-age=3600');
-        return cachedResponse;
-      }
-    }
-
+  static async getByType({ type, limit = 16, offset = 0 }) {
     let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
-    let params = [];
+    const params = [];
     let index = 1;
 
-    if (filters.brand && filters.brand.length > 0) {
+    if (type === 'papeles') {
+      query += ` AND "tipo" = 'WALLPAPER'`;
+    } else if (type === 'telas') {
+      query += ` AND "tipo" != 'WALLPAPER'`;
+    }
+
+    const exclusion = this.getExcludedNamesClause(index);
+    query += ` AND ${exclusion.clause}`;
+    params.push(...exclusion.values);
+    index += exclusion.values.length;
+
+    query += ` LIMIT $${index++} OFFSET $${index++}`;
+    params.push(limit, offset);
+
+    const { rows } = await pool.query(query, params);
+    return { products: rows, total: rows.length };
+  }
+
+  static async filter(filters, limit = 16, offset = 0) {
+    let query = 'SELECT DISTINCT ON ("nombre") * FROM productos WHERE "nombre" IS NOT NULL AND "nombre" != \'\'';
+    const params = [];
+    let index = 1;
+
+    if (filters.brand?.length) {
       query += ` AND "codmarca" = ANY($${index++})`;
       params.push(filters.brand);
     }
-
-    if (filters.collection && filters.collection.length > 0) {
+    if (filters.collection?.length) {
       query += ` AND "coleccion" ILIKE $${index++}`;
       params.push(`%${filters.collection}%`);
     }
-
-    if (filters.color && filters.color.length > 0) {
+    if (filters.color?.length) {
       query += ` AND "colorprincipal" = ANY($${index++})`;
       params.push(filters.color);
     }
-
-    if (filters.fabricType && filters.fabricType.length > 0) {
+    if (filters.fabricType?.length) {
       query += ` AND "tipo" = ANY($${index++})`;
       params.push(filters.fabricType);
     }
-
-    if (filters.fabricPattern && filters.fabricPattern.length > 0) {
+    if (filters.fabricPattern?.length) {
       query += ` AND "estilo" = ANY($${index++})`;
       params.push(filters.fabricPattern);
     }
-
-    if (filters.uso && filters.uso.length > 0) {
-      let usoConditions = [];
-      if (filters.uso.includes('FR')) {
-        usoConditions.push(`"uso" ILIKE '%FR%'`);
-      }
-      if (filters.uso.includes('OUTDOOR')) {
-        usoConditions.push(`"uso" ILIKE '%OUTDOOR%'`);
-      }
-      if (usoConditions.length > 0) {
-        query += ` AND (${usoConditions.join(' OR ')})`;
-      }
+    if (filters.uso?.length) {
+      const usoConditions = [];
+      if (filters.uso.includes("FR")) usoConditions.push(`"uso" ILIKE '%FR%'`);
+      if (filters.uso.includes("OUTDOOR")) usoConditions.push(`"uso" ILIKE '%OUTDOOR%'`);
+      if (usoConditions.length) query += ` AND (${usoConditions.join(' OR ')})`;
     }
-
-    if (filters.martindale && filters.martindale.length > 0) {
+    if (filters.martindale?.length) {
       query += ` AND "martindale" = ANY($${index++})`;
       params.push(filters.martindale);
     }
 
-    query += ` LIMIT $${index++} OFFSET $${index}`;
+    const exclusion = this.getExcludedNamesClause(index);
+    query += ` AND ${exclusion.clause}`;
+    params.push(...exclusion.values);
+    index += exclusion.values.length;
+
+    query += ` LIMIT $${index++} OFFSET $${index++}`;
     params.push(limit, offset);
 
-    try {
-      const { rows } = await pool.query(query, params);
-
-      if (res && res.cache) {
-        await res.cache.set(cacheKey, rows);
-        res.set('Cache-Control', 'public, max-age=3600');
-      }
-
-      return { products: rows, total: rows.length };
-    } catch (error) {
-      console.error('Error filtering products:', error);
-      throw new Error('Error filtering products');
-    }
+    const { rows } = await pool.query(query, params);
+    return { products: rows, total: rows.length };
   }
 
   // Obtener colecciones por marca
   static async getCollectionsByBrand(brand) {
-    try {
-      const query = `
-        SELECT DISTINCT UPPER(coleccion) AS coleccion
-        FROM productos
-        WHERE codmarca = $1
-        AND nombre IS NOT NULL
-        AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY', 'KANNATURA VOL II')
-      `;
-
-      const { rows } = await pool.query(query, [brand]);
-      const collections = rows.map(row => row.coleccion);
-
-      return collections;
-    } catch (error) {
-      console.error('Error fetching collections by brand:', error);
-      throw new Error('Error fetching collections by brand');
-    }
+    const exclusion = this.getExcludedNamesClause(2);
+    const query = `
+      SELECT DISTINCT UPPER(coleccion) AS coleccion
+      FROM productos
+      WHERE codmarca = $1 AND nombre IS NOT NULL AND ${exclusion.clause}
+      AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY', 'KANNATURA VOL II')
+    `;
+    const { rows } = await pool.query(query, [brand, ...exclusion.values]);
+    return rows.map(row => row.coleccion);
   }
 
   static async searchCollections(searchTerm) {
@@ -454,6 +354,16 @@ export class ProductModel {
       console.error('Error searching fabric patterns:', error);
       throw new Error('Error searching fabric patterns');
     }
+  }
+
+  static async getByCollectionExact(coleccion) {
+    const exclusion = this.getExcludedNamesClause(2);
+    const query = `
+    SELECT * FROM productos
+    WHERE coleccion = $1 AND nombre IS NOT NULL AND ${exclusion.clause}
+  `;
+    const { rows } = await pool.query(query, [coleccion, ...exclusion.values]);
+    return rows;
   }
 
   static async getFiltersByBrand(brand) {

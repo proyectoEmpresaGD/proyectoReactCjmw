@@ -211,14 +211,34 @@ const CardProduct = () => {
     };
 
     useEffect(() => {
-        if (productIdEnlace) {
-            fetchProductsById(productIdEnlace);
-        } else if (productId) {
-            fetchProductsById(productId);
-        } else {
-            const appliedFilters = buildAppliedFilters();
-            fetchProducts(page, appliedFilters);
-        }
+        const fetchData = async () => {
+            if (productIdEnlace) {
+                fetchProductsById(productIdEnlace);
+            } else if (productId) {
+                fetchProductsById(productId);
+            } else if (collection) {
+                try {
+                    setLoading(true);
+                    const response = await fetch(
+                        `${apiUrl}/api/products/byCollection?collection=${encodeURIComponent(collection)}`
+                    );
+                    if (!response.ok) throw new Error('Error fetching products by exact collection');
+                    const productsExact = await response.json();
+                    const productsWithImages = await loadProductsImages(productsExact);
+                    setProducts(productsWithImages);
+                    setTotalProducts(productsExact.length);
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                const appliedFilters = buildAppliedFilters();
+                fetchProducts(page, appliedFilters);
+            }
+        };
+
+        fetchData(); // Llamada a la función async
     }, [
         searchQuery,
         productId,
@@ -231,6 +251,7 @@ const CardProduct = () => {
         page,
         filters
     ]);
+
 
     // Al aplicar un filtro, se reinicia la página a 1 y se actualiza la URL
     const handleFilteredProducts = (filteredProducts, selectedFilters) => {

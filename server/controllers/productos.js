@@ -315,4 +315,26 @@ export class ProductController {
     }
   }
 
+  async getByExactCollection(req, res) {
+    try {
+      const { collection } = req.query;
+
+      if (!collection || collection.trim() === '') {
+        return res.status(400).json({ message: 'Collection parameter is required' });
+      }
+
+      const productos = await ProductModel.getByCollectionExact(collection.trim());
+
+      if (productos.length === 0) {
+        return res.status(404).json({ message: 'No products found for the specified collection' });
+      }
+
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+      res.json(productos);
+    } catch (error) {
+      console.error('Error fetching products by exact collection:', error);
+      res.status(500).json({ error: 'Error fetching products by exact collection', details: error.message });
+    }
+  }
+
 }
