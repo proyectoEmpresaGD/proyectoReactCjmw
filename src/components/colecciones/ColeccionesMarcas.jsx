@@ -30,8 +30,9 @@ function ColeccionesMarcas({ marca }) {
 
         // Excluir "REVOLTOSO" si la marca es "CJM"
         if (marca === "ARE") {
-          data = data.filter(coleccion => coleccion !== "VELVETY");
+          data = data.filter(coleccion => coleccion !== "VELVETY" && coleccion !== "LIGHTHOUSE");
         }
+
 
         if (marca === "FLA") {
           data = data.filter(coleccion => coleccion !== "REVOLTOSO VOL II");
