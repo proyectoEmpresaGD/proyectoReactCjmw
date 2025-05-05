@@ -526,7 +526,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         style={{ width: '200px', margin: '0 auto', display: 'block' }}
                     />
                 )}
-                <div style={{ fontSize: '24px', marginTop: '8px' }}>{selectedProduct.nombre}</div>
+                <div style={{ fontSize: '24px' }}>{selectedProduct.nombre}</div>
             </div>
 
             {/* Imagen */}
@@ -546,8 +546,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
             </div>
 
             {/* Ficha técnica extendida */}
-            <div className='grid grid-cols-2 mx-auto text-[12px] mt-6'>
-                <div className='text-end pr-4'>
+            <div className='grid grid-cols-2 mx-auto text-[9px] mt-2'>
+                <div className='text-end pr-2'>
                     {selectedProduct.tonalidad && <p>Pattern:</p>}
                     {selectedProduct.gramaje && <p>Weight:</p>}
                     {selectedProduct.ancho && <p>Width:</p>}
@@ -595,7 +595,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
             {/* Usos y cuidados */}
             <div className="grid grid-cols-2 mx-auto text-[12px] mt-6">
-                <div className="text-end pr-4">
+                <div className="text-end pr-2">
                     <p>Usages:</p>
                 </div>
                 <div className="text-start flex flex-wrap gap-[4px] mt-[4px] ml-35px]">
@@ -612,7 +612,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         ))}
                 </div>
 
-                <div className="text-end pr-4">
+                <div className="text-end pr-2">
                     <p>Cares:</p>
                 </div>
                 <div className="text-start flex flex-wrap gap-[4px] mt-[4px] ml-[2px]">
@@ -637,7 +637,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
             {/* Dirección tela */}
             {selectedProduct.direcciontela && direccionBase64[selectedProduct.direcciontela] && (
-                <div className="mt-6 text-[10px] justify-center absolute left-10 bottom-10 items-center gap-2">
+                <div className="mt-6 text-[10px] justify-center absolute left-10 bottom-5 items-center gap-2">
                     <img
                         src={direccionBase64[selectedProduct.direcciontela]}
                         alt={selectedProduct.direcciontela}
@@ -651,7 +651,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
             )}
 
             {/* Pie de página y QR */}
-            <div className='absolute bottom-10 right-10 grid grid-cols-2 gap-4 items-center'>
+            <div className='absolute bottom-5 right-10 grid grid-cols-2 gap-4 items-center'>
                 <div className='text-[8px] text-end mr-2'>
                     <p>CJM WORLDWIDE S.L</p>
                     <p>B14570873</p>
@@ -716,7 +716,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         <div className="md:w-1/2 flex flex-col justify-between">
                             <div>
                                 <h1 className="text-2xl font-semibold mb-1">
-                                    {selectedProduct?.nombre || 'Nombre del producto'}
+                                    {selectedProduct?.codprodu || 'Nombre del producto'}
                                 </h1>
                                 {selectedProduct?.tonalidad && (
                                     <p className="text-gray-600 text-sm mb-2">{selectedProduct.tonalidad}</p>
