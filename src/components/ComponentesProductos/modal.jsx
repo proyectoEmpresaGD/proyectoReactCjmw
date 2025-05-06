@@ -716,7 +716,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         <div className="md:w-1/2 flex flex-col justify-between">
                             <div>
                                 <h1 className="text-2xl font-semibold mb-1">
-                                    {selectedProduct?.codprodu || 'Nombre del producto'}
+                                    {selectedProduct?.nombre || 'Nombre del producto'}
                                 </h1>
                                 {selectedProduct?.tonalidad && (
                                     <p className="text-gray-600 text-sm mb-2">{selectedProduct.tonalidad}</p>
