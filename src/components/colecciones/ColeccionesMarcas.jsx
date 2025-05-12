@@ -33,7 +33,6 @@ function ColeccionesMarcas({ marca }) {
           data = data.filter(coleccion => coleccion !== "VELVETY" && coleccion !== "LIGHTHOUSE");
         }
 
-
         if (marca === "FLA") {
           data = data.filter(coleccion => coleccion !== "REVOLTOSO VOL II");
         }
@@ -62,7 +61,7 @@ function ColeccionesMarcas({ marca }) {
 
 
   const handleCollectionClick = (coleccion) => {
-    navigate(`/products?collection=${coleccion}`);
+    navigate(`/products?collection=${encodeURIComponent(coleccion)}`);
   };
 
   if (loading) {
