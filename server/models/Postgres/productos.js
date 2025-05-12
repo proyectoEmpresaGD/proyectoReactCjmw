@@ -297,7 +297,7 @@ export class ProductModel {
       SELECT DISTINCT UPPER(coleccion) AS coleccion
       FROM productos
       WHERE codmarca = $1 AND nombre IS NOT NULL AND ${exclusion.clause}
-      AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY', 'KANNATURA VOL II')
+      AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY')
     `;
     const { rows } = await pool.query(query, [brand, ...exclusion.values]);
     return rows.map(row => row.coleccion);

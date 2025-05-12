@@ -207,9 +207,14 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20DUCK%20EGG%203_1_11zon_6_11zon.webp",
         ],
         'KANNATURA': [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01697%20NAHI%201500x1500x72.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01698%20TIMIZ%201500x1500x72.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA/buena%20calidad/ARE01706%20SIKETY%201500x1500x72.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20I/BUENA%20CALIDAD/ARE01720%20THUY.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20I/BUENA%20CALIDAD/ARE01698%20TIMIZ.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20I/BUENA%20CALIDAD/ARE01699%20SAND_RAY.jpg",
+        ],
+        'KANNATURA VOL II': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20II/BUENA%20CALIDAD/ARE01881%20GANESHA.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20II/BUENA%20CALIDAD/ARE01893%20SARVATE.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20II/BUENA%20CALIDAD/ARE01896%20GLAUM.jpg"
         ],
         'LINOTTO': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20LINOTTO/artistica/ARE01458%20%20%20%20LINOTTO%20COTTON%20ARTISTICA-1200.jpg",
