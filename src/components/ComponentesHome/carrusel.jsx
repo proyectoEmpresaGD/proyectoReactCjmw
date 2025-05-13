@@ -18,6 +18,11 @@ const rotateArray = (array, index) => [...array.slice(index), ...array.slice(0, 
 const CarruselColecciones = ({ images, videoSrc = null }) => {
   const [shuffledImages, setShuffledImages] = useState([]);
   const [mostrarCarrusel, setMostrarCarrusel] = useState(!videoSrc);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 768);
+  }, []);
 
   useEffect(() => {
     const shuffled = shuffleArray(images);
@@ -27,16 +32,19 @@ const CarruselColecciones = ({ images, videoSrc = null }) => {
   }, [images]);
 
   return (
-    <div className="relative lg:h-[100%] sm:h-[50vh] sm:bg-cover lg:bg-cover overflow-hidden">
+    <div
+      className={`relative transition-all duration-500 ease-in-out w-full 
+        ${isMobile ? (mostrarCarrusel ? 'h-[50vh]' : 'h-[100vh]') : 'h-[100vh]'}`}
+    >
       {/* VIDEO */}
       {videoSrc && (
         <div
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${mostrarCarrusel ? 'opacity-0 pointer-events-none' : 'opacity-100'
-            }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out 
+            ${mostrarCarrusel ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
         >
           <video
             src={videoSrc}
-            className="w-full h-[100vh] object-cover"
+            className="w-full h-full object-cover"
             autoPlay
             muted
             playsInline
@@ -47,17 +55,17 @@ const CarruselColecciones = ({ images, videoSrc = null }) => {
 
       {/* CARRUSEL */}
       <div
-        className={`transition-opacity duration-1000 ease-in-out ${mostrarCarrusel ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
+        className={`transition-opacity duration-1000 ease-in-out 
+          ${mostrarCarrusel ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       >
-        <Fade duration={6000} indicators={false} autoplay={true} pauseOnHover={false}>
+        <Fade duration={6000} indicators={false} autoplay pauseOnHover={false}>
           {shuffledImages.map((image, index) => (
-            <div key={index} className="each-fade-effect lg:h-[100vh] sm:h-[50vh] relative">
-              <div className="image-container sm:object-center lg:w-full lg:h-full sm:h-full sm:w-full bg-cover">
+            <div key={index} className="each-fade-effect w-full h-[50vh] md:h-[100vh] relative">
+              <div className="image-container w-full h-[50vh] md:h-[100vh] bg-cover">
                 <img
                   src={image}
                   alt=""
-                  className="aspect-auto lg:object-cover lg:object-center lg:h-full lg:w-full sm:w-full sm:h-[50vh] sm:object-cover sm:object-center"
+                  className="w-full h-[50vh] md:h-[100vh] object-cover object-center"
                 />
               </div>
             </div>
