@@ -11,7 +11,7 @@ import { FaGlobe } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
-import ScrollToTop from './ScrollToTop';
+import ScrollToTop from './ScrollToTop';// eslint-disable-next-line
 import Select from 'react-select';
 import 'tailwindcss/tailwind.css';// importing tailwindcss
 import SearchBar from './SearchBar'; // Componente de búsqueda mejorado
