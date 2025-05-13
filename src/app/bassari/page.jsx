@@ -33,6 +33,8 @@ function BassariHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20KARABANE%20ARGILE%20II_5_11zon_12_11zon.webp",
     ]
 
+    const videoIntro = "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/BASS_PORTADAS_REELS-06.mp4";
+
     const titles = [
         "BEDICK",
         "ASTEROIDE",
@@ -59,7 +61,7 @@ function BassariHome() {
         <>
             <CartProvider>
                 <Header />
-                <Carrusel images={shuffleArray([...images])} />
+                <Carrusel images={shuffleArray([...images])} videoSrc={videoIntro} />
                 <NotificationPopup brochures={brochures} />
                 <body className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full mt-[2%]">
