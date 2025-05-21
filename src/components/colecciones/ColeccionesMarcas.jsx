@@ -13,52 +13,45 @@ function ColeccionesMarcas({ marca }) {
 
   useEffect(() => {
     const fetchCollectionsByBrand = async () => {
+      const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/getCollectionsByBrand?brand=${marca}`;
+
       try {
         setLoading(true);
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/products/getCollectionsByBrand?brand=${marca}`
-        );
+
+        const response = await fetch(url);
+
         if (!response.ok) {
-          throw new Error(`Error fetching collections: ${response.statusText}`);
+          throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
         }
+
         let data = await response.json();
 
-        // Excluir "REVOLTOSO" si la marca es "CJM"
         if (marca === "CJM") {
           data = data.filter(coleccion => coleccion !== "REVOLTOSO");
-        }
-
-        // Excluir "REVOLTOSO" si la marca es "CJM"
-        if (marca === "ARE") {
-          data = data.filter(coleccion => coleccion !== "VELVETY" && coleccion !== "LIGHTHOUSE");
-        }
-
-        if (marca === "FLA") {
-          data = data.filter(coleccion => coleccion !== "REVOLTOSO VOL II");
-        }
-
-        if (marca === "HAR") {
-          data = data.filter(coleccion => coleccion !== "RUSTICA");
-        }
-
-        if (marca === "HAR") {
-          data = data.filter(coleccion => coleccion !== "CARIBEAN PARTY");
+        } else if (marca === "ARE") {
+          data = data.filter(coleccion => !["VELVETY", "LIGHTHOUSE"].includes(coleccion));
+        } else if (marca === "FLA") {
+          data = data.filter(coleccion => coleccion !== ["REVOLTOSO VOL II", "LUXURY DREAPS"].includes(coleccion));
+        } else if (marca === "HAR") {
+          data = data.filter(coleccion => !["RUSTICA", "CARIBEAN PARTY"].includes(coleccion));
         }
 
         setColecciones(data);
-        setLoading(false);
       } catch (error) {
-        console.error('Error fetching collections:', error);
-        setError(error.message);
+        console.error(`[ColeccionesMarcas] Error en fetch para marca ${marca}:`, error);
+        setError(error.message || 'Error desconocido');
+      } finally {
         setLoading(false);
+
       }
     };
 
-    fetchCollectionsByBrand();
+    if (marca) {
+      fetchCollectionsByBrand();
+    } else {
+      console.warn('[ColeccionesMarcas] No se proporcionó marca al componente.');
+    }
   }, [marca]);
-
-
-
 
   const handleCollectionClick = (coleccion) => {
     navigate(`/products?collection=${encodeURIComponent(coleccion)}`);

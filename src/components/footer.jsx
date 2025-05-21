@@ -10,7 +10,7 @@ const Footer = () => {
                 <div className="w-full lg:w-1/6 flex justify-center lg:justify-start">
                     <a href="#" className="flex items-center">
                         <div className="bg-white rounded-full p-2">
-                            <img src={LOGO_URL} alt="Logo" className="w-12 h-12 object-contain" />
+                            <img src={LOGO_URL} alt="Logo" className="w-16 h-16 object-contain" />
                         </div>
                     </a>
                 </div>
@@ -80,6 +80,25 @@ const Footer = () => {
             <div className="mt-8">
                 <p className="text-gray-600 text-center">{COPYRIGHT_TEXT}</p>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6 border-t-[2px] mt-6 pt-6 place-items-center">
+                <Link to="/cjmHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="logo CJM" className="w-auto h-16" />
+                </Link>
+                <Link to="/arenaHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png" alt="logo ARENA" className="w-auto h-16" />
+                </Link>
+                <Link to="/flamencoHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png" alt="logo FLAMENCO" className="w-auto h-16" />
+                </Link>
+                <Link to="/harbourHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png" alt="logo HARBOUR" className="w-auto h-16" />
+                </Link>
+                <Link to="/bassariHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer md:col-span-2 md:justify-self-center lg:col-span-1">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="logo BASSARI" className="w-auto h-16" />
+                </Link>
+            </div>
+
+
         </footer>
     );
 };

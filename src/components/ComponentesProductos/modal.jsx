@@ -8,7 +8,11 @@ import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
+import { FaSearchPlus } from 'react-icons/fa';
 import CryptoJS from 'crypto-js';
+import Footer from "../../components/footer";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -78,6 +82,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const location = useLocation();
     const modalRef = useRef(null);
     const [direccionBase64, setDireccionBase64] = useState({});
+    const [isViewerOpen, setIsViewerOpen] = useState(false);
+    const [photoIndex, setPhotoIndex] = useState(0);
+    const [galleryImages, setGalleryImages] = useState([]);
     // Estados principales
     const [selectedProduct, setSelectedProduct] = useState(product);
     const [modalMapaOpen, setModalMapaOpen] = useState(false);
@@ -109,6 +116,15 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
     // Ref al contenedor de la etiqueta
     const etiquetaRef = useRef();
+
+    //Esto hace que si la ruta cambia la modal se cierre
+    useEffect(() => {
+        if (!isOpen) return;
+
+        // Cierra la modal en cuanto cambia la localización completa (pathname, search o hash)
+        close();
+    }, [location.key]);
+
 
     // Sincronizar selectedProduct cuando se abre la modal
     useEffect(() => {
@@ -210,6 +226,41 @@ const Modal = ({ isOpen, close, product, alt }) => {
         };
         fetchImages();
     }, [selectedProduct]);
+
+    useEffect(() => {
+        const fetchGalleryImages = async () => {
+            if (!selectedProduct?.nombre || !selectedProduct?.codfamil) return;
+
+            try {
+                const res = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${selectedProduct.codfamil}`
+                );
+                const data = await res.json();
+                const productosMismoNombre = data.filter(p => p.nombre === selectedProduct.nombre);
+
+                const images = await Promise.all(
+                    productosMismoNombre.map(async (prod) => {
+                        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`);
+                        const imageData = response.ok ? await response.json() : null;
+                        return imageData ? `https://${imageData.ficadjunto}` : null;
+                    })
+                );
+
+                const filtered = images.filter(Boolean);
+                setGalleryImages(filtered);
+
+                const current = selectedProduct.imageBuena || selectedImage;
+                const initialIndex = filtered.findIndex(img => img === current);
+                setPhotoIndex(initialIndex >= 0 ? initialIndex : 0);
+
+            } catch (err) {
+                console.error("Error cargando imágenes para galería:", err);
+                setGalleryImages([]);
+            }
+        };
+
+        fetchGalleryImages();
+    }, [selectedProduct, selectedImage]);
 
     // Cargar productos relacionados (mismo nombre y familia)
     useEffect(() => {
@@ -688,7 +739,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
         <CartProvider>
             <div
                 ref={modalRef}
-                className="fixed inset-0 z-30 bg-white overflow-y-auto 4xl:pt-[3%] 3xl:pt-[4%] xl:pt-[6%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%] pt-[24%]"
+                className="fixed inset-0 z-30 bg-white overflow-y-auto 4xl:pt-[3%] 3xl:pt-[4%] xl:pt-[6%] lg:pt-[12%] md:pt-[10%]  sm:pt-[15%] pt-[24%]"
             >
                 <div
                     className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8 relative"
@@ -698,12 +749,21 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         onClick={handleClose}
                         className="absolute top-[-15px] right-4 md:right-4 md:top-4 text-black font-bold text-xl hover:opacity-70"
                     >
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="" />
+                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="" className=' w-8' />
                     </button>
 
                     {/* Encabezado: Imagen Izq + Info Der */}
                     <div className="flex flex-col md:flex-row gap-8">
-                        <div className="md:w-1/2">
+                        <div className="relative md:w-1/2">
+                            {/* Botón de lupa arriba a la derecha */}
+                            <button
+                                onClick={() => setIsViewerOpen(true)}
+                                className="absolute top-2 left-2 z-10 bg-white bg-opacity-80 rounded-full p-2 hover:scale-110 transition"
+                                title="Ver imagen ampliada"
+                            >
+                                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/ICONO%20AMPLIAR.png" alt="ampliar" className="w-5 h-5" />
+                            </button>
+
                             <Zoom>
                                 <InnerImageZoom
                                     src={selectedImage}
@@ -712,6 +772,17 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     onLoad={() => setImageLoaded(true)}
                                 />
                             </Zoom>
+
+                            {isViewerOpen && (
+                                <Lightbox
+                                    open={isViewerOpen}
+                                    close={() => setIsViewerOpen(false)}
+                                    slides={galleryImages.map(src => ({ src }))}
+                                    index={photoIndex}
+                                    on={{ view: ({ index }) => setPhotoIndex(index) }}
+                                />
+                            )}
+
                         </div>
                         <div className="md:w-1/2 flex flex-col justify-between">
                             <div>
@@ -719,7 +790,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     {selectedProduct?.nombre || 'Nombre del producto'}
                                 </h1>
                                 {selectedProduct?.tonalidad && (
-                                    <p className="text-gray-600 text-sm mb-2">{selectedProduct.tonalidad}</p>
+                                    <p className=" text-sm mb-2 font-semibold">{selectedProduct.tonalidad}</p>
                                 )}
                                 <p className="text-gray-600 text-sm mb-2">
                                     Colección: {selectedProduct?.coleccion} &nbsp;|&nbsp;
@@ -753,7 +824,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                     <div className='flex'>
                                         <button
                                             onClick={handleAddToCart}
-                                            className="relative group w-20 h-20 bg-white overflow-hidden hover:bg-black transition-colors duration-300"
+                                            className="relative group w-20 h-20 bg-white overflow-hidden hover:bg-black transition-colors rounded-sm duration-300"
                                             title="Pedir muestra"
                                         >
                                             <img
@@ -761,7 +832,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                                 alt="Muestra"
                                                 className="mx-auto object-contain w-[80%] h-[80%] group-hover:opacity-0 transition-opacity duration-300"
                                             />
-                                            <span className="absolute inset-0 flex items-center justify-center text-white font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <span className="absolute inset-0 flex items-center text-xs justify-center text-white rounded-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                 AÑADIR AL CARRO
                                             </span>
                                         </button>
@@ -836,9 +907,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 <span className="font-medium">Cares:</span> {getMantenimientoImages(selectedProduct?.mantenimiento)}
                             </div>
                             <div>
-                                <span className="font-medium">Color:</span> {selectedProduct.colorprincipal}
-                            </div>
-                            <div>
                                 <span className="font-medium">Tipo:</span> {selectedProduct.tipo}
                             </div>
                             <div>
@@ -893,20 +961,20 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     {/* OTROS DISEÑOS DE TELAS */}
                     {recommendedProducts.length > 0 && (
                         <div className="mt-10">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-800">TE PUEDE INTERESAR</h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                            <h2 className="text-xl font-semibold mb-6 text-gray-500">Descubre la colección {selectedProduct.coleccion}</h2>
+                            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 hover:cursor-pointer text-black ">
                                 {recommendedProducts.slice(0, 4).map((item) => (
                                     <div
                                         onClick={() => handleDetailClick(item)}
                                         key={item.codprodu}
-                                        className="border border-gray-200 rounded-lg p-3 flex flex-col items-center text-center hover:shadow-md transition"
+                                        className=" rounded-lg  flex flex-col items-center text-center  hover:scale-105 duration-300  transition"
                                     >
                                         <img
                                             src={item.imageBaja}
                                             alt={item.nombre}
                                             className="object-cover w-full h-50 rounded-md mb-3"
                                         />
-                                        <h3 className="font-semibold text-gray-700">{item.nombre}</h3>
+                                        <h3 className="font-semibold  duration-300">{item.nombre}</h3>
                                     </div>
                                 ))}
                             </div>
@@ -942,7 +1010,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
 
 
                 </div>
+                <Footer />
             </div>
+
         </CartProvider>
     );
 };

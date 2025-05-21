@@ -32,7 +32,7 @@ export const getInitialCart = () => {
 
 
 // Constantes de URLs para logos
-export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJMlogo.png";
+export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/ESCUDOS/CJMlogo.png";
 
 // Redes Sociales
 export const SOCIAL_MEDIA_LINKS = {
@@ -207,14 +207,12 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/JEWEL/JEWEL%20DUCK%20EGG%203_1_11zon_6_11zon.webp",
         ],
         'KANNATURA': [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20I/BUENA%20CALIDAD/ARE01720%20THUY.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20I/BUENA%20CALIDAD/ARE01698%20TIMIZ.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20I/BUENA%20CALIDAD/ARE01699%20SAND_RAY.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/KANNATURA%20VOL%20I%20Y%20II/ARN_RAFIAS_AMBIENTE_THI.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/KANNATURA%20VOL%20I%20Y%20II/ARN_RAFIAS_AMBIENTE_BIBI.jpg",
         ],
         'KANNATURA VOL II': [
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20II/BUENA%20CALIDAD/ARE01881%20GANESHA.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20II/BUENA%20CALIDAD/ARE01893%20SARVATE.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/KANNATURA%20VOL%20II/BUENA%20CALIDAD/ARE01896%20GLAUM.jpg"
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/KANNATURA%20VOL%20I%20Y%20II/AR_AMBIENTE_RAFIAS_OCHUN_DETALLE_1920X1080.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/KANNATURA%20VOL%20I%20Y%20II/ARN_RAFIAS_AMBIENTE_KLIM.jpg",
         ],
         'LINOTTO': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/ARENA/ARENA%20LINOTTO/artistica/ARE01458%20%20%20%20LINOTTO%20COTTON%20ARTISTICA-1200.jpg",
@@ -382,14 +380,17 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/MOODBOARDS/MOODBOARD%20GENESIS_2_11zon_5_11zon.webp",
 
         ],
-
         'GRAZALEMA': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/SAN%20FERNANDO%20CORAL(CABECERO)ROCIO%20DUSTY%20PINK%20Y%20SALMON%20(COJINES)%20SANLUCAR%20BLOSSOM%20(PRIMER%20COJIN)_WEB.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/CHIPIONA%20ROUGE(COJIN)%20Y%20JARA%20ROUGE(BUTACA).jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/GRAZALEMA/SANLUCAR%20BLOSSOM.jpg"
         ],
-
         'LUXURY DREAPS': [
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000348%20LA%20RETE%20LINEN%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000356%20LA%20RETE%20TURMERIC%20300%20CM.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000350%20LA%20RETE%20SOFT%20SKY%20300%20CM.jpg",
+        ],
+        'LUXURY DRAPES': [
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000348%20LA%20RETE%20LINEN%20300%20CM.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000356%20LA%20RETE%20TURMERIC%20300%20CM.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/LA%20RETE/buena%20calidad/FLA000350%20LA%20RETE%20SOFT%20SKY%20300%20CM.jpg",
