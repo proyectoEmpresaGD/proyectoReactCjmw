@@ -27,18 +27,15 @@ const SearchBar = ({ closeSearchBar }) => {
     const inputRef = useRef(null);
     const suggestionRefs = useRef([]);
 
-    console.log("[DEBUG] SearchBar mounted. Current query:", query);
 
     // API: obtener sugerencias de productos (se muestran todos los resultados devueltos)
     const fetchProductSuggestions = async (q) => {
         try {
             const normalized = normalizeQuery(q);
             const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${encodeURIComponent(normalized)}`;
-            console.log("[DEBUG] Fetching products from:", url);
             const res = await fetch(url, { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } });
             if (!res.ok) throw new Error('Error fetching product suggestions');
             const data = await res.json();
-            console.log("[DEBUG] Products fetched:", data);
             if (Array.isArray(data.products) && data.products.length > 0) {
                 setProductSuggestions(data.products);
             } else {
@@ -55,7 +52,6 @@ const SearchBar = ({ closeSearchBar }) => {
         try {
             const normalized = normalizeQuery(q);
             const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/searchCollections?searchTerm=${encodeURIComponent(normalized)}`;
-            console.log("[DEBUG] Fetching collections from:", url);
             const res = await fetch(url, { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } });
             if (!res.ok) throw new Error('Error fetching collection suggestions');
             const data = await res.json();

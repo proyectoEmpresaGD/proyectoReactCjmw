@@ -1,7 +1,7 @@
 import { RiInstagramLine, RiFacebookLine, RiTwitterXFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { socialIcons, qrCodeSrc, empresaLinks, politicasLinks, logoSrc, contactText, copyrightText } from "../../Constants/constants";
+import { socialIcons, qrCodeSrc, empresaLinks, politicasLinks, LOGO_URL, contactText, copyrightText } from "../../Constants/constants";
 
 const FooterHome = () => {
     const [isMobile, setIsMobile] = useState(false);
@@ -28,11 +28,11 @@ const FooterHome = () => {
 
     return (
         <footer className="bg-gray-200 text-gray-900 p-6 xl:p-12 min-h-screen flex flex-col justify-between">
-            <div className="container mx-auto flex-grow flex flex-col lg:flex-row items-center justify-evenly gap-1 pb-12">
+            <div className="container mx-auto flex-grow flex flex-col lg:flex-row items-center justify-evenly gap-1 pb-12 pt-10">
                 {/* Logo y redes sociales */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
                     <a href="#" className="flex items-center justify-center">
-                        <img src={logoSrc} alt="Logo" className="w-16 h-16 object-contain" />
+                        <img src={LOGO_URL} alt="Logo" className="w-16 h-16 object-contain" />
                     </a>
                     <p className="font-semibold mt-2">Síguenos en</p>
                     <div className="flex space-x-4 mt-4 text-3xl">

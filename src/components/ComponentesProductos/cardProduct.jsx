@@ -320,10 +320,10 @@ const CardProduct = () => {
                 {products.map((product, index) => (
                     <div
                         key={`${product.codprodu}-${index}`}
-                        className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[80%] h-[90%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]"
+                        className="bg-white rounded-lg shadow-lg sm:p-1 md:p-2 transition duration-300 ease-in-out transform hover:scale-105 mx-2 mb-7 w-[45%] h-[50%] sm:w-[45%] md:w-[45%] lg:w-[22%] xl:w-[22%] 2xl:w-[20%]"
                     >
                         <div
-                            className="relative overflow-hidden w-full h-80 sm:h-64 md:h-64 cursor-pointer"
+                            className="relative overflow-hidden w-full h-48 sm:h-64 md:h-64 cursor-pointer"
                             onClick={() => handleProductClick(product)}
                         >
                             <LazyImage
@@ -335,7 +335,7 @@ const CardProduct = () => {
                                 Toca para ver
                             </div>
                         </div>
-                        <h3 className="text-center text-lg sm:text-xl text-gray-900 mt-4">
+                        <h3 className="text-center text-xs sm:text-xl text-gray-900 mt-4">
                             {product.nombre}
                         </h3>
                     </div>
