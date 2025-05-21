@@ -31,10 +31,11 @@ function ColeccionesMarcas({ marca }) {
         } else if (marca === "ARE") {
           data = data.filter(coleccion => !["VELVETY", "LIGHTHOUSE"].includes(coleccion));
         } else if (marca === "FLA") {
-          data = data.filter(coleccion => coleccion !== ["REVOLTOSO VOL II", "LUXURY DREAPS"].includes(coleccion));
+          data = data.filter(coleccion => coleccion !== "REVOLTOSO VOL II");
         } else if (marca === "HAR") {
           data = data.filter(coleccion => !["RUSTICA", "CARIBEAN PARTY"].includes(coleccion));
         }
+
 
         setColecciones(data);
       } catch (error) {
