@@ -11,9 +11,9 @@ import { FaGlobe } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
-import ScrollToTop from './ScrollToTop';
+import ScrollToTop from './ScrollToTop';// eslint-disable-next-line
 import Select from 'react-select';
-import 'tailwindcss/tailwind.css';
+import 'tailwindcss/tailwind.css';// importing tailwindcss
 import SearchBar from './SearchBar'; // Componente de búsqueda mejorado
 
 // Importar constantes desde el archivo de constantes
@@ -23,6 +23,7 @@ export const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { itemCount } = useCart();
+
 
     // Estados de la cabecera y sus dropdowns (los que no son de búsqueda)
     const [showCart, setShowCart] = useState(false);
