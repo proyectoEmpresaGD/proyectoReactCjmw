@@ -11,7 +11,7 @@ const pool = new pg.Pool({
 
 export class ProductModel {
 
-  static excludedNames = ["DAMASCO", "STORK", "BAMBOO", "TARIFA", "PONIENTE", "MARRAKESH"];
+  static excludedNames = ["DAMASCO", "STORK", "BAMBOO", "TARIFA", "PONIENTE", "MARRAKESH", "CLEMENTINE"];
 
   static getExcludedNamesClause(startIndex = 1) {
     const placeholders = this.excludedNames.map((_, i) => `$${i + startIndex}`);
