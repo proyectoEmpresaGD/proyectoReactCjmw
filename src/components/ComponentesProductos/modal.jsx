@@ -121,9 +121,14 @@ const Modal = ({ isOpen, close, product, alt }) => {
     useEffect(() => {
         if (!isOpen) return;
 
-        // Cierra la modal en cuanto cambia la localización completa (pathname, search o hash)
-        close();
+        const isSearchRoute = location.pathname.includes('products') && location.search.includes('search');
+
+        if (isSearchRoute) {
+            close();
+        }
     }, [location.key]);
+
+
 
 
     // Sincronizar selectedProduct cuando se abre la modal
