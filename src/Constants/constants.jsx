@@ -296,9 +296,6 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20CRUST/ARTISTICA%20WEB/CRUST%20FIRE%20ARTISTICA.jpg",
         ],
         'ETHNIC MOOD': [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01865%20CRUST%20SAPHIRE%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01861%20CRUST%20SAND%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/CRUST/artistica/HAR01868%20CRUST%20TANGERINE%20ARTISTICA-1200.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbiente/HARBOUR%20AMBIENTE/HAIMA%20MARINE.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/DESERT%20GATE%20INDIGO.jpg",
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/HARBOUR%20AMBIENTE/ETHNIC%20MOOD/HAIMA%20MARINE%202_1_11zon_4_11zon.webp",
@@ -323,9 +320,9 @@ export const imageSet = {
             "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20OYSTER/buena%20calidad/HAR01183%20OYSTER%20GRAPHITE%20300%20CM.jpg"
         ],
         'PARABAN': [
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01652%20%20%20%20PARABAN%20CLOUD%20FR%20300%20CM%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01655%20%20%20%20PARABAN%20ALUMINIUM%20FR%20300%20CM%20ARTISTICA-1200.jpg",
-            "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/COLECCIONES%20NUEVAS%202024/HARBOUR/PARABAN/artistica/HAR01656%20%20%20%20PARABAN%20IRON%20FR%20300%20CM%20ARTISTICA-1200.jpg"
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20PARABAN/BUENA%20CALIDAD/HAR01647%20%20%20%20PARABAN%20PORCELAIN%20FR%20300%20CM-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20PARABAN/BUENA%20CALIDAD/HAR01652%20%20%20%20PARABAN%20CLOUD%20FR%20300%20CM-1200.jpg",
+            "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/HARBOUR/HARBOUR%20PARABAN/BUENA%20CALIDAD/HAR01655%20%20%20%20PARABAN%20ALUMINIUM%20FR%20300%20CM-1200.jpg"
         ],
         'CARIBBEAN PARTY': [
             "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01953%20CARIBBEAN%20PARTY%20PALM%20BEACH%20MARSHMALLOW_MANTEL.jpg",
