@@ -19,7 +19,7 @@ import SearchBar from './SearchBar'; // Componente de búsqueda mejorado
 // Importar constantes desde el archivo de constantes
 import { languageOptions, brandLogos, defaultLogo } from "../Constants/constants";
 
-export const Header = () => {
+export const Header = ({ closeModal }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const { itemCount } = useCart();
@@ -113,13 +113,19 @@ export const Header = () => {
     };
 
     const handleLinkClick = (path) => {
+        if (typeof window.closeModalGlobal === 'function') {
+            window.closeModalGlobal();
+        }
+
         setTimeout(() => {
             navigate(path);
         }, 100);
+
         setShowMenu(false);
         setShowBrandsDropdown(false);
         setShowProductsDropdown(false);
     };
+
 
     return (
         <>

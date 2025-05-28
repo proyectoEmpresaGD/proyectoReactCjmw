@@ -10,6 +10,9 @@ function ColeccionesMarcas({ marca }) {
   const [loading, setLoading] = useState(true);
   const imageSetsForMarca = imageSet[marca] || {};
   const navigate = useNavigate();
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
+
 
   useEffect(() => {
     const fetchCollectionsByBrand = async () => {
@@ -17,6 +20,7 @@ function ColeccionesMarcas({ marca }) {
 
       try {
         setLoading(true);
+        setError(null); // limpiamos errores anteriores
 
         const response = await fetch(url);
 
@@ -36,14 +40,18 @@ function ColeccionesMarcas({ marca }) {
           data = data.filter(coleccion => !["RUSTICA", "CARIBEAN PARTY"].includes(coleccion));
         }
 
-
         setColecciones(data);
       } catch (error) {
         console.error(`[ColeccionesMarcas] Error en fetch para marca ${marca}:`, error);
-        setError(error.message || 'Error desconocido');
+
+        if (retryCount < MAX_RETRIES) {
+          console.log(`🔁 Reintentando... (${retryCount + 1}/${MAX_RETRIES})`);
+          setRetryCount(prev => prev + 1);
+        } else {
+          setError(error.message || 'Error desconocido');
+        }
       } finally {
         setLoading(false);
-
       }
     };
 
@@ -52,7 +60,8 @@ function ColeccionesMarcas({ marca }) {
     } else {
       console.warn('[ColeccionesMarcas] No se proporcionó marca al componente.');
     }
-  }, [marca]);
+  }, [marca, retryCount]);
+
 
   const handleCollectionClick = (coleccion) => {
     navigate(`/products?collection=${encodeURIComponent(coleccion)}`);

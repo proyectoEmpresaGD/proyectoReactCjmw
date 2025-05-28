@@ -33,8 +33,8 @@ const Footer = () => {
                     </div>
                 </nav>
             </div>
-            <div className="mt-6 w-full lg:w-3/4">
-                <h3 className="text-lg font-bold text-center lg:text-left">CJM WORLDWIDE</h3>
+            <div className="mt-3 w-full lg:w-full">
+
                 <nav className="mt-4 flex flex-col lg:flex-row items-center justify-between gap-4">
                     <Link
                         to={NAVIGATION_LINKS.about}
@@ -77,7 +77,7 @@ const Footer = () => {
                     </Link>
                 </nav>
             </div>
-            <div className="mt-8">
+            <div className="mt-1">
                 <p className="text-gray-600 text-center">{COPYRIGHT_TEXT}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6 border-t-[2px] mt-6 pt-6 place-items-center">

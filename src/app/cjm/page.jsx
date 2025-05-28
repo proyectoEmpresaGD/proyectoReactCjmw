@@ -51,7 +51,7 @@ function CjmHome() {
                 <Carrusel images={shuffleArray([...images])} />
                 <body className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full pt-3">
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[20%] h-[20%] max-w-full max-h-full " />
+                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png" alt="" className=" lg:w-[10%] lg:h-[10%] w-[20%] h-[20%] max-w-full max-h-full " />
                     </div>
                 </body>
                 <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduCJM} />

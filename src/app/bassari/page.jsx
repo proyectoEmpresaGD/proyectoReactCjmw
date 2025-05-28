@@ -67,7 +67,7 @@ function BassariHome() {
                 <img
                     src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png"
                     alt=""
-                    className="lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full"
+                    className="lg:w-[20%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full"
                 />
             </div>
             <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduBas} />

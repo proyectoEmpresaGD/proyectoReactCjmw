@@ -65,7 +65,7 @@ function HarbourHome() {
                 <NotificationPopup brochures={brochures} />
                 <body className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full pt-3">
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[30%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
+                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
                 </body>
                 <NewCollection images={imagesCollection} titles={titles} productCodes={CodProduHar} />

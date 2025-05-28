@@ -1,50 +1,52 @@
+// src/components/Filtro.jsx
 import { useState } from 'react';
-import { FaFilter } from 'react-icons/fa'; // Icono de filtro
-import FiltroModal from "./modalfiltro";
+import { FaSlidersH } from 'react-icons/fa';
+import FilterPanel from './FilterPanel';
 
-function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [showTooltip, setShowTooltip] = useState(false); // Estado para mostrar el tooltip
-    const [filters, setFilters] = useState({ brands: [], colors: [], collections: [], fabricTypes: [], fabricPatterns: [] });
+export default function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
+    const [isPanelOpen, setIsPanelOpen] = useState(false);
+
+    const [filters, setFilters] = useState({
+        brand: [],
+        color: [],
+        collection: [],
+        fabricType: [],
+        fabricPattern: [],
+        martindale: []
+    });
     const itemsPerPage = 16;
 
-    // Aplicar filtros y obtener los productos filtrados
     const applyFilters = (selectedFilters) => {
         setFilters(selectedFilters);
         fetchFilteredProducts(selectedFilters, page);
     };
 
-    // Fetch de los productos filtrados desde el backend
     const fetchFilteredProducts = async (filters, pageNumber = 1) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(filters)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/products/filter?page=${pageNumber}&limit=${itemsPerPage}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filters)
+                }
+            );
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
+            if (!Array.isArray(data.products)) throw new Error('Expected an array of products');
 
-            if (!Array.isArray(data.products)) {
-                throw new Error('Invalid data format: Expected an array of products');
-            }
-
-            // Obtener imágenes de cada producto
             const productsWithImages = await Promise.all(
                 data.products.map(async (product) => {
-                    const [imageBuena, imageBaja] = await Promise.all([
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`).then(res => res.ok ? res.json() : null),
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`).then(res => res.ok ? res.json() : null)
+                    const [good, low] = await Promise.all([
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Buena`)
+                            .then(r => r.ok ? r.json() : null),
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${product.codprodu}/Baja`)
+                            .then(r => r.ok ? r.json() : null)
                     ]);
-
                     return {
                         ...product,
-                        imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : 'default_buena_image_url',
-                        imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : 'default_baja_image_url'
+                        imageBuena: good ? `https://${good.ficadjunto}` : 'default_buena_image_url',
+                        imageBaja: low ? `https://${low.ficadjunto}` : 'default_baja_image_url'
                     };
                 })
             );
@@ -57,40 +59,28 @@ function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
 
     return (
         <>
-            {/* Botón flotante para abrir el modal de filtros */}
-            <div className="fixed bottom-5 left-5 z-20">
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    onMouseEnter={() => setShowTooltip(true)}  // Mostrar tooltip en hover
-                    onMouseLeave={() => setShowTooltip(false)}  // Ocultar tooltip cuando no hay hover
-                    className="rounded-full p-3 bg-gray-500 text-white shadow-md flex items-center justify-center hover:bg-gray-600"
-                >
-                    <FaFilter className="text-2xl" /> {/* Icono de filtro */}
-                </button>
+            {/* BOTÓN MODERNO */}
+            <button
+                onClick={() => setIsPanelOpen(true)}
+                className="
+          fixed top-1/2 left-4 transform -translate-y-1/2 z-20
+          flex items-center gap-2
+          bg-white px-4 py-2 rounded-full shadow-lg
+          hover:bg-gray-100 focus:ring-2 focus:ring-[#D2B48C] focus:outline-none
+        "
+            >
+                <FaSlidersH className="w-6 h-6 text-gray-700" />
+                <span className="hidden md:block text-gray-700 font-medium">Filtros</span>
+            </button>
 
-                {/* Tooltip solo en pantallas grandes (PC) */}
-                {showTooltip && (
-                    <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded">
-                        Filtrar por
-                    </div>
-                )}
-
-                {/* Etiqueta solo en pantallas pequeñas (Móvil) */}
-                <div className="block lg:hidden text-center text-xs mt-1 text-black">
-                    Filtrar por
-                </div>
-            </div>
-
-            {/* Modal de filtros */}
-            <FiltroModal
-                isOpen={isModalOpen}
-                close={() => setIsModalOpen(false)}
+            {/* PANEL LATERAL */}
+            <FilterPanel
+                isOpen={isPanelOpen}
+                close={() => setIsPanelOpen(false)}
                 applyFilters={applyFilters}
-                currentFilters={filters} // Pasar filtros actuales al modal
-                clearFiltersCallback={clearFiltersCallback} // Pasamos la función de limpiar filtros
+                currentFilters={filters}
+                clearFiltersCallback={clearFiltersCallback}
             />
         </>
     );
 }
-
-export default Filtro;

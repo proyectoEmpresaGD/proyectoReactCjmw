@@ -6,6 +6,7 @@ import { CartProvider } from "../CartContext";
 import ShareButton from './ShareButton';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
+import CarruselMismoEstilo from "./CarruselEstiloProducto"
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 import Lightbox from 'yet-another-react-lightbox';
@@ -13,6 +14,7 @@ import 'yet-another-react-lightbox/styles.css';
 import { FaSearchPlus } from 'react-icons/fa';
 import CryptoJS from 'crypto-js';
 import Footer from "../../components/footer";
+import CarruselColeccion from "./CarruselProductosColeccion"
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -121,10 +123,19 @@ const Modal = ({ isOpen, close, product, alt }) => {
     useEffect(() => {
         if (!isOpen) return;
 
-        // Cierra la modal en cuanto cambia la localización completa (pathname, search o hash)
-        close();
+        const isSearchRoute = location.pathname.includes('products') && location.search.includes('search');
+
+        if (isSearchRoute) {
+            close();
+        }
     }, [location.key]);
 
+    useEffect(() => {
+        window.closeModalGlobal = close; // close es tu función que cierra la modal
+        return () => {
+            delete window.closeModalGlobal; // limpiar al desmontar
+        };
+    }, []);
 
     // Sincronizar selectedProduct cuando se abre la modal
     useEffect(() => {
@@ -959,27 +970,23 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     </div>
 
                     {/* OTROS DISEÑOS DE TELAS */}
-                    {recommendedProducts.length > 0 && (
-                        <div className="mt-10">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-500">Descubre la colección {selectedProduct.coleccion}</h2>
-                            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 hover:cursor-pointer text-black ">
-                                {recommendedProducts.slice(0, 4).map((item) => (
-                                    <div
-                                        onClick={() => handleDetailClick(item)}
-                                        key={item.codprodu}
-                                        className=" rounded-lg  flex flex-col items-center text-center  hover:scale-105 duration-300  transition"
-                                    >
-                                        <img
-                                            src={item.imageBaja}
-                                            alt={item.nombre}
-                                            className="object-cover w-full h-50 rounded-md mb-3"
-                                        />
-                                        <h3 className="font-semibold  duration-300">{item.nombre}</h3>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    {recommendedProducts
+                        .filter(item => item.nombre !== selectedProduct.nombre)
+                        .length > 0 && (
+                            <CarruselColeccion
+                                productos={recommendedProducts.filter(item => item.nombre !== selectedProduct.nombre)}
+                                onProductoClick={handleDetailClick}
+                                titulo={selectedProduct.coleccion}
+                            />
+                        )}
+
+                    {/* <CarruselMismoEstilo
+                        key={selectedProduct.codprodu}
+                        estilo={selectedProduct.estilo}
+                        excludeCodprodu={selectedProduct.nombre}
+                        excludeColeccion={selectedProduct.coleccion}
+                        onProductoClick={handleDetailClick}
+                    /> */}
 
                     {addedToCart && (
                         <div className="fixed bottom-10 right-10 z-50 flex items-center space-x-4 bg-gradient-to-r from-green-500 to-green-700 text-white py-3 px-6 rounded-full shadow-xl transform transition-all duration-300">
