@@ -137,6 +137,8 @@ const Modal = ({ isOpen, close, product, alt }) => {
         };
     }, []);
 
+
+
     // Sincronizar selectedProduct cuando se abre la modal
     useEffect(() => {
         if (isOpen) {
