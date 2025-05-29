@@ -26,8 +26,6 @@ import {
 } from '../../Constants/constants';
 import html2pdf from 'html2pdf.js';
 
-
-
 // ====================================================
 // Función para convertir una imagen (por URL) a Base64
 // ====================================================
@@ -35,7 +33,7 @@ const toBase64 = async (url) => {
     const cleanUrl = decodeURIComponent(url); // Descodifica primero por si ya viene con %20
     const proxyUrl = `${import.meta.env.VITE_API_BASE_URL}/api/proxy?url=${encodeURIComponent(cleanUrl)}`;
     const response = await fetch(proxyUrl);
-    if (!response.ok) throw new Error('Imagen no accesible vía proxy');
+    if (!response.ok) throw new Error('');
     const blob = await response.blob();
     return await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -323,22 +321,31 @@ const Modal = ({ isOpen, close, product, alt }) => {
     // Cargar productos de la misma colección (excluyendo el producto actual)
     useEffect(() => {
         if (!selectedProduct?.coleccion) return;
+
         const fetchCollectionProducts = async () => {
             try {
+
+
                 const response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${selectedProduct.codfamil}`
                 );
                 const data = await response.json();
+
+
                 const filtered = data.filter(
                     (p) =>
                         p.nombre &&
                         p.nombre.trim() !== "" &&
                         p.coleccion === selectedProduct.coleccion &&
-                        p.codprodu !== selectedProduct.codprodu
+                        p.nombre !== selectedProduct.nombre
                 );
+
+
                 const uniqueByName = filtered.filter(
                     (p, index, self) => index === self.findIndex(q => q.nombre === p.nombre)
                 );
+
+
                 if (uniqueByName.length > 0) {
                     const productsWithImages = await Promise.all(
                         uniqueByName.map(async (prod) => {
@@ -365,8 +372,10 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 console.error('Error fetching collection products:', error);
             }
         };
+
         fetchCollectionProducts();
     }, [selectedProduct]);
+
 
     // Sincronizar recommendedProducts con collectionProducts
     useEffect(() => {
@@ -441,7 +450,6 @@ const Modal = ({ isOpen, close, product, alt }) => {
         setTimeout(() => setAddedToCart(false), 2000);
     };
 
-    // Manejar clic en "TE PUEDE INTERESAR" para actualizar el producto actual
     const handleDetailClick = (productItem) => {
         setSelectedProduct(productItem);
         if (modalRef.current) {
@@ -982,13 +990,13 @@ const Modal = ({ isOpen, close, product, alt }) => {
                             />
                         )}
 
-                    {/* <CarruselMismoEstilo
-                        key={selectedProduct.codprodu}
-                        estilo={selectedProduct.estilo}
-                        excludeCodprodu={selectedProduct.nombre}
-                        excludeColeccion={selectedProduct.coleccion}
+                    <CarruselMismoEstilo
+                        estilo={selectedProduct?.estilo}
+                        excludeNombre={selectedProduct?.nombre}
+                        excludeColeccion={selectedProduct?.coleccion}
                         onProductoClick={handleDetailClick}
-                    /> */}
+                    />
+
 
                     {addedToCart && (
                         <div className="fixed bottom-10 right-10 z-50 flex items-center space-x-4 bg-gradient-to-r from-green-500 to-green-700 text-white py-3 px-6 rounded-full shadow-xl transform transition-all duration-300">

@@ -6,7 +6,10 @@ const CarruselMismoEstilo = ({ estilo, excludeNombre, excludeColeccion, onProduc
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!estilo || !excludeNombre || !excludeColeccion) return;
+        if (!estilo || !excludeNombre || !excludeColeccion) {
+            console.warn("Faltan parámetros:", { estilo, excludeNombre, excludeColeccion });
+            return;
+        }
 
         const fetchProductosSimilares = async () => {
             try {
@@ -20,7 +23,6 @@ const CarruselMismoEstilo = ({ estilo, excludeNombre, excludeColeccion, onProduc
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/similarByStyle?${params}`);
 
                 if (!response.ok) {
-                    console.warn("No se encontraron productos similares.");
                     setProductos([]);
                     return;
                 }
@@ -48,7 +50,10 @@ const CarruselMismoEstilo = ({ estilo, excludeNombre, excludeColeccion, onProduc
         return <div className="text-center text-gray-500 mt-8">Cargando productos similares...</div>;
     }
 
-    if (productos.length === 0) return null;
+    if (productos.length === 0) {
+        console.log("No se mostrará el carrusel: productos.length === 0");
+        return null;
+    }
 
     return (
         <div className="mt-12">

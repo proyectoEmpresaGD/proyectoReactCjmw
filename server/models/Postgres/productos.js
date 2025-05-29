@@ -63,6 +63,111 @@ export class ProductModel {
     }
   }
 
+  static async getByCollectionExcluding({ coleccion, excludeCodprodu }) {
+    const exclusion = this.getExcludedNamesClause(3);
+
+    const query = `
+      SELECT DISTINCT ON (p.nombre) p.* FROM productos p
+      WHERE LOWER(p.coleccion) = LOWER($1)
+        AND p.codprodu != $2
+        AND p.nombre IS NOT NULL AND p.nombre != ''
+        AND ${exclusion.clause}
+        AND EXISTS (
+          SELECT 1 FROM imagenesocproductos i
+          WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'Buena'
+        )
+    `;
+
+    const values = [coleccion, excludeCodprodu, ...exclusion.values];
+    const { rows } = await pool.query(query, values);
+
+    const productosConImagen = await Promise.all(
+      rows.map(async (product) => {
+        try {
+          const [imageBuenaObj, imageBajaObj] = await Promise.all([
+            ImagenModel.getByCodproduAndCodclaarchivo({
+              codprodu: product.codprodu,
+              codclaarchivo: 'Buena'
+            }),
+            ImagenModel.getByCodproduAndCodclaarchivo({
+              codprodu: product.codprodu,
+              codclaarchivo: 'Baja'
+            })
+          ]);
+
+          return {
+            ...product,
+            imageBuena: imageBuenaObj?.ficadjunto ? `https://${imageBuenaObj.ficadjunto}` : null,
+            imageBaja: imageBajaObj?.ficadjunto ? `https://${imageBajaObj.ficadjunto}` : null,
+          };
+        } catch (err) {
+          console.error(`❌ Error fetching images for ${product.codprodu}:`, err);
+          return {
+            ...product,
+            imageBuena: null,
+            imageBaja: null
+          };
+        }
+      })
+    );
+
+    return productosConImagen;
+  }
+
+  static async getSimilarByStyle({ estilo, excludeNombre, excludeColeccion, limit = 4 }) {
+    const exclusion = this.getExcludedNamesClause(5); // desplazado por 1 para incluir nuevo índice
+
+    const query = `
+      SELECT DISTINCT ON (p.nombre) p.* FROM productos p
+      WHERE LOWER(p.estilo) = LOWER($1)
+        AND LOWER(p.nombre) != LOWER($2)
+        AND p.coleccion != $3
+        AND ${exclusion.clause}
+        AND EXISTS (
+          SELECT 1 FROM imagenesocproductos i
+          WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'Baja'
+        )
+      LIMIT $4
+    `;
+
+    const values = [estilo, excludeNombre, excludeColeccion, limit, ...exclusion.values];
+
+    const { rows } = await pool.query(query, values);
+
+    // Adjuntar imagenBaja a cada producto
+    const productosConImagen = await Promise.all(
+      rows.map(async (product) => {
+        try {
+          const [imageBuenaObj, imageBajaObj] = await Promise.all([
+            ImagenModel.getByCodproduAndCodclaarchivo({
+              codprodu: product.codprodu,
+              codclaarchivo: 'Buena'
+            }),
+            ImagenModel.getByCodproduAndCodclaarchivo({
+              codprodu: product.codprodu,
+              codclaarchivo: 'Baja'
+            })
+          ]);
+
+          return {
+            ...product,
+            imageBuena: imageBuenaObj?.ficadjunto ? `https://${imageBuenaObj.ficadjunto}` : null,
+            imageBaja: imageBajaObj?.ficadjunto ? `https://${imageBajaObj.ficadjunto}` : null,
+          };
+        } catch (err) {
+          console.error(`❌ Error fetching image for ${product.codprodu}:`, err);
+          return {
+            ...product,
+            imageBaja: null
+          };
+        }
+      })
+    );
+
+    return productosConImagen;
+  }
+
+
   // Obtener producto por ID
   static async getById({ id, res }) {
     const cacheKey = `product:${id}`;
@@ -191,7 +296,6 @@ export class ProductModel {
     return rows;
   }
 
-
   // Obtener filtros de productos
   static async getFilters() {
     try {
@@ -297,7 +401,7 @@ export class ProductModel {
       SELECT DISTINCT UPPER(coleccion) AS coleccion
       FROM productos
       WHERE codmarca = $1 AND nombre IS NOT NULL AND ${exclusion.clause}
-      AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY')
+      AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY', 'HUSKY')
     `;
     const { rows } = await pool.query(query, [brand, ...exclusion.values]);
     return rows.map(row => row.coleccion);

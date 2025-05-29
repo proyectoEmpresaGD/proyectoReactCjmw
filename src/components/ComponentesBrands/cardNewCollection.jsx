@@ -43,7 +43,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
                         onMouseLeave={handleMouseLeave}
                         className={`group relative ${hoveredItem === 0 ? 'opacity-90' : 'opacity-100'} transition duration-500 `}
                     >
-                        <a className="block">
+                        <a className="block cursor-pointer">
                             <img
                                 src={images[0]}
                                 alt=""
@@ -60,7 +60,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
                         onMouseLeave={handleMouseLeave}
                         className={`group relative ${hoveredItem === 1 ? 'opacity-90' : 'opacity-100'} transition duration-500 `}
                     >
-                        <a className="block">
+                        <a className="block cursor-pointer">
                             <img
                                 src={images[1]}
                                 alt=""
@@ -77,7 +77,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
                         onMouseLeave={handleMouseLeave}
                         className={`group relative lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 ${hoveredItem === 2 ? 'opacity-90' : 'opacity-100'} transition duration-500`}
                     >
-                        <a className="block">
+                        <a className="block cursor-pointer">
                             <img
                                 src={images[2]}
                                 alt=""

@@ -131,7 +131,7 @@ export const Header = ({ closeModal }) => {
         <>
             <ScrollToTop />
             <header
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isHovered ||
+                className={`fixed top-0 left-0 bg-white opacity-80 hover:opacity-100 w-full z-50 transition-all duration-500 ${isHovered ||
                     showSearchBar ||
                     showUserDropdown ||
                     showBrandsDropdown ||

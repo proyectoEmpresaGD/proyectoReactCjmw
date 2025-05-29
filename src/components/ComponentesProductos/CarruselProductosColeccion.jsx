@@ -1,23 +1,50 @@
-import { useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-const CarruselColeccion = ({ productos, onProductoClick, titulo = '' }) => {
+const CarruselColeccion = ({
+    productos = [],
+    coleccion = '',
+    excludeCodprodu = '',
+    onProductoClick,
+    titulo = ''
+}) => {
+    const [productosInternos, setProductosInternos] = useState([]);
+    const [loading, setLoading] = useState(true);
     const carouselRef = useRef(null);
 
+    useEffect(() => {
+        const fetchProductos = async () => {
+            if (!coleccion || !excludeCodprodu) return;
+            try {
+                setLoading(true);
+                const params = new URLSearchParams({ coleccion, excludeCodprodu });
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/byCollectionExcluding?${params}`);
+                const data = res.ok ? await res.json() : [];
+                setProductosInternos(data);
+            } catch (err) {
+                console.error("Error cargando productos de la colección:", err);
+                setProductosInternos([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (productos.length === 0 && coleccion && excludeCodprodu) {
+            fetchProductos();
+        } else {
+            setProductosInternos(productos);
+            setLoading(false);
+        }
+    }, [productos, coleccion, excludeCodprodu]);
+
     const scrollLeft = () => {
-        carouselRef.current?.scrollBy({
-            left: -carouselRef.current.offsetWidth,
-            behavior: 'smooth',
-        });
+        carouselRef.current?.scrollBy({ left: -carouselRef.current.offsetWidth, behavior: 'smooth' });
     };
 
     const scrollRight = () => {
-        carouselRef.current?.scrollBy({
-            left: carouselRef.current.offsetWidth,
-            behavior: 'smooth',
-        });
+        carouselRef.current?.scrollBy({ left: carouselRef.current.offsetWidth, behavior: 'smooth' });
     };
 
-    if (!productos || productos.length === 0) return null;
+    if (loading || !productosInternos || productosInternos.length === 0) return null;
 
     return (
         <div className="mt-10">
@@ -33,7 +60,7 @@ const CarruselColeccion = ({ productos, onProductoClick, titulo = '' }) => {
                     className="flex overflow-x-auto space-x-4 scroll-smooth px-2 py-2"
                     style={{ scrollSnapType: 'x mandatory' }}
                 >
-                    {productos.map((item) => (
+                    {productosInternos.map((item) => (
                         <div
                             key={item.codprodu}
                             onClick={() => onProductoClick(item)}
@@ -53,18 +80,10 @@ const CarruselColeccion = ({ productos, onProductoClick, titulo = '' }) => {
                 </div>
 
                 <div className="flex justify-center space-x-10">
-                    <button
-                        onClick={scrollLeft}
-                        className="text-2xl px-2 hover:text-black transition text-gray-500"
-                        aria-label="Scroll left"
-                    >
+                    <button onClick={scrollLeft} className="text-2xl px-2 hover:text-black transition text-gray-500">
                         ←
                     </button>
-                    <button
-                        onClick={scrollRight}
-                        className="text-2xl px-2 hover:text-black transition text-gray-500"
-                        aria-label="Scroll right"
-                    >
+                    <button onClick={scrollRight} className="text-2xl px-2 hover:text-black transition text-gray-500">
                         →
                     </button>
                 </div>

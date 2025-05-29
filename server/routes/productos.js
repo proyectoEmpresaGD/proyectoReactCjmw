@@ -19,6 +19,8 @@ export const createProductRouter = () => {
     productsRouter.get('/getCollectionsByBrand', productController.getCollectionsByBrand.bind(productController));
 
     // Nuevas rutas para búsqueda interna (colecciones, tipos de tela, y patrones)
+    productsRouter.get('/byCollectionExcluding', productController.getByCollectionExcluding.bind(productController));
+    productsRouter.get('/similarByStyle', productController.getSimilarByStyle.bind(productController));
     productsRouter.get('/searchCollections', productController.searchCollections.bind(productController));
     productsRouter.get('/searchFabricTypes', productController.searchFabricTypes.bind(productController));
     productsRouter.get('/searchFabricPatterns', productController.searchFabricPatterns.bind(productController));

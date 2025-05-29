@@ -337,4 +337,55 @@ export class ProductController {
     }
   }
 
+  async getSimilarByStyle(req, res) {
+    try {
+      const { estilo, excludeNombre, excludeColeccion } = req.query;
+
+      if (!estilo || !excludeNombre || !excludeColeccion) {
+        return res.status(400).json({ message: 'Missing required parameters' });
+      }
+
+      const productos = await ProductModel.getSimilarByStyle({
+        estilo,
+        excludeNombre,
+        excludeColeccion,
+      });
+
+      if (!productos || productos.length === 0) {
+        return res.status(404).json({ message: 'No similar products found' });
+      }
+
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+      res.json(productos);
+    } catch (error) {
+      console.error('Error fetching similar products by style:', error);
+      res.status(500).json({ error: 'Error fetching similar products', details: error.message });
+    }
+  }
+
+  async getByCollectionExcluding(req, res) {
+    try {
+      const { coleccion, excludeCodprodu } = req.query;
+
+      if (!coleccion || !excludeCodprodu) {
+        return res.status(400).json({ message: 'Missing required parameters' });
+      }
+
+      const productos = await ProductModel.getByCollectionExcluding({
+        coleccion,
+        excludeCodprodu,
+      });
+
+      if (!productos || productos.length === 0) {
+        return res.status(404).json({ message: 'No products found in the collection' });
+      }
+
+      res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+      res.json(productos);
+    } catch (error) {
+      console.error('Error fetching collection products:', error);
+      res.status(500).json({ error: 'Error fetching collection products', details: error.message });
+    }
+  }
+
 }
