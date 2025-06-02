@@ -722,7 +722,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 </div>
             )}
 
-            {/* Pie de página y QR */}
+
             <div className='absolute bottom-5 right-10 grid grid-cols-2 gap-4 items-center'>
                 <div className='text-[8px] text-end mr-2'>
                     <p>CJM WORLDWIDE S.L</p>
