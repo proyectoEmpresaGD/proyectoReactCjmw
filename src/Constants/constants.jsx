@@ -882,9 +882,9 @@ export const politicasLinks = [
 ];
 
 // Enlaces adicionales
-export const logoSrc = "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logo.png";
+export const logoSrc = "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJMlogo.png";
 export const contactText = "Contáctanos";
-export const copyrightText = "© CJM WORLDWIDE S.L. 2024 - Todos los Derechos Reservados";
+export const copyrightText = "© CJM WORLDWIDE S.L. 2025 - Todos los Derechos Reservados";
 
 //
 //

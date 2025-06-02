@@ -290,7 +290,15 @@ const CardProduct = () => {
     };
 
     const handleCategoryFilter = (category) => {
-        setFilters({});
+        setFilters({}); // Limpia cualquier filtro previo
+
+        if (!category) {
+            // Si el valor es null, redirige a todos los productos
+            navigate(`/products`);
+            return;
+        }
+
+        // Si hay filtro, redirige con el parámetro correspondiente
         if (category === 'OUTDOOR') {
             navigate(`/products?uso=OUTDOOR`);
         } else if (category === 'FR') {
