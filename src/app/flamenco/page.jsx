@@ -19,7 +19,7 @@ function FlamencoHome() {
     const marca = 'FLA';
 
     const images = [
-        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001199%20SEA%20STRIPE%20SPRING%20GREEN.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/FLA001199-SEA-STRIPE-SPRING-GREEN.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001218%20COLONIAL%20DAMASK%20SPRING%20GREEN_01%20.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001248%20HAITI%20ESCARLET_3.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/FLA001273%20%20%20%20VERACRUZ%20PORCELAIN_04.jpg",
