@@ -1,8 +1,10 @@
 import { RiInstagramLine, RiFacebookLine, RiTwitterXFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { LOGO_URL, SOCIAL_MEDIA_LINKS, PDF_LINKS, COPYRIGHT_TEXT, NAVIGATION_LINKS } from "../Constants/constants";
+import { useMarca } from './MarcaContext';
 
 const Footer = () => {
+    const { setMarcaActiva } = useMarca();
     return (
         <footer className="bg-gray-300 text-gray-900 p-6 xl:p-12">
             <div className="w-full border-b border-gray-500 pb-6">
@@ -16,7 +18,7 @@ const Footer = () => {
                     <div className="flex justify-center mb-4 lg:mb-0">
                         <a href="#" className="flex items-center">
                             <div className="rounded-full">
-                                <img src={LOGO_URL} alt="Logo" className="w-20 h-20 object-contain" />
+                                <img src={LOGO_URL} onClick={() => setMarcaActiva(null)} alt="Logo" className="w-20 h-20 object-contain" />
                             </div>
                         </a>
                     </div>
@@ -98,7 +100,7 @@ const Footer = () => {
                     </a>
                     <Link
                         to={NAVIGATION_LINKS.contact}
-                        className="font-semibold rounded-md px-3 py-1 transition-colors text-white hover:bg-white bg-black hover:text-black transform hover:scale-105 inline-block"
+                        className="text-black mt-2 lg:mt-0 hover:text-primary hover:underline transition-colors duration-300"
                     >
                         Contáctanos
                     </Link>

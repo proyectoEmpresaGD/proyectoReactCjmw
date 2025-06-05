@@ -46,7 +46,7 @@ const SubMenuCarousel = ({ onFilterClick, type, activeCategory }) => {
                     key={index}
                     onClick={() => handleFilterClick(index)}
                     className={`px-5 py-2 text-md font-semibold transition-all duration-300 whitespace-nowrap rounded-md 
-                        ${activeCategory === originalCategories[index] ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-blue-100'}`}
+                        ${activeCategory === originalCategories[index] ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-700 hover:bg-blue-100'}`}
                     aria-label={`Filtrar por ${customName}`}
                 >
                     {customName}

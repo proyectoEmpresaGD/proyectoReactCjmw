@@ -141,7 +141,7 @@ const CarruselHome = ({ images, texts, names, routes }) => {
                         {names[currentSlide]}
                     </span>
 
-                    {[...images, 'footer'].map((_, index) => (
+                    {[...images].map((_, index) => (
                         <div
                             key={index}
                             className={`w-3 h-3 rounded-full transition-colors duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/50'}`}

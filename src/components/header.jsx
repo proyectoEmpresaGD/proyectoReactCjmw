@@ -47,6 +47,9 @@ export const Header = ({ closeModal }) => {
     const productsRef = useRef(null);
     const { marcaActiva } = useMarca();
 
+    const { setMarcaActiva } = useMarca();
+
+
     const logoSrc =
         marcaActiva && brandLogos[marcaActiva]
             ? brandLogos[marcaActiva]
@@ -161,10 +164,11 @@ export const Header = ({ closeModal }) => {
                         </button>
                         <Link
                             to="/"
+                            onClick={() => setMarcaActiva(null)}
                             className="flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg"
                         >
                             <img
-                                key={logoSrc} // ✅ Fuerza re-render cuando cambia
+                                key={logoSrc}
                                 className="h-9 lg:h-10 xl:h-14"
                                 src={logoSrc}
                                 alt="Logo"

@@ -307,7 +307,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
                 <footer className="sticky bottom-0 bg-white p-4 border-t">
                     <button
                         onClick={handleApply}
-                        className="w-full py-2 bg-[#26659E] hover:bg-[#2169AB] text-white rounded-lg font-semibold transition"
+                        className="w-full py-2 bg-[#26659E] hover:hover:bg-blue-100 hover:text-black text-white rounded-lg font-semibold transition"
                     >
                         Aplicar Filtros
                     </button>
