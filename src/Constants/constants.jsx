@@ -796,7 +796,7 @@ export const usoImages = {
     "RESISTENCIA MODERADA SOL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/RESISTENCIA%20MODERADA%20AL%20SOL.jpg",
     "SEPARABLE EN SECO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/SEPARABLE%20EN%20SECO.jpg",
     "ADHESIVO SOBRE EL PAPEL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg",
-    "100% OPCIDAD": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20CON%20PSD/ICONOS%20TRANPARENCIA/Opaco.jpg',
+    "100% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20CON%20PSD/ICONOS%20TRANPARENCIA/Opaco.jpg',
     "90% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20CON%20PSD/ICONOS%20TRANPARENCIA/Semi-opaco.jpg'
 };
 
