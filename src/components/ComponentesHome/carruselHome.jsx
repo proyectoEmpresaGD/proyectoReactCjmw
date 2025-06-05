@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FooterHome from '../ComponentesUsages/footerHome';
 
 const CarruselHome = ({ images, texts, names, routes }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -24,7 +23,7 @@ const CarruselHome = ({ images, texts, names, routes }) => {
             setIsScrolling(true);
 
             setCurrentSlide((prevSlide) => {
-                if (direction === 1 && prevSlide < images.length) {
+                if (direction === 1 && prevSlide < images.length - 1) {
                     return prevSlide + 1;
                 } else if (direction === -1 && prevSlide > 0) {
                     return prevSlide - 1;
@@ -74,7 +73,7 @@ const CarruselHome = ({ images, texts, names, routes }) => {
             const threshold = 50;
 
             if (distanceY > threshold) {
-                setCurrentSlide((prevSlide) => (prevSlide < images.length ? prevSlide + 1 : prevSlide));
+                setCurrentSlide((prevSlide) => (prevSlide < images.length - 1 ? prevSlide + 1 : prevSlide));
             } else if (distanceY < -threshold) {
                 setCurrentSlide((prevSlide) => (prevSlide > 0 ? prevSlide - 1 : prevSlide));
             }
@@ -114,21 +113,21 @@ const CarruselHome = ({ images, texts, names, routes }) => {
                     <div key={index} className="h-screen w-full relative">
                         <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover" />
                         <div className="relative  bottom-[65%] mx-auto text-center xl:w-[25%] lg:w-[25%] w-[70%] p-4">
-                            <img 
-                                src={texts[index]} 
-                                alt="" 
+                            <img
+                                src={texts[index]}
+                                alt=""
                                 onClick={() => handleClick(index)} // Manejador de clic para navegar
                                 className="cursor-pointer" // Añadir cursor de puntero para indicar que es clickeable
-                                style={names[index] === "CJM" ? { width: '350px', height: 'auto' } : { width: '550px', height: 'auto' }}
+                                style={names[index] === "CJM" ? { width: '250px', height: 'auto', margin: "auto" } : { width: '550px', height: 'auto' }}
                             />
                         </div>
                     </div>
                 ))}
 
-                {/* Último slide que muestra el Footer */}
+                {/* Último slide que muestra el Footer
                 <div className="h-screen w-full relative">
-                    <FooterHome /> {/* Aquí renderizas tu componente Footer */}
-                </div>
+                    <FooterHome /> 
+                </div> */}
             </div>
 
             {/* Nombre del slide actual en formato móvil */}

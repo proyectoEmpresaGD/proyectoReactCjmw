@@ -63,7 +63,7 @@ export default function Filtro({ setFilteredProducts, page, clearFiltersCallback
             <button
                 onClick={() => setIsPanelOpen(true)}
                 className="
-          fixed top-1/2 left-4 transform -translate-y-1/2 z-20
+          fixed top-1/4 left-4 transform -translate-y-1/2 z-20
           flex items-center gap-2
           bg-white px-4 py-2 rounded-full shadow-lg
           hover:bg-gray-100 focus:ring-2 focus:ring-[#D2B48C] focus:outline-none

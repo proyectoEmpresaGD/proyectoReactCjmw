@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { defaultImageUrlModalProductos } from '../../Constants/constants';
 
 const CarruselMismoEstilo = ({ estilo, excludeNombre, excludeColeccion, onProductoClick }) => {
     const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const prevEstiloRef = useRef();
+
 
     useEffect(() => {
         if (!estilo || !excludeNombre || !excludeColeccion) {
@@ -11,9 +13,17 @@ const CarruselMismoEstilo = ({ estilo, excludeNombre, excludeColeccion, onProduc
             return;
         }
 
+        // 🧠 Si el estilo no cambió, no recargar
+        if (estilo === prevEstiloRef.current) return;
+
+        prevEstiloRef.current = estilo; // actualiza referencia del estilo
+
+        // 🧹 Limpia antes de recargar
+        setProductos([]);
+        setLoading(true);
+
         const fetchProductosSimilares = async () => {
             try {
-                setLoading(true);
                 const params = new URLSearchParams({
                     estilo,
                     excludeNombre,
@@ -45,6 +55,7 @@ const CarruselMismoEstilo = ({ estilo, excludeNombre, excludeColeccion, onProduc
 
         fetchProductosSimilares();
     }, [estilo, excludeNombre, excludeColeccion]);
+
 
     if (loading) {
         return <div className="text-center text-gray-500 mt-8">Cargando productos similares...</div>;

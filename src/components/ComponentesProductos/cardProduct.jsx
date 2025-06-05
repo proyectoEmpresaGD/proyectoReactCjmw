@@ -374,6 +374,7 @@ const CardProduct = () => {
                     isOpen={modalOpen}
                     close={() => setModalOpen(false)}
                     product={selectedProduct}
+                    onApplyFilters={handleFilteredProducts}
                 />
             )}
         </div>
@@ -423,7 +424,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
                 <button
                     key={num}
                     onClick={() => onPageChange(num)}
-                    className={`px-3 py-1 rounded-full transition-colors duration-200 ${num === currentPage ? 'bg-[#D2B48C] text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+                    className={`px-3 py-1 rounded-full transition-colors duration-200 ${num === currentPage ? 'bg-[#26659E] hover:bg-[#2169AB] text-white' : 'text-gray-600'}`}
                 >
                     {num}
                 </button>

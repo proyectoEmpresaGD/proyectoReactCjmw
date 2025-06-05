@@ -5,33 +5,60 @@ import { LOGO_URL, SOCIAL_MEDIA_LINKS, PDF_LINKS, COPYRIGHT_TEXT, NAVIGATION_LIN
 const Footer = () => {
     return (
         <footer className="bg-gray-300 text-gray-900 p-6 xl:p-12">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-4 border-b border-gray-500 pb-6">
-                {/* Logo */}
-                <div className="w-full lg:w-1/6 flex justify-center lg:justify-start">
-                    <a href="#" className="flex items-center">
-                        <div className="bg-white rounded-full p-2">
-                            <img src={LOGO_URL} alt="Logo" className="w-16 h-16 object-contain" />
+            <div className="w-full border-b border-gray-500 pb-6">
+                {/* Contenedor en columnas en móvil, fila en escritorio */}
+                <div className="flex flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-between">
+
+                    {/* Espacio falso solo visible en escritorio */}
+                    <div className="hidden lg:block w-[120px]"></div>
+
+                    {/* Logo centrado siempre */}
+                    <div className="flex justify-center mb-4 lg:mb-0">
+                        <a href="#" className="flex items-center">
+                            <div className="rounded-full">
+                                <img src={LOGO_URL} alt="Logo" className="w-20 h-20 object-contain" />
+                            </div>
+                        </a>
+                    </div>
+
+                    {/* Redes sociales debajo del logo en móvil, derecha en escritorio */}
+                    <nav className="flex items-center justify-center gap-4">
+                        <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
+                            <a href={SOCIAL_MEDIA_LINKS.instagram} className="block text-white">
+                                <RiInstagramLine size={18} />
+                            </a>
                         </div>
-                    </a>
+                        <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
+                            <a href={SOCIAL_MEDIA_LINKS.facebook} className="block text-white">
+                                <RiFacebookLine size={18} />
+                            </a>
+                        </div>
+                        <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
+                            <a href={SOCIAL_MEDIA_LINKS.twitter} className="block text-white">
+                                <RiTwitterXFill size={18} />
+                            </a>
+                        </div>
+                    </nav>
+
                 </div>
-                {/* Redes sociales */}
-                <nav className="flex items-center gap-4">
-                    <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
-                        <a href={SOCIAL_MEDIA_LINKS.instagram} className="block text-white">
-                            <RiInstagramLine size={20} />
-                        </a>
-                    </div>
-                    <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
-                        <a href={SOCIAL_MEDIA_LINKS.facebook} className="block text-white">
-                            <RiFacebookLine size={20} />
-                        </a>
-                    </div>
-                    <div className="bg-gray-700 rounded-full p-2 transition-colors hover:bg-gray-600">
-                        <a href={SOCIAL_MEDIA_LINKS.twitter} className="block text-white">
-                            <RiTwitterXFill size={20} />
-                        </a>
-                    </div>
-                </nav>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6 border-b-[2px] pb-4 mt-6 pt-6 place-items-center">
+                <Link to="/cjmHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="logo CJM" className="w-auto h-16" />
+                </Link>
+                <Link to="/arenaHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png" alt="logo ARENA" className="w-auto h-16" />
+                </Link>
+                <Link to="/flamencoHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png" alt="logo FLAMENCO" className="w-auto h-16" />
+                </Link>
+                <Link to="/harbourHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png" alt="logo HARBOUR" className="w-auto h-16" />
+                </Link>
+                <Link to="/bassariHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer md:col-span-2 md:justify-self-center lg:col-span-1">
+                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="logo BASSARI" className="w-auto h-16" />
+                </Link>
             </div>
             <div className="mt-3 w-full lg:w-full">
 
@@ -71,32 +98,17 @@ const Footer = () => {
                     </a>
                     <Link
                         to={NAVIGATION_LINKS.contact}
-                        className="font-semibold rounded-md px-6 py-2 transition-colors text-white hover:bg-white bg-black hover:text-black transform hover:scale-105 inline-block"
+                        className="font-semibold rounded-md px-3 py-1 transition-colors text-white hover:bg-white bg-black hover:text-black transform hover:scale-105 inline-block"
                     >
                         Contáctanos
                     </Link>
+
                 </nav>
             </div>
             <div className="mt-1">
                 <p className="text-gray-600 text-center">{COPYRIGHT_TEXT}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6 border-t-[2px] mt-6 pt-6 place-items-center">
-                <Link to="/cjmHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="logo CJM" className="w-auto h-16" />
-                </Link>
-                <Link to="/arenaHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png" alt="logo ARENA" className="w-auto h-16" />
-                </Link>
-                <Link to="/flamencoHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png" alt="logo FLAMENCO" className="w-auto h-16" />
-                </Link>
-                <Link to="/harbourHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png" alt="logo HARBOUR" className="w-auto h-16" />
-                </Link>
-                <Link to="/bassariHome" className="transform hover:scale-105 transition-transform duration-300 cursor-pointer md:col-span-2 md:justify-self-center lg:col-span-1">
-                    <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="logo BASSARI" className="w-auto h-16" />
-                </Link>
-            </div>
+
 
 
         </footer>

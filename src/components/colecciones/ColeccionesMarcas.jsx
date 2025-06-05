@@ -15,53 +15,49 @@ function ColeccionesMarcas({ marca }) {
 
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchCollectionsByBrand = async () => {
       const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/getCollectionsByBrand?brand=${marca}`;
-
       try {
         setLoading(true);
-        setError(null); // limpiamos errores anteriores
+        setError(null);
 
         const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
         let data = await response.json();
 
+        // Filtrados según marca
         if (marca === "CJM") {
           data = data.filter(coleccion => coleccion !== "REVOLTOSO");
         } else if (marca === "ARE") {
           data = data.filter(coleccion => !["VELVETY", "LIGHTHOUSE"].includes(coleccion));
         } else if (marca === "FLA") {
-          data = data.filter(coleccion => coleccion !== "REVOLTOSO VOL II");
           data = data.filter(coleccion => !["REVOLTOSO VOL II", "LUXURY DRAPES"].includes(coleccion));
         } else if (marca === "HAR") {
           data = data.filter(coleccion => !["RUSTICA", "CARIBEAN PARTY", "RIVIERA"].includes(coleccion));
         }
 
-        setColecciones(data);
+        if (isMounted) setColecciones(data);
       } catch (error) {
         console.error(`[ColeccionesMarcas] Error en fetch para marca ${marca}:`, error);
-
-        if (retryCount < MAX_RETRIES) {
-          console.log(`🔁 Reintentando... (${retryCount + 1}/${MAX_RETRIES})`);
-          setRetryCount(prev => prev + 1);
-        } else {
-          setError(error.message || 'Error desconocido');
+        if (retryCount < MAX_RETRIES && isMounted) {
+          setTimeout(() => setRetryCount(prev => prev + 1), 1000); // espera antes de reintentar
+        } else if (isMounted) {
+          setError(error.message);
         }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
-    if (marca) {
-      fetchCollectionsByBrand();
-    } else {
-      console.warn('[ColeccionesMarcas] No se proporcionó marca al componente.');
-    }
+    if (marca) fetchCollectionsByBrand();
+    return () => {
+      isMounted = false;
+    };
   }, [marca, retryCount]);
+
 
 
   const handleCollectionClick = (coleccion) => {

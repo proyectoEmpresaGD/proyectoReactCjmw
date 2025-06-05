@@ -15,6 +15,7 @@ import ScrollToTop from './ScrollToTop';// eslint-disable-next-line
 import Select from 'react-select';
 import 'tailwindcss/tailwind.css';// importing tailwindcss
 import SearchBar from './SearchBar'; // Componente de búsqueda mejorado
+import { useMarca } from './MarcaContext';
 
 // Importar constantes desde el archivo de constantes
 import { languageOptions, brandLogos, defaultLogo } from "../Constants/constants";
@@ -44,8 +45,12 @@ export const Header = ({ closeModal }) => {
     const menuRef = useRef(null);
     const brandsRef = useRef(null);
     const productsRef = useRef(null);
+    const { marcaActiva } = useMarca();
 
-    const logoSrc = brandLogos[location.pathname] || defaultLogo;
+    const logoSrc =
+        marcaActiva && brandLogos[marcaActiva]
+            ? brandLogos[marcaActiva]
+            : brandLogos[location.pathname] || defaultLogo;
 
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);
@@ -131,7 +136,7 @@ export const Header = ({ closeModal }) => {
         <>
             <ScrollToTop />
             <header
-                className={`fixed top-0 left-0 bg-white opacity-80 hover:opacity-100 w-full z-50 transition-all duration-500 ${isHovered ||
+                className={`fixed top-0 left-0 bg-white opacity-80 hover:opacity-100 w-full z-40 transition-all duration-500 ${isHovered ||
                     showSearchBar ||
                     showUserDropdown ||
                     showBrandsDropdown ||
@@ -158,7 +163,13 @@ export const Header = ({ closeModal }) => {
                             to="/"
                             className="flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg"
                         >
-                            <img className="h-9 lg:h-10 xl:h-14" src={logoSrc} alt="Logo" />
+                            <img
+                                key={logoSrc} // ✅ Fuerza re-render cuando cambia
+                                className="h-9 lg:h-10 xl:h-14"
+                                src={logoSrc}
+                                alt="Logo"
+                            />
+
                         </Link>
                     </div>
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">

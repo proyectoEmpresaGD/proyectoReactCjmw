@@ -49,7 +49,7 @@ export const PDF_LINKS = {
 };
 
 // Texto del pie de página
-export const COPYRIGHT_TEXT = "© CJM WORLDWIDE S.L. 2024 - Todos los Derechos Reservados";
+export const COPYRIGHT_TEXT = "© CJM WORLDWIDE S.L. 2025 - Todos los Derechos Reservados";
 
 // Rutas de navegación interna
 export const NAVIGATION_LINKS = {
@@ -80,6 +80,11 @@ export const brandLogos = {
     '/cjmHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png',
     '/flamencoHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoFlamenco.png',
     '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png',
+    HAR: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoHarbour.png",
+    ARE: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoArena.png",
+    CJM: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png",
+    FLA: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoFlamenco.png",
+    BAS: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png",
 };
 
 // Logo predeterminado
@@ -774,6 +779,7 @@ export const mantenimientoImages = {
     "EASYCLEAN": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',
     "USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Usar%20secadora.jpg',
     "SECADO VERTICAL": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Secado%20vertical.jpg',
+
 };
 
 export const usoImages = {
@@ -790,6 +796,8 @@ export const usoImages = {
     "RESISTENCIA MODERADA SOL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/RESISTENCIA%20MODERADA%20AL%20SOL.jpg",
     "SEPARABLE EN SECO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/SEPARABLE%20EN%20SECO.jpg",
     "ADHESIVO SOBRE EL PAPEL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg",
+    "100% OPCIDAD": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20CON%20PSD/ICONOS%20TRANPARENCIA/Opaco.jpg',
+    "90% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20CON%20PSD/ICONOS%20TRANPARENCIA/Semi-opaco.jpg'
 };
 
 export const marcasMap = {

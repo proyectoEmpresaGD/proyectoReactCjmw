@@ -15,10 +15,12 @@ import Usages from './app/usages/page.jsx'
 import GeocodingService from "./components/ComponentesContact/map.jsx"
 import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
 import Contract from "./app/contract/PaginaContract.jsx"
+import { MarcaProvider } from './components/MarcaContext.jsx'
 
 function App() {
   return (
     <>
+
       <ScrollToTop />
       <CookieConsent />
       <Routes>

@@ -6,7 +6,9 @@ import { CartProvider } from "../CartContext";
 import ShareButton from './ShareButton';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
+import Filtro from '../../app/products/buttonFiltro';
 import CarruselMismoEstilo from "./CarruselEstiloProducto"
+import { useMarca } from '../MarcaContext'
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 import Lightbox from 'yet-another-react-lightbox';
@@ -71,7 +73,7 @@ const getLogoBase64 = async codmarca => {
     return url ? await toBase64(url) : '';
 };
 
-const Modal = ({ isOpen, close, product, alt }) => {
+const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     // Función para obtener el nombre de la marca a partir del codmarca (lógica antigua)
     const getNombreMarca = (codmarca) => {
         return marcasMap[codmarca] || "Marca Desconocida";
@@ -96,10 +98,13 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const [productsForCarousel, setProductsForCarousel] = useState([]);
     const [anchoOptions, setAnchoOptions] = useState([]);
     const [selectedAncho, setSelectedAncho] = useState('');
-    const IconoDestacables = ["FR", "OUTDOOR", "EASYCLEAN", "IMO"];
+    const IconoDestacables = ["FR", "OUTDOOR", "EASYCLEAN", "IMO", "90% OPACIDAD", "100% OPACIDAD"];
+    const { setMarcaActiva } = useMarca();
     const [collectionProducts, setCollectionProducts] = useState([]);
     const [currentRecIndex, setCurrentRecIndex] = useState(0);
+    const prevColeccionRef = useRef();
     const [recommendedProducts, setRecommendedProducts] = useState([]);
+    const prevNombreRef = useRef();
     // Mapas de iconos en Base64 para usos, mantenimiento y marcas
     const [usoBase64, setUsoBase64] = useState({});
     const [mantBase64, setMantBase64] = useState({});
@@ -202,6 +207,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
         if (url) toBase64(url).then(setPdfProductImage).catch(console.error);
     }, [selectedProduct]);
 
+    useEffect(() => {
+        if (!selectedProduct) return;
+
+        if (selectedProduct.codmarca) {
+            const cod = selectedProduct.codmarca.toUpperCase();
+            console.log("🟢 Estableciendo marca activa:", cod); // 👈 Añade esto
+            setMarcaActiva(cod);
+        }
+    }, [selectedProduct]);
+
 
     // Cargar imagen principal en la modal
     useEffect(() => {
@@ -276,13 +291,24 @@ const Modal = ({ isOpen, close, product, alt }) => {
     // Cargar productos relacionados (mismo nombre y familia)
     useEffect(() => {
         if (!selectedProduct) return;
+        if (selectedProduct.nombre === prevNombreRef.current) return;
+
+        prevNombreRef.current = selectedProduct.nombre;
+
+        setRelatedProducts([]);
+        setProductsForCarousel([]);
+        setAnchoOptions([]);
+        setSelectedAncho('');
+
         const fetchRelatedProducts = async () => {
             try {
                 const response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${selectedProduct.codfamil}`
                 );
                 const data = await response.json();
-                const allProducts = data.filter((p) => p.nombre === selectedProduct.nombre);
+
+                const allProducts = data.filter(p => p.nombre === selectedProduct.nombre);
+
                 const uniqueProductsForCarousel = allProducts.reduce((unique, item) => {
                     if (!unique.some(p => p.tonalidad === item.tonalidad)) {
                         unique.push(item);
@@ -290,6 +316,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     return unique;
                 }, []);
                 setProductsForCarousel(uniqueProductsForCarousel);
+
                 const productsWithImages = await Promise.all(
                     allProducts.map(async (prod) => {
                         const [imageBuena, imageBaja] = await Promise.all([
@@ -306,6 +333,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     })
                 );
                 setRelatedProducts(productsWithImages);
+
                 const uniqueAnchos = [...new Set(allProducts.map(p => p.ancho))];
                 if (uniqueAnchos.length > 0) {
                     setAnchoOptions(uniqueAnchos);
@@ -315,6 +343,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                 console.error('Error fetching related products:', error);
             }
         };
+
         fetchRelatedProducts();
     }, [selectedProduct]);
 
@@ -322,15 +351,19 @@ const Modal = ({ isOpen, close, product, alt }) => {
     useEffect(() => {
         if (!selectedProduct?.coleccion) return;
 
+        if (selectedProduct.coleccion === prevColeccionRef.current) return;
+
+        prevColeccionRef.current = selectedProduct.coleccion;
+
+        setCollectionProducts([]);
+        setCurrentRecIndex(0);
+
         const fetchCollectionProducts = async () => {
             try {
-
-
                 const response = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${selectedProduct.codfamil}`
                 );
                 const data = await response.json();
-
 
                 const filtered = data.filter(
                     (p) =>
@@ -340,11 +373,9 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         p.nombre !== selectedProduct.nombre
                 );
 
-
                 const uniqueByName = filtered.filter(
                     (p, index, self) => index === self.findIndex(q => q.nombre === p.nombre)
                 );
-
 
                 if (uniqueByName.length > 0) {
                     const productsWithImages = await Promise.all(
@@ -377,6 +408,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
     }, [selectedProduct]);
 
 
+
     // Sincronizar recommendedProducts con collectionProducts
     useEffect(() => {
         setRecommendedProducts(collectionProducts);
@@ -405,11 +437,13 @@ const Modal = ({ isOpen, close, product, alt }) => {
             ]);
             const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
             const bajaImage = bajaResponse.ok ? await bajaResponse.json() : null;
+
             const updatedProduct = {
                 ...colorProduct,
                 imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : '',
                 imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : ''
             };
+
             setSelectedProduct(updatedProduct);
             setSelectedImage(updatedProduct.imageBuena || updatedProduct.imageBaja);
             setImageLoaded(false);
@@ -421,19 +455,21 @@ const Modal = ({ isOpen, close, product, alt }) => {
         }
     };
 
+
     const handleClose = () => {
         close();
+        setMarcaActiva(null); // ✅ Limpia el logo de marca activa
 
         const hash = window.location.hash;
         const hasHashParams = hash.startsWith("#/products") && (hash.includes("pid=") || hash.includes("productId="));
         const searchParams = new URLSearchParams(location.search);
         const hasQueryParams = searchParams.has("pid") || searchParams.has("productId");
 
-
         if (hasHashParams || hasQueryParams) {
             navigate("/products", { replace: true });
         }
     };
+
 
 
     const handleAddToCart = () => {
@@ -517,14 +553,14 @@ const Modal = ({ isOpen, close, product, alt }) => {
     const getDireccionImage = (direccion) => {
         if (!direccion || !direccionLogos[direccion]) return null;
         return (
-            <div className='flex mt-2'>
+            <div className='flex'>
                 <img
                     src={direccionLogos[direccion]}
                     alt={direccion}
                     className={direccion === "RAILROADED" ? "w-8 h-6" : "w-6 h-7"}
                     onClick={() => navigate('/usages')}
                 />
-                <span className='ml-2'>{direccion}</span>
+                <span className='ml-2 mt-[2px]'>{direccion}</span>
             </div>
         );
     };
@@ -538,7 +574,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
             .map(node => node.textContent.trim())
             .filter(m => IconoDestacables.includes(m) && mantenimientoImages[m]);
         return mantenimientoList.map((m, index) => (
-            <div key={index} className="flex items-center mr-4 mb-2">
+            <div key={index} className="flex items-center mr-4">
                 <img
                     src={mantenimientoImages[m]}
                     alt={m}
@@ -556,7 +592,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
             .map((u) => u.trim())
             .filter((u) => IconoDestacables.includes(u) && usoImages[u]);
         return usoList.map((uso, index) => (
-            <div key={index} className="flex items-center mr-4 mb-2">
+            <div key={index} className="flex items-center mr-4 ">
                 <img
                     src={usoImages[uso]}
                     alt={uso}
@@ -766,6 +802,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
                     className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8 relative"
                     onClick={(e) => e.stopPropagation()}
                 >
+                    <Filtro
+                        setFilteredProducts={(filteredProducts, selectedFilters) => {
+                            if (onApplyFilters) {
+                                onApplyFilters(filteredProducts, selectedFilters);
+                            }
+                            close();
+                        }}
+                        page={1}
+                    />
+
                     <button
                         onClick={handleClose}
                         className="absolute top-[-15px] right-4 md:right-4 md:top-4 text-black font-bold text-xl hover:opacity-70"
@@ -916,6 +962,7 @@ const Modal = ({ isOpen, close, product, alt }) => {
                         <button onClick={handleGeneratePDF} className=" pb-2 pl-2">
                             <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/archivo.png" alt="" className='h-9 hover:scale-110 transition-[2]' />
                         </button>
+
                     </div>
 
 
@@ -970,12 +1017,16 @@ const Modal = ({ isOpen, close, product, alt }) => {
                                 )}
                             </div>
                         </div>
-                        {usoMantenimientoIcons.length > 0 && (
-                            <div className="flex flex-wrap mt-4">
-                                {usoMantenimientoIcons}
+                        {(usoMantenimientoIcons.length > 0 || selectedProduct?.direcciontela) && (
+                            <div className="flex flex-wrap items-center gap-x-6 mt-4">
+                                {usoMantenimientoIcons.length > 0 && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {usoMantenimientoIcons}
+                                    </div>
+                                )}
+                                {getDireccionImage(selectedProduct?.direcciontela)}
                             </div>
                         )}
-                        {getDireccionImage(selectedProduct?.direcciontela)}
 
                     </div>
 

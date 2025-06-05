@@ -1,5 +1,7 @@
 // src/components/FilterPanel.jsx
 import { useState, useEffect } from 'react';
+import { useMarca } from '../../components/MarcaContext'; // ajusta la ruta si es diferente
+
 import {
     FaTimes,
     FaSearch,
@@ -16,7 +18,7 @@ const BRAND_NAMES = {
     BAS: 'Bassari'
 };
 const TIPOS_INVALIDOS = ["JAQUARD", "TEJIDO ", "VISILLO FR", "TERCIOPELO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
-const DIBUJOS_INVALIDOS = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM", "RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO", "TERCIOPELO", "PANA"];
+const DIBUJOS_INVALIDOS = ["TELAS CON FLORES", "BLACKOUT", "WALLCOVERING", "TERCIOPELO FR", "RAFIA", "KILM", "RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO", "TERCIOPELO", "PANA"];
 const COLEC_INVALIDAS = ["MARRAKECH", "MARRAKESH"];
 const ALLOWED_COLORS = ['GRIS', 'NEGRO', 'VERDE', 'BEIGE', 'BLANCO', 'MARRON', 'AZUL', 'AMARILLO', 'NARANJA', 'ROJO', 'MORADO', 'VIOLETA', 'ROSA'];
 
@@ -29,10 +31,10 @@ const COLOR_MAP = {
 
 // Rango fijos para Martindale
 const MARTINDALE_RANGES = [
-    { key: '0-20000', label: 'Uso cortinaje de 0 a 20 000' },
-    { key: '20000-50000', label: 'Tapiceria decorativa de 20 000 a 50 000' },
-    { key: '50000-100000', label: 'tapiceria residencial de 50 000 a 100 000' },
-    { key: '100000+', label: 'tapieria alto transito de 100 000 >' }
+    { key: '0-20000', label: 'Cortinaje: de 0 a 20 000 ciclos' },
+    { key: '20000-50000', label: 'Tapicería decorativa: de 20 000 a 50 000 ciclos' },
+    { key: '50000-100000', label: 'Tapicería residencial: de 50 000 a 100 000 ciclos' },
+    { key: '100000+', label: 'Tapicería alto transito: de 100 000 a Ꝏ ciclos' }
 ];
 
 export default function FilterPanel({ isOpen, close, applyFilters, currentFilters }) {
@@ -43,7 +45,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
     const [typesSel, setTypesSel] = useState(currentFilters?.fabricType || []);
     const [patternsSel, setPatternsSel] = useState(currentFilters?.fabricPattern || []);
     const [martSel, setMartSel] = useState(currentFilters?.martindale || []);
-
+    const { setMarcaActiva } = useMarca();
     // opciones dinámicas
     const [brands, setBrands] = useState([]);
     const [collections, setCollections] = useState([]);
@@ -139,7 +141,6 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
     };
 
     const handleApply = () => {
-        // > Convertir rangos seleccionados en valores numéricos
         let chosen = [];
         martSel.forEach(key => {
             const [minStr, maxStr] = key.split('-');
@@ -149,7 +150,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
                 if (v >= min && v <= max) chosen.push(v);
             });
         });
-        chosen = Array.from(new Set(chosen));  // eliminar duplicados
+        chosen = Array.from(new Set(chosen));
 
         applyFilters({
             brand: brandsSel,
@@ -157,10 +158,14 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
             collection: collectionsSel,
             fabricType: typesSel,
             fabricPattern: patternsSel,
-            martindale: chosen    // ahora números reales
+            martindale: chosen
         });
+
+        setMarcaActiva(null);
         close();
+        clearAll();
     };
+
 
     if (!isOpen) return null;
 
@@ -168,7 +173,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
         <>
             {/* backdrop */}
             <div onClick={close}
-                className="fixed inset-0 bg-black bg-opacity-50 z-40" />
+                className="fixed inset-0 bg-black bg-opacity-50 z-50" />
 
             <aside className="fixed top-0 left-0 h-screen w-80 bg-white shadow-lg z-50 flex flex-col">
                 {/* header */}
@@ -187,7 +192,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
                             ].flat().length} seleccionados
                         </span>
                         <button onClick={clearAll}
-                            className="text-sm text-[#D2B48C] flex items-center hover:underline">
+                            className="text-sm text-[#26659E] flex items-center hover:underline">
                             <FaTrashAlt className="mr-1" />Limpiar
                         </button>
                     </div>
@@ -271,7 +276,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
                     <div>
                         <button
                             onClick={() => setOpenSections(o => ({ ...o, martindale: !o.martindale }))}
-                            className="w-full flex justify-between items-center pb-1 border-b"
+                            className="w-full flex justify-start items-start pb-1 border-b"
                         >
                             <h3 className="text-lg font-semibold">Martindale</h3>
                             {openSections.martindale ? <FaChevronUp /> : <FaChevronDown />}
@@ -285,8 +290,8 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
                                             key={r.key}
                                             onClick={() => toggle(martSel, setMartSel, r.key)}
                                             className={`
-                          w-full text-center px-4 py-2 rounded-lg border transition
-                          ${sel ? 'bg-[#D2B48C] text-white' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}
+                          w-full text-start px-4 py-2 rounded-lg border transition
+                          ${sel ? 'bg-[#26659E] text-white' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}
                         `}
                                         >
                                             {r.label}
@@ -302,7 +307,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
                 <footer className="sticky bottom-0 bg-white p-4 border-t">
                     <button
                         onClick={handleApply}
-                        className="w-full py-2 bg-[#D2B48C] hover:bg-[#C19A6B] text-white rounded-lg font-semibold transition"
+                        className="w-full py-2 bg-[#26659E] hover:bg-[#2169AB] text-white rounded-lg font-semibold transition"
                     >
                         Aplicar Filtros
                     </button>
