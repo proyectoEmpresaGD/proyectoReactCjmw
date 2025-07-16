@@ -1,0 +1,19 @@
+{
+    "shareTitle": "Compartir este producto",
+    "shareIconAlt": "Icono compartir",
+    "shareButton": "COMPARTIR",
+    "facebookAria": "Compartir en Facebook",
+    "facebookAlt": "Facebook",
+    "twitterText": "¡Mira este producto!",
+    "twitterAria": "Compartir en Twitter",
+    "twitterAlt": "Twitter",
+    "whatsappText": "¡Mira este producto!",
+    "whatsappAria": "Compartir en WhatsApp",
+    "whatsappAlt": "WhatsApp",
+    "linkedinAria": "Compartir en LinkedIn",
+    "linkedinAlt": "LinkedIn",
+    "emailSubject": "Mira este producto",
+    "emailBody": "Consulta este enlace:",
+    "emailAria": "Compartir por correo",
+    "emailAlt": "Email"
+}

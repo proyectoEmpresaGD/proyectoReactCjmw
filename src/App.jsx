@@ -20,7 +20,6 @@ import { MarcaProvider } from './components/MarcaContext.jsx'
 function App() {
   return (
     <>
-
       <ScrollToTop />
       <CookieConsent />
       <Routes>

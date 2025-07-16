@@ -1,8 +1,11 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Eye, Download, X } from "lucide-react";
+// src/components/NotificationPopup.jsx
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Eye, Download, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const NotificationPopup = ({ brochures = [], logoUrl }) => {
+    const { t } = useTranslation('notificationPopup');
     const [isOpen, setIsOpen] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -10,32 +13,23 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
         return null;
     }
 
-    const handleClose = () => {
-        setIsOpen(false);
-    };
-
-    const handleOpen = () => {
-        setIsOpen(true);
-    };
-
-    const handleSelectBrochure = (index) => {
-        setCurrentIndex(index);
-    };
-
-    const handleDownload = () => {
-        window.open(currentBrochure.pdfUrl, "_blank"); // ✅ Solución más estable (abre en nueva pestaña)
-    };
-
     const currentBrochure = brochures[currentIndex];
+
+    const handleClose = () => setIsOpen(false);
+    const handleOpen = () => setIsOpen(true);
+    const handleSelectBrochure = (index) => setCurrentIndex(index);
+    const handleDownload = () => {
+        window.open(currentBrochure.pdfUrl, '_blank');
+    };
 
     return (
         <>
             {isOpen ? (
                 <div className="fixed bottom-5 right-5 bg-white w-[300px] md:w-[320px] p-4 rounded-lg shadow-xl border border-gray-300 z-50 flex flex-col items-center">
-
-                    {/* Botón de Cerrar */}
+                    {/* Cerrar */}
                     <button
                         onClick={handleClose}
+                        aria-label={t('closePopup')}
                         className="absolute top-2 right-2 bg-gray-800 text-white rounded-full p-2 shadow-md hover:bg-gray-900 transition"
                     >
                         <X size={16} />
@@ -45,7 +39,7 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                     {logoUrl && (
                         <img
                             src={logoUrl}
-                            alt="Logo"
+                            alt={t('logoAlt')}
                             className="w-32 mb-2"
                         />
                     )}
@@ -57,44 +51,44 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                         className="w-full max-h-[350px] object-contain rounded-md"
                     />
 
-                    {/* Indicadores de paginación */}
+                    {/* Paginación */}
                     {brochures.length > 1 && (
                         <div className="flex justify-center space-x-2 mt-3">
-                            {brochures.map((_, index) => (
+                            {brochures.map((_, idx) => (
                                 <button
-                                    key={index}
-                                    onClick={() => handleSelectBrochure(index)}
-                                    className={`w-3 h-3 rounded-full transition ${index === currentIndex
-                                        ? "bg-gray-800 scale-110"
-                                        : "bg-gray-300 hover:bg-gray-400"
+                                    key={idx}
+                                    onClick={() => handleSelectBrochure(idx)}
+                                    className={`w-3 h-3 rounded-full transition ${idx === currentIndex
+                                        ? 'bg-gray-800 scale-110'
+                                        : 'bg-gray-300 hover:bg-gray-400'
                                         }`}
+                                    aria-label={t('selectBrochure', { index: idx + 1 })}
                                 />
                             ))}
                         </div>
                     )}
 
-                    {/* Iconos de Interacción */}
+                    {/* Acciones */}
                     <div className="flex justify-end w-full mt-3 space-x-4 pr-2">
-                        {/* Ver PDF (OJO 👁️ - Abre el PDF en una nueva pestaña) */}
                         <a
                             href={currentBrochure.pdfUrl}
                             target="_blank"
                             rel="noopener noreferrer"
+                            aria-label={t('viewPdf')}
                             className="flex items-center text-gray-800 hover:text-gray-600 transition"
                         >
                             <Eye size={22} />
                         </a>
-
-                        {/* Descargar PDF (Abre en nueva pestaña para que el usuario descargue) */}
                         <button
                             onClick={handleDownload}
+                            aria-label={t('downloadPdf')}
                             className="flex items-center text-gray-800 hover:text-gray-600 transition"
                         >
                             <Download size={22} />
                         </button>
                     </div>
 
-                    {/* Texto del Brochure */}
+                    {/* Texto */}
                     <div className="text-center mt-3">
                         <h2 className="text-md font-semibold text-gray-900">
                             {currentBrochure.title}
@@ -105,12 +99,13 @@ const NotificationPopup = ({ brochures = [], logoUrl }) => {
                     </div>
                 </div>
             ) : (
-                // Botón flotante para volver a abrir
+                // Botón para reabrir
                 <button
                     onClick={handleOpen}
+                    aria-label={t('openPopup')}
                     className="fixed bottom-5 right-5 bg-gray-800 text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-900 transition z-30"
                 >
-                    📖 Ver Brochure
+                    {t('openBrochure')}
                 </button>
             )}
         </>
@@ -126,11 +121,11 @@ NotificationPopup.propTypes = {
             description: PropTypes.string,
         })
     ).isRequired,
-    logoUrl: PropTypes.string, // ✅ Ahora es opcional
+    logoUrl: PropTypes.string,
 };
 
 NotificationPopup.defaultProps = {
-    logoUrl: "", // ✅ Evita warnings en consola
+    logoUrl: '',
 };
 
 export default NotificationPopup;

@@ -1,4 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+// src/components/CarruselColeccion.jsx
+import React, { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const CarruselColeccion = ({
     productos = [],
@@ -7,6 +9,7 @@ const CarruselColeccion = ({
     onProductoClick,
     titulo = ''
 }) => {
+    const { t } = useTranslation('collectionCarousel');
     const [productosInternos, setProductosInternos] = useState([]);
     const [loading, setLoading] = useState(true);
     const carouselRef = useRef(null);
@@ -50,7 +53,7 @@ const CarruselColeccion = ({
         <div className="mt-10">
             {titulo && (
                 <h2 className="text-xl font-semibold mb-6 text-gray-500 text-center">
-                    Descubre la colección {titulo}
+                    {t('discoverCollection', { title: titulo })}
                 </h2>
             )}
 
@@ -72,7 +75,7 @@ const CarruselColeccion = ({
                                 className="w-full h-[200px] object-cover rounded-lg"
                             />
                             <div className="p-2 text-center">
-                                <p className="text-sm text-gray-500">Fabrics</p>
+                                <p className="text-sm text-gray-500">{t('fabrics')}</p>
                                 <h3 className="text-sm font-semibold">{item.nombre}</h3>
                             </div>
                         </div>
@@ -80,10 +83,18 @@ const CarruselColeccion = ({
                 </div>
 
                 <div className="flex justify-center space-x-10">
-                    <button onClick={scrollLeft} className="text-2xl px-2 hover:text-black transition text-gray-500">
+                    <button
+                        onClick={scrollLeft}
+                        className="text-2xl px-2 hover:text-black transition text-gray-500"
+                        aria-label={t('scrollLeft')}
+                    >
                         ←
                     </button>
-                    <button onClick={scrollRight} className="text-2xl px-2 hover:text-black transition text-gray-500">
+                    <button
+                        onClick={scrollRight}
+                        className="text-2xl px-2 hover:text-black transition text-gray-500"
+                        aria-label={t('scrollRight')}
+                    >
                         →
                     </button>
                 </div>

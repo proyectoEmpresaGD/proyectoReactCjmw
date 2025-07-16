@@ -1,0 +1,23 @@
+{
+    "orderModalTitle": "Place Order",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "shippingZoneLabel": "Shipping Zone",
+    "zonePeninsula": "Mainland Spain",
+    "zoneBalearic": "Balearic Islands",
+    "zoneCanary": "Canary Islands",
+    "zoneCeuta": "Ceuta",
+    "zoneMelilla": "Melilla",
+    "shippingCostNotice": "Shipping costs are calculated separately",
+    "isClientLabel": "Are you our client?",
+    "companyCIFLabel": "Company CIF",
+    "submitOrderButton": "Submit Order",
+    "cartTitle": "Shopping Cart",
+    "width": "Width",
+    "color": "Color",
+    "totalLabel": "Total",
+    "inDevelopment": "In development",
+    "orderSuccessMessage": "Your order is being processed. We will contact you shortly.",
+    "orderErrorMessage": "An error occurred processing your order. Please try again."
+}

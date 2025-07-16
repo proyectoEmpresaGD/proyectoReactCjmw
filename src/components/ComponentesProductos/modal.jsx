@@ -27,6 +27,7 @@ import {
     direccionLogos
 } from '../../Constants/constants';
 import html2pdf from 'html2pdf.js';
+import { useTranslation } from 'react-i18next';
 
 // ====================================================
 // Función para convertir una imagen (por URL) a Base64
@@ -74,6 +75,9 @@ const getLogoBase64 = async codmarca => {
 };
 
 const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
+
+    const { t } = useTranslation('productModal');
+
     // Función para obtener el nombre de la marca a partir del codmarca (lógica antigua)
     const getNombreMarca = (codmarca) => {
         return marcasMap[codmarca] || "Marca Desconocida";
@@ -796,7 +800,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
         <CartProvider>
             <div
                 ref={modalRef}
-                className="fixed inset-0 z-30 bg-white overflow-y-auto 4xl:pt-[3%] 3xl:pt-[4%] xl:pt-[6%] lg:pt-[12%] md:pt-[10%]  sm:pt-[15%] pt-[24%]"
+                className="fixed inset-0 z-30 bg-white overflow-y-auto 4xl:pt-[3%] 3xl:pt-[4%] xl:pt-[6%] lg:pt-[12%] md:pt-[10%] sm:pt-[15%] pt-[24%]"
             >
                 <div
                     className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8 relative"
@@ -804,9 +808,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 >
                     <Filtro
                         setFilteredProducts={(filteredProducts, selectedFilters) => {
-                            if (onApplyFilters) {
-                                onApplyFilters(filteredProducts, selectedFilters);
-                            }
+                            if (onApplyFilters) onApplyFilters(filteredProducts, selectedFilters);
                             close();
                         }}
                         page={1}
@@ -815,22 +817,30 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                     <button
                         onClick={handleClose}
                         className="absolute top-[-15px] right-4 md:right-4 md:top-4 text-black font-bold text-xl hover:opacity-70"
+                        title={t('closeModal')}
                     >
-                        <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="" className=' w-8' />
+                        <img
+                            src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                            alt={t('closeAlt')}
+                            className="w-8"
+                        />
                     </button>
 
                     {/* Encabezado: Imagen Izq + Info Der */}
                     <div className="flex flex-col md:flex-row gap-8">
+                        {/* Imagen principal y zoom */}
                         <div className="relative md:w-1/2">
-                            {/* Botón de lupa arriba a la derecha */}
                             <button
                                 onClick={() => setIsViewerOpen(true)}
                                 className="absolute top-2 left-2 z-10 bg-white bg-opacity-80 rounded-full p-2 hover:scale-110 transition"
-                                title="Ver imagen ampliada"
+                                title={t('zoomImage')}
                             >
-                                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/ICONO%20AMPLIAR.png" alt="ampliar" className="w-5 h-5" />
+                                <img
+                                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/ICONO%20AMPLIAR.png"
+                                    alt={t('zoomAlt')}
+                                    className="w-5 h-5"
+                                />
                             </button>
-
                             <Zoom>
                                 <InnerImageZoom
                                     src={selectedImage}
@@ -839,42 +849,44 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     onLoad={() => setImageLoaded(true)}
                                 />
                             </Zoom>
-
                             {isViewerOpen && (
                                 <Lightbox
                                     open={isViewerOpen}
                                     close={() => setIsViewerOpen(false)}
-                                    slides={galleryImages.map(src => ({ src }))}
+                                    slides={galleryImages.map((src) => ({ src }))}
                                     index={photoIndex}
                                     on={{ view: ({ index }) => setPhotoIndex(index) }}
                                 />
                             )}
-
                         </div>
+
+                        {/* Información del producto y acciones */}
                         <div className="md:w-1/2 flex flex-col justify-between">
                             <div>
                                 <h1 className="text-2xl font-semibold mb-1">
-                                    {selectedProduct?.nombre || 'Nombre del producto'}
+                                    {selectedProduct?.nombre || t('noProductName')}
                                 </h1>
                                 {selectedProduct?.tonalidad && (
-                                    <p className=" text-sm mb-2 font-semibold">{selectedProduct.tonalidad}</p>
+                                    <p className="text-sm mb-2 font-semibold">
+                                        {selectedProduct.tonalidad}
+                                    </p>
                                 )}
                                 <p className="text-gray-600 text-sm mb-2">
-                                    Colección: {selectedProduct?.coleccion} &nbsp;|&nbsp;
-                                    Marca: {getNombreMarca(selectedProduct?.codmarca)}
+                                    {t('collection')}: {selectedProduct?.coleccion} &nbsp;|&nbsp;
+                                    {t('brand')}: {getNombreMarca(selectedProduct?.codmarca)}
                                 </p>
 
-                                {/* Contenedor principal */}
+                                {/* Compartir, cantidad y añadir al carrito */}
                                 <div className="flex flex-col space-y-3 my-4 w-full max-w-sm">
                                     <ShareButton selectedProduct={selectedProduct} />
+
                                     <div className="flex items-center justify-between">
                                         <label htmlFor="quantity" className="text-sm font-semibold text-gray-700">
-                                            Elige la cantidad
+                                            {t('chooseQuantity')}
                                         </label>
-                                        <div className="flex items-center text-sm text-gray-600">
-                                            <span className="mr-1">Muestra pequeña</span>
-                                        </div>
+                                        <span className="text-sm text-gray-600">{t('smallSample')}</span>
                                     </div>
+
                                     <div className="flex border-gray-300 rounded items-center space-x-3">
                                         <select
                                             id="quantity"
@@ -888,45 +900,46 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                         </select>
                                         <p className="text-gray-800 font-bold text-lg">3€</p>
                                     </div>
-                                    <div className='flex'>
-                                        <button
-                                            onClick={handleAddToCart}
-                                            className="relative group w-20 h-20 bg-white overflow-hidden hover:bg-black transition-colors rounded-sm duration-300"
-                                            title="Pedir muestra"
-                                        >
-                                            <img
-                                                src="https://bassari.eu/ImagenesTelasCjmw/Iconos/QUALITY/fabric.png"
-                                                alt="Muestra"
-                                                className="mx-auto object-contain w-[80%] h-[80%] group-hover:opacity-0 transition-opacity duration-300"
-                                            />
-                                            <span className="absolute inset-0 flex items-center text-xs justify-center text-white rounded-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                AÑADIR AL CARRO
-                                            </span>
-                                        </button>
-                                    </div>
+
+                                    <button
+                                        onClick={handleAddToCart}
+                                        className="relative group w-20 h-20 bg-white overflow-hidden hover:bg-black transition-colors rounded-sm duration-300"
+                                        title={t('orderSample')}
+                                    >
+                                        <img
+                                            src="https://bassari.eu/ImagenesTelasCjmw/Iconos/QUALITY/fabric.png"
+                                            alt={t('sampleAlt')}
+                                            className="mx-auto object-contain w-[80%] h-[80%] group-hover:opacity-0 transition-opacity duration-300"
+                                        />
+                                        <span className="absolute inset-0 flex items-center text-xs justify-center text-white rounded-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            {t('addToCart')}
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
+
+                            {/* --- SWATCHES + CONTADOR --- */}
                             {relatedProducts?.length > 1 && (
-                                <div className="">
-                                    <div className="flex flex-wrap gap-2">
+                                <div>
+                                    {/* Swatches de color */}
+                                    <div className="flex flex-wrap gap-2 mb-2 mt-4">
                                         {relatedProducts
-                                            .filter((p, index, self) =>
+                                            .filter((p, idx, arr) =>
                                                 p.tonalidad &&
-                                                index === self.findIndex(
-                                                    (q) =>
-                                                        q.tonalidad?.trim().toLowerCase() ===
-                                                        p.tonalidad?.trim().toLowerCase()
+                                                idx === arr.findIndex(q =>
+                                                    q.tonalidad?.trim().toLowerCase() ===
+                                                    p.tonalidad?.trim().toLowerCase()
                                                 )
                                             )
-                                            .map((colorProduct, index) => (
+                                            .map((colorProduct, i) => (
                                                 <div
-                                                    key={index}
+                                                    key={i}
                                                     className="relative w-16 h-16 cursor-pointer"
                                                     onClick={() => handleColorClick(colorProduct)}
                                                 >
                                                     <img
                                                         src={colorProduct.imageBaja}
-                                                        alt={colorProduct.nombre}
+                                                        alt={colorProduct.tonalidad}
                                                         className="w-full h-full object-cover rounded-md"
                                                     />
                                                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -935,15 +948,20 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                         </p>
                                                     </div>
                                                 </div>
-                                            ))}
+                                            ))
+                                        }
                                     </div>
-                                    <div className="flex items-center justify-start mb-2 mt-4 h-[3rem]">
+
+                                    {/* Contador de colores disponibles */}
+                                    <div className="flex items-center justify-start h-[3rem] mb-4">
                                         <div className="flex bg-black text-white border-2 border-black font-semibold items-center py-[2px] px-2 rounded-md transition duration-200 mx-1 h-full">
                                             <div className="flex items-center justify-center text-white font-semibold rounded-full w-9 h-9">
                                                 {productsForCarousel.length}
                                             </div>
-                                            <p className="flex ml-2 text-md">
-                                                {productsForCarousel.length === 1 ? "Color disponible" : "Colores disponibles"}
+                                            <p className="ml-2 text-md">
+                                                {productsForCarousel.length === 1
+                                                    ? t('carousel.oneColor')
+                                                    : t('carousel.manyColors', { count: productsForCarousel.length })}
                                             </p>
                                         </div>
                                     </div>
@@ -956,50 +974,65 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                     <hr className="my-8" />
 
                     {/* FICHA TÉCNICA */}
-                    <div className=' flex'>
-                        <h2 className="text-xl font-semibold mb-4">FICHA TÉCNICA</h2>
-                        {/* Botón para generar el PDF */}
-                        <button onClick={handleGeneratePDF} className=" pb-2 pl-2">
-                            <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/archivo.png" alt="" className='h-9 hover:scale-110 transition-[2]' />
+                    <div className="flex">
+                        <h2 className="text-xl font-semibold mb-4">{t('techSheet')}</h2>
+                        <button
+                            onClick={handleGeneratePDF}
+                            className="pb-2 pl-2"
+                            title={t('downloadPdf')}
+                        >
+                            <img
+                                src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/archivo.png"
+                                alt={t('downloadPdfAlt')}
+                                className="h-9 hover:scale-110 transition-[2]"
+                            />
                         </button>
-
                     </div>
-
 
                     <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
                         <div className="flex flex-wrap items-center justify-between gap-4">
                             <div className="flex items-center space-x-2">
-                                <span className="font-medium">Usos:</span> {getUsoImages(selectedProduct?.uso)}
+                                <span className="font-medium">{t('usages')}:</span> {getUsoImages(selectedProduct?.uso)}
                             </div>
                             <div className="flex items-center space-x-2">
-                                <span className="font-medium">Cares:</span> {getMantenimientoImages(selectedProduct?.mantenimiento)}
+                                <span className="font-medium">{t('cares')}:</span>{' '}
+                                {getMantenimientoImages(selectedProduct?.mantenimiento)}
                             </div>
                             <div>
-                                <span className="font-medium">Tipo:</span> {selectedProduct.tipo}
+                                <span className="font-medium">{t('type')}:</span> {selectedProduct.tipo}
                             </div>
                             <div>
-                                <span className="font-medium">Estilo:</span> {selectedProduct.estilo}
+                                <span className="font-medium">{t('style')}:</span> {selectedProduct.estilo}
                             </div>
                             <div>
-                                <span className="font-medium">Martindale:</span> {selectedProduct.martindale}
+                                <span className="font-medium">{t('martindale')}:</span> {selectedProduct.martindale}
                             </div>
                             <div>
-                                <span className="font-medium">Rapport Horizontal:</span>{" "}
-                                {selectedProduct.repminhor ? parseFloat(selectedProduct.repminhor).toFixed(2) : "N/A"} cm
+                                <span className="font-medium">{t('rapportH')}:</span>{' '}
+                                {selectedProduct.repminhor
+                                    ? parseFloat(selectedProduct.repminhor).toFixed(2)
+                                    : t('notAvailable')}{' '}
+                                cm
                             </div>
                             <div>
-                                <span className="font-medium">Rapport Vertical:</span>{" "}
-                                {selectedProduct.repminver ? parseFloat(selectedProduct.repminver).toFixed(2) : "N/A"} cm
+                                <span className="font-medium">{t('rapportV')}:</span>{' '}
+                                {selectedProduct.repminver
+                                    ? parseFloat(selectedProduct.repminver).toFixed(2)
+                                    : t('notAvailable')}{' '}
+                                cm
                             </div>
                             <div>
-                                <span className="font-medium">Composición:</span> {selectedProduct?.composicion || "N/A"}
+                                <span className="font-medium">{t('composition')}:</span>{' '}
+                                {selectedProduct.composicion || t('notAvailable')}
                             </div>
                             <div>
-                                <span className="font-medium">Peso:</span>{" "}
-                                {selectedProduct?.gramaje ? `${selectedProduct.gramaje} gms` : "N/A"}
+                                <span className="font-medium">{t('weight')}:</span>{' '}
+                                {selectedProduct.gramaje
+                                    ? `${selectedProduct.gramaje} g/m²`
+                                    : t('notAvailable')}
                             </div>
                             <div>
-                                <span className="font-medium">Ancho:</span>{" "}
+                                <span className="font-medium">{t('width')}:</span>{' '}
                                 {anchoOptions.length > 1 ? (
                                     <select
                                         value={selectedProduct.ancho}
@@ -1013,33 +1046,28 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                         ))}
                                     </select>
                                 ) : (
-                                    `${selectedProduct?.ancho || "N/A"}`
+                                    selectedProduct.ancho || t('notAvailable')
                                 )}
                             </div>
                         </div>
                         {(usoMantenimientoIcons.length > 0 || selectedProduct?.direcciontela) && (
                             <div className="flex flex-wrap items-center gap-x-6 mt-4">
                                 {usoMantenimientoIcons.length > 0 && (
-                                    <div className="flex flex-wrap gap-2">
-                                        {usoMantenimientoIcons}
-                                    </div>
+                                    <div className="flex flex-wrap gap-2">{usoMantenimientoIcons}</div>
                                 )}
                                 {getDireccionImage(selectedProduct?.direcciontela)}
                             </div>
                         )}
-
                     </div>
 
                     {/* OTROS DISEÑOS DE TELAS */}
-                    {recommendedProducts
-                        .filter(item => item.nombre !== selectedProduct.nombre)
-                        .length > 0 && (
-                            <CarruselColeccion
-                                productos={recommendedProducts.filter(item => item.nombre !== selectedProduct.nombre)}
-                                onProductoClick={handleDetailClick}
-                                titulo={selectedProduct.coleccion}
-                            />
-                        )}
+                    {recommendedProducts.filter((item) => item.nombre !== selectedProduct.nombre).length > 0 && (
+                        <CarruselColeccion
+                            productos={recommendedProducts.filter((item) => item.nombre !== selectedProduct.nombre)}
+                            onProductoClick={handleDetailClick}
+                            titulo={selectedProduct.coleccion}
+                        />
+                    )}
 
                     <CarruselMismoEstilo
                         estilo={selectedProduct?.estilo}
@@ -1048,39 +1076,33 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         onProductoClick={handleDetailClick}
                     />
 
-
                     {addedToCart && (
                         <div className="fixed bottom-10 right-10 z-50 flex items-center space-x-4 bg-gradient-to-r from-green-500 to-green-700 text-white py-3 px-6 rounded-full shadow-xl transform transition-all duration-300">
                             <img
                                 src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/Check.svg"
-                                alt="Success"
+                                alt={t('successAlt')}
                                 className="w-8 h-8"
                             />
-                            <span className="text-lg font-bold">Agregado correctamente</span>
+                            <span className="text-lg font-bold">{t('addedSuccess')}</span>
                         </div>
                     )}
 
                     {showIconMeaning && (
                         <div className="fixed bottom-10 left-10 bg-white p-4 rounded-md shadow-md">
-                            <h3 className="text-lg font-bold">Significado del Icono</h3>
+                            <h3 className="text-lg font-bold">{t('iconTitle')}</h3>
                             <p>{showIconMeaning}</p>
                             <button className="text-blue-500 mt-2" onClick={() => setShowIconMeaning('')}>
-                                Cerrar
+                                {t('closeBtn')}
                             </button>
                         </div>
                     )}
 
-                    {modalMapaOpen && (
-                        <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />
-                    )}
+                    {modalMapaOpen && <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />}
 
                     <div style={{ display: 'none' }}>{renderEtiqueta()}</div>
-
-
                 </div>
                 <Footer />
             </div>
-
         </CartProvider>
     );
 };

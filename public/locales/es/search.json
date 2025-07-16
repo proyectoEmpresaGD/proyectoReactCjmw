@@ -1,0 +1,14 @@
+{
+    "placeholder": "BUSCAR TELAS... (EJ. SAN FERNANDO, GRAZALEMA, FLA000860)",
+    "clear": "Borrar búsqueda",
+    "minChars": "ESCRIBE AL MENOS 3 CARACTERES PARA BUSCAR.",
+    "loading": "CARGANDO...",
+    "productsSection": "PRODUCTOS",
+    "collectionsSection": "COLECCIONES",
+    "seeAll": "VER TODOS LOS RESULTADOS",
+    "noResults": "NO SE ENCONTRARON RESULTADOS. INTENTA BUSCAR POR NOMBRE, COLECCIÓN, TONALIDAD O CÓDIGO DE PRODUCTO.",
+    "noCollection": "SIN COLECCIÓN",
+    "noTone": "SIN TONALIDAD",
+    "collectionPrefix": "COLECCIÓN:",
+    "recent": "BÚSQUEDAS RECIENTES"
+}

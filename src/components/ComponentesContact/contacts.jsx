@@ -1,7 +1,9 @@
 import { contactInfo, contactTexts } from '../../Constants/constants';
 //import GeocodingService from "../../components/ComponentesContact/map";
-
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 function Contacts() {
+    const { t } = useTranslation('contacts');
     const enviarCorreo = (correo) => {
         window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${correo}`);
     };
@@ -14,15 +16,20 @@ function Contacts() {
         <section className="bg-gradient-to-r bg-gray-300 xl:pt-[8%] lg:pt-[12%] md:pt-[10%] md:pb-[5%] sm:pt-[15%] pt-[24%]">
             <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                 <div className="max-w-2xl mx-auto text-center">
-                    <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{contactTexts.sectionTitle}</h2>
+                    <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+                        {t('sectionTitle')}
+                    </h2>
                 </div>
 
                 <div className="max-w-6xl mx-auto mt-12 overflow-hidden bg-white rounded-md shadow-md lg:mt-20">
                     <div className="grid items-stretch grid-cols-1 lg:grid-cols-5">
                         <div className="lg:col-span-3">
                             <div className="p-6 sm:p-10 bg-cover lg:h-[130vh]">
-                                <img className="object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg"
-                                    src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/JARAPA/Varni_Cushion_578_Brkt%20copy_2_11zon_5_11zon.webp" alt="" />
+                                <img
+                                    className="object-cover h-[80vh] sm:h-[150vh] lg:h-[120vh] xl:h-[120vh] md:h-[120vh] rounded-lg"
+                                    src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/JARAPA/Varni_Cushion_578_Brkt%20copy_2_11zon_5_11zon.webp"
+                                    alt=""
+                                />
                             </div>
                         </div>
 
@@ -30,29 +37,64 @@ function Contacts() {
                             <div className="h-full p-6 sm:p-10">
                                 <div className="flex flex-col justify-between h-full">
                                     <div>
-                                        <h4 className="relative text-2xl font-semibold mx-auto text-center text-black">{contactTexts.showroomTitle}</h4>
+                                        <h4 className="relative text-2xl font-semibold mx-auto text-center text-black">
+                                            {t('showroomTitle')}
+                                        </h4>
 
                                         {Object.values(contactInfo).map((info, index) => (
-                                            <div key={index} className='mt-8 space-y-5 mx-auto text-center'>
-                                                <div className='block relative mx-auto text-center justify-center'>
-                                                    <h2 className='relative mx-auto text-center lg:text-3xl'><strong>{info.nombre}</strong></h2>
-                                                    <div className='block mx-auto text-start mt-5'>
+                                            <div key={index} className="mt-8 space-y-5 mx-auto text-center">
+                                                <div className="block relative mx-auto text-center justify-center">
+                                                    <h2 className="relative mx-auto text-center lg:text-3xl">
+                                                        <strong>{info.nombre}</strong>
+                                                    </h2>
+                                                    <div className="block mx-auto text-start mt-5">
                                                         <div className="mt-4 mx-auto text-center space-y-5">
+                                                            {/* Dirección */}
                                                             <div className="flex mx-auto text-start">
                                                                 <div className="flex mx-auto text-center">
-                                                                    <svg className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                    <svg
+                                                                        className="flex-shrink-0 text-gray-600 w-7 h-7 hover:scale-150 duration-200"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none"
+                                                                        viewBox="0 0 24 24"
+                                                                        stroke="currentColor"
+                                                                    >
+                                                                        <path
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            strokeWidth="1.5"
+                                                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                                                        />
+                                                                        <path
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            strokeWidth="1.5"
+                                                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                                                        />
                                                                     </svg>
-                                                                    <span className="block ml-1 text-base text-gray-900">{info.direccion}</span>
+                                                                    <span className="block ml-1 text-base text-gray-900">
+                                                                        {info.direccion}
+                                                                    </span>
                                                                 </div>
                                                             </div>
 
+                                                            {/* Teléfono */}
                                                             <div className="flex justify-center items-center">
                                                                 <div className="flex">
                                                                     <button onClick={() => llamarNumero(info.telefono)} className="flex items-center">
-                                                                        <svg className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                                        <svg
+                                                                            className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24"
+                                                                            fill="none"
+                                                                            stroke="currentColor"
+                                                                        >
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                strokeWidth="1.5"
+                                                                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                                                            />
                                                                         </svg>
                                                                     </button>
                                                                     <div className="ml-3">
@@ -61,13 +103,24 @@ function Contacts() {
                                                                 </div>
                                                             </div>
 
+                                                            {/* Correo */}
                                                             <div className="flex justify-center items-center">
                                                                 <div className="flex">
                                                                     <button onClick={() => enviarCorreo(info.correo)} className="flex items-center">
-                                                                        <svg className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                                                                        <svg
+                                                                            className="text-gray-600 w-7 h-7 hover:scale-150 transition duration-200"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            fill="none"
+                                                                            viewBox="0 0 24 24"
+                                                                            stroke="currentColor"
+                                                                        >
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                strokeWidth="1.5"
+                                                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"
+                                                                            />
                                                                         </svg>
-
                                                                     </button>
                                                                     <div className="ml-3">
                                                                         <span className="text-base text-gray-900">{info.correo}</span>
@@ -81,11 +134,11 @@ function Contacts() {
                                         ))}
                                     </div>
 
+                                    {/* Síguenos en */}
                                     <div className="mt-8 lg:mt-3">
                                         <hr className="border-gray-200" />
                                         <div className="flex items-center justify-between mt-7">
-                                            <p className="text-lg font-semibold text-black">Siguenos en</p>
-
+                                            <p className="text-lg font-semibold text-black">{t('followUs')}</p>
                                             <ul className="flex items-center justify-end space-x-3">
                                                 <li>
                                                     <a

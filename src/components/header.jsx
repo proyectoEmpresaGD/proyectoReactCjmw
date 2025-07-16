@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     RiMenu3Fill,
     RiSearchLine,
@@ -11,22 +12,23 @@ import { FaGlobe } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
-import ScrollToTop from './ScrollToTop';// eslint-disable-next-line
+import ScrollToTop from './ScrollToTop';
 import Select from 'react-select';
-import 'tailwindcss/tailwind.css';// importing tailwindcss
-import SearchBar from './SearchBar'; // Componente de búsqueda mejorado
+import 'tailwindcss/tailwind.css';
+import SearchBar from './SearchBar';
 import { useMarca } from './MarcaContext';
 
 // Importar constantes desde el archivo de constantes
-import { languageOptions, brandLogos, defaultLogo } from "../Constants/constants";
+import { languageOptions, brandLogos, defaultLogo } from '../Constants/constants';
 
 export const Header = ({ closeModal }) => {
+    const { t, i18n } = useTranslation('header');
     const navigate = useNavigate();
     const location = useLocation();
     const { itemCount } = useCart();
+    const { marcaActiva, setMarcaActiva } = useMarca();
 
-
-    // Estados de la cabecera y sus dropdowns (los que no son de búsqueda)
+    // Dropdown states
     const [showCart, setShowCart] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
@@ -34,10 +36,18 @@ export const Header = ({ closeModal }) => {
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
     const [showSearchBar, setShowSearchBar] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState({ value: 'es', label: 'Spanish' });
     const [isHovered, setIsHovered] = useState(false);
 
-    // Refs para detectar clics fuera de ciertos elementos
+    // Selected language
+    const [selectedLanguage, setSelectedLanguage] = useState(
+        languageOptions.find(opt => opt.value === i18n.language) || languageOptions[0]
+    );
+    useEffect(() => {
+        const found = languageOptions.find(opt => opt.value === i18n.language);
+        if (found) setSelectedLanguage(found);
+    }, [i18n.language]);
+
+    // Refs for outside-click detection
     const searchRef = useRef(null);
     const cartRef = useRef(null);
     const userRef = useRef(null);
@@ -45,10 +55,6 @@ export const Header = ({ closeModal }) => {
     const menuRef = useRef(null);
     const brandsRef = useRef(null);
     const productsRef = useRef(null);
-    const { marcaActiva } = useMarca();
-
-    const { setMarcaActiva } = useMarca();
-
 
     const logoSrc =
         marcaActiva && brandLogos[marcaActiva]
@@ -61,14 +67,13 @@ export const Header = ({ closeModal }) => {
         setShowUserDropdown(false);
         setShowLanguageDropdown(false);
     };
-
     const closeSearchAndCart = () => {
         setShowSearchBar(false);
         setShowCart(false);
     };
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
+        const handleClickOutside = event => {
             if (
                 !searchRef.current?.contains(event.target) &&
                 !cartRef.current?.contains(event.target) &&
@@ -80,66 +85,52 @@ export const Header = ({ closeModal }) => {
             ) {
                 closeAllDropdowns();
             }
-            if (!searchRef.current?.contains(event.target) && !cartRef.current?.contains(event.target)) {
+            if (
+                !searchRef.current?.contains(event.target) &&
+                !cartRef.current?.contains(event.target)
+            ) {
                 closeSearchAndCart();
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const toggleDropdown = (dropdown) => {
+    const toggleDropdown = dropdown => {
         closeAllDropdowns();
         switch (dropdown) {
-            case 'menu':
-                setShowMenu(!showMenu);
-                break;
-            case 'brands':
-                setShowBrandsDropdown(!showBrandsDropdown);
-                break;
-            case 'products':
-                setShowProductsDropdown(!showProductsDropdown);
-                break;
-            case 'user':
-                setShowUserDropdown(!showUserDropdown);
-                break;
-            case 'language':
-                setShowLanguageDropdown(!showLanguageDropdown);
-                break;
-            case 'search':
-                setShowSearchBar(!showSearchBar);
-                break;
-            case 'cart':
-                setShowCart(!showCart);
-                break;
-            default:
-                break;
+            case 'menu': setShowMenu(!showMenu); break;
+            case 'brands': setShowBrandsDropdown(!showBrandsDropdown); break;
+            case 'products': setShowProductsDropdown(!showProductsDropdown); break;
+            case 'user': setShowUserDropdown(!showUserDropdown); break;
+            case 'language': setShowLanguageDropdown(!showLanguageDropdown); break;
+            case 'search': setShowSearchBar(!showSearchBar); break;
+            case 'cart': setShowCart(!showCart); break;
+            default: break;
         }
     };
 
-    const handleLinkClick = (path) => {
+    const handleLinkClick = path => {
         if (typeof window.closeModalGlobal === 'function') {
             window.closeModalGlobal();
         }
-
-        setTimeout(() => {
-            navigate(path);
-        }, 100);
-
+        setTimeout(() => navigate(path), 100);
         setShowMenu(false);
-        setShowBrandsDropdown(false);
-        setShowProductsDropdown(false);
+        closeAllDropdowns();
     };
 
+    const changeLanguage = opt => {
+        i18n.changeLanguage(opt.value);
+        setSelectedLanguage(opt);
+        setShowLanguageDropdown(false);
+    };
 
     return (
         <>
             <ScrollToTop />
+
             <header
-                className={`fixed top-0 left-0 bg-white opacity-80 hover:opacity-100 w-full z-40 transition-all duration-500 ${isHovered ||
+                className={`fixed top-0 left-0 w-full z-40 bg-white opacity-80 hover:opacity-100 transition-all duration-500 ${isHovered ||
                     showSearchBar ||
                     showUserDropdown ||
                     showBrandsDropdown ||
@@ -147,13 +138,15 @@ export const Header = ({ closeModal }) => {
                     showLanguageDropdown ||
                     showCart ||
                     showMenu
-                    ? 'bg-white shadow-md'
+                    ? 'shadow-md'
                     : 'bg-transparent'
                     }`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <div className="container mx-auto flex items-center justify-between py-2 px-4 lg:px-8">
+
+                    {/* Mobile menu & logo */}
                     <div className="flex items-center">
                         <button
                             className="text-gray-800 lg:hidden focus:outline-none"
@@ -167,154 +160,121 @@ export const Header = ({ closeModal }) => {
                             onClick={() => setMarcaActiva(null)}
                             className="flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg"
                         >
-                            <img
-                                key={logoSrc}
-                                className="h-9 lg:h-10 xl:h-14"
-                                src={logoSrc}
-                                alt="Logo"
-                            />
-
+                            <img key={logoSrc} src={logoSrc} className="h-9 lg:h-10 xl:h-14" alt="Logo" />
                         </Link>
                     </div>
+
+                    {/* Desktop nav */}
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
                         <Link
                             to="/"
                             className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg"
                         >
-                            Inicio
+                            {t('home')}
                         </Link>
+
+                        {/* Brands */}
                         <div className="relative" ref={brandsRef}>
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
                                 onClick={() => toggleDropdown('brands')}
                             >
-                                <span>Marcas</span>
-                                {showBrandsDropdown ? (
-                                    <RiArrowDropUpLine size={16} className="ml-2" />
-                                ) : (
-                                    <RiArrowDropDownLine size={16} className="ml-2" />
-                                )}
+                                {t('brands')}
+                                {showBrandsDropdown
+                                    ? <RiArrowDropUpLine size={16} className="ml-2" />
+                                    : <RiArrowDropDownLine size={16} className="ml-2" />
+                                }
                             </button>
                             {showBrandsDropdown && (
-                                <div className="bg-slate-100 absolute w-full top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 z-50 flex flex-col justify-start items-start">
-                                    <button
-                                        onMouseDown={() => handleLinkClick('/arenaHome')}
-                                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                                    >
-                                        Arena
-                                    </button>
-                                    <button
-                                        onMouseDown={() => handleLinkClick('/harbourHome')}
-                                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                                    >
-                                        Harbour
-                                    </button>
-                                    <button
-                                        onMouseDown={() => handleLinkClick('/cjmHome')}
-                                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                                    >
-                                        CJM
-                                    </button>
-                                    <button
-                                        onMouseDown={() => handleLinkClick('/flamencoHome')}
-                                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                                    >
-                                        Flamenco
-                                    </button>
-                                    <button
-                                        onMouseDown={() => handleLinkClick('/bassariHome')}
-                                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md"
-                                    >
-                                        Bassari
-                                    </button>
+                                <div className="absolute top-full left-0 w-full mt-1 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 z-50 flex flex-col">
+                                    {['arenaHome', 'harbourHome', 'cjmHome', 'flamencoHome', 'bassariHome'].map(key => (
+                                        <button
+                                            key={key}
+                                            onMouseDown={() => handleLinkClick(`/${key}`)}
+                                            className="px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md text-left"
+                                        >
+                                            {t(key.replace('Home', '').toLowerCase())}
+                                        </button>
+                                    ))}
                                 </div>
                             )}
                         </div>
+
+                        {/* Products */}
                         <div className="relative" ref={productsRef}>
                             <button
-                                className="flex items-start text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
+                                className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
                                 onClick={() => toggleDropdown('products')}
                             >
-                                <span>Productos</span>
-                                {showProductsDropdown ? (
-                                    <RiArrowDropUpLine size={16} className="ml-2" />
-                                ) : (
-                                    <RiArrowDropDownLine size={16} className="ml-2" />
-                                )}
+                                {t('products')}
+                                {showProductsDropdown
+                                    ? <RiArrowDropUpLine size={16} className="ml-2" />
+                                    : <RiArrowDropDownLine size={16} className="ml-2" />
+                                }
                             </button>
                             {showProductsDropdown && (
-                                <div className="bg-slate-100 absolute top-full left-0 mt-1 bg-ivory shadow-lg rounded-md py-2 w-40 z-50 flex flex-col justify-start items-start">
+                                <div className="absolute top-full left-0 mt-1 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 w-40 z-50 flex flex-col">
                                     <button
                                         onMouseDown={() => handleLinkClick('/products')}
-                                        className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-start pl-4"
+                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
                                     >
-                                        Todos los productos
+                                        {t('allProducts')}
                                     </button>
                                     <button
                                         onMouseDown={() => handleLinkClick('/products?type=papel')}
-                                        className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-start pl-4"
+                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
                                     >
-                                        Papeles
+                                        {t('paper')}
                                     </button>
                                     <button
                                         onMouseDown={() => handleLinkClick('/products?type=tela')}
-                                        className="block py-2 w-full text-gray-800 hover:bg-gray-200 rounded-md text-start pl-4"
+                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
                                     >
-                                        Telas
+                                        {t('fabric')}
                                     </button>
                                 </div>
                             )}
                         </div>
-                        <Link
-                            to="/about"
-                            className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg"
-                        >
-                            Sobre nosotros
-                        </Link>
-                        <Link
-                            to="/contact"
-                            className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg"
-                        >
-                            Contáctanos
-                        </Link>
-                        <Link
-                            to="/contract"
-                            className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg"
-                        >
-                            Contract
-                        </Link>
+
+                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('about')}</Link>
+                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contact')}</Link>
+                        <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contract')}</Link>
                     </div>
+
+                    {/* Icons */}
                     <div className="flex items-center space-x-4">
-                        <div className="relative dropdown" ref={userRef}>
+                        {/* User */}
+                        <div className="relative" ref={userRef}>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('user')}>
                                 <RiUserFill size={24} />
                             </button>
                             {showUserDropdown && (
-                                <div className="bg-slate-100 absolute top-full right-0 bg-ivory shadow-lg rounded-md py-2 w-40 z-50">
-                                    <p className="block px-4 py-2 text-gray-500 hover:bg-gray-200 w-full text-left">
-                                        Feature in development
-                                    </p>
+                                <div className="absolute top-full right-0 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 w-40 z-50">
+                                    <p className="px-4 py-2 text-gray-500">{t('userFeature')}</p>
                                 </div>
                             )}
                         </div>
-                        <div className="relative search" ref={searchRef}>
+
+                        {/* Search */}
+                        <div className="relative" ref={searchRef}>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('search')}>
                                 <RiSearchLine size={24} />
                             </button>
                             {showSearchBar && (
                                 <div className="absolute top-full right-0 mt-2 w-72 bg-white shadow-lg rounded-lg z-50 p-4">
-                                    {/* Se pasa la función para cerrar el buscador */}
                                     <SearchBar closeSearchBar={() => setShowSearchBar(false)} />
                                 </div>
                             )}
                         </div>
+
+                        {/* Cart */}
                         <div className="relative cart" ref={cartRef}>
                             <button className="text-gray-800 focus:outline-none relative" onClick={() => toggleDropdown('cart')}>
                                 <RiShoppingCartFill size={24} />
                                 {itemCount > 0 && (
                                     <span
                                         className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1"
-                                        style={{ transform: 'translate(50%, -50%)', fontSize: '0.75rem' }}
+                                        style={{ transform: 'translate(50%,-50%)', fontSize: '0.75rem' }}
                                     >
                                         {itemCount}
                                     </span>
@@ -326,13 +286,35 @@ export const Header = ({ closeModal }) => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Language */}
+                        <div className="relative" ref={languageRef}>
+                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
+                                <FaGlobe size={24} />
+                            </button>
+                            {showLanguageDropdown && (
+                                <div className="absolute top-full right-0 mt-2 bg-slate-100 shadow-lg rounded-md py-2 w-32 z-50">
+                                    {languageOptions.map(opt => (
+                                        <button
+                                            key={opt.value}
+                                            className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                                            onClick={() => changeLanguage(opt)}
+                                        >
+                                            {opt.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
-                <div className={`lg:hidden transition-all ${showMenu ? 'block' : 'hidden'} fixed top-0 left-0 w-full h-full bg-white z-50`}>
-                    <div className="bg-white shadow-lg py-4 px-6 h-full">
+
+                {/* Mobile menu */}
+                <div className={`lg:hidden fixed top-0 left-0 w-full h-full bg-white z-50 transition-all ${showMenu ? 'block' : 'hidden'}`}>
+                    <div className="bg-white shadow-lg py-4 px-6 h-full overflow-auto">
                         <div className="flex justify-between mb-4">
-                            <Link to="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
-                                <img className="h-10" src={logoSrc} alt="Logo Empresa" />
+                            <Link to="/" className="font-semibold text-gray-800 hover:bg-gray-300 py-2 px-4 rounded-lg">
+                                <img src={logoSrc} className="h-10" alt="Logo Empresa" />
                             </Link>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('menu')}>
                                 <RiArrowDropUpLine size={24} />
@@ -343,26 +325,20 @@ export const Header = ({ closeModal }) => {
                                 className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
                                 onClick={() => toggleDropdown('brands')}
                             >
-                                Marcas
-                                {showBrandsDropdown ? <RiArrowDropUpLine size={20} /> : <RiArrowDropDownLine size={20} />}
+                                {t('brands')}
+                                {showBrandsDropdown ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
                             </button>
                             {showBrandsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <button onMouseDown={() => handleLinkClick('/arenaHome')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        Arena
-                                    </button>
-                                    <button onMouseDown={() => handleLinkClick('/harbourHome')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        Harbour
-                                    </button>
-                                    <button onMouseDown={() => handleLinkClick('/cjmHome')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        CJM
-                                    </button>
-                                    <button onMouseDown={() => handleLinkClick('/flamencoHome')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        Flamenco
-                                    </button>
-                                    <button onMouseDown={() => handleLinkClick('/bassariHome')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        Bassari
-                                    </button>
+                                    {['arenaHome', 'harbourHome', 'cjmHome', 'flamencoHome', 'bassariHome'].map(key => (
+                                        <button
+                                            key={key}
+                                            onMouseDown={() => handleLinkClick(`/${key}`)}
+                                            className="block py-1 text-gray-700 hover:text-gray-900"
+                                        >
+                                            {t(key.replace('Home', '').toLowerCase())}
+                                        </button>
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -371,31 +347,31 @@ export const Header = ({ closeModal }) => {
                                 className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
                                 onClick={() => toggleDropdown('products')}
                             >
-                                Productos
-                                {showProductsDropdown ? <RiArrowDropUpLine size={20} /> : <RiArrowDropDownLine size={20} />}
+                                {t('products')}
+                                {showProductsDropdown ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
                             </button>
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-1 text-gray-700 hover:text-gray-900 text-center">
-                                        Todos los productos
+                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-1 text-gray-700 hover:text-gray-900">
+                                        {t('allProducts')}
                                     </button>
-                                    <button onMouseDown={() => handleLinkClick('/products?type=papel')} className="block py-1 text-gray-700 hover:text-gray-900 text-center">
-                                        Papeles
+                                    <button onMouseDown={() => handleLinkClick('/products?type=papel')} className="block py-1 text-gray-700 hover:text-gray-900">
+                                        {t('paper')}
                                     </button>
-                                    <button onMouseDown={() => handleLinkClick('/products?type=tela')} className="block py-1 text-gray-700 hover:text-gray-900 text-center">
-                                        Telas
+                                    <button onMouseDown={() => handleLinkClick('/products?type=tela')} className="block py-1 text-gray-700 hover:text-gray-900">
+                                        {t('fabric')}
                                     </button>
                                 </div>
                             )}
                         </div>
                         <button onClick={() => handleLinkClick('/about')} className="block text-gray-800 font-semibold py-2">
-                            Sobre nosotros
+                            {t('about')}
                         </button>
                         <button onClick={() => handleLinkClick('/contact')} className="block text-gray-800 font-semibold py-2">
-                            Contáctanos
+                            {t('contact')}
                         </button>
                         <button onClick={() => handleLinkClick('/contract')} className="block text-gray-800 font-semibold py-2">
-                            Contract
+                            {t('contract')}
                         </button>
                     </div>
                 </div>

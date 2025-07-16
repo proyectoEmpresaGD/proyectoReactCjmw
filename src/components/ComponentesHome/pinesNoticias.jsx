@@ -1,15 +1,20 @@
+// src/components/Works.jsx
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { blogPosts } from '../../Constants/constants';
 
 const Works = () => {
+    const { t } = useTranslation('works');
+
     return (
         <div id="aboutUs" className="p-8 xl:p-20">
             <div className="mb-8">
                 <h1 className="text-[40px] font-black text-center">
-                    Innovación y Sostenibilidad en la Industria Textil: Noticias y Tendencias
+                    {t('headerTitle')}
                 </h1>
                 <p className="text-xl text-gray-500 text-center">
-                    Bienvenido a nuestro blog, donde exploramos las últimas tendencias y avances en la industria textil. Desde innovaciones tecnológicas y nuevas técnicas de teñido y estampado, hasta el impacto ambiental de la producción textil y el uso de telas naturales, nuestro objetivo es mantenerte informado y al día. Aprende de expertos y descubre cómo la industria está evolucionando hacia prácticas más sostenibles y eficientes. Únete a nosotros en este viaje de descubrimiento e innovación.
+                    {t('headerDesc')}
                 </p>
             </div>
             {/* Works */}
@@ -23,8 +28,11 @@ const Works = () => {
                                 className="w-full h-[400px] object-cover rounded-3xl transition-transform transform hover:scale-105"
                             />
                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-3xl opacity-0 transition-opacity duration-300 hover:opacity-100">
-                                <Link to={post.link} className="bg-primary text-white py-2 px-6 rounded-xl font-semibold transition-transform transform hover:scale-110">
-                                    View Details
+                                <Link
+                                    to={post.link}
+                                    className="bg-primary text-white py-2 px-6 rounded-xl font-semibold transition-transform transform hover:scale-110"
+                                >
+                                    {t('viewDetails')}
                                 </Link>
                             </div>
                         </div>

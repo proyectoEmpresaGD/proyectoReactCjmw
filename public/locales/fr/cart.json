@@ -1,0 +1,23 @@
+{
+    "orderModalTitle": "Passer la commande",
+    "nameLabel": "Nom",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Téléphone",
+    "shippingZoneLabel": "Zone d'expédition",
+    "zonePeninsula": "Espagne continentale",
+    "zoneBalearic": "Îles Baléares",
+    "zoneCanary": "Îles Canaries",
+    "zoneCeuta": "Ceuta",
+    "zoneMelilla": "Melilla",
+    "shippingCostNotice": "Les frais de port sont calculés séparément",
+    "isClientLabel": "Êtes-vous notre client ?",
+    "companyCIFLabel": "CIF de l'entreprise",
+    "submitOrderButton": "Valider la commande",
+    "cartTitle": "Panier",
+    "width": "Largeur",
+    "color": "Couleur",
+    "totalLabel": "Total",
+    "inDevelopment": "En développement",
+    "orderSuccessMessage": "Votre commande est en cours de traitement. Nous vous contacterons sous peu.",
+    "orderErrorMessage": "Une erreur est survenue lors de la commande. Veuillez réessayer."
+}

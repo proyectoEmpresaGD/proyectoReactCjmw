@@ -66,11 +66,9 @@ export const NAVIGATION_LINKS = {
 
 // Opciones de idioma
 export const languageOptions = [
+    { value: 'es', label: 'Español' },
     { value: 'en', label: 'English' },
-    { value: 'es', label: 'Spanish' },
-    { value: 'fr', label: 'French' },
-    { value: 'de', label: 'German' },
-    { value: 'it', label: 'Italian' }
+    { value: 'fr', label: 'Français' },
 ];
 
 // Logos de las marcas

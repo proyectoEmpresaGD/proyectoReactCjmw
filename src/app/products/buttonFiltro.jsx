@@ -1,20 +1,16 @@
-// src/components/Filtro.jsx
 import { useState } from 'react';
 import { FaSlidersH } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import FilterPanel from './FilterPanel';
 
 export default function Filtro({ setFilteredProducts, page, clearFiltersCallback }) {
     const [isPanelOpen, setIsPanelOpen] = useState(false);
-
     const [filters, setFilters] = useState({
-        brand: [],
-        color: [],
-        collection: [],
-        fabricType: [],
-        fabricPattern: [],
-        martindale: []
+        brand: [], color: [], collection: [],
+        fabricType: [], fabricPattern: [], martindale: []
     });
     const itemsPerPage = 16;
+    const { t } = useTranslation('buttonFiltro');
 
     const applyFilters = (selectedFilters) => {
         setFilters(selectedFilters);
@@ -70,7 +66,9 @@ export default function Filtro({ setFilteredProducts, page, clearFiltersCallback
         "
             >
                 <FaSlidersH className="w-6 h-6 text-gray-700" />
-                <span className="hidden md:block text-gray-700 font-medium">Filtros</span>
+                <span className="hidden md:block text-gray-700 font-medium">
+                    {t('openButton')}
+                </span>
             </button>
 
             {/* PANEL LATERAL */}

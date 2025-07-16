@@ -246,43 +246,69 @@ export class ProductModel {
     }
 
     const searchString = `%${query}%`;
-    let sql = `
-      SELECT *, similarity(unaccent(UPPER("nombre")), unaccent(UPPER($1))) AS sim
+
+    // Construimos clausula de exclusión igual que antes
+    const exclusion = this.getExcludedNamesClause(2);
+
+    // Seleccionamos también sim sobre nombre+tonalidad
+    const baseSql = `
+      SELECT
+        *,
+        similarity(
+          unaccent(UPPER(nombre || ' ' || COALESCE(tonalidad, ''))),
+          unaccent(UPPER($1))
+        ) AS sim
       FROM productos
       WHERE (
-        unaccent(UPPER("nombre")) LIKE unaccent(UPPER($1)) OR
-        unaccent(UPPER("coleccion")) LIKE unaccent(UPPER($1))
+        unaccent(UPPER(nombre)) LIKE unaccent(UPPER($1))
+        OR unaccent(UPPER(coleccion)) LIKE unaccent(UPPER($1))
+        OR unaccent(UPPER(tonalidad)) LIKE unaccent(UPPER($1))
+        -- por si el usuario escribe "DUKE PORCELAIN" como frase completa
+        OR unaccent(UPPER(nombre || ' ' || COALESCE(tonalidad, '')))
+            LIKE unaccent(UPPER($1))
       )
-      AND "nombre" IS NOT NULL AND "nombre" != ''
+      AND nombre IS NOT NULL AND nombre <> ''
+      AND ${exclusion.clause}
+      ORDER BY sim DESC, nombre, codprodu
+      LIMIT $${2 + exclusion.values.length}
+      OFFSET $${3 + exclusion.values.length}
     `;
 
-    const exclusion = this.getExcludedNamesClause(2);
-    sql += ` AND ${exclusion.clause}`;
-    sql += ' ORDER BY sim DESC, "nombre", "codprodu" LIMIT $' + (2 + exclusion.values.length) + ' OFFSET $' + (3 + exclusion.values.length);
+    const params = [
+      searchString,
+      ...exclusion.values,
+      limit,
+      offset
+    ];
 
-    const params = [searchString, ...exclusion.values, limit, offset];
+    const { rows } = await pool.query(baseSql, params);
 
-    const { rows } = await pool.query(sql, params);
-
+    // Filtramos por un umbral de similitud como antes
     const filteredRows = rows.filter(r => r.sim >= 0.3 || rows[0]);
+
     const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
 
+    // Cargamos imágenes igual que antes
     const productsWithImages = await Promise.all(
-      filteredRows.map(async (product) => {
-        let imageObj = await ImagenModel.getByCodproduAndCodclaarchivo({
+      filteredRows.map(async product => {
+        const img = await ImagenModel.getByCodproduAndCodclaarchivo({
           codprodu: product.codprodu,
           codclaarchivo: 'Baja',
-          res,
+          res
         });
-
         return {
           ...product,
-          image: imageObj?.ficadjunto ? `https://${imageObj.ficadjunto}` : defaultImageUrl,
+          image: img?.ficadjunto
+            ? `https://${img.ficadjunto}`
+            : defaultImageUrl
         };
       })
     );
 
-    return { products: productsWithImages, total: productsWithImages.length };
+    return {
+      products: productsWithImages,
+      total: productsWithImages.length
+    };
   }
 
   static async getByCodFamil(codfamil) {

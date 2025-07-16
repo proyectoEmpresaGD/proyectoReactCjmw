@@ -1,0 +1,14 @@
+{
+    "placeholder": "SEARCH FABRICS... (E.G. SAN FERNANDO, GRAZALEMA, FLA000860)",
+    "clear": "Clear search",
+    "minChars": "TYPE AT LEAST 3 CHARACTERS TO SEARCH.",
+    "loading": "LOADING...",
+    "productsSection": "PRODUCTS",
+    "collectionsSection": "COLLECTIONS",
+    "seeAll": "SEE ALL RESULTS",
+    "noResults": "NO RESULTS FOUND. TRY SEARCHING BY NAME, COLLECTION, TONE OR PRODUCT CODE.",
+    "noCollection": "NO COLLECTION",
+    "noTone": "NO TONE",
+    "collectionPrefix": "COLLECTION:",
+    "recent": "RECENT SEARCHES"
+}

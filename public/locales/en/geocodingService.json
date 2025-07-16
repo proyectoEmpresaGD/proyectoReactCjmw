@@ -1,0 +1,7 @@
+{
+    "findUsTitle": "Find us near you",
+    "inputPlaceholder": "Where are you located?",
+    "searchButton": "Search",
+    "nearbyStoresTitle": "Your Nearest Stores",
+    "geocodeError": "Geocoding error: {{status}}"
+}

@@ -1,0 +1,33 @@
+{
+    "title": "Contract Services",
+    "team": {
+        "heading": "The Team",
+        "alt": "Team",
+        "p1": "The illusion of improving in each decoration, the order in execution and the perfect completion, encourage the creation of a team of professionals who travel to any part of the world, installing our made-to-measure items for each project.",
+        "p2": "Each hotel is a new adventure, a learning experience to broaden our expertise, and a new place where we can demonstrate our dynamism.",
+        "p3": "We are all a team, from the first to the last, and we all rely on each other. From the start of the manufacturing process to its completion, that journey is governed by a love for our work and our colleagues."
+    },
+    "department": {
+        "heading": "The Department",
+        "alt": "Department",
+        "p1": "In 2008, our company created a new line of work dedicated to hotel installation. Step by step, and relying on various projects, we professionalized and automated our Made-to-Measure division, adding machinery and training our staff.",
+        "p2": "Based on quality tailoring and just-in-time delivery, we developed our own installation team. Our goal is to shape the space by reading the soul of the decorative project."
+    },
+    "projects": {
+        "heading": "Significant Projects",
+        "alt": "Projects",
+        "p1": "Most of our work focuses on decorating themed restaurants and 4- and 5-star hotels. Projects led by the most significant design studios in Spain and around the world.",
+        "p2": "Boutique hotels in cities such as Berlin, Córdoba, Lisbon, London, Madrid, Marbella, Rome, Seville, and large hotels in Cancun, Punta Cana, and Jamaica."
+    },
+    "fabrics": {
+        "heading": "Exclusive Fabrics on Demand",
+        "alt": "Fabrics",
+        "p1": "We develop fabrics tailored to each project's specific regulations, including UNE, DIN, BS, or IMO standards. All fabrics are available under our HARBOUR brand, offering a wide range of fire-retardant and outdoor textiles."
+    },
+    "contact": {
+        "heading": "Contact Us",
+        "p1": "If you have any questions or would like more information about our services, please don’t hesitate to reach out. We’re here to help!",
+        "p2": "Write to us at: ",
+        "button": "Send Email"
+    }
+}

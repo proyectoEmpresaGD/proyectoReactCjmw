@@ -1,0 +1,8 @@
+{
+    "title": "Colecciones disponibles",
+    "mobileHint": "Toca para ver",
+    "loading": "Cargando...",
+    "errorPrefix": "Error:",
+    "noCollections": "No se encontraron colecciones para {{marca}}",
+    "httpError": "Error HTTP"
+}

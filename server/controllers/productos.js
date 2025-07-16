@@ -114,39 +114,45 @@ export class ProductController {
     try {
       const { query, limit, page } = req.query;
 
-      if (!query || query.trim() === '') {
+      // 1️⃣ Validación de query
+      if (!query || !query.trim()) {
         return res.status(400).json({ message: 'Query parameter is required' });
       }
 
+      // 2️⃣ Parseo de paginación
       const limitParsed = parseInt(limit, 10) || 12;
       const pageParsed = parseInt(page, 10) || 1;
       const offset = (pageParsed - 1) * limitParsed;
 
+      // 3️⃣ Llamada al modelo (incluye ahora nombre+tonalidad)
       const { products, total } = await ProductModel.search({
         query,
         limit: limitParsed,
-        offset,
+        offset
       });
 
-      // Log para verificar los resultados recibidos
-      console.log("[DEBUG] Controller search results count:", products.length);
+      console.log('[DEBUG] Controller search results count:', products.length);
 
+      // 4️⃣ Si no hay resultados, devolvemos 404
       if (products.length === 0) {
         return res.status(404).json({ message: 'No products found for the search query' });
       }
 
+      // 5️⃣ Cache y respuesta
       res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
-      res.json({
+      return res.json({
         products,
         pagination: {
           currentPage: pageParsed,
           limit: limitParsed,
-          totalResults: total,
-        },
+          totalResults: total
+        }
       });
     } catch (error) {
       console.error('Error searching products:', error);
-      res.status(500).json({ error: 'Error searching products', details: error.message });
+      return res
+        .status(500)
+        .json({ error: 'Error searching products', details: error.message });
     }
   }
 

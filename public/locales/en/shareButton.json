@@ -1,0 +1,19 @@
+{
+    "shareTitle": "Share this product",
+    "shareIconAlt": "Share icon",
+    "shareButton": "SHARE",
+    "facebookAria": "Share on Facebook",
+    "facebookAlt": "Facebook",
+    "twitterText": "Check out this product!",
+    "twitterAria": "Share on Twitter",
+    "twitterAlt": "Twitter",
+    "whatsappText": "Check out this product!",
+    "whatsappAria": "Share on WhatsApp",
+    "whatsappAlt": "WhatsApp",
+    "linkedinAria": "Share on LinkedIn",
+    "linkedinAlt": "LinkedIn",
+    "emailSubject": "Check out this product",
+    "emailBody": "Have a look at this link:",
+    "emailAria": "Share via email",
+    "emailAlt": "Email"
+}

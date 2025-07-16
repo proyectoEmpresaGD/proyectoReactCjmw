@@ -1,0 +1,33 @@
+{
+    "title": "Services Contract",
+    "team": {
+        "heading": "L’Équipe",
+        "alt": "Équipe",
+        "p1": "L’illusion de s’améliorer à chaque décoration, l’ordre d’exécution et l’achèvement parfait encouragent la création d’une équipe de professionnels voyageant dans le monde entier pour installer nos articles sur mesure pour chaque projet.",
+        "p2": "Chaque hôtel est une nouvelle aventure, une nouvelle expérience d’apprentissage pour enrichir notre savoir-faire et un nouvel endroit où nous pouvons démontrer notre dynamisme.",
+        "p3": "Nous formons tous une équipe, du premier au dernier, et nous dépendons tous les uns des autres. Du début du processus de fabrication jusqu’à son achèvement, ce parcours est guidé par l’amour du travail et de nos collègues."
+    },
+    "department": {
+        "heading": "Le Département",
+        "alt": "Département",
+        "p1": "En 2008, notre entreprise a créé une nouvelle ligne dédiée à l’installation hôtelière. Pas à pas et s’appuyant sur divers projets, nous avons professionnalisé et automatisé notre division Sur Mesure, en intégrant des machines et en formant notre personnel.",
+        "p2": "Basés sur une confection de qualité et une livraison « just in time », nous avons développé notre propre équipe d’installation. Notre objectif est de façonner l’espace en lisant l’âme du projet décoratif."
+    },
+    "projects": {
+        "heading": "Projets Significatifs",
+        "alt": "Projets",
+        "p1": "La majeure partie de notre travail est axée sur la décoration de restaurants à thème et d’hôtels 4 et 5 étoiles, dirigés par les studios de décoration les plus importants d’Espagne et du monde.",
+        "p2": "Hôtels boutique dans des villes comme Berlin, Cordoue, Lisbonne, Londres, Madrid, Marbella, Rome, Séville, et grands hôtels à Cancún, Punta Cana et Jamaïque."
+    },
+    "fabrics": {
+        "heading": "Tissus Exclusifs à la Demande",
+        "alt": "Tissus",
+        "p1": "Nous développons des tissus adaptés aux réglementations spécifiques de chaque projet, notamment aux normes UNE, DIN, BS ou IMO. Tous les tissus sont disponibles sous notre marque HARBOUR, offrant une large gamme de textiles ignifuges et d’extérieur."
+    },
+    "contact": {
+        "heading": "Contactez-Nous",
+        "p1": "Si vous avez des questions ou souhaitez plus d’informations sur nos services, n’hésitez pas à nous contacter. Nous sommes à votre disposition !",
+        "p2": "Écrivez-nous à : ",
+        "button": "Envoyer un Email"
+    }
+}

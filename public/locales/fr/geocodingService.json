@@ -1,0 +1,7 @@
+{
+    "findUsTitle": "Trouvez-nous près de chez vous",
+    "inputPlaceholder": "Où êtes-vous situé ?",
+    "searchButton": "Rechercher",
+    "nearbyStoresTitle": "Vos Magasins à Proximité",
+    "geocodeError": "Erreur de géocodage : {{status}}"
+}

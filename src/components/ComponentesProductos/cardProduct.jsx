@@ -6,6 +6,7 @@ import Modal from './modal';
 import Filtro from '../../app/products/buttonFiltro';
 import SubMenuCarousel from './SubMenuCarousel';
 import CryptoJS from 'crypto-js';
+import { useTranslation } from 'react-i18next';
 import {
     secretKey,
     itemsPerPage,
@@ -55,6 +56,7 @@ const LazyImage = ({ src, alt, className }) => {
 };
 
 const CardProduct = () => {
+    const { t } = useTranslation('cardProduct');
     const location = useLocation();
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
@@ -340,11 +342,17 @@ const CardProduct = () => {
                                 alt={product.nombre}
                             />
                             <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-lg md:hidden">
-                                Toca para ver
+                                {t('touchToView')}
                             </div>
                         </div>
-                        <h3 className="text-center text-xs sm:text-xl text-gray-900 mt-4">
-                            {product.nombre}
+
+                        <h3 className="text-center mt-4">
+                            <span className="block text-lg sm:text-xl font-semibold text-gray-900">
+                                {product.nombre}
+                            </span>
+                            <span className="block text-sm text-gray-600 pt-1 mt-1">
+                                {product.tonalidad}
+                            </span>
                         </h3>
                     </div>
                 ))}
@@ -353,10 +361,14 @@ const CardProduct = () => {
             {loading && <SkeletonLoader repeticiones={10} />}
 
             {!loading && products.length === 0 && !error && (
-                <div className="text-center text-gray-500">No se encontraron productos</div>
+                <div className="text-center text-gray-500">
+                    {t('noProductsFound')}
+                </div>
             )}
             {!loading && error && (
-                <div className="text-center text-red-500">{error}</div>
+                <div className="text-center text-red-500">
+                    {error}
+                </div>
             )}
 
             {totalPages > 1 && (

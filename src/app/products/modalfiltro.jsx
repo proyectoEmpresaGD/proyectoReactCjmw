@@ -1,6 +1,7 @@
 // src/components/FilterPanel.jsx
 import { useState, useEffect } from 'react';
 import { FaChevronRight, FaTimes } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 const BRAND_NAMES = { ARE: 'Arena', HAR: 'Harbour', FLA: 'Flamenco', CJM: 'CJM', BAS: 'Bassari' };
 const TIPOS_INVALIDOS = ["JAQUARD", "TEJIDO ", "VISILLO FR", "TERCIOPELO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
@@ -26,6 +27,7 @@ const COLOR_MAP = {
 
 
 export default function FilterPanel({ setFilteredProducts, page, clearFiltersCallback }) {
+    const { t } = useTranslation('filterPanel');
     const [isOpen, setIsOpen] = useState(false);
 
     // selección
@@ -58,14 +60,11 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
             const data = await res.json();
 
             // Orden visual de colores
-            const COLOR_ORDER = [
-                'BLANCO', 'BEIGE', 'AMARILLO', 'NARANJA', 'ROSA', 'ROJO',
-                'VIOLETA', 'MORADO', 'VERDE', 'AZUL', 'MARRON', 'GRIS', 'NEGRO'
-            ];
+            const COLOR_ORDER = [/* ... */];
 
             // Filtrado general
             const valid = (arr, validOpt = [], invalidOpt = []) => {
-                const hasT = (s) => /[áéíóúÁÉÍÓÚ]/.test(s);
+                const hasT = s => /[áéíóúÁÉÍÓÚ]/.test(s);
                 return [...new Set(
                     arr.filter(item =>
                         item &&
@@ -78,7 +77,6 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                 )];
             };
 
-            // Aplicar filtros y ordenamientos
             setBrands(
                 valid(data.brands, Object.keys(BRAND_NAMES)).sort((a, b) => a.localeCompare(b))
             );
@@ -97,9 +95,9 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
             setColors(
                 valid(data.colors)
                     .filter(c => ALLOWED_COLORS.includes(c.toUpperCase()))
-                    .sort((a, b) => (
+                    .sort((a, b) =>
                         COLOR_ORDER.indexOf(a.toUpperCase()) - COLOR_ORDER.indexOf(b.toUpperCase())
-                    ))
+                    )
             );
         })();
     }, [isOpen]);
@@ -127,6 +125,7 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
     };
 
     return <>
+        {/* Toggle button */}
         <div className="fixed top-1/2 left-4 transform -translate-y-1/2 z-20">
             <button
                 onClick={() => setIsOpen(o => !o)}
@@ -135,14 +134,18 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                 <FaChevronRight className={`text-2xl transform transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
         </div>
+
         {isOpen && <>
             <div onClick={() => setIsOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-40" />
             <aside className="fixed top-0 left-0 h-screen w-80 bg-white shadow-xl z-50 flex flex-col">
                 {/* header */}
                 <header className="flex items-center justify-between p-4 border-b">
-                    <h2 className="text-xl font-semibold">Filtros</h2>
-                    <button onClick={() => setIsOpen(false)}><FaTimes className="w-5 h-5 text-gray-600" /></button>
+                    <h2 className="text-xl font-semibold">{t('filters')}</h2>
+                    <button onClick={() => setIsOpen(false)}>
+                        <FaTimes className="w-5 h-5 text-gray-600" />
+                    </button>
                 </header>
+
                 {/* contenido */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-6">
                     {/* tags */}
@@ -152,7 +155,6 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                                 <span key={i} className="bg-gray-200 rounded-full px-3 py-1 text-sm flex items-center">
                                     {item}
                                     <button onClick={() => {
-                                        // quitar de la selección correcta
                                         if (brandsSel.includes(item)) setBrandsSel(bs => bs.filter(x => x !== item));
                                         if (colorsSel.includes(item)) setColorsSel(cs => cs.filter(x => x !== item));
                                         if (collectionsSel.includes(item)) setCollectionsSel(c => c.filter(x => x !== item));
@@ -163,9 +165,10 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                                 </span>
                             )}
                     </div>
+
                     {/* Marcas */}
                     <section>
-                        <h3 className="font-semibold mb-2">Marcas</h3>
+                        <h3 className="font-semibold mb-2">{t('brands')}</h3>
                         {brands.map(b =>
                             <label key={b} className="flex items-center space-x-2 mb-1">
                                 <input type="checkbox" className="form-checkbox h-5 w-5 text-[#D2B48C]"
@@ -174,10 +177,11 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                             </label>
                         )}
                     </section>
+
                     {/* Colecciones */}
                     <section>
-                        <h3 className="font-semibold mb-2">Colecciones</h3>
-                        <input type="text" placeholder="Buscar colecciones..."
+                        <h3 className="font-semibold mb-2">{t('collections')}</h3>
+                        <input type="text" placeholder={t('searchCollections')}
                             value={collSearch} onChange={e => setCollSearch(e.target.value)}
                             className="mb-2 p-2 border rounded w-full" />
                         {collections.filter(c => c.toLowerCase().includes(collSearch.toLowerCase()))
@@ -189,10 +193,11 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                                 </label>
                             )}
                     </section>
+
                     {/* Tipos de Tela */}
                     <section>
-                        <h3 className="font-semibold mb-2">Tipos de Tela</h3>
-                        <input type="text" placeholder="Buscar tipos..."
+                        <h3 className="font-semibold mb-2">{t('fabricTypes')}</h3>
+                        <input type="text" placeholder={t('searchTypes')}
                             value={typeSearch} onChange={e => setTypeSearch(e.target.value)}
                             className="mb-2 p-2 border rounded w-full" />
                         {fabricTypes.filter(t => t.toLowerCase().includes(typeSearch.toLowerCase()))
@@ -204,10 +209,11 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                                 </label>
                             )}
                     </section>
+
                     {/* Dibujo de Tela */}
                     <section>
-                        <h3 className="font-semibold mb-2">Dibujo de Tela</h3>
-                        <input type="text" placeholder="Buscar dibujos..."
+                        <h3 className="font-semibold mb-2">{t('fabricPatterns')}</h3>
+                        <input type="text" placeholder={t('searchPatterns')}
                             value={patternSearch} onChange={e => setPatternSearch(e.target.value)}
                             className="mb-2 p-2 border rounded w-full" />
                         {fabricPatterns.filter(p => p.toLowerCase().includes(patternSearch.toLowerCase()))
@@ -219,9 +225,10 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                                 </label>
                             )}
                     </section>
+
                     {/* Colores */}
                     <section>
-                        <h3 className="font-semibold mb-2">Colores</h3>
+                        <h3 className="font-semibold mb-2">{t('colors')}</h3>
                         <div className="grid grid-cols-4 gap-2">
                             {colors.map(col => {
                                 const up = col.toUpperCase();
@@ -230,17 +237,17 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                                 return <div key={col}
                                     onClick={() => toggle(colorsSel, setColorsSel, col)}
                                     style={{ background: bg }}
-                                    className={`h-10 w-10 rounded cursor-pointer flex items-center justify-center transition hover:scale-105 ${sel ? 'ring-4 ring-[#D2B48C]' : ''
-                                        }`}
+                                    className={`h-10 w-10 rounded cursor-pointer flex items-center justify-center transition hover:scale-105 ${sel ? 'ring-4 ring-[#D2B48C]' : ''}`}
                                 >
                                     {sel && <div className="h-4 w-4 bg-white rounded-full" />}
                                 </div>;
                             })}
                         </div>
                     </section>
+
                     {/* Martindale */}
                     <section>
-                        <h3 className="font-semibold mb-2">Martindale</h3>
+                        <h3 className="font-semibold mb-2">{t('martindale')}</h3>
                         {martindaleValues.map(m =>
                             <label key={m} className="flex items-center space-x-2 mb-1">
                                 <input type="checkbox" className="form-checkbox h-5 w-5 text-[#D2B48C]"
@@ -250,10 +257,11 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                         )}
                     </section>
                 </div>
+
                 <footer className="p-4 border-t">
                     <button onClick={apply}
                         className="w-full py-2 font-bold rounded bg-[#D2B48C] hover:bg-[#C19A6B] text-white transition">
-                        Aplicar Filtros
+                        {t('applyFilters')}
                     </button>
                 </footer>
             </aside>

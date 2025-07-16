@@ -1,9 +1,10 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { RiSearchLine, RiCloseLine } from 'react-icons/ri';
-import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import debounce from 'lodash.debounce';
+import { RiSearchLine, RiCloseLine } from 'react-icons/ri';
 import { defaultImageUrl } from '../Constants/constants';
+import { useTranslation } from 'react-i18next';
 
 // Variantes para la animación del dropdown
 const dropdownVariants = {
@@ -12,11 +13,13 @@ const dropdownVariants = {
     exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
 };
 
-// Función para normalizar la consulta (trim y eliminar espacios extra)
-const normalizeQuery = (q) => q.trim().replace(/\s+/g, ' ');
+// Normaliza la consulta
+const normalizeQuery = q => q.trim().replace(/\s+/g, ' ');
 
 const SearchBar = ({ closeSearchBar }) => {
+    const { t } = useTranslation('search');
     const navigate = useNavigate();
+
     const [query, setQuery] = useState('');
     const [productSuggestions, setProductSuggestions] = useState([]);
     const [collectionSuggestions, setCollectionSuggestions] = useState([]);
@@ -27,47 +30,40 @@ const SearchBar = ({ closeSearchBar }) => {
     const inputRef = useRef(null);
     const suggestionRefs = useRef([]);
 
-
-    // API: obtener sugerencias de productos (se muestran todos los resultados devueltos)
-    const fetchProductSuggestions = async (q) => {
+    // Fetch productos
+    const fetchProductSuggestions = async q => {
         try {
-            const normalized = normalizeQuery(q);
-            const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${encodeURIComponent(normalized)}`;
-            const res = await fetch(url, { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } });
-            if (!res.ok) throw new Error('Error fetching product suggestions');
+            const norm = normalizeQuery(q);
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${encodeURIComponent(norm)}`,
+                { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } }
+            );
+            if (!res.ok) throw new Error();
             const data = await res.json();
-            if (Array.isArray(data.products) && data.products.length > 0) {
-                setProductSuggestions(data.products);
-            } else {
-                setProductSuggestions([]);
-            }
-        } catch (error) {
-            console.error('Error fetching product suggestions:', error);
+            setProductSuggestions(Array.isArray(data.products) ? data.products : []);
+        } catch {
             setProductSuggestions([]);
         }
     };
 
-    // API: obtener sugerencias de colecciones (se muestran todas las colecciones devueltas)
-    const fetchCollectionSuggestions = async (q) => {
+    // Fetch colecciones
+    const fetchCollectionSuggestions = async q => {
         try {
-            const normalized = normalizeQuery(q);
-            const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/searchCollections?searchTerm=${encodeURIComponent(normalized)}`;
-            const res = await fetch(url, { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } });
-            if (!res.ok) throw new Error('Error fetching collection suggestions');
+            const norm = normalizeQuery(q);
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/products/searchCollections?searchTerm=${encodeURIComponent(norm)}`,
+                { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } }
+            );
+            if (!res.ok) throw new Error();
             const data = await res.json();
-            console.log("[DEBUG] Collections fetched:", data);
-            if (Array.isArray(data) && data.length > 0) {
-                setCollectionSuggestions(data);
-            } else {
-                setCollectionSuggestions([]);
-            }
-        } catch (error) {
-            console.error('Error fetching collection suggestions:', error);
+            setCollectionSuggestions(Array.isArray(data) ? data : []);
+        } catch {
             setCollectionSuggestions([]);
         }
     };
 
-    const fetchAllSuggestions = async (q) => {
+    // Lanza ambos
+    const fetchAll = async q => {
         if (q.length < 3) {
             setProductSuggestions([]);
             setCollectionSuggestions([]);
@@ -78,32 +74,33 @@ const SearchBar = ({ closeSearchBar }) => {
         setIsLoading(false);
     };
 
-    const debouncedFetch = useCallback(debounce(fetchAllSuggestions, 300), []);
+    const debouncedFetch = useCallback(debounce(fetchAll, 300), []);
 
-    // Convertir el input a mayúsculas siempre
-    const handleChange = (e) => {
+    const handleChange = e => {
         const val = e.target.value.toUpperCase();
         setQuery(val);
         debouncedFetch(val);
     };
 
-    const totalSuggestions = productSuggestions.length + collectionSuggestions.length;
+    const total = productSuggestions.length + collectionSuggestions.length;
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = e => {
         if (e.key === 'ArrowDown') {
             e.preventDefault();
-            setActiveIndex((prev) => Math.min(prev + 1, totalSuggestions - 1));
-        } else if (e.key === 'ArrowUp') {
+            setActiveIndex(prev => Math.min(prev + 1, total - 1));
+        }
+        if (e.key === 'ArrowUp') {
             e.preventDefault();
-            setActiveIndex((prev) => Math.max(prev - 1, 0));
-        } else if (e.key === 'Enter') {
+            setActiveIndex(prev => Math.max(prev - 1, 0));
+        }
+        if (e.key === 'Enter') {
             e.preventDefault();
             if (activeIndex >= 0) {
                 if (activeIndex < productSuggestions.length) {
-                    selectProductSuggestion(productSuggestions[activeIndex]);
+                    selectProduct(productSuggestions[activeIndex]);
                 } else {
-                    const colIndex = activeIndex - productSuggestions.length;
-                    selectCollectionSuggestion(collectionSuggestions[colIndex]);
+                    const ci = activeIndex - productSuggestions.length;
+                    selectCollection(collectionSuggestions[ci]);
                 }
             } else {
                 submitSearch(query);
@@ -113,60 +110,51 @@ const SearchBar = ({ closeSearchBar }) => {
 
     useEffect(() => {
         if (activeIndex >= 0 && suggestionRefs.current[activeIndex]) {
-            suggestionRefs.current[activeIndex].scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-            });
+            suggestionRefs.current[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }, [activeIndex]);
 
     useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
+        inputRef.current?.focus();
     }, []);
 
-    const selectProductSuggestion = (item) => {
-        const displayText = `${item.nombre} (${item.coleccion || 'SIN COLECCIÓN'}, ${item.tonalidad || 'SIN TONALIDAD'})`;
-        setQuery(displayText);
-        addToHistory(displayText);
-        // Reiniciamos la paginación forzando page=1
+    const addToHistory = term => {
+        setHistory(prev => [term, ...prev.filter(h => h !== term)].slice(0, 5));
+    };
+
+    const selectProduct = item => {
+        const txt = `${item.nombre} (${item.coleccion || t('noCollection')}, ${item.tonalidad || t('noTone')})`;
+        setQuery(txt);
+        addToHistory(txt);
         navigate(`/products?productId=${encodeURIComponent(item.codprodu)}&page=1`);
-        setActiveIndex(-1);
-        setProductSuggestions([]);
-        setCollectionSuggestions([]);
-        if (closeSearchBar) closeSearchBar();
+        reset();
     };
 
-    const selectCollectionSuggestion = (col) => {
-        const displayText = `COLECCIÓN: ${col}`;
-        setQuery(displayText);
-        addToHistory(displayText);
-        // Reiniciamos la paginación forzando page=1
+    const selectCollection = col => {
+        const txt = `${t('collectionPrefix')} ${col}`;
+        setQuery(txt);
+        addToHistory(txt);
         navigate(`/products?collection=${encodeURIComponent(col)}&page=1`);
+        reset();
+    };
+
+    const submitSearch = q => {
+        const norm = normalizeQuery(q);
+        if (!norm) return;
+        addToHistory(norm);
+        navigate(`/products?search=${encodeURIComponent(norm)}&page=1`);
+        reset();
+    };
+
+    const reset = () => {
         setActiveIndex(-1);
         setProductSuggestions([]);
         setCollectionSuggestions([]);
-        if (closeSearchBar) closeSearchBar();
-    };
-
-    const submitSearch = (q) => {
-        const normalized = normalizeQuery(q);
-        if (normalized === '') return;
-        addToHistory(normalized);
-        // Reiniciamos la paginación forzando page=1
-        navigate(`/products?search=${encodeURIComponent(normalized)}&page=1`);
-        setProductSuggestions([]);
-        setCollectionSuggestions([]);
-        if (closeSearchBar) closeSearchBar();
-    };
-
-    const addToHistory = (term) => {
-        setHistory((prev) => [term, ...prev.filter((h) => h !== term)].slice(0, 5));
+        closeSearchBar?.();
     };
 
     useEffect(() => {
-        if (query === '') setActiveIndex(-1);
+        if (!query) setActiveIndex(-1);
     }, [query]);
 
     return (
@@ -178,23 +166,25 @@ const SearchBar = ({ closeSearchBar }) => {
                     type="text"
                     style={{ textTransform: 'uppercase' }}
                     className="flex-grow bg-transparent focus:outline-none text-gray-800 placeholder-gray-400"
-                    placeholder="BUSCAR TELAS... (EJ. SAN FERNANDO, GRAZALEMA, FLA000860)"
+                    placeholder={t('placeholder')}
                     value={query}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     role="combobox"
-                    aria-expanded={query.length >= 3 && totalSuggestions > 0}
+                    aria-expanded={query.length >= 3 && total > 0}
                     aria-controls="search-suggestions"
                 />
                 {query && (
-                    <button onClick={() => setQuery('')} className="focus:outline-none" aria-label="Clear search">
+                    <button onClick={() => setQuery('')} className="focus:outline-none" aria-label={t('clear')}>
                         <RiCloseLine className="text-gray-500" size={20} />
                     </button>
                 )}
             </div>
-            {query.length > 0 && query.length < 3 && (
-                <div className="mt-1 text-xs text-gray-500">ESCRIBE AL MENOS 3 CARACTERES PARA BUSCAR.</div>
+
+            {query && query.length < 3 && (
+                <div className="mt-1 text-xs text-gray-500">{t('minChars')}</div>
             )}
+
             <AnimatePresence>
                 {query.length >= 3 && (
                     <motion.div
@@ -207,32 +197,32 @@ const SearchBar = ({ closeSearchBar }) => {
                         variants={dropdownVariants}
                     >
                         {isLoading ? (
-                            <div className="px-4 py-2 text-center text-sm text-gray-600">CARGANDO...</div>
-                        ) : totalSuggestions > 0 ? (
+                            <div className="px-4 py-2 text-center text-sm text-gray-600">{t('loading')}</div>
+                        ) : total > 0 ? (
                             <>
+                                {/* Productos */}
                                 {productSuggestions.length > 0 && (
                                     <div>
-                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">PRODUCTOS</div>
+                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">{t('productsSection')}</div>
                                         <ul>
                                             {productSuggestions.map((item, idx) => (
                                                 <li
                                                     key={item.codprodu}
-                                                    ref={(el) => (suggestionRefs.current[idx] = el)}
-                                                    role="option"
-                                                    aria-selected={activeIndex === idx}
-                                                    className={`flex items-center px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === idx ? 'bg-gray-100' : ''}`}
-                                                    onClick={() => selectProductSuggestion(item)}
+                                                    ref={el => (suggestionRefs.current[idx] = el)}
+                                                    className={`flex items-center px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === idx ? 'bg-gray-100' : ''
+                                                        }`}
+                                                    onClick={() => selectProduct(item)}
                                                 >
                                                     <img
                                                         src={item.image || defaultImageUrl}
                                                         alt={item.nombre}
                                                         className="w-10 h-10 object-cover rounded-full mr-3 shadow-sm"
-                                                        onError={(e) => { e.target.src = defaultImageUrl; }}
+                                                        onError={e => (e.target.src = defaultImageUrl)}
                                                     />
                                                     <div>
                                                         <p className="font-medium text-gray-800">{item.nombre}</p>
                                                         <p className="text-xs text-gray-500">
-                                                            {item.coleccion || 'SIN COLECCIÓN'} · {item.tonalidad || 'SIN TONALIDAD'}
+                                                            {item.coleccion || t('noCollection')} &middot; {item.tonalidad || t('noTone')}
                                                         </p>
                                                     </div>
                                                 </li>
@@ -240,46 +230,49 @@ const SearchBar = ({ closeSearchBar }) => {
                                         </ul>
                                     </div>
                                 )}
+                                {/* Colecciones */}
                                 {collectionSuggestions.length > 0 && (
                                     <div>
-                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">COLECCIONES</div>
+                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">{t('collectionsSection')}</div>
                                         <ul>
                                             {collectionSuggestions.map((col, idx) => {
-                                                const globalIndex = productSuggestions.length + idx;
+                                                const gIdx = productSuggestions.length + idx;
                                                 return (
                                                     <li
                                                         key={col}
-                                                        ref={(el) => (suggestionRefs.current[globalIndex] = el)}
-                                                        role="option"
-                                                        aria-selected={activeIndex === globalIndex}
-                                                        className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === globalIndex ? 'bg-gray-100' : ''}`}
-                                                        onClick={() => selectCollectionSuggestion(col)}
+                                                        ref={el => (suggestionRefs.current[gIdx] = el)}
+                                                        className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === gIdx ? 'bg-gray-100' : ''
+                                                            }`}
+                                                        onClick={() => selectCollection(col)}
                                                     >
-                                                        <p className="font-medium text-gray-800">COLECCIÓN: {col}</p>
+                                                        <p className="font-medium text-gray-800">{t('collectionPrefix')} {col}</p>
                                                     </li>
                                                 );
                                             })}
                                         </ul>
                                     </div>
                                 )}
+                                {/* Ver todos */}
                                 <div
                                     className="sticky bottom-0 bg-white border-t text-center cursor-pointer hover:bg-gray-100 px-4 py-3"
                                     onClick={() => submitSearch(query)}
                                 >
-                                    <span className="font-medium text-blue-600">VER TODOS LOS RESULTADOS</span>
+                                    <span className="font-medium text-blue-600">{t('seeAll')}</span>
                                 </div>
                             </>
                         ) : (
                             <div className="px-4 py-2 text-center text-sm text-gray-600">
-                                NO SE ENCONTRARON RESULTADOS. INTENTA BUSCAR POR <strong>NOMBRE, COLECCIÓN</strong>, <strong>TONALIDAD</strong> O <strong>CÓDIGO DE PRODUCTO</strong>.
+                                {t('noResults')}
                             </div>
                         )}
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Historial */}
             {history.length > 0 && query.length < 3 && (
                 <div className="absolute z-50 w-full bg-white shadow-lg rounded-lg mt-1 overflow-y-auto max-h-60">
-                    <div className="px-4 py-2 border-b font-semibold text-gray-700">BÚSQUEDAS RECIENTES</div>
+                    <div className="px-4 py-2 border-b font-semibold text-gray-700">{t('recent')}</div>
                     <ul>
                         {history.map((term, idx) => (
                             <li

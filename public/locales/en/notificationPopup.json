@@ -1,0 +1,9 @@
+{
+    "closePopup": "Close brochure",
+    "openPopup": "Open brochure",
+    "openBrochure": "📖 View brochure",
+    "logoAlt": "Logo",
+    "viewPdf": "View PDF",
+    "downloadPdf": "Download PDF",
+    "selectBrochure": "Select brochure {{index}}"
+}

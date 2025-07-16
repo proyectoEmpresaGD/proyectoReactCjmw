@@ -1,0 +1,8 @@
+{
+    "title": "Available Collections",
+    "mobileHint": "Tap to view",
+    "loading": "Loading...",
+    "errorPrefix": "Error:",
+    "noCollections": "No collections found for {{marca}}",
+    "httpError": "HTTP Error"
+}

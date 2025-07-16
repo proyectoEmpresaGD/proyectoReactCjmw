@@ -1,0 +1,14 @@
+{
+    "placeholder": "RECHERCHER DES TISSUS... (EX. SAN FERNANDO, GRAZALEMA, FLA000860)",
+    "clear": "Effacer la recherche",
+    "minChars": "ÉCRIVEZ AU MOINS 3 CARACTÈRES POUR RECHERCHER.",
+    "loading": "CHARGEMENT...",
+    "productsSection": "PRODUITS",
+    "collectionsSection": "COLLECTIONS",
+    "seeAll": "VOIR TOUS LES RÉSULTATS",
+    "noResults": "AUCUN RÉSULTAT. ESSAYEZ PAR NOM, COLLECTION, TEINTE OU CODE PRODUIT.",
+    "noCollection": "SANS COLLECTION",
+    "noTone": "SANS TEINTE",
+    "collectionPrefix": "COLLECTION :",
+    "recent": "RECHERCHES RÉCENTES"
+}

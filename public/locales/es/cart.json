@@ -1,0 +1,23 @@
+{
+    "orderModalTitle": "Tramitar Pedido",
+    "nameLabel": "Nombre",
+    "emailLabel": "Correo Electrónico",
+    "phoneLabel": "Teléfono",
+    "shippingZoneLabel": "Zona de envío",
+    "zonePeninsula": "España peninsular",
+    "zoneBalearic": "Islas Baleares",
+    "zoneCanary": "Islas Canarias",
+    "zoneCeuta": "Ceuta",
+    "zoneMelilla": "Melilla",
+    "shippingCostNotice": "Los costos de los portes van aparte",
+    "isClientLabel": "¿Es cliente nuestro?",
+    "companyCIFLabel": "CIF de la empresa",
+    "submitOrderButton": "Tramitar Pedido",
+    "cartTitle": "Carrito de Compras",
+    "width": "Ancho",
+    "color": "Color",
+    "totalLabel": "Total",
+    "inDevelopment": "En desarrollo",
+    "orderSuccessMessage": "Su pedido se está tramitando. En breve nos pondremos en contacto.",
+    "orderErrorMessage": "Ocurrió un error al tramitar el pedido. Por favor, inténtelo de nuevo."
+}
