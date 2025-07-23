@@ -289,9 +289,9 @@ export const Header = ({ closeModal }) => {
 
                         {/* Language */}
                         <div className="relative" ref={languageRef}>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
+                            {/* <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
                                 <FaGlobe size={24} />
-                            </button>
+                            </button> */}
                             {showLanguageDropdown && (
                                 <div className="absolute top-full right-0 mt-2 bg-slate-100 shadow-lg rounded-md py-2 w-32 z-50">
                                     {languageOptions.map(opt => (

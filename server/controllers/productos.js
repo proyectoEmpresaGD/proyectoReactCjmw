@@ -179,39 +179,47 @@ export class ProductController {
     }
   }
 
+  // dentro de ProductController:
   async filterProducts(req, res) {
+    // Los filtros llegan por POST en el body
     const filters = req.body;
     const limit = parseInt(req.query.limit, 10) || 16;
     const page = parseInt(req.query.page, 10) || 1;
     const offset = (page - 1) * limit;
 
     try {
+      // Llamamos a ProductModel.filter, que hemos extendido para aceptar:
+      // filters.uso (['FR','OUTDOOR','IMO']), filters.mantenimiento (['EASYCLEAN']), etc.
       const { products, total } = await ProductModel.filter(filters, limit, offset);
 
-      const validProducts = products.filter(
-        (product) =>
-          !/^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(
-            product.desprodu
-          ) &&
-          !/CUTTING|PERCHA|FUERA DE COLECCIÓN/i.test(product.desprodu) &&
-          ['ARE', 'FLA', 'CJM', 'HAR', 'BAS'].includes(product.codmarca)
+      // Aplicamos las mismas validaciones de "desprodu" y "codmarca" que ya tenías
+      const validProducts = products.filter(product =>
+        // Excluir por desprodu
+        !/^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu)
+        && !/CUTTING|PERCHA|FUERA DE COLECCIÓN/i.test(product.desprodu)
+        // Solo determinadas marcas
+        && ['ARE', 'FLA', 'CJM', 'HAR', 'BAS'].includes(product.codmarca)
       );
 
+      // Cache-Control en edge
       res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+      // Devolvemos productos filtrados + meta
       res.json({
         products: validProducts,
         pagination: {
           currentPage: page,
           limit,
           totalResults: total,
-          totalValidResults: validProducts.length,
-        },
+          totalValidResults: validProducts.length
+        }
       });
     } catch (error) {
       console.error('Error filtering products:', error);
       res.status(500).json({ error: 'Error filtering products', details: error.message });
     }
   }
+
+
 
   async filterByType(req, res) {
     const { type } = req.query;

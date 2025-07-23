@@ -323,15 +323,23 @@ export class ProductModel {
   }
 
   // Obtener filtros de productos
+  // Obtener filtros de productos (incluye mantenimiento casteado a texto)
   static async getFilters() {
     try {
       const { rows: brands } = await pool.query('SELECT DISTINCT codmarca FROM productos');
-      const { rows: collections } = await pool.query('SELECT DISTINCT coleccion, codmarca FROM productos');
+      const { rows: collections } = await pool.query('SELECT DISTINCT coleccion FROM productos');
       const { rows: fabricTypes } = await pool.query('SELECT DISTINCT tipo FROM productos');
       const { rows: fabricPatterns } = await pool.query('SELECT DISTINCT estilo FROM productos');
       const { rows: martindaleValues } = await pool.query('SELECT DISTINCT martindale FROM productos');
       const { rows: colors } = await pool.query('SELECT DISTINCT colorprincipal FROM productos');
       const { rows: tonalidades } = await pool.query('SELECT DISTINCT tonalidad FROM productos');
+
+      // Aquí casteamos mantenimiento::text para poder DISTINCT sobre XML
+      const { rows: mantenimientos } = await pool.query(`
+        SELECT DISTINCT mantenimiento::text AS mantenimiento
+        FROM productos
+        WHERE mantenimiento IS NOT NULL
+      `);
 
       return {
         brands: brands.map(b => b.codmarca),
@@ -340,13 +348,16 @@ export class ProductModel {
         fabricPatterns: fabricPatterns.map(f => f.estilo),
         martindaleValues: martindaleValues.map(m => m.martindale),
         colors: colors.map(c => c.colorprincipal),
-        tonalidades: tonalidades.map(t => t.tonalidad)
+        tonalidades: tonalidades.map(t => t.tonalidad),
+        mantenimientos: mantenimientos.map(m => m.mantenimiento).filter(Boolean),
       };
     } catch (error) {
       console.error('Error fetching filters:', error);
       throw new Error('Error fetching filters');
     }
   }
+
+
 
   // Filtro por tipo de producto
   static async getByType({ type, limit = 16, offset = 0 }) {
@@ -377,42 +388,58 @@ export class ProductModel {
     const params = [];
     let index = 1;
 
+    // 1️⃣ Brand
     if (filters.brand?.length) {
       query += ` AND "codmarca" = ANY($${index++})`;
       params.push(filters.brand);
     }
+    // 2️⃣ Collection
     if (filters.collection?.length) {
-      query += ` AND "coleccion" ILIKE $${index++}`;
-      params.push(`%${filters.collection}%`);
+      query += ` AND "coleccion" ILIKE ANY($${index++})`;
+      params.push(filters.collection.map(c => `%${c}%`));
     }
+    // 3️⃣ Color
     if (filters.color?.length) {
       query += ` AND "colorprincipal" = ANY($${index++})`;
       params.push(filters.color);
     }
+    // 4️⃣ Fabric Type
     if (filters.fabricType?.length) {
       query += ` AND "tipo" = ANY($${index++})`;
       params.push(filters.fabricType);
     }
+    // 5️⃣ Fabric Pattern / Estilo
     if (filters.fabricPattern?.length) {
       query += ` AND "estilo" = ANY($${index++})`;
       params.push(filters.fabricPattern);
     }
+    // 6️⃣ Uso (FR, OUTDOOR, IMO)
     if (filters.uso?.length) {
-      const usoConditions = [];
-      if (filters.uso.includes("FR")) usoConditions.push(`"uso" ILIKE '%FR%'`);
-      if (filters.uso.includes("OUTDOOR")) usoConditions.push(`"uso" ILIKE '%OUTDOOR%'`);
-      if (usoConditions.length) query += ` AND (${usoConditions.join(' OR ')})`;
+      const usoConds = [];
+      if (filters.uso.includes("FR")) usoConds.push(`"uso" ILIKE '%FR%'`);
+      if (filters.uso.includes("OUTDOOR")) usoConds.push(`"uso" ILIKE '%OUTDOOR%'`);
+      if (filters.uso.includes("IMO")) usoConds.push(`"uso" ILIKE '%IMO%'`);
+      if (usoConds.length) query += ` AND (${usoConds.join(" OR ")})`;
     }
+    // 7️⃣ Martindale
     if (filters.martindale?.length) {
       query += ` AND "martindale" = ANY($${index++})`;
       params.push(filters.martindale);
     }
+    // ➕ 8️⃣ Mantenimiento (nuevo)
+    if (filters.mantenimiento?.length) {
+      // Suponemos que la columna "mantenimiento" puede buscarse como texto
+      query += ` AND ("mantenimiento"::text) ILIKE ANY($${index++})`;
+      params.push(filters.mantenimiento.map(m => `%${m}%`));
+    }
 
+    // ❌ Exclusiones por nombre
     const exclusion = this.getExcludedNamesClause(index);
     query += ` AND ${exclusion.clause}`;
     params.push(...exclusion.values);
     index += exclusion.values.length;
 
+    // 🛑 Límite y offset
     query += ` LIMIT $${index++} OFFSET $${index++}`;
     params.push(limit, offset);
 
@@ -420,18 +447,6 @@ export class ProductModel {
     return { products: rows, total: rows.length };
   }
 
-  // Obtener colecciones por marca
-  static async getCollectionsByBrand(brand) {
-    const exclusion = this.getExcludedNamesClause(2);
-    const query = `
-      SELECT DISTINCT UPPER(coleccion) AS coleccion
-      FROM productos
-      WHERE codmarca = $1 AND nombre IS NOT NULL AND ${exclusion.clause}
-      AND coleccion NOT IN ('MARRAKESH', 'DUKE', 'POLAR', 'COSY', 'HUSKY')
-    `;
-    const { rows } = await pool.query(query, [brand, ...exclusion.values]);
-    return rows.map(row => row.coleccion);
-  }
 
   static async searchCollections(searchTerm) {
     try {

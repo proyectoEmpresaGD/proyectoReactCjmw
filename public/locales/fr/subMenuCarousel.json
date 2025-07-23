@@ -1,13 +1,32 @@
 {
     "categories": {
-        "floral": "Floraux",
-        "liso": "Unis",
+        "floral": "Fleuri",
+        "liso": "Uni",
         "rayas": "Rayures",
         "visillo": "Voilages",
-        "geometrico": "Géométriques",
+        "geometrico": "Géométrique",
         "terciopelo": "Velours",
         "fr": "FR",
-        "outdoor": "Extérieur",
-        "wallpaper": "Papier peint"
-    }
+        "outdoor": "Outdoor",
+        "wallpaper": "Papier peint",
+        "falsoLiso": "Pseudo Uni",
+        "conAnimales": "Imprimés animaliers",
+        "conTexturas": "Texturé",
+        "cuadros": "Carreaux",
+        "espiga": "Chevron",
+        "etnico": "Ethnique",
+        "rafia": "Raphia",
+        "telasTropicales": "Imprimés tropicaux",
+        "easyClean": "EasyClean",
+        "imo": "IMO"
+    },
+    "sections": {
+        "estilos": "Styles",
+        "funcionalidad": "Entretien",
+        "usos": "Usages",
+        "tipos": "Types"
+    },
+    "scrollLeft": "Faire défiler à gauche",
+    "scrollRight": "Faire défiler à droite",
+    "triggerDefault": "Découvrez nos tissus"
 }

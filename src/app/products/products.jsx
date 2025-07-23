@@ -1,37 +1,64 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Header } from "../../components/header";
 import CardProduct from "../../components/ComponentesProductos/cardProduct";
 import { CartProvider } from '../../components/CartContext';
 
 function Product() {
+    const { t } = useTranslation(['subMenuCarousel', 'productPage']);
     const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
+    const params = new URLSearchParams(location.search);
 
-    // Obtener los filtros activos desde la URL
-    const collection = searchParams.get("collection");
-    const fabricPattern = searchParams.get("fabricPattern");
-    const fabricType = searchParams.get("fabricType");
-    const uso = searchParams.get("uso");
-    const type = searchParams.get("type"); // Capturamos el tipo de producto (papel o tela)
+    // Lee los filtros de la URL
+    const collection = params.get("collection");
+    const fabricPattern = params.get("fabricPattern");
+    const fabricType = params.get("fabricType");
+    const uso = params.get("uso");
+    const mantenimiento = params.get("mantenimiento");
+    const type = params.get("type"); // "papel" o "telas"
 
-    // Construcción del título dinámico para el contenido de la página
-    let filtrosActivos = [];
-    if (collection) filtrosActivos.push(collection);
-    if (fabricPattern) filtrosActivos.push(fabricPattern);
-    if (fabricType) filtrosActivos.push(fabricType);
-    if (uso) filtrosActivos.push(uso);
+    // Construye lista de claves de filtro activo
+    const filtrosKeys = [];
+    if (collection) filtrosKeys.push(collection);
+    if (fabricPattern) filtrosKeys.push(fabricPattern);
+    if (fabricType) filtrosKeys.push(fabricType);
+    if (uso) filtrosKeys.push(uso);
+    if (mantenimiento) filtrosKeys.push(mantenimiento);
+    if (type) filtrosKeys.push(type === 'papel' ? 'papel' : 'telas');
 
-    // Si es "papel" cambia a "PAPELES", si es "tela" cambia a "TELAS"
-    if (type) {
-        filtrosActivos.push(type === "papel" ? "PAPELES" : "TELAS");
-    }
+    // helper para convertir a camelCase
+    const toCamel = str =>
+        str
+            .toLowerCase()
+            .split(/[_\s]+/)
+            .map((w, i) => i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1))
+            .join('');
 
-    const titulo = filtrosActivos.length > 0 ? filtrosActivos.join(" - ") : "PRODUCTOS";
+    // Mapea cada clave al texto traducido
+    const filtrosActivos = filtrosKeys.map(key => {
+        // 1) papel/telas vienen de productPage
+        if (key === 'papel') return t('papel', { ns: 'productPage' });
+        if (key === 'telas') return t('telas', { ns: 'productPage' });
 
-    // Cambia el título del navegador sin modificar la URL
+        // 2) resto son categorías de subMenuCarousel
+        let catKey;
+        if (key.toUpperCase() === 'EASYCLEAN') {
+            catKey = 'easyClean';
+        } else {
+            catKey = toCamel(key);
+        }
+        return t(`categories.${catKey}`, { ns: 'subMenuCarousel' });
+    });
+
+    // Título final
+    const titulo = filtrosActivos.length > 0
+        ? filtrosActivos.join(' – ')
+        : t('allProducts', { ns: 'productPage' });
+
+    // Actualiza título de la pestaña del navegador
     useEffect(() => {
-        document.title = titulo; // Cambia el título de la pestaña del navegador
+        document.title = titulo;
     }, [titulo]);
 
     return (

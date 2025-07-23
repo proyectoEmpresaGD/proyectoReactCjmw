@@ -1,13 +1,32 @@
 {
     "categories": {
         "floral": "Floral",
-        "liso": "Solid",
+        "liso": "Solids",
         "rayas": "Stripes",
-        "visillo": "Sheer",
+        "visillo": "Sheers",
         "geometrico": "Geometric",
         "terciopelo": "Velvet",
         "fr": "FR",
         "outdoor": "Outdoor",
-        "wallpaper": "Wallpaper"
-    }
+        "wallpaper": "Wallpaper",
+        "falsoLiso": "Fake Solid",
+        "conAnimales": "Animal Prints",
+        "conTexturas": "Textured",
+        "cuadros": "Checks",
+        "espiga": "Herringbone",
+        "etnico": "Ethnic",
+        "rafia": "Raffia",
+        "telasTropicales": "Tropical Prints",
+        "easyClean": "EasyClean",
+        "imo": "IMO"
+    },
+    "sections": {
+        "estilos": "Styles",
+        "funcionalidad": "Cares",
+        "usos": "Uses",
+        "tipos": "Types"
+    },
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right",
+    "triggerDefault": "Explore our fabrics"
 }

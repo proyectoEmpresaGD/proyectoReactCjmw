@@ -8,6 +8,25 @@
         "terciopelo": "Terciopelo",
         "fr": "FR",
         "outdoor": "Outdoor",
-        "wallpaper": "Wallpaper"
-    }
+        "wallpaper": "Wallpaper",
+        "falsoLiso": "Falso liso",
+        "conAnimales": "Con animales",
+        "conTexturas": "Con texturas",
+        "cuadros": "Cuadros",
+        "espiga": "Espiga",
+        "etnico": "Étnico",
+        "rafia": "Rafia",
+        "telasTropicales": "Telas tropicales",
+        "easyClean": "EasyClean",
+        "imo": "IMO"
+    },
+    "sections": {
+        "estilos": "Estilos",
+        "funcionalidad": "Mantenimiento",
+        "usos": "Usos",
+        "tipos": "Tipos"
+    },
+    "scrollLeft": "Desplazar a la izquierda",
+    "scrollRight": "Desplazar a la derecha",
+    "triggerDefault": "Descubre nuestras telas"
 }
