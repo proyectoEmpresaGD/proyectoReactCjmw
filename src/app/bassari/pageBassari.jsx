@@ -6,8 +6,10 @@ import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas";
 import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
+import { useTranslation } from 'react-i18next';
 
 function BassariHome() {
+    const { t } = useTranslation('pageBassari')
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -29,7 +31,7 @@ function BassariHome() {
     const imagesNewCollections = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20BEDICK%20VERT%20(CORTINA)_4_11zon_9_11zon.webp",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE_11zon_11zon_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20KARABANE%20ARGILE%20II_5_11zon_12_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20KARABANE%20ARGILE(1).jpg",
     ];
 
     const titles = ["BEDICK", "ASTEROIDE", "KARABANE"];
@@ -42,8 +44,7 @@ function BassariHome() {
             pdfUrl:
                 "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf",
             title: "AFRICAN SOUL",
-            description:
-                "Un viaje al lugar más remoto del Senegal inspira estas colecciones. Descúbrelas.",
+            description: t('BrouchureBassari'),
         },
     ];
 

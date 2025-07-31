@@ -8,8 +8,8 @@ import pg from 'pg';
 import nodemailer from 'nodemailer';
 import 'dotenv/config';
 import fetch from 'node-fetch';
-import { Buffer } from 'buffer';
-
+import { createFtpRouter } from './routes/ftp.js';
+import { createInstagramRouter } from './routes/instagram.js';
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -47,6 +47,8 @@ app.use(express.static(join(__dirname, 'web')));
 // Rutas de productos e imágenes
 app.use('/api/products', createProductRouter({ pool }));
 app.use('/api/images', createImagenRouter({ pool }));
+app.use('/api/ftp', createFtpRouter());
+app.use('/api/instagram', createInstagramRouter());
 
 // Configuración SMTP con nodemailer
 const SMTP_HOST = "send.one.com";

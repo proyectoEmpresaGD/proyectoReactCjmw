@@ -17,10 +17,10 @@ function CjmHome() {
 
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/TOKIO%20Y%20SHIBULLA_4_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/VERANDA%20EVERGREEN_5_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/ROKKI%20PUMICE_3_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/FIYI%20ALUMINIUM_2_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/BOTANICAL%20KOMORI%20MAGNESIUM_1_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/ROKKI%20PUMICE.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA%20ANTIGUA.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/VERANDA%20EVERGREEN.jpg",
     ]
 
     const imagesNewCollections = [

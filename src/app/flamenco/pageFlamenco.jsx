@@ -5,9 +5,10 @@ import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
 import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
+import { useTranslation } from 'react-i18next';
 
 function FlamencoHome() {
-
+    const { t } = useTranslation('pageFlamenco');
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -31,7 +32,7 @@ function FlamencoHome() {
 
     const imagesNewCollections = [
         "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/RIVIERA/RIVIERA.jpeg",
-        "https://bassari.eu/ImagenesTelasCjmw/IMAGENES_PRODUCTS/FLAMENCO/TEDDY/Artistica/FLA001365%20TEDDY%20RHINO%20ARTISTICA-1200.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/FLAMENCO%20AMBIENTE/TEDDY/DSC09692%20MINIATURA.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/FLAMENCO%20AMBIENTE/SISAL/Cover%20Front_4_11zon_5_11zon.webp",
     ]
 
@@ -53,14 +54,14 @@ function FlamencoHome() {
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_FLAMENCO.png",
             pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_FLAMENCO_WEB.pdf",
             title: "FLAMENCO",
-            description: "El lugar donde el mestizaje de culturas inspira nuestras colecciones. Descúbrelas",
+            description: t('BrouchureFlamenco'),
         },
         {
             imageUrl:
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_RIVIERA.png",
             pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/FLA_RIVIERA_BROCHURE_OK.pdf",
             title: "RIVIERA",
-            description: "Colores vibrantes y fibras naturales para viajar a la época colonial. Descúbrelas",
+            description: t('BrouchureRiviera'),
         },
     ];
 

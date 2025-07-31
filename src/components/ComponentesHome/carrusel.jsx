@@ -58,7 +58,7 @@ const CarruselColecciones = ({ images, videoSrc = null }) => {
         className={`transition-opacity duration-1000 ease-in-out 
           ${mostrarCarrusel ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       >
-        <Fade duration={6000} indicators={false} autoplay pauseOnHover={false}>
+        <Fade duration={6000} indicators={false} autoplay pauseOnHover={false} >
           {shuffledImages.map((image, index) => (
             <div key={index} className="each-fade-effect w-full h-[50vh] md:h-[100vh] relative">
               <div className="image-container w-full h-[50vh] md:h-[100vh] bg-cover">

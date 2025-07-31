@@ -50,18 +50,27 @@ export default function CardProduct() {
     const location = useLocation();
     const navigate = useNavigate();
     const params = new URLSearchParams(location.search);
+
     const containerRef = useRef(null);
     const sentinelRef = useRef(null);
-
+    const getHashParams = () => {
+        const hash = window.location.hash; // Ej: "#/products?brand=ARE&uso=CORTINA"
+        const queryStart = hash.indexOf('?');
+        if (queryStart === -1) return new URLSearchParams();
+        return new URLSearchParams(hash.slice(queryStart + 1));
+    };
+    const hashParams = getHashParams();
     // URL params
     const searchQuery = params.get('search');
     const pidEnc = params.get('pid');
     const productId = params.get('productId');
     const fabricPattern = params.get('fabricPattern');
-    const uso = params.get('uso');
-    const fabricType = params.get('fabricType');
+    const uso = params.get('uso') || hashParams.get('uso');
+    const brand = params.get('brand') || hashParams.get('brand');
+    const fabricType = params.get('fabricType') || hashParams.get('fabricType');
     const collection = params.get('collection');
     const type = params.get('type');
+
     const mantenimiento = params.get('mantenimiento');
     // decrypt pid
     const decryptedPid = pidEnc
@@ -84,6 +93,7 @@ export default function CardProduct() {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOrder, setSortOrder] = useState('alpha-asc');
     const [viewMode, setViewMode] = useState('grid4');
+
 
     // sync page from URL
     useEffect(() => {

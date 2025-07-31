@@ -37,6 +37,11 @@ function Product() {
 
     // Mapea cada clave al texto traducido
     const filtrosActivos = filtrosKeys.map(key => {
+
+        if (collection && key === collection) {
+            return key;
+        }
+
         // 1) papel/telas vienen de productPage
         if (key === 'papel') return t('papel', { ns: 'productPage' });
         if (key === 'telas') return t('telas', { ns: 'productPage' });

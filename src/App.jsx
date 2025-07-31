@@ -3,19 +3,18 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import Home from "./app/paginaPrincipal.jsx"
 import About from "./app/about/about.jsx"
 import Contacto from "./app/contact/contactanos.jsx"
-import HarbourHome from './app/harbour/page.jsx'
-import ArenaHome from "./app/arena/page.jsx"
-import CjmHome from "./app/cjm/page.jsx"
-import BassariHome from "./app/bassari/page.jsx"
-import FlamencoHome from './app/flamenco/page.jsx'
-import BlogHome from './app/blog/page.jsx'
+import HarbourHome from './app/harbour/pageHarbour.jsx'
+import ArenaHome from "./app/arena/pageArena.jsx"
+import CjmHome from "./app/cjm/pageCjm.jsx"
+import BassariHome from "./app/bassari/pageBassari.jsx"
+import FlamencoHome from './app/flamenco/pageFlamenco.jsx'
+import BlogHome from './app/blog/pageBlog.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
 import Products from "./app/products/products.jsx"
 import Usages from './app/usages/page.jsx'
 import GeocodingService from "./components/ComponentesContact/map.jsx"
 import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
 import Contract from "./app/contract/PaginaContract.jsx"
-import { MarcaProvider } from './components/MarcaContext.jsx'
 
 function App() {
   return (
