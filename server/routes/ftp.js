@@ -1,5 +1,3 @@
-
-// routes/ftp.js
 import { Router } from 'express';
 import { FtpController } from '../controllers/ftpController.js';
 

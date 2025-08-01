@@ -1,21 +1,29 @@
-import { carruselConfig } from '../../Constants/constants'; // Importar las constantes
+import { useState, useEffect } from 'react';
 
 const CarruselColecciones = ({ imageUrl }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Cada vez que cambie la URL, reiniciamos el estado de carga
+  useEffect(() => {
+    setIsLoaded(false);
+  }, [imageUrl]);
 
   return (
-    <div className="h-[35vh] sm:h-[50vh] md:h-[40vh] lg:h-[50vh] w-full max-w-[80vw] sm:max-w-[70vw] md:max-w-[60vw] lg:max-w-[50vw] bg-cover mx-auto flex justify-center items-center">
-      {imageUrl ? (
-        <div className="h-full w-full rounded-md overflow-hidden">
-          <div className="image-container h-full w-full object-cover rounded-md mx-auto">
-            <img
-              src={imageUrl}
-              alt="Imagen colección"
-              className="object-cover w-full h-full rounded-md"
-            />
-          </div>
-        </div>
-      ) : (
-        <p>{carruselConfig.noImagesText}</p> // Usar el texto de error desde las constantes
+    <div className="relative w-full h-[35vh] sm:h-[45vh] bg-gray-100 rounded-xl overflow-hidden shadow-md">
+      {/* Skeleton placeholder mientras esperamos la imagen */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_200%] animate-pulse" />
+      )}
+
+      {/* Imagen real, con transición de opacidad */}
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt="Imagen colección"
+          onLoad={() => setIsLoaded(true)}
+          className={`object-cover w-full h-full transition-opacity duration-700 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+        />
       )}
     </div>
   );

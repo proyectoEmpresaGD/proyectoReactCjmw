@@ -1,4 +1,3 @@
-// controllers/ftpController.js
 import { getRandomImageUrl } from '../models/Postgres/ftpService.js';
 
 export class FtpController {
@@ -12,14 +11,14 @@ export class FtpController {
         try {
             const imageUrl = await getRandomImageUrl({ marca, coleccion });
 
-            if (!imageUrl) {
-                return res.status(404).json({ error: 'No se encontró imagen para esta marca y colección.' });
-            }
+            res.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate');
 
-            res.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
-            return res.json({ imageUrl });
+            return res.status(200).json({
+                imageUrl: imageUrl || null,
+                message: imageUrl ? "✅ Imagen encontrada" : "⚠️ No se encontraron imágenes"
+            });
         } catch (err) {
-            console.error("❌ Error en getImageFromFtp:", err);
+            console.error("❌ Error accediendo al FTP:", err);
             res.status(500).json({ error: "Error accediendo al FTP" });
         }
     }

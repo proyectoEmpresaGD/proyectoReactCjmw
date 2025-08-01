@@ -1,15 +1,40 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import CarruselColecciones from '../ComponentesBrands/CarruselColecciones';
 import { CartProvider } from '../CartContext';
 import { coleccionesPorMarca } from '../../Constants/constants';
+
+const CarruselColecciones = ({ imageUrl }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const hasImage = Boolean(imageUrl);
+
+  return (
+    <div className="relative w-full h-[35vh] sm:h-[45vh] bg-gray-100 rounded-xl overflow-hidden shadow-md group">
+      {!isLoaded && hasImage && (
+        <div className="absolute inset-0 z-0 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200 bg-[length:300%_300%] animate-pulse" />
+      )}
+
+      {hasImage ? (
+        <img
+          src={imageUrl}
+          alt="Imagen colección"
+          onLoad={() => setIsLoaded(true)}
+          className={`object-cover w-full h-full transition-all duration-700 ease-in-out 
+            ${isLoaded ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-sm scale-105'}`}
+        />
+      ) : (
+        <div className="flex items-center justify-center h-full text-center text-sm text-gray-500 px-4">
+          Imagen no disponible
+        </div>
+      )}
+    </div>
+  );
+};
 
 function ColeccionesMarcas({ marca }) {
   const { t } = useTranslation('coleccionesMarcas');
   const [imagenes, setImagenes] = useState({});
   const navigate = useNavigate();
-
 
   const colecciones = coleccionesPorMarca[marca] || [];
 
@@ -17,17 +42,19 @@ function ColeccionesMarcas({ marca }) {
     const fetchImagenes = async () => {
       const nuevasImagenes = {};
 
-      await Promise.all(colecciones.map(async (coleccion) => {
-        try {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/api/ftp/image?marca=${marca}&coleccion=${encodeURIComponent(coleccion)}`
-          );
-          const data = await response.json();
-          nuevasImagenes[coleccion] = data.imageUrl || null;
-        } catch {
-          nuevasImagenes[coleccion] = null;
-        }
-      }));
+      await Promise.all(
+        colecciones.map(async (coleccion) => {
+          try {
+            const response = await fetch(
+              `${import.meta.env.VITE_API_BASE_URL}/api/ftp/image?marca=${marca}&coleccion=${encodeURIComponent(coleccion)}`
+            );
+            const data = await response.json();
+            nuevasImagenes[coleccion] = data.imageUrl || null;
+          } catch {
+            nuevasImagenes[coleccion] = null;
+          }
+        })
+      );
 
       setImagenes(nuevasImagenes);
     };
@@ -55,12 +82,8 @@ function ColeccionesMarcas({ marca }) {
               onClick={() => handleClick(coleccion)}
               className="relative group cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg rounded-lg overflow-hidden bg-white w-full"
             >
-              <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-lg md:hidden lg:hidden xl:hidden">
-                {t('mobileHint')}
-              </div>
-
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-5 group-hover:bg-opacity-30 transition duration-300">
-                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-white text-center px-4 py-2 bg-opacity-80 rounded-md">
+              <div className="absolute inset-0 z-20 flex items-center justify-center group-hover:bg-black/10 transition duration-300">
+                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] transition-transform duration-300 group-hover:scale-105">
                   {coleccion}
                 </h1>
               </div>
