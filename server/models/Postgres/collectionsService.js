@@ -1,15 +1,18 @@
 // models/Postgres/collectionsService.js
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { createRequire } from 'node:module';
 
+const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ENV opcionales:
-// COLLECTIONS_JSON_PATH = ruta absoluta al collections.json (prioridad máxima)
-// IMG_BASE_URL          = https://bassari.eu   (para completar rutas relativas si algún día aparecen)
-// CDN_BASE              = https://img.bassari.eu (para reescritura opcional a CDN)
+// COLLECTIONS_JSON_PATH   -> ruta absoluta al JSON (prioridad máxima)
+// COLLECTIONS_JSON_INLINE -> contenido Base64 del JSON (fallback serverless)
+// IMG_BASE_URL            -> para completar rutas relativas (si algún día aparecen)
+// CDN_BASE                -> para reescritura opcional a CDN
 const IMG_BASE_URL = process.env.IMG_BASE_URL?.replace(/\/$/, '') || '';
 const CDN_BASE = process.env.CDN_BASE?.replace(/\/$/, '') || '';
 
@@ -17,7 +20,7 @@ let collectionsCache = null;
 let lastLoadTs = 0;
 const RELOAD_MS = 60 * 1000;
 
-// Normaliza claves: quita tildes/espacios/símbolos y pone MAYÚSCULAS
+// Normalizador de claves: quita tildes/espacios/símbolos y pone MAYÚSCULAS
 function normalizeKey(s = '') {
     return s
         .normalize('NFD')
@@ -27,48 +30,64 @@ function normalizeKey(s = '') {
         .toUpperCase();
 }
 
-// Resuelve la ruta del JSON probando varias ubicaciones comunes
-async function resolveCollectionsPath() {
-    const candidates = [];
-
+/** Intenta leer el JSON desde:
+ *  1) process.env.COLLECTIONS_JSON_PATH (ruta absoluta)
+ *  2) process.env.COLLECTIONS_JSON_INLINE (Base64)
+ *  3) require() de rutas empaquetadas
+ *  4) fs en rutas comunes del repo
+ */
+async function readCollectionsJSON() {
+    // 1) Ruta absoluta por env
     if (process.env.COLLECTIONS_JSON_PATH) {
-        candidates.push(process.env.COLLECTIONS_JSON_PATH);
+        const p = process.env.COLLECTIONS_JSON_PATH;
+        const raw = await fs.readFile(p, 'utf8');
+        return JSON.parse(raw);
     }
 
-    // 1) ../data junto al servicio (server/models/Postgres/data/collections.json)
-    candidates.push(path.join(__dirname, '..', 'data', 'collections.json'));
-    // 2) ./data al lado del servicio (server/models/Postgres/collectionsService.js -> server/models/Postgres/data)
-    candidates.push(path.join(__dirname, 'data', 'collections.json'));
-    // 3) la ruta que te marcaba el error (server/models/data)
-    candidates.push(path.resolve(process.cwd(), 'server', 'models', 'data', 'collections.json'));
-    // 4) por si ejecutas desde server/
-    candidates.push(path.resolve(process.cwd(), 'models', 'data', 'collections.json'));
+    // 2) Inline Base64 por env (útil en serverless)
+    if (process.env.COLLECTIONS_JSON_INLINE) {
+        const raw = Buffer.from(process.env.COLLECTIONS_JSON_INLINE, 'base64').toString('utf8');
+        return JSON.parse(raw);
+    }
 
-    for (const p of candidates) {
+    // 3) require() de rutas “bundled”
+    const requireCandidates = [
+        // junto al servicio
+        path.join(__dirname, 'data', 'collections.json'),
+        path.join(__dirname, '..', 'data', 'collections.json'),
+        // ubicaciones típicas del repo
+        path.resolve(process.cwd(), 'server', 'models', 'Postgres', 'data', 'collections.json'),
+        path.resolve(process.cwd(), 'server', 'models', 'data', 'collections.json'),
+        path.resolve(process.cwd(), 'models', 'data', 'collections.json')
+    ];
+
+    for (const p of requireCandidates) {
         try {
-            await fs.access(p);
-            return p;
+            // Si existe, require lo resolverá tras el build
+            // (si falla, lanzará excepción; probamos la siguiente)
+            const data = require(p);
+            return data;
         } catch { /* probar siguiente */ }
     }
 
-    throw new Error(
-        `collections.json no encontrado. Revisa COLLECTIONS_JSON_PATH o coloca el archivo en:
-- server/models/Postgres/data/collections.json
-- server/models/data/collections.json`
-    );
+    // 4) fs como último recurso
+    for (const p of requireCandidates) {
+        try {
+            const raw = await fs.readFile(p, 'utf8');
+            return JSON.parse(raw);
+        } catch { /* probar siguiente */ }
+    }
+
+    throw new Error('No se encontró collections.json en ninguna ruta conocida. Usa COLLECTIONS_JSON_PATH o COLLECTIONS_JSON_INLINE.');
 }
 
 async function loadCollections() {
     const now = Date.now();
-    if (collectionsCache && now - lastLoadTs < RELOAD_MS) return collectionsCache;
+    if (collectionsCache && (now - lastLoadTs < RELOAD_MS)) return collectionsCache;
 
-    const jsonPath = await resolveCollectionsPath();
-    const raw = await fs.readFile(jsonPath, 'utf8');
-    const parsed = JSON.parse(raw);
+    const parsed = await readCollectionsJSON();
 
-    // Preconstruimos un índice normalizado por marca->colección
-    // Estructura: { BAS: { KASSUMAY:[...], TRIBAL:[...] }, ... }
-    // y además brandIndexNorm: { BAS: { KASSUMAY:[...], KANNATURAVOLII:[...] } }
+    // Estructura esperada: { BAS: { "KASSUMAY":[...], ... }, ARE: {...}, ... }
     const brandIndex = parsed || {};
     const brandIndexNorm = {};
 
@@ -88,9 +107,8 @@ async function loadCollections() {
 function toAbsoluteUrl(u) {
     if (!u) return null;
     try {
-        // absoluta válida
         const t = new URL(u);
-        return t.toString();
+        return t.toString(); // ya es absoluta
     } catch {
         // relativa -> completar con IMG_BASE_URL si existe
         if (!IMG_BASE_URL) return u;
@@ -98,7 +116,7 @@ function toAbsoluteUrl(u) {
     }
 }
 
-// Reescribe a CDN solo para el dominio bassari.eu (o ajusta a tu caso)
+// Reescribe a CDN solo si apunta a *.bassari.eu (ajusta según tu caso)
 function maybeCdn(url) {
     if (!url || !CDN_BASE) return url;
     try {
@@ -112,31 +130,23 @@ function maybeCdn(url) {
     }
 }
 
-// --- API del modelo ---
+// --------- API del modelo ----------
 
 export async function getRandomImageUrlFromJson({ marca, coleccion, key }) {
     const { brandIndex, brandIndexNorm } = await loadCollections();
-
-    const brand = brandIndex[marca] || null;
+    const brand = brandIndex[marca];
     if (!brand) return null;
 
     let list = null;
 
-    // 1) si me pasas key normalizada, pruebo directa
+    // 1) prioridad: key normalizada si viene
     if (key && brandIndexNorm[marca]) {
         list = brandIndexNorm[marca][normalizeKey(key)] || null;
     }
 
-    // 2) si no hubo suerte con key, pruebo con el nombre bonito
+    // 2) “coleccion” bonita (exacta) o normalizada
     if (!list && coleccion) {
-        // a) coincidencia exacta (sensitivo)
-        list = brand[coleccion] || null;
-
-        // b) normalizada (insensible a tildes/espacios/símbolos)
-        if (!list) {
-            const n = normalizeKey(coleccion);
-            list = brandIndexNorm[marca]?.[n] || null;
-        }
+        list = brand[coleccion] || brandIndexNorm[marca]?.[normalizeKey(coleccion)] || null;
     }
 
     if (!Array.isArray(list) || list.length === 0) return null;
@@ -148,8 +158,7 @@ export async function getRandomImageUrlFromJson({ marca, coleccion, key }) {
 
 export async function getAllImagesForCollection({ marca, coleccion, key }) {
     const { brandIndex, brandIndexNorm } = await loadCollections();
-
-    const brand = brandIndex[marca] || null;
+    const brand = brandIndex[marca];
     if (!brand) return [];
 
     let list = null;
