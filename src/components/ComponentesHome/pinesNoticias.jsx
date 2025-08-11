@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { blogPosts } from '../../Constants/constants';
+import { cdnUrl } from '../../Constants/cdn'; // <-- Import CDN helper
 
 const Works = () => {
     const { t } = useTranslation('works');
@@ -23,7 +24,7 @@ const Works = () => {
                     <div key={index} className="flex flex-col gap-4">
                         <div className="relative">
                             <img
-                                src={post.imgSrc}
+                                src={cdnUrl(post.imgSrc)}      // <-- Wrap through CDN
                                 alt={post.altText}
                                 className="w-full h-[400px] object-cover rounded-3xl transition-transform transform hover:scale-105"
                             />

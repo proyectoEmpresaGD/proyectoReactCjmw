@@ -13,7 +13,8 @@ const ACCEPTED_ORIGINS = [
   'https://cjmw.eu',
   'https://www.cjmw.eu',
   'https://bassari.eu',
-  'https://www.bassari.eu', // Añadido para aceptar con y sin www
+  'https://www.bassari.eu',
+  'https://img.bassari.eu'
 ];
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({

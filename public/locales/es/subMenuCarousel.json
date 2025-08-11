@@ -28,5 +28,7 @@
     },
     "scrollLeft": "Desplazar a la izquierda",
     "scrollRight": "Desplazar a la derecha",
-    "triggerDefault": "Encuentra el tejido que deseas"
+    "triggerDefault": "Encuentra el tejido que deseas",
+    "hoverInfo": "Pasa el ratón sobre una opción para ver un ejemplo",
+    "previewLabel": "Ejemplo: {{label}}"
 }

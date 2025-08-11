@@ -1,8 +1,19 @@
-import { useState, useEffect } from 'react';
+// ColeccionesMarcas.jsx
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CartProvider } from '../CartContext';
 import { coleccionesPorMarca } from '../../Constants/constants';
+import { cdnUrl } from '../../Constants/cdn';
+
+// Normaliza: sin tildes/diacríticos, sin símbolos, MAYÚSCULAS
+const normalizeKey = (s) =>
+  (s || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, 'AND')
+    .replace(/[^A-Za-z0-9]/g, '')
+    .toUpperCase();
 
 const CarruselColecciones = ({ imageUrl }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -13,7 +24,6 @@ const CarruselColecciones = ({ imageUrl }) => {
       {!isLoaded && hasImage && (
         <div className="absolute inset-0 z-0 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200 bg-[length:300%_300%] animate-pulse" />
       )}
-
       {hasImage ? (
         <img
           src={imageUrl}
@@ -38,29 +48,73 @@ function ColeccionesMarcas({ marca }) {
 
   const colecciones = coleccionesPorMarca[marca] || [];
 
+  // Mapeo normalizado de lo que pide el front (Constants)
+  const coleccionesNorm = useMemo(
+    () =>
+      new Map(
+        colecciones.map((c) => [normalizeKey(c), c]) // key normalizada -> nombre “bonito”
+      ),
+    [colecciones]
+  );
+
   useEffect(() => {
-    const fetchImagenes = async () => {
-      const nuevasImagenes = {};
+    if (!marca || colecciones.length === 0) {
+      setImagenes({});
+      return;
+    }
 
-      await Promise.all(
-        colecciones.map(async (coleccion) => {
-          try {
-            const response = await fetch(
-              `${import.meta.env.VITE_API_BASE_URL}/api/ftp/image?marca=${marca}&coleccion=${encodeURIComponent(coleccion)}`
-            );
-            const data = await response.json();
-            nuevasImagenes[coleccion] = data.imageUrl || null;
-          } catch {
-            nuevasImagenes[coleccion] = null;
+    const ac = new AbortController();
+
+    const fetchTodo = async () => {
+      try {
+        // Pedimos TODO lo de la marca de una vez (sin FTP)
+        const url = `${import.meta.env.VITE_API_BASE_URL}/api/collections/brand/${encodeURIComponent(
+          marca
+        )}`;
+        const res = await fetch(url, { signal: ac.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json(); // { marca, collections: { "KANNATURA VOL II": [ ... ], ... } }
+
+        // Construimos un diccionario normalizado desde el backend
+        const byNormKey = {};
+        for (const [nombreColeccion, arrUrls] of Object.entries(data.collections || {})) {
+          const k = normalizeKey(nombreColeccion);
+          byNormKey[k] = Array.isArray(arrUrls) ? arrUrls : [];
+        }
+
+        // Para cada colección que mostramos en la UI, elige una imagen (primera o aleatoria)
+        const out = {};
+        for (const [normKey, displayName] of coleccionesNorm.entries()) {
+          const lista = byNormKey[normKey] || [];
+          if (lista.length > 0) {
+            // Puedes cambiar a aleatoria si prefieres:
+            // const pick = lista[Math.floor(Math.random() * lista.length)];
+            const pick = lista[0]; // primera
+            out[displayName] = cdnUrl(pick); // reescritura a tu CDN
+          } else {
+            // Intenta heurística extra si no hay match exacto (p.ej. quitar VOL/II)
+            // pero con nuestro normalizeKey debería bastar
+            out[displayName] = null;
+            // Útil para depurar colecciones que no matchean
+            // console.warn('Sin imágenes para', displayName, '-> clave', normKey);
           }
-        })
-      );
+        }
 
-      setImagenes(nuevasImagenes);
+        if (!ac.signal.aborted) setImagenes(out);
+      } catch (err) {
+        console.error('Error cargando colecciones:', err);
+        if (!ac.signal.aborted) {
+          // al menos rellena nulos para no romper el render
+          const nulos = {};
+          colecciones.forEach((c) => (nulos[c] = null));
+          setImagenes(nulos);
+        }
+      }
     };
 
-    fetchImagenes();
-  }, [marca]);
+    fetchTodo();
+    return () => ac.abort();
+  }, [marca, colecciones, coleccionesNorm]);
 
   const handleClick = (coleccion) => {
     navigate(`/products?collection=${encodeURIComponent(coleccion)}`);
@@ -87,7 +141,6 @@ function ColeccionesMarcas({ marca }) {
                   {coleccion}
                 </h1>
               </div>
-
               <CarruselColecciones imageUrl={imagenes[coleccion]} />
             </div>
           ))}

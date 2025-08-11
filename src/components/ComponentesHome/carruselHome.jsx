@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+// src/components/CarruselHome.jsx
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { cdnUrl } from '../../Constants/cdn'; // <-- import helper CDN
 
 const CarruselHome = ({ images, texts, names, routes }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -8,156 +10,136 @@ const CarruselHome = ({ images, texts, names, routes }) => {
     const containerRef = useRef(null);
     const touchStartY = useRef(0);
     const touchEndY = useRef(0);
-    const touchStartX = useRef(0); // Añadido para controlar el movimiento horizontal
-    const touchEndX = useRef(0);   // Añadido para controlar el movimiento horizontal
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
     const navigate = useNavigate();
 
-    // Función para manejar el desplazamiento por scroll en desktop
+    // desktop wheel scroll
     useEffect(() => {
-        const handleScroll = (event) => {
+        const handleScroll = (e) => {
             if (isScrolling) return;
-
-            const { deltaY } = event;
-            const direction = deltaY > 0 ? 1 : -1;
-
+            const dir = e.deltaY > 0 ? 1 : -1;
             setIsScrolling(true);
-
-            setCurrentSlide((prevSlide) => {
-                if (direction === 1 && prevSlide < images.length - 1) {
-                    return prevSlide + 1;
-                } else if (direction === -1 && prevSlide > 0) {
-                    return prevSlide - 1;
-                }
-                return prevSlide;
+            setCurrentSlide((prev) => {
+                if (dir === 1 && prev < images.length - 1) return prev + 1;
+                if (dir === -1 && prev > 0) return prev - 1;
+                return prev;
             });
-
-            setTimeout(() => {
-                setIsScrolling(false);
-            }, 500);
+            setTimeout(() => setIsScrolling(false), 500);
         };
-
-        const container = containerRef.current;
-        if (container) {
-            container.addEventListener('wheel', handleScroll);
-        }
-
-        return () => {
-            if (container) {
-                container.removeEventListener('wheel', handleScroll);
-            }
-        };
+        const cnt = containerRef.current;
+        cnt?.addEventListener('wheel', handleScroll);
+        return () => cnt?.removeEventListener('wheel', handleScroll);
     }, [images.length, isScrolling]);
 
-    // Función para manejar el desplazamiento táctil en móviles
+    // touch swipe
     useEffect(() => {
-        const handleTouchStart = (e) => {
+        const onStart = (e) => {
             touchStartY.current = e.touches[0].clientY;
-            touchStartX.current = e.touches[0].clientX; // Capturamos también la posición X
+            touchStartX.current = e.touches[0].clientX;
             setIsTap(true);
         };
-
-        const handleTouchMove = (e) => {
+        const onMove = (e) => {
             touchEndY.current = e.touches[0].clientY;
-            touchEndX.current = e.touches[0].clientX; // Capturamos también la posición X
-            const distanceY = touchStartY.current - touchEndY.current;
-            const distanceX = touchStartX.current - touchEndX.current; // Distancia en X
-
-            // Si detectamos un swipe considerable, no es un tap
-            if (Math.abs(distanceY) > 10 || Math.abs(distanceX) > 10) {
+            touchEndX.current = e.touches[0].clientX;
+            if (
+                Math.abs(touchStartY.current - touchEndY.current) > 10 ||
+                Math.abs(touchStartX.current - touchEndX.current) > 10
+            ) {
                 setIsTap(false);
             }
         };
-
-        const handleTouchEnd = () => {
-            const distanceY = touchStartY.current - touchEndY.current;
-            const threshold = 50;
-
-            if (distanceY > threshold) {
-                setCurrentSlide((prevSlide) => (prevSlide < images.length - 1 ? prevSlide + 1 : prevSlide));
-            } else if (distanceY < -threshold) {
-                setCurrentSlide((prevSlide) => (prevSlide > 0 ? prevSlide - 1 : prevSlide));
+        const onEnd = () => {
+            const dy = touchStartY.current - touchEndY.current;
+            if (dy > 50 && currentSlide < images.length - 1) {
+                setCurrentSlide((s) => s + 1);
+            } else if (dy < -50 && currentSlide > 0) {
+                setCurrentSlide((s) => s - 1);
             }
         };
-
-        const container = containerRef.current;
-        if (container) {
-            container.addEventListener('touchstart', handleTouchStart);
-            container.addEventListener('touchmove', handleTouchMove);
-            container.addEventListener('touchend', handleTouchEnd);
-        }
-
+        const cnt = containerRef.current;
+        cnt?.addEventListener('touchstart', onStart);
+        cnt?.addEventListener('touchmove', onMove);
+        cnt?.addEventListener('touchend', onEnd);
         return () => {
-            if (container) {
-                container.removeEventListener('touchstart', handleTouchStart);
-                container.removeEventListener('touchmove', handleTouchMove);
-                container.removeEventListener('touchend', handleTouchEnd);
-            }
+            cnt?.removeEventListener('touchstart', onStart);
+            cnt?.removeEventListener('touchmove', onMove);
+            cnt?.removeEventListener('touchend', onEnd);
         };
-    }, [images.length]);
+    }, [images.length, currentSlide]);
 
-    // Función para manejar el clic en las imágenes de `texts`
-    const handleClick = (index) => {
-        if (routes && routes[index] && isTap) {
-            navigate(routes[index]);
+    // click handler
+    const handleClick = (idx) => {
+        if (isTap && routes?.[idx]) {
+            navigate(routes[idx]);
         }
     };
 
     return (
         <div className="relative h-screen overflow-hidden w-full" ref={containerRef}>
-            {/* Contenedor del carrusel */}
             <div
                 className="flex flex-col transition-transform duration-500 ease-in-out"
                 style={{ transform: `translateY(-${currentSlide * 100}vh)` }}
             >
-                {images.map((image, index) => (
-                    <div key={index} className="h-screen w-full relative">
-                        <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover" />
-                        <div className="relative  bottom-[65%] mx-auto text-center xl:w-[25%] lg:w-[25%] w-[70%] p-4">
+                {images.map((rawImg, idx) => {
+                    const imgSrc = cdnUrl(rawImg);
+                    const textImg = texts?.[idx] ? cdnUrl(texts[idx]) : null;
+                    return (
+                        <div key={idx} className="h-screen w-full relative">
                             <img
-                                src={texts[index]}
-                                alt=""
-                                onClick={() => handleClick(index)} // Manejador de clic para navegar
-                                className="cursor-pointer" // Añadir cursor de puntero para indicar que es clickeable
-                                style={names[index] === "CJM" ? { width: '250px', height: 'auto', margin: "auto" } : { width: '550px', height: 'auto' }}
+                                src={imgSrc}
+                                alt={`Slide ${idx}`}
+                                className="w-full h-full object-cover"
                             />
+
+                            {textImg && (
+                                <div className="absolute bottom-[35%] left-1/2 transform -translate-x-1/2 text-center w-[70%] lg:w-[25%] p-4">
+                                    <img
+                                        src={textImg}
+                                        alt={names[idx] || ''}
+                                        onClick={() => handleClick(idx)}
+                                        className="cursor-pointer"
+                                        style={
+                                            names[idx] === 'CJM'
+                                                ? { width: '250px', height: 'auto', margin: 'auto' }
+                                                : { width: '550px', height: 'auto' }
+                                        }
+                                    />
+                                </div>
+                            )}
                         </div>
-                    </div>
+                    );
+                })}
+            </div>
+
+            {/* Mobile indicators */}
+            <div className="absolute right-2 top-1/4 md:hidden">
+                <span
+                    className="block text-white font-bold rotate-90 mb-4"
+                    style={{ width: '1em' }}
+                >
+                    {names[currentSlide] || ''}
+                </span>
+                {[...images].map((_, idx) => (
+                    <div
+                        key={idx}
+                        className={`w-3 h-3 rounded-full mb-2 ${idx === currentSlide ? 'bg-white' : 'bg-white/50'
+                            }`}
+                    />
                 ))}
-
-                {/* Último slide que muestra el Footer
-                <div className="h-screen w-full relative">
-                    <FooterHome /> 
-                </div> */}
             </div>
 
-            {/* Nombre del slide actual en formato móvil */}
-            <div className="absolute right-2 top-1/4 transform -translate-y-1/2 items-center space-y-2 md:hidden">
-                {/* Indicadores en forma de círculos (en móviles) */}
-                <div className="absolute right-2 flex flex-col items-center space-y-2">
-                    <span
-                        className="text-white font-bold mb-16 block transition-opacity duration-300 ease-in-out rotate-90"
-                        style={{ width: '1em', display: 'inline-block' }}
-                    >
-                        {names[currentSlide]}
-                    </span>
-
-                    {[...images].map((_, index) => (
-                        <div
-                            key={index}
-                            className={`w-3 h-3 rounded-full transition-colors duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/50'}`}
-                        ></div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Nombres en la parte inferior (solo en pantallas grandes) */}
-            {names && names.length > 0 && (
-                <div className="absolute bottom-5 left-0 right-0 justify-between px-[20%] space-x-8 items-center hidden md:flex">
-                    {names.map((name, index) => (
+            {/* Desktop nav dots */}
+            {names?.length > 0 && (
+                <div className="absolute bottom-5 left-0 right-0 hidden md:flex justify-center space-x-8">
+                    {names.map((name, idx) => (
                         <span
-                            key={index}
-                            className={`cursor-pointer transition-colors duration-300 xl:text-2xl lg:text-2xl text-base ${index === currentSlide ? 'text-black font-bold' : 'text-white/50'}`}
-                            onClick={() => setCurrentSlide(index)}
+                            key={idx}
+                            onClick={() => setCurrentSlide(idx)}
+                            className={`cursor-pointer transition-colors ${idx === currentSlide
+                                ? 'text-black font-bold'
+                                : 'text-white/50'
+                                }`}
                         >
                             {name}
                         </span>

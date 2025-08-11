@@ -28,5 +28,7 @@
     },
     "scrollLeft": "Scroll left",
     "scrollRight": "Scroll right",
-    "triggerDefault": "Discover the perfect fabric for you"
+    "triggerDefault": "Discover the perfect fabric for you",
+    "hoverInfo": "Hover over an option to see a preview",
+    "previewLabel": "Example: {{label}}"
 }

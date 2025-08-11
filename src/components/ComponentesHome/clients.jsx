@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { clientLogos } from "../../Constants/constants";
+import { cdnUrl } from "../../Constants/cdn"; // <-- Import CDN helper
 
 const Clients = () => {
     const { t } = useTranslation("clients");
@@ -21,7 +22,7 @@ const Clients = () => {
                         className="md:justify-center md:items-center mx-auto"
                     >
                         <img
-                            src={logo.imgSrc}
+                            src={cdnUrl(logo.imgSrc)}                  // <-- Pass through CDN
                             className={`${logo.imgSize} object-contain transition-transform transform hover:scale-105`}
                             alt={logo.imgAlt}
                         />

@@ -184,13 +184,14 @@ export const coleccionesPorMarca = {
     ],
     ARE: [
         "ATMOSPHERE", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA",
-        "JEWEL", "KANNATURA", "KANNATURA VOL II", "LINOTTO",
+        "JEWEL", "KANNATURA", "LINOTTO", "KANNATURA VOL II",
         "MEDITERRANEAN STRIPES", "MONTANA", "NOMAD", "PAPIRO",
         "PURITTY", "STONE", "STRATOS", "TAIGA", "TOUCH", "RUSTICA"
     ],
     "HAR": [
-        "BOLONIA & VARADERO",
+        "BOLONIA&VARADERO",
         "CARIBBEAN PARTY",
+        "DUKE",
         "BALTIC",
         "GOTLAND",
         "BARENTS",
@@ -207,22 +208,20 @@ export const coleccionesPorMarca = {
     "FLA": [
         "GRAZALEMA",
         "MARRAKECH",
-        "VELLUTISSIMO",
-        "SISAL",
         "TEDDY",
+        "SISAL",
+        "VELLUTISSIMO",
         "ARTISAN WEAVES",
         "BUCLÉ",
-        "COASTAL LINENS",
         "COURTYARD GARDEN",
         "DIAMANTE",
         "EAST COAST",
+        "COASTAL LINENS",
+        "LUXURY DREAPS",
         "EASTERN MEMORIES",
         "GENESIS",
-        "LUXURY DREAPS",
         "REVOLTOSO",
-        "RIVIERA",
-
-
+        "RIVIERA"
     ],
     "CJM": [
         "TOKIO",

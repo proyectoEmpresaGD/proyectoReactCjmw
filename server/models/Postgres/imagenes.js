@@ -59,74 +59,61 @@ export class ImagenModel {
         }
     }
 
-    // Obtener una imagen por ID
     static async getById({ codprodu, codclaarchivo, res }) {
         const cacheKey = `image:${codprodu}:${codclaarchivo}`;
-        let cachedResponse;
-
-        // Verificación de la existencia de cache
-        if (res && res.cache) {
-            cachedResponse = await res.cache.get(cacheKey);
-            if (cachedResponse) {
-                res.set('Cache-Control', 'public, max-age=3600');
-                return cachedResponse;
-            }
+        let cached = res?.cache && await res.cache.get(cacheKey);
+        if (cached) {
+            res.set('Cache-Control', 'public, max-age=3600');
+            return cached;
         }
 
-        try {
-            const { rows } = await pool.query(
-                'SELECT * FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2;',
-                [codprodu, codclaarchivo]
-            );
+        const { rows } = await pool.query(
+            'SELECT * FROM imagenesocproductos WHERE codprodu=$1 AND codclaarchivo=$2;',
+            [codprodu, codclaarchivo]
+        );
+        if (!rows[0]) return null;
 
-            if (rows.length > 0) {
-                if (res && res.cache) {
-                    await res.cache.set(cacheKey, rows[0]);
-                    res.set('Cache-Control', 'public, max-age=3600');
-                }
-                return rows[0];
-            }
+        const record = rows[0];
+        const base = process.env.IMG_BASE_URL.replace(/\/$/, '');
+        const fullUrl = record.ficadjunto
+            ? `${base}/${record.ficadjunto.replace(/^\/+/, '')}`
+            : null;
 
-            return null;
-        } catch (error) {
-            console.error('Error fetching image by ID:', error);
-            throw new Error('Error fetching image by ID');
+        const result = { ...record, url: fullUrl };
+        if (res?.cache) {
+            await res.cache.set(cacheKey, result);
+            res.set('Cache-Control', 'public, max-age=3600');
         }
+        return result;
     }
 
     // Obtener una imagen por código de producto y clasificación de archivo
     static async getByCodproduAndCodclaarchivo({ codprodu, codclaarchivo, res }) {
         const cacheKey = `image:${codprodu}:${codclaarchivo}`;
-        let cachedResponse;
-
-        // Verificación de la existencia de cache
-        if (res && res.cache) {
-            cachedResponse = await res.cache.get(cacheKey);
-            if (cachedResponse) {
-                res.set('Cache-Control', 'public, max-age=3600');
-                return cachedResponse;
-            }
+        let cached = res?.cache && await res.cache.get(cacheKey);
+        if (cached) {
+            res.set('Cache-Control', 'public, max-age=3600');
+            return cached;
         }
 
-        try {
-            const { rows } = await pool.query(
-                'SELECT * FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2;',
-                [codprodu, codclaarchivo]
-            );
+        const { rows } = await pool.query(
+            'SELECT * FROM imagenesocproductos WHERE codprodu=$1 AND codclaarchivo=$2;',
+            [codprodu, codclaarchivo]
+        );
+        if (!rows[0]) return null;
 
-            if (rows.length > 0) {
-                if (res && res.cache) {
-                    await res.cache.set(cacheKey, rows[0]);
-                    res.set('Cache-Control', 'public, max-age=3600');
-                }
-                return rows[0];
-            }
+        const record = rows[0];
+        const base = process.env.IMG_BASE_URL.replace(/\/$/, '');
+        const fullUrl = record.ficadjunto
+            ? `${base}/${record.ficadjunto.replace(/^\/+/, '')}`
+            : null;
 
-            return null;
-        } catch (error) {
-            console.error('Error fetching image by product and classification:', error);
-            throw new Error('Error fetching image by product and classification');
+        const result = { ...record, url: fullUrl };
+        if (res?.cache) {
+            await res.cache.set(cacheKey, result);
+            res.set('Cache-Control', 'public, max-age=3600');
         }
+        return result;
     }
 
     // Crear una nueva imagen

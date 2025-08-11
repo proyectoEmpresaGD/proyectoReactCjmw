@@ -28,5 +28,7 @@
     },
     "scrollLeft": "Faire défiler à gauche",
     "scrollRight": "Faire défiler à droite",
-    "triggerDefault": "Trouvez le tissu qu’il vous faut"
+    "triggerDefault": "Trouvez le tissu qu’il vous faut",
+    "hoverInfo": "Survolez une option pour voir un exemple",
+    "previewLabel": "Exemple : {{label}}"
 }

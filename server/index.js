@@ -10,6 +10,8 @@ import 'dotenv/config';
 import fetch from 'node-fetch';
 import { createFtpRouter } from './routes/ftp.js';
 import { createInstagramRouter } from './routes/instagram.js';
+// 👉 NUEVO: router de colecciones (JSON)
+import { createCollectionsRouter } from './routes/collections.js';
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -40,7 +42,6 @@ app.get('/api/proxy', async (req, res) => {
   }
 });
 
-
 // Sirve archivos estáticos desde el directorio 'web'
 app.use(express.static(join(__dirname, 'web')));
 
@@ -49,6 +50,10 @@ app.use('/api/products', createProductRouter({ pool }));
 app.use('/api/images', createImagenRouter({ pool }));
 app.use('/api/ftp', createFtpRouter());
 app.use('/api/instagram', createInstagramRouter());
+
+// 👉 NUEVO: rutas de colecciones/portadas basadas en JSON
+//    GET /api/collections/image?marca=ARE&coleccion=ATMOSPHERE
+app.use('/api/collections', createCollectionsRouter());
 
 // Configuración SMTP con nodemailer
 const SMTP_HOST = "send.one.com";
@@ -303,7 +308,8 @@ app.post("/api/order", async (req, res) => {
                                         <td colspan="2">
                                             <h2 style="color: #007BFF; text-align: center;">Pedido en Trámite</h2>
                                             <p>Estimado/a <strong>${name}</strong>,</p>
-                                            <p>Su pedido se está tramitando. En breve, uno de nuestros agentes se pondrá en contacto con usted.</p>
+                                            <p>Su pedido se está tramitando. En breve, uno de nuestros agentes se pondrá en contacto con
+                                                usted.</p>
                                             <p>¡Gracias por confiar en <strong>CJMW WEB</strong>!</p>
                                         </td>
                                     </tr>

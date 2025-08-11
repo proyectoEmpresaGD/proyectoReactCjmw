@@ -7,6 +7,7 @@ import Filtro from '../../app/products/buttonFiltro';
 import SubMenuCarousel from './SubMenuCarousel';
 import CryptoJS from 'crypto-js';
 import { useTranslation } from 'react-i18next';
+import { cdnUrl } from '../../Constants/cdn';
 import {
     secretKey,
     itemsPerPage,
@@ -131,8 +132,8 @@ export default function CardProduct() {
         ]);
         return {
             ...prod,
-            imageBuena: b ? `https://${b.ficadjunto}` : defaultImageUrl,
-            imageBaja: l ? `https://${l.ficadjunto}` : defaultImageUrl
+            imageBuena: cdnUrl(b ? `https://${b.ficadjunto}` : defaultImageUrl),
+            imageBaja: cdnUrl(l ? `https://${l.ficadjunto}` : defaultImageUrl)
         };
     };
 

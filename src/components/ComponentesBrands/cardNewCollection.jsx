@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from '../ComponentesProductos/modal';
+import { cdnUrl } from '../../Constants/cdn'; // <-- importamos helper CDN
 
 const NewCollection = ({ images, titles, productCodes }) => {
     const { t } = useTranslation('newCollection');
@@ -50,7 +51,7 @@ const NewCollection = ({ images, titles, productCodes }) => {
                             >
                                 <a className="block cursor-pointer">
                                     <img
-                                        src={images[idx]}
+                                        src={cdnUrl(images[idx])} // <-- aplicamos CDN aquí
                                         alt={titles[idx]}
                                         className={`aspect-square w-full object-cover transform ${hoveredItem === idx ? 'scale-105' : 'scale-100'
                                             } transition duration-500`}

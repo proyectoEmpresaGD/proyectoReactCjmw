@@ -19,6 +19,7 @@ import Footer from "../../components/footer";
 import CarruselColeccion from "./CarruselProductosColeccion"
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate, useLocation } from "react-router-dom";
+import { cdnUrl } from '../../Constants/cdn';
 import {
     defaultImageUrlModalProductos,
     mantenimientoImages,
@@ -222,38 +223,55 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     }, [selectedProduct]);
 
 
-    // Cargar imagen principal en la modal
     useEffect(() => {
         if (!selectedProduct) return;
         if (selectedProduct.imageBuena || selectedProduct.imageBaja) {
-            setSelectedImage(selectedProduct.imageBuena || selectedProduct.imageBaja);
+            // Si ya hay imágenes, simplemente usa la versión CDN
+            setSelectedImage(
+                cdnUrl(selectedProduct.imageBuena || selectedProduct.imageBaja)
+            );
             return;
         }
+
         setImageLoaded(false);
         const fetchImages = async () => {
             try {
                 const [buenaResponse, bajaResponse] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/Buena`),
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/Baja`)
+                    fetch(
+                        `${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/Buena`
+                    ),
+                    fetch(
+                        `${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/Baja`
+                    )
                 ]);
-                const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
-                const bajaImage = bajaResponse.ok ? await bajaResponse.json() : null;
-                const mainImage = buenaImage
-                    ? `https://${buenaImage.ficadjunto}`
-                    : bajaImage
-                        ? `https://${bajaImage.ficadjunto}`
-                        : defaultImageUrlModalProductos;
+
+                const buenaJson = buenaResponse.ok ? await buenaResponse.json() : null;
+                const bajaJson = bajaResponse.ok ? await bajaResponse.json() : null;
+
+                // Monta la URL base y pásala por el CDN
+                const buenaUrl = buenaJson
+                    ? cdnUrl(`https://${buenaJson.ficadjunto}`)
+                    : null;
+                const bajaUrl = bajaJson
+                    ? cdnUrl(`https://${bajaJson.ficadjunto}`)
+                    : null;
+
+                const mainImage = buenaUrl || bajaUrl || defaultImageUrlModalProductos;
+
+                // Guarda ambas en selectedProduct (para siguientes renders)
                 setSelectedProduct(prev => ({
                     ...prev,
-                    imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : '',
-                    imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : ''
+                    imageBuena: buenaUrl || '',
+                    imageBaja: bajaUrl || ''
                 }));
+
                 setSelectedImage(mainImage);
             } catch (error) {
                 console.error('Error fetching images:', error);
                 setSelectedImage(defaultImageUrlModalProductos);
             }
         };
+
         fetchImages();
     }, [selectedProduct]);
 
@@ -266,25 +284,31 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${selectedProduct.codfamil}`
                 );
                 const data = await res.json();
-                const productosMismoNombre = data.filter(p => p.nombre === selectedProduct.nombre);
+                const productosMismoNombre = data.filter(
+                    p => p.nombre === selectedProduct.nombre
+                );
 
                 const images = await Promise.all(
-                    productosMismoNombre.map(async (prod) => {
-                        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`);
+                    productosMismoNombre.map(async prod => {
+                        const response = await fetch(
+                            `${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`
+                        );
                         const imageData = response.ok ? await response.json() : null;
-                        return imageData ? `https://${imageData.ficadjunto}` : null;
+                        if (!imageData?.ficadjunto) return null;
+                        // monta la URL y pásala por el CDN
+                        return cdnUrl(`https://${imageData.ficadjunto}`);
                     })
                 );
 
                 const filtered = images.filter(Boolean);
                 setGalleryImages(filtered);
 
-                const current = selectedProduct.imageBuena || selectedImage;
+                // calcula el índice inicial con la URL ya transformada
+                const current = cdnUrl(selectedProduct.imageBuena || selectedImage);
                 const initialIndex = filtered.findIndex(img => img === current);
                 setPhotoIndex(initialIndex >= 0 ? initialIndex : 0);
-
             } catch (err) {
-                console.error("Error cargando imágenes para galería:", err);
+                console.error('Error cargando imágenes para galería:', err);
                 setGalleryImages([]);
             }
         };
@@ -306,42 +330,50 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
 
         const fetchRelatedProducts = async () => {
             try {
-                const response = await fetch(
+                const resp = await fetch(
                     `${import.meta.env.VITE_API_BASE_URL}/api/products/codfamil/${selectedProduct.codfamil}`
                 );
-                const data = await response.json();
+                const data = await resp.json();
 
-                const allProducts = data.filter(p => p.nombre === selectedProduct.nombre);
+                // mismos nombre + misma familia
+                const mismos = data.filter(p => p.nombre === selectedProduct.nombre);
 
-                const uniqueProductsForCarousel = allProducts.reduce((unique, item) => {
-                    if (!unique.some(p => p.tonalidad === item.tonalidad)) {
-                        unique.push(item);
-                    }
-                    return unique;
-                }, []);
-                setProductsForCarousel(uniqueProductsForCarousel);
-
+                // mapea imágenes (y pásalas por CDN)
                 const productsWithImages = await Promise.all(
-                    allProducts.map(async (prod) => {
-                        const [imageBuena, imageBaja] = await Promise.all([
-                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`)
-                                .then(res => (res.ok ? res.json() : null)),
-                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Baja`)
-                                .then(res => (res.ok ? res.json() : null))
+                    mismos.map(async prod => {
+                        const [bRes, lRes] = await Promise.all([
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`).then(r => r.ok ? r.json() : null),
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Baja`).then(r => r.ok ? r.json() : null)
                         ]);
+
+                        const rawB = bRes?.ficadjunto ? `https://${bRes.ficadjunto}` : null;
+                        const rawL = lRes?.ficadjunto ? `https://${lRes.ficadjunto}` : null;
+
                         return {
                             ...prod,
-                            imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrlModalProductos,
-                            imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrlModalProductos
+                            imageBuena: rawB ? cdnUrl(rawB) : (rawL ? cdnUrl(rawL) : defaultImageUrlModalProductos),
+                            imageBaja: rawL ? cdnUrl(rawL) : (rawB ? cdnUrl(rawB) : defaultImageUrlModalProductos)
                         };
                     })
                 );
+
+                // Guarda todos (para los swatches)
                 setRelatedProducts(productsWithImages);
 
-                const uniqueAnchos = [...new Set(allProducts.map(p => p.ancho))];
-                if (uniqueAnchos.length > 0) {
+                // Colores únicos (por tonalidad)
+                const byTonalidad = productsWithImages.filter((p, i, arr) => {
+                    const key = (p.tonalidad || '').trim().toLowerCase();
+                    return key && i === arr.findIndex(q => (q.tonalidad || '').trim().toLowerCase() === key);
+                });
+
+                // Alimenta el contador
+                setProductsForCarousel(byTonalidad);
+
+                // Opciones de ancho disponibles
+                const uniqueAnchos = [...new Set(productsWithImages.map(p => p.ancho).filter(Boolean))];
+                if (uniqueAnchos.length) {
                     setAnchoOptions(uniqueAnchos);
-                    setSelectedAncho(Math.min(...uniqueAnchos));
+                    setSelectedAncho(String(Math.min(...uniqueAnchos.map(Number)).toString()));
                 }
             } catch (error) {
                 console.error('Error fetching related products:', error);
@@ -370,30 +402,39 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 const data = await response.json();
 
                 const filtered = data.filter(
-                    (p) =>
+                    p =>
                         p.nombre &&
-                        p.nombre.trim() !== "" &&
+                        p.nombre.trim() !== '' &&
                         p.coleccion === selectedProduct.coleccion &&
                         p.nombre !== selectedProduct.nombre
                 );
-
                 const uniqueByName = filtered.filter(
-                    (p, index, self) => index === self.findIndex(q => q.nombre === p.nombre)
+                    (p, idx, self) => idx === self.findIndex(q => q.nombre === p.nombre)
                 );
 
                 if (uniqueByName.length > 0) {
                     const productsWithImages = await Promise.all(
-                        uniqueByName.map(async (prod) => {
-                            const [imageBuena, imageBaja] = await Promise.all([
-                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`)
-                                    .then(res => (res.ok ? res.json() : null)),
-                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Baja`)
-                                    .then(res => (res.ok ? res.json() : null))
+                        uniqueByName.map(async prod => {
+                            const [buenaJson, bajaJson] = await Promise.all([
+                                fetch(
+                                    `${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`
+                                ).then(res => (res.ok ? res.json() : null)),
+                                fetch(
+                                    `${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Baja`
+                                ).then(res => (res.ok ? res.json() : null))
                             ]);
+
+                            const rawBuena = buenaJson
+                                ? `https://${buenaJson.ficadjunto}`
+                                : defaultImageUrlModalProductos;
+                            const rawBaja = bajaJson
+                                ? `https://${bajaJson.ficadjunto}`
+                                : defaultImageUrlModalProductos;
+
                             return {
                                 ...prod,
-                                imageBuena: imageBuena ? `https://${imageBuena.ficadjunto}` : defaultImageUrlModalProductos,
-                                imageBaja: imageBaja ? `https://${imageBaja.ficadjunto}` : defaultImageUrlModalProductos
+                                imageBuena: cdnUrl(rawBuena),
+                                imageBaja: cdnUrl(rawBaja)
                             };
                         })
                     );
