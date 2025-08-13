@@ -1,32 +1,54 @@
+// routes/productos.js
 import { Router } from 'express';
 import { ProductController } from '../controllers/productos.js';
 
+/**
+ * Router de productos
+ * Orden MUY importante: las rutas específicas deben ir antes de '/:id'
+ */
 export const createProductRouter = () => {
     const productsRouter = Router();
     const productController = new ProductController();
 
-    // Rutas para la gestión de productos
-    productsRouter.get('/', productController.getAll.bind(productController));
-    productsRouter.post('/', productController.create.bind(productController));
+    // ==============================
+    // 1. CRUD BÁSICO (excepto :id)
+    // ==============================
+    productsRouter.get('/', productController.getAll.bind(productController));       // Listar productos
+    productsRouter.post('/', productController.create.bind(productController));      // Crear producto
 
+    // ==============================
+    // 2. FILTROS
+    // ==============================
     productsRouter.get('/filters', productController.getFilters.bind(productController));
-    productsRouter.get('/filtersByBrand', productController.getFiltersByBrand.bind(productController)); // Nueva ruta
+    productsRouter.get('/filtersByBrand', productController.getFiltersByBrand.bind(productController));
     productsRouter.post('/filter', productController.filterProducts.bind(productController));
+    productsRouter.get('/codfamil/:codfamil', productController.getByCodFamil.bind(productController));
 
-    // Ruta de búsqueda debe ir antes de las rutas que capturan parámetros como 'id'
-    productsRouter.get('/search', productController.search.bind(productController));
-    productsRouter.get('/codfamil/:codfamil', productController.getByCodFamil.bind(productController)); // Nueva ruta
-    productsRouter.get('/getCollectionsByBrand', productController.getCollectionsByBrand.bind(productController));
+    // ==============================
+    // 3. BÚSQUEDAS (rutas con nombre)
+    // ==============================
+    productsRouter.get('/search', productController.search.bind(productController));                       // clásica
+    productsRouter.get('/search-quick', productController.searchQuick.bind(productController));            // barra rápida
+    productsRouter.get('/search-products', productController.searchProducts.bind(productController));      // CardProduct
 
-    // Nuevas rutas para búsqueda interna (colecciones, tipos de tela, y patrones)
-    productsRouter.get('/byCollectionExcluding', productController.getByCollectionExcluding.bind(productController));
-    productsRouter.get('/similarByStyle', productController.getSimilarByStyle.bind(productController));
+    // ==============================
+    // 4. AUTOCOMPLETADOS
+    // ==============================
     productsRouter.get('/searchCollections', productController.searchCollections.bind(productController));
     productsRouter.get('/searchFabricTypes', productController.searchFabricTypes.bind(productController));
     productsRouter.get('/searchFabricPatterns', productController.searchFabricPatterns.bind(productController));
 
-    // Rutas para operaciones específicas de un producto
+    // ==============================
+    // 5. RELACIONADOS / COLECCIONES
+    // ==============================
+    productsRouter.get('/getCollectionsByBrand', productController.getCollectionsByBrand.bind(productController));
     productsRouter.get('/byCollection', productController.getByExactCollection.bind(productController));
+    productsRouter.get('/byCollectionExcluding', productController.getByCollectionExcluding.bind(productController));
+    productsRouter.get('/similarByStyle', productController.getSimilarByStyle.bind(productController));
+
+    // ==============================
+    // 6. Rutas por ID (¡AL FINAL!)
+    // ==============================
     productsRouter.get('/:id', productController.getById.bind(productController));
     productsRouter.patch('/:id', productController.update.bind(productController));
     productsRouter.delete('/:id', productController.delete.bind(productController));

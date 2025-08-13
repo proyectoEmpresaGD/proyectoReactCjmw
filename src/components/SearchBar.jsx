@@ -3,80 +3,162 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import { RiSearchLine, RiCloseLine } from 'react-icons/ri';
-import { defaultImageUrl } from '../Constants/constants';
 import { useTranslation } from 'react-i18next';
+import { defaultImageUrl } from '../Constants/constants';
 
-// Variantes para la animación del dropdown
 const dropdownVariants = {
     hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.25 } },
     exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
 };
 
-// Normaliza la consulta
-const normalizeQuery = q => q.trim().replace(/\s+/g, ' ');
+const normalizeQuery = (q) => q.trim().replace(/\s+/g, ' ');
+const HISTORY_STORAGE_KEY = 'searchHistoryV2';
+
+const highlight = (text, q) => {
+    if (!text) return null;
+    const term = (q || '').trim();
+    if (!term) return text;
+    const idx = text.toUpperCase().indexOf(term.toUpperCase());
+    if (idx === -1) return text;
+    return (
+        <>
+            {text.slice(0, idx)}
+            <mark className="bg-yellow-200">{text.slice(idx, idx + term.length)}</mark>
+            {text.slice(idx + term.length)}
+        </>
+    );
+};
 
 const SearchBar = ({ closeSearchBar }) => {
     const { t } = useTranslation('search');
     const navigate = useNavigate();
 
     const [query, setQuery] = useState('');
-    const [productSuggestions, setProductSuggestions] = useState([]);
-    const [collectionSuggestions, setCollectionSuggestions] = useState([]);
+    const [productSuggestions, setProductSuggestions] = useState([]); // [{codprodu,nombre,coleccion,tonalidad,image}]
+    const [collectionSuggestions, setCollectionSuggestions] = useState([]); // [string]
     const [activeIndex, setActiveIndex] = useState(-1);
     const [isLoading, setIsLoading] = useState(false);
-    const [history, setHistory] = useState([]);
+    const [history, setHistory] = useState([]); // [{type:'product'|'collection'|'text', label, codprodu?, collection?, query?}]
 
     const inputRef = useRef(null);
     const suggestionRefs = useRef([]);
+    const wrapperRef = useRef(null);
+    const controllerRef = useRef(null); // AbortController
 
-    // Fetch productos
-    const fetchProductSuggestions = async q => {
-        try {
+    // ---------- Historial (con migración v1 → v2) ----------
+    useEffect(() => {
+        const rawV2 = localStorage.getItem(HISTORY_STORAGE_KEY);
+        if (rawV2) {
+            try {
+                const parsed = JSON.parse(rawV2);
+                if (Array.isArray(parsed)) {
+                    setHistory(parsed);
+                    return;
+                }
+            } catch { }
+        }
+        const rawV1 = localStorage.getItem('searchHistory');
+        if (rawV1) {
+            try {
+                const parsedV1 = JSON.parse(rawV1);
+                if (Array.isArray(parsedV1)) {
+                    const migrated = parsedV1.map((label) => ({
+                        type: 'text',
+                        label: String(label),
+                        query: String(label),
+                    }));
+                    setHistory(migrated.slice(0, 5));
+                    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(migrated.slice(0, 5)));
+                }
+            } catch { }
+        }
+    }, []);
+
+    const persistHistory = (list) => {
+        setHistory(list);
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(list));
+    };
+
+    const addToHistory = (item) => {
+        const deduped = [item, ...history.filter((h) => h.label !== item.label)].slice(0, 5);
+        persistHistory(deduped);
+    };
+
+    // ---------- Fetch sugerencias ----------
+    const fetchAll = useCallback(
+        async (q) => {
+            if (q.length < 3) {
+                setProductSuggestions([]);
+                setCollectionSuggestions([]);
+                return;
+            }
+            controllerRef.current?.abort();
+            const controller = new AbortController();
+            controllerRef.current = controller;
+
+            setIsLoading(true);
             const norm = normalizeQuery(q);
-            const res = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${encodeURIComponent(norm)}`,
-                { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } }
-            );
-            if (!res.ok) throw new Error();
-            const data = await res.json();
-            setProductSuggestions(Array.isArray(data.products) ? data.products : []);
-        } catch {
-            setProductSuggestions([]);
-        }
-    };
 
-    // Fetch colecciones
-    const fetchCollectionSuggestions = async q => {
-        try {
-            const norm = normalizeQuery(q);
-            const res = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/products/searchCollections?searchTerm=${encodeURIComponent(norm)}`,
-                { headers: { 'Cache-Control': 's-maxage=3600, stale-while-revalidate' } }
-            );
-            if (!res.ok) throw new Error();
-            const data = await res.json();
-            setCollectionSuggestions(Array.isArray(data) ? data : []);
-        } catch {
-            setCollectionSuggestions([]);
-        }
-    };
+            try {
+                // nuevo endpoint
+                const urlQuick = `${import.meta.env.VITE_API_BASE_URL}/api/products/search-quick?query=${encodeURIComponent(
+                    norm
+                )}&prodLimit=8&colLimit=6`;
 
-    // Lanza ambos
-    const fetchAll = async q => {
-        if (q.length < 3) {
-            setProductSuggestions([]);
-            setCollectionSuggestions([]);
-            return;
-        }
-        setIsLoading(true);
-        await Promise.all([fetchProductSuggestions(q), fetchCollectionSuggestions(q)]);
-        setIsLoading(false);
-    };
+                let rp = await fetch(urlQuick, { signal: controller.signal });
+                // compatibilidad (por si en local aún está el endpoint antiguo en alguna rama)
+                if (!rp.ok) {
+                    const legacy = `${import.meta.env.VITE_API_BASE_URL}/api/products/search?query=${encodeURIComponent(
+                        norm
+                    )}&limit=8&page=1`;
+                    rp = await fetch(legacy, { signal: controller.signal });
+                }
 
-    const debouncedFetch = useCallback(debounce(fetchAll, 300), []);
+                let dpProducts = [];
+                let dcCollections = [];
 
-    const handleChange = e => {
+                if (rp.ok) {
+                    const data = await rp.json();
+                    // si viene del endpoint nuevo
+                    if (Array.isArray(data.products) || Array.isArray(data.collections)) {
+                        dpProducts = data.products ?? [];
+                        dcCollections = data.collections ?? [];
+                    } else {
+                        // compat: /search clásico
+                        dpProducts = Array.isArray(data.products) ? data.products : [];
+                        dcCollections = [];
+                    }
+                }
+
+                // saneo: evita items incompletos que rompan los .map()
+                const safeProducts = (dpProducts || [])
+                    .filter(Boolean)
+                    .filter((p) => p && (p.nombre || p.codprodu)) // al menos nombre o id
+                    .slice(0, 8);
+
+                const safeCollections = (dcCollections || [])
+                    .filter(Boolean)
+                    .map(String)
+                    .slice(0, 6);
+
+                setProductSuggestions(safeProducts);
+                setCollectionSuggestions(safeCollections);
+            } catch (e) {
+                if (e.name !== 'AbortError') {
+                    setProductSuggestions([]);
+                    setCollectionSuggestions([]);
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        []
+    );
+
+    const debouncedFetch = useCallback(debounce(fetchAll, 250), [fetchAll]);
+
+    const handleChange = (e) => {
         const val = e.target.value.toUpperCase();
         setQuery(val);
         debouncedFetch(val);
@@ -84,14 +166,14 @@ const SearchBar = ({ closeSearchBar }) => {
 
     const total = productSuggestions.length + collectionSuggestions.length;
 
-    const handleKeyDown = e => {
+    const handleKeyDown = (e) => {
         if (e.key === 'ArrowDown') {
             e.preventDefault();
-            setActiveIndex(prev => Math.min(prev + 1, total - 1));
+            setActiveIndex((prev) => Math.min(prev + 1, total - 1));
         }
         if (e.key === 'ArrowUp') {
             e.preventDefault();
-            setActiveIndex(prev => Math.max(prev - 1, 0));
+            setActiveIndex((prev) => Math.max(prev - 1, 0));
         }
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -116,33 +198,44 @@ const SearchBar = ({ closeSearchBar }) => {
 
     useEffect(() => {
         inputRef.current?.focus();
+        return () => controllerRef.current?.abort();
     }, []);
 
-    const addToHistory = term => {
-        setHistory(prev => [term, ...prev.filter(h => h !== term)].slice(0, 5));
-    };
-
-    const selectProduct = item => {
-        const txt = `${item.nombre} (${item.coleccion || t('noCollection')}, ${item.tonalidad || t('noTone')})`;
-        setQuery(txt);
-        addToHistory(txt);
-        navigate(`/products?productId=${encodeURIComponent(item.codprodu)}&page=1`);
+    // ---------- Selecciones ----------
+    const selectProduct = (item) => {
+        const nombre = item?.nombre || item?.codprodu || '';
+        const label = `${nombre} (${item?.coleccion || t('noCollection')}, ${item?.tonalidad || t('noTone')})`;
+        setQuery(label);
+        addToHistory({ type: 'product', label, codprodu: item?.codprodu });
+        if (item?.codprodu) {
+            navigate(`/products?productId=${encodeURIComponent(item.codprodu)}&page=1`);
+        } else {
+            // Fallback por texto si faltara codprodu
+            navigate(`/products?search=${encodeURIComponent(nombre)}&page=1`);
+        }
         reset();
     };
 
-    const selectCollection = col => {
-        const txt = `${t('collectionPrefix')} ${col}`;
-        setQuery(txt);
-        addToHistory(txt);
+    const selectCollection = (col) => {
+        const label = `${t('collectionPrefix')} ${col}`;
+        setQuery(label);
+        addToHistory({ type: 'collection', label, collection: col });
         navigate(`/products?collection=${encodeURIComponent(col)}&page=1`);
         reset();
     };
 
-    const submitSearch = q => {
+    const submitSearch = (q) => {
         const norm = normalizeQuery(q);
         if (!norm) return;
-        addToHistory(norm);
-        navigate(`/products?search=${encodeURIComponent(norm)}&page=1`);
+        const pref = `${t('collectionPrefix')} `;
+        if (norm.toUpperCase().startsWith(pref.toUpperCase())) {
+            const col = norm.slice(pref.length).trim();
+            addToHistory({ type: 'collection', label: norm, collection: col });
+            navigate(`/products?collection=${encodeURIComponent(col)}&page=1`);
+        } else {
+            addToHistory({ type: 'text', label: norm, query: norm });
+            navigate(`/products?search=${encodeURIComponent(norm)}&page=1`);
+        }
         reset();
     };
 
@@ -157,8 +250,42 @@ const SearchBar = ({ closeSearchBar }) => {
         if (!query) setActiveIndex(-1);
     }, [query]);
 
+    // Cierra sugerencias si clic fuera
+    useEffect(() => {
+        const onClickOutside = (e) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+                setProductSuggestions([]);
+                setCollectionSuggestions([]);
+            }
+        };
+        document.addEventListener('mousedown', onClickOutside);
+        return () => document.removeEventListener('mousedown', onClickOutside);
+    }, []);
+
+    const activeId =
+        activeIndex >= 0
+            ? activeIndex < productSuggestions.length
+                ? `opt-prod-${productSuggestions[activeIndex]?.codprodu || activeIndex}`
+                : `opt-col-${collectionSuggestions[activeIndex - productSuggestions.length]}`
+            : undefined;
+
+    // ---------- click del historial ----------
+    const handleHistoryClick = (item) => {
+        setQuery(item.label || '');
+        if (item.type === 'product' && item.codprodu) {
+            navigate(`/products?productId=${encodeURIComponent(item.codprodu)}&page=1`);
+        } else if (item.type === 'collection' && item.collection) {
+            navigate(`/products?collection=${encodeURIComponent(item.collection)}&page=1`);
+        } else if (item.type === 'text' && item.query) {
+            navigate(`/products?search=${encodeURIComponent(item.query)}&page=1`);
+        } else {
+            navigate(`/products?search=${encodeURIComponent(item.label || '')}&page=1`);
+        }
+        reset();
+    };
+
     return (
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full max-w-md" ref={wrapperRef}>
             <div className="flex items-center bg-gray-50 border border-gray-300 rounded-full px-4 py-2 shadow-sm">
                 <RiSearchLine className="text-gray-500 mr-2" size={20} />
                 <input
@@ -173,6 +300,8 @@ const SearchBar = ({ closeSearchBar }) => {
                     role="combobox"
                     aria-expanded={query.length >= 3 && total > 0}
                     aria-controls="search-suggestions"
+                    aria-activedescendant={activeId}
+                    aria-autocomplete="list"
                 />
                 {query && (
                     <button onClick={() => setQuery('')} className="focus:outline-none" aria-label={t('clear')}>
@@ -190,7 +319,7 @@ const SearchBar = ({ closeSearchBar }) => {
                     <motion.div
                         id="search-suggestions"
                         className="absolute z-50 w-full bg-white rounded-lg mt-2 shadow-lg"
-                        style={{ maxHeight: '240px', overflowY: 'auto' }}
+                        style={{ maxHeight: '260px', overflowY: 'auto' }}
                         initial="hidden"
                         animate="visible"
                         exit="exit"
@@ -198,54 +327,76 @@ const SearchBar = ({ closeSearchBar }) => {
                     >
                         {isLoading ? (
                             <div className="px-4 py-2 text-center text-sm text-gray-600">{t('loading')}</div>
-                        ) : total > 0 ? (
+                        ) : productSuggestions.length + collectionSuggestions.length > 0 ? (
                             <>
                                 {/* Productos */}
                                 {productSuggestions.length > 0 && (
                                     <div>
-                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">{t('productsSection')}</div>
-                                        <ul>
-                                            {productSuggestions.map((item, idx) => (
-                                                <li
-                                                    key={item.codprodu}
-                                                    ref={el => (suggestionRefs.current[idx] = el)}
-                                                    className={`flex items-center px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === idx ? 'bg-gray-100' : ''
-                                                        }`}
-                                                    onClick={() => selectProduct(item)}
-                                                >
-                                                    <img
-                                                        src={item.image || defaultImageUrl}
-                                                        alt={item.nombre}
-                                                        className="w-10 h-10 object-cover rounded-full mr-3 shadow-sm"
-                                                        onError={e => (e.target.src = defaultImageUrl)}
-                                                    />
-                                                    <div>
-                                                        <p className="font-medium text-gray-800">{item.nombre}</p>
-                                                        <p className="text-xs text-gray-500">
-                                                            {item.coleccion || t('noCollection')} &middot; {item.tonalidad || t('noTone')}
-                                                        </p>
-                                                    </div>
-                                                </li>
-                                            ))}
+                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">
+                                            {t('productsSection')}
+                                        </div>
+                                        <ul role="listbox" aria-label={t('productsSection')}>
+                                            {productSuggestions.map((item, idx) => {
+                                                const key = item?.codprodu || `${item?.nombre || 'item'}-${idx}`;
+                                                const nombre = item?.nombre || t('noName', 'SIN NOMBRE');
+                                                const coleccion = item?.coleccion || t('noCollection');
+                                                const tonalidad = item?.tonalidad || t('noTone');
+                                                return (
+                                                    <li
+                                                        id={`opt-prod-${key}`}
+                                                        role="option"
+                                                        aria-selected={activeIndex === idx}
+                                                        key={key}
+                                                        ref={(el) => (suggestionRefs.current[idx] = el)}
+                                                        className={`flex items-center px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === idx ? 'bg-gray-100' : ''
+                                                            }`}
+                                                        onClick={() => selectProduct(item)}
+                                                        onMouseEnter={() => setActiveIndex(idx)}
+                                                    >
+                                                        <img
+                                                            src={item?.image || defaultImageUrl}
+                                                            alt={nombre}
+                                                            className="w-10 h-10 object-cover rounded-full mr-3 shadow-sm"
+                                                            onError={(e) => (e.currentTarget.src = defaultImageUrl)}
+                                                        />
+                                                        <div className="min-w-0">
+                                                            <p className="font-medium text-gray-800 truncate">
+                                                                {highlight(nombre, query)}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500 truncate">
+                                                                {coleccion} &middot; {tonalidad}
+                                                            </p>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            })}
                                         </ul>
                                     </div>
                                 )}
                                 {/* Colecciones */}
                                 {collectionSuggestions.length > 0 && (
                                     <div>
-                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">{t('collectionsSection')}</div>
-                                        <ul>
+                                        <div className="px-4 py-1 text-xs text-gray-500 uppercase">
+                                            {t('collectionsSection')}
+                                        </div>
+                                        <ul role="listbox" aria-label={t('collectionsSection')}>
                                             {collectionSuggestions.map((col, idx) => {
                                                 const gIdx = productSuggestions.length + idx;
                                                 return (
                                                     <li
+                                                        id={`opt-col-${col}`}
+                                                        role="option"
+                                                        aria-selected={activeIndex === gIdx}
                                                         key={col}
-                                                        ref={el => (suggestionRefs.current[gIdx] = el)}
+                                                        ref={(el) => (suggestionRefs.current[gIdx] = el)}
                                                         className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeIndex === gIdx ? 'bg-gray-100' : ''
                                                             }`}
                                                         onClick={() => selectCollection(col)}
+                                                        onMouseEnter={() => setActiveIndex(gIdx)}
                                                     >
-                                                        <p className="font-medium text-gray-800">{t('collectionPrefix')} {col}</p>
+                                                        <p className="font-medium text-gray-800">
+                                                            {t('collectionPrefix')} {highlight(col, query)}
+                                                        </p>
                                                     </li>
                                                 );
                                             })}
@@ -261,9 +412,7 @@ const SearchBar = ({ closeSearchBar }) => {
                                 </div>
                             </>
                         ) : (
-                            <div className="px-4 py-2 text-center text-sm text-gray-600">
-                                {t('noResults')}
-                            </div>
+                            <div className="px-4 py-2 text-center text-sm text-gray-600">{t('noResults')}</div>
                         )}
                     </motion.div>
                 )}
@@ -274,13 +423,20 @@ const SearchBar = ({ closeSearchBar }) => {
                 <div className="absolute z-50 w-full bg-white shadow-lg rounded-lg mt-1 overflow-y-auto max-h-60">
                     <div className="px-4 py-2 border-b font-semibold text-gray-700">{t('recent')}</div>
                     <ul>
-                        {history.map((term, idx) => (
+                        {history.map((item, idx) => (
                             <li
                                 key={idx}
                                 className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => submitSearch(term)}
+                                onClick={() => handleHistoryClick(item)}
+                                title={
+                                    item.type === 'product'
+                                        ? t('productsSection')
+                                        : item.type === 'collection'
+                                            ? t('collectionsSection')
+                                            : t('seeAll')
+                                }
                             >
-                                {term}
+                                {item.label}
                             </li>
                         ))}
                     </ul>
