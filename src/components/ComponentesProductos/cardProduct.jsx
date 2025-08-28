@@ -499,11 +499,11 @@ export default function CardProduct() {
             </div>
 
             {/* products grid */}
-            <div className={viewMode === 'grid4' ? 'mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' : 'mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6'}>
+            <div className={viewMode === 'grid4' ? 'mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6' : 'mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6'}>
                 {displayed.map((p, i) => (
                     <div key={`${p.codprodu}-${i}`} className="flex flex-col p-2 bg-white rounded-lg shadow hover:shadow-xl transition">
                         <div
-                            className="relative w-full h-48 overflow-hidden cursor-pointer rounded"
+                            className={`relative w-full ${viewMode === 'grid2' ? 'h-56 md:h-96' : 'h-32 md:h-60 '} overflow-hidden cursor-pointer rounded`}
                             onClick={() => {
                                 setSelectedProduct(p);
                                 setModalOpen(true);
@@ -515,9 +515,9 @@ export default function CardProduct() {
                                 {t('touchToView')}
                             </div>
                         </div>
-                        <div className="flex-1 mt-4 text-center">
-                            <h3 className="text-lg font-semibold text-gray-800">{p.nombre}</h3>
-                            <p className="mt-1 text-sm text-gray-500">{p.tonalidad}</p>
+                        <div className="flex-1 mt-2 md:mt-4 text-center">
+                            <h3 className="md:text-lg text-sm font-semibold text-gray-800">{p.nombre}</h3>
+                            <p className="mt-1 md:text-sm text-xs text-gray-500">{p.tonalidad}</p>
                         </div>
                     </div>
                 ))}
