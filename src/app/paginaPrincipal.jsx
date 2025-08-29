@@ -1,6 +1,6 @@
 import CarruselHome from "../components/ComponentesHome/carruselHome"; // Cambiado el nombre de la importación
 import { Header } from "../components/header";
-import { CartProvider } from '../components/cartContext';
+import { CartProvider } from '../components/CartContext';
 
 const images = [
     "https://bassari.eu/ImagenesTelasCjmw/Carruseles/FLAMENCO/FLA001199-SEA-STRIPE-SPRING-GREEN.jpg",

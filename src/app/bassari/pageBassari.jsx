@@ -3,7 +3,7 @@ import { Header } from "../../components/header";
 import Footer from "../../components/footer";
 import Carrusel from "../../components/ComponentesHome/carrusel";
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection";
-import { CartProvider } from '../../components/cartContext';
+import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas";
 import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
 import { useTranslation } from 'react-i18next';

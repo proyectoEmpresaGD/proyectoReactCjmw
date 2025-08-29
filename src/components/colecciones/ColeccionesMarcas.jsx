@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CartProvider } from '../cartContext';
+import { CartProvider } from '../CartContext';
 import { coleccionesPorMarca } from '../../Constants/constants';
 import { cdnUrl } from '../../Constants/cdn';
 

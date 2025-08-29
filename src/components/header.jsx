@@ -10,7 +10,7 @@ import {
 } from 'react-icons/ri';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
-import { useCart } from './cartContext';
+import { useCart } from './CartContext';
 import ScrollToTop from './ScrollToTop';
 import 'tailwindcss/tailwind.css';
 import SearchBar from './SearchBar';

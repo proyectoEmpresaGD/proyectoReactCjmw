@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ModalMapa from "./modalMapa";
-import { useCart } from '../cartContext';
+import { useCart } from '../CartContext';
 import QRCode from 'react-qr-code';
-import { CartProvider } from "../cartContext";
+import { CartProvider } from "../CartContext";
 import ShareButton from './ShareButton';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
