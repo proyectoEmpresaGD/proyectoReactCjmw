@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';
-import { useCart } from '../CartContext';
+import { useCart } from '../cartContext';
 import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from './modal';
 import Filtro from '../../app/products/buttonFiltro';
