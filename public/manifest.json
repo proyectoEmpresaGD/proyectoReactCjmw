@@ -3,17 +3,17 @@
     "name": "CJMW Group",
     "icons": [
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM_GROUP_IMAG_NEGRO_FINO_64X64.png",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/ESCUDOS/ESCUDO%20FAMILIAR/64X64_transparente.png",
             "sizes": "64x64 32x32 24x24 16x16",
             "type": "image/x-icon"
         },
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM_GROUP_IMAG_NEGRO_FINO_192x192.png",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/ESCUDOS/ESCUDO%20FAMILIAR/192X192_transparente.png",
             "type": "image/svg+xml",
             "sizes": "192x192"
         },
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/CJM_GROUP_IMAG_NEGRO_FINO_512x512.png",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/ESCUDOS/ESCUDO%20FAMILIAR/512X512_transparente.png",
             "type": "image/png",
             "sizes": "512x512"
         }
