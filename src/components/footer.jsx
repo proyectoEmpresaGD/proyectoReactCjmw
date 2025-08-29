@@ -1,4 +1,3 @@
-import React from 'react';
 import { RiInstagramLine, RiFacebookLine, RiTwitterXFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import {
@@ -15,7 +14,7 @@ const Footer = () => {
     const { t } = useTranslation('footer');
 
     return (
-        <footer className="bg-gray-300 text-gray-900 p-6 xl:p-12">
+        <footer className=" bg-white text-gray-900 p-6 xl:p-12">
             <div className="w-full border-b border-gray-500 pb-6">
                 <div className="flex flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-between">
                     <div className="hidden lg:block w-[120px]" />

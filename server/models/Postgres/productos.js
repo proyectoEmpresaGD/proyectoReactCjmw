@@ -261,6 +261,29 @@ export class ProductModel {
     return withImages;
   }
 
+  // ProductModel.js
+  // ProductModel.js
+  // ProductModel.js
+  static async getProductByCollection({ coleccion }) {
+    const sql = `
+    SELECT DISTINCT ON (p.nombre) p.*
+    FROM productos p
+    WHERE TRIM(p.coleccion) ILIKE TRIM($1)
+      AND p.nombre IS NOT NULL
+      AND p.nombre <> ''
+    ORDER BY p.nombre, p.codprodu;
+  `;
+
+    const { rows } = await pool.query(sql, [coleccion]);
+
+    // Asegúrate de que attachImages complete imageBuena / imageBaja
+    const withImages = await Promise.all(
+      rows.map((p) => this.attachImages(p, ['Buena', 'Baja']))
+    );
+
+    return withImages;
+  }
+
   /**
    * Productos similares por estilo, excluyendo el nombre y la colección concretos.
    * Garantiza que exista una imagen "Baja".

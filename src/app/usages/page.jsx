@@ -1,7 +1,7 @@
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
 import CareUsages from "../../components/ComponentesUsages/usosCard"
-import { CartProvider } from '../../components/CartContext';
+import { CartProvider } from '../../components/cartContext';
 
 
 function Usages() {

@@ -75,7 +75,7 @@ function PresentacionColeccion({ nombreColeccion, titulo, imagenFondo, descripci
                 <div className="w-full lg:w-1/2 space-y-6">
                     <h3
                         ref={tituloRef}
-                        className={`text-xl md:text-[35px] font-semibold transition-all duration-700 ease-out
+                        className={`text-xl md:text-[35px] font-semibold transition-all text-white duration-700 ease-out
                             ${tituloVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5"}
                         `}
                     >
@@ -90,7 +90,7 @@ function PresentacionColeccion({ nombreColeccion, titulo, imagenFondo, descripci
                                 ref={(el) => (textRef.current[index] = el)}
                                 className={`text-[25px] transition-all duration-1000 ease-out
                                     ${visibleLines.includes(index)
-                                        ? "opacity-100 translate-x-0 text-black"
+                                        ? "opacity-100 translate-x-0 text-white"
                                         : "opacity-0 -translate-x-5 text-transparent"}
                                 `}
                             >
@@ -102,8 +102,8 @@ function PresentacionColeccion({ nombreColeccion, titulo, imagenFondo, descripci
                     <button
                         ref={botonRef}
                         onClick={handleClick}
-                        className={`border border-black text-black px-4 py-2 rounded transition-all duration-700 ease-out
-                            hover:bg-black hover:text-white
+                        className={`border border-white text-white px-4 py-2 rounded transition-all duration-700 ease-out
+                            hover:bg-white hover:text-black
                             ${botonVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5"}
                         `}
                     >

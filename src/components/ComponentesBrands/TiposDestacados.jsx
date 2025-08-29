@@ -50,7 +50,7 @@ function BloquesInformativos({ titulo, texto, bloques = [] }) {
             {/* Título */}
             <h2
                 ref={tituloRef}
-                className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-4 transition-all duration-700
+                className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white transition-all duration-700
                     ${tituloVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
                 `}
             >
@@ -60,7 +60,7 @@ function BloquesInformativos({ titulo, texto, bloques = [] }) {
             {/* Texto */}
             <p
                 ref={textoRef}
-                className={`text-base md:text-lg lg:text-xl text-gray-700 max-w-3xl mb-8 transition-all duration-700 delay-200
+                className={`text-base md:text-lg lg:text-xl text-white max-w-3xl mb-8 transition-all duration-700 delay-200
                     ${textoVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
                 `}
             >
@@ -93,6 +93,7 @@ function BloquesInformativos({ titulo, texto, bloques = [] }) {
                                 <h3 className="text-sm sm:text-base font-medium">{bloque.nombre}</h3>
                             </div>
                         </div>
+
                     );
                 })}
             </div>

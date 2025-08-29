@@ -2,7 +2,7 @@ import { Header } from "../../components/header"
 import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
-import { CartProvider } from '../../components/CartContext';
+import { CartProvider } from '../../components/cartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
 
 function CjmHome() {

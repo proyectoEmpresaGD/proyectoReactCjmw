@@ -117,7 +117,7 @@ export default function CardProduct() {
     const buildAppliedFilters = () => {
         const ap = { ...filters };
         if (searchQuery) ap.search = searchQuery;
-        if (type === 'papel') ap.fabricType = ['WALLPAPER'];
+        if (type === 'papel') ap.fabricType = ['WALLPAPER', 'PAPEL PINTADO'];
         if (fabricPattern) ap.fabricPattern = [fabricPattern];
         if (uso) ap.uso = [uso];
         if (brand) ap.brand = [brand];

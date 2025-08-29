@@ -45,6 +45,12 @@ export const createProductRouter = () => {
     productsRouter.get('/byCollection', productController.getByExactCollection.bind(productController));
     productsRouter.get('/byCollectionExcluding', productController.getByCollectionExcluding.bind(productController));
     productsRouter.get('/similarByStyle', productController.getSimilarByStyle.bind(productController));
+    productsRouter.get('/byProductCollection',
+        productController.getProductByCollection.bind(productController)
+    );
+    productsRouter.post('/byProductCollection',
+        productController.getProductByCollection.bind(productController)
+    );
 
     // ==============================
     // 6. Rutas por ID (¡AL FINAL!)

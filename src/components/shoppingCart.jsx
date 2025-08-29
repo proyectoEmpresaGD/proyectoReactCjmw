@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCart } from '../components/CartContext';
+import { useCart } from './cartContext.jsx';
 import { cartConfig } from '../Constants/constants';
 import { apiUrl } from '../Constants/constants.jsx';
 

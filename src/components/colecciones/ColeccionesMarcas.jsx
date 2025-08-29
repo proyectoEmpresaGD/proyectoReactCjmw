@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CartProvider } from '../CartContext';
+import { CartProvider } from '../cartContext';
 import { coleccionesPorMarca } from '../../Constants/constants';
 import { cdnUrl } from '../../Constants/cdn';
 
@@ -122,7 +122,7 @@ function ColeccionesMarcas({ marca }) {
 
   return (
     <CartProvider>
-      <div className="mt-[20%] md:mt-[10%] lg:mt-[5%] xl:mt-[3%] px-5">
+      <div className="mt-[20%] md:mt-[10%] lg:mt-[5%] xl:mt-[3%] px-5 ">
         <div className="flex items-center justify-center h-full pt-7">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black mx-auto">
             {t('title')}
@@ -134,7 +134,7 @@ function ColeccionesMarcas({ marca }) {
             <div
               key={idx}
               onClick={() => handleClick(coleccion)}
-              className="relative group cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg rounded-lg overflow-hidden bg-white w-full"
+              className="relative group cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg rounded-lg overflow-hidden w-full"
             >
               <div className="absolute inset-0 z-20 flex items-center justify-center group-hover:bg-black/10 transition duration-300">
                 <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] transition-transform duration-300 group-hover:scale-105">

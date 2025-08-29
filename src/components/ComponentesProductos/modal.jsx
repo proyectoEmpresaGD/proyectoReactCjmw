@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ModalMapa from "./modalMapa";
-import { useCart } from '../CartContext';
+import { useCart } from '../cartContext';
 import QRCode from 'react-qr-code';
-import { CartProvider } from "../CartContext";
+import { CartProvider } from "../cartContext";
 import ShareButton from './ShareButton';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
@@ -13,7 +13,6 @@ import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
-import { FaSearchPlus } from 'react-icons/fa';
 import CryptoJS from 'crypto-js';
 import Footer from "../../components/footer";
 import CarruselColeccion from "./CarruselProductosColeccion"

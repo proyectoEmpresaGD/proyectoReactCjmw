@@ -490,6 +490,28 @@ export class ProductController {
     }
   }
 
+  // productController.js
+  async getProductByCollection(req, res) {
+    try {
+      const coleccion = typeof req.query.coleccion === 'string'
+        ? req.query.coleccion.trim()
+        : '';
+
+      if (!coleccion) {
+        return res.status(400).json({ message: 'Missing coleccion' });
+      }
+
+      const productos = await ProductModel.getProductByCollection({ coleccion });
+
+      // Devuelve 200 aunque esté vacío para no romper el UI
+      return res.json({ products: productos || [] });
+    } catch (e) {
+      console.error('Error fetching collection products:', e);
+      return res.status(500).json({ error: 'Error fetching collection products', details: e.message });
+    }
+  }
+
+
   /**
    * GET /api/products/byCollectionExcluding?coleccion=...&excludeCodprodu=...
    * Devuelve productos de la colección (excluyendo el código dado) con imagen “Buena”.

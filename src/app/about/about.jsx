@@ -1,7 +1,7 @@
 // src/pages/About.jsx
 import { Header } from "../../components/header";
 import Footer from '../../components/footer';
-import { CartProvider } from '../../components/CartContext';
+import { CartProvider } from '../../components/cartContext';
 import { useTranslation } from 'react-i18next';
 
 function About() {

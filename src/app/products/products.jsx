@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Header } from "../../components/header";
 import CardProduct from "../../components/ComponentesProductos/cardProduct";
-import { CartProvider } from '../../components/CartContext';
+import { CartProvider } from '../../components/cartContext';
 
 function Product() {
     const { t } = useTranslation(['subMenuCarousel', 'productPage']);

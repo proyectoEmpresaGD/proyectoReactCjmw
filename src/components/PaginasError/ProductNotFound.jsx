@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 const NoProductsFoundModal = () => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50 p-4">

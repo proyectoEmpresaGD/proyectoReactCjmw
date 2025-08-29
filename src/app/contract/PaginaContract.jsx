@@ -1,6 +1,6 @@
 // src/pages/Contract.jsx
 import { Header } from "../../components/header";
-import { CartProvider } from '../../components/CartContext';
+import { CartProvider } from '../../components/cartContext';
 import { useTranslation } from 'react-i18next';
 
 function Contract() {

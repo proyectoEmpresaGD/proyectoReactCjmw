@@ -8,12 +8,10 @@ import {
     RiArrowDropDownLine,
     RiArrowDropUpLine,
 } from 'react-icons/ri';
-import { FaGlobe } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
-import { useCart } from './CartContext';
+import { useCart } from './cartContext';
 import ScrollToTop from './ScrollToTop';
-import Select from 'react-select';
 import 'tailwindcss/tailwind.css';
 import SearchBar from './SearchBar';
 import { useMarca } from './MarcaContext';

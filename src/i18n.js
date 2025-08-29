@@ -10,7 +10,14 @@ i18n
     .init({
         fallbackLng: 'es',
         supportedLngs: ['es', 'en', 'fr'],
-        ns: ['common', 'header', 'cart', 'footer', 'instructions', 'subMenuCarousel', 'shareButton', 'search', 'productModal', 'collectionCarousel', 'sameStyleCarousel', 'cardProduct', 'contacts', 'clients', 'geocodingService', 'works', 'notificationPopup', 'newCollection', 'cookieConsent.json', 'coleccionesMarcas', 'buttonFiltro'],
+        ns: [
+            "about", "blog", "buttonFiltro", "cardProduct", "cart", "clients", "coleccionesMarcas",
+            "collectionCarousel", "common", "contacts", "contract", "cookieConsent", "filterPanel",
+            "filterPanelNew", "footer", "geocodingService", "header", "instructions", "newCollection",
+            "notificationPopup", "pageArena", "pageBassari", "pageFlamenco", "pageHarbour",
+            "productModal", "productPage", "sameStyleCarousel", "search", "shareButton",
+            "subMenuCarousel", "works"
+        ],
         defaultNS: 'common',
         backend: {
             loadPath: '/locales/{{lng}}/{{ns}}.json'
