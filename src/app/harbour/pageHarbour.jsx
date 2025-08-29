@@ -67,7 +67,8 @@ function HarbourHome() {
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
                 <NotificationPopup brochures={brochures} />
-                <body className=" bg-[#273A5C]">
+                {/* className=" bg-[#273A5C]" */}
+                <body >
                     <div className=" flex items-center justify-center h-full pt-3">
                         <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png" alt="" className=" lg:w-[20%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full " />
                     </div>
