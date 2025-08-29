@@ -29,10 +29,7 @@ export class ProductModel {
   /** Lista de nombres a excluir en casi todas las consultas públicas */
   static excludedNames = [
     'DAMASCO',
-    'STORK',
     'BAMBOO',
-    'TARIFA',
-    'PONIENTE',
     'MARRAKESH',
     'CLEMENTINE'
   ];
