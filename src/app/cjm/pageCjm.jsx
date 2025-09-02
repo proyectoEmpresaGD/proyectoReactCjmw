@@ -16,9 +16,11 @@ function CjmHome() {
     }
 
     const images = [
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/TOKIO%20Y%20SHIBULLA_4_11zon.webp",
         "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA%20ANTIGUA.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SALT%20AND%20PEPPER/edicion-salt-and-pepper.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SALT%20AND%20PEPPER/edicion-salt-and-pepper-2.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SALT%20AND%20PEPPER/edicion-salt-and-pepper-3.jpg"
 
     ]
 
