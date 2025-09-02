@@ -217,11 +217,12 @@ export const coleccionesPorMarca = {
         "DIAMANTE",
         "EAST COAST",
         "COASTAL LINENS",
-        "LUXURY DREAPS",
+        "LUXURY DRAPES",
         "EASTERN MEMORIES",
         "GENESIS",
-        "REVOLTOSO",
-        "RIVIERA"
+        "RIVIERA",
+        "REVOLTOSO"
+
     ],
     "CJM": [
         "TOKIO",

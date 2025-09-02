@@ -17,10 +17,9 @@ function CjmHome() {
 
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/CJMW/TOKIO%20Y%20SHIBULLA_4_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/ROKKI%20PUMICE.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA%20ANTIGUA.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/VERANDA%20EVERGREEN.jpg",
+
     ]
 
     const imagesNewCollections = [
@@ -49,11 +48,11 @@ function CjmHome() {
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
-                <body className=" bg-gradient-to-b-from">
+                <main className=" bg-gradient-to-b-from">
                     <div className=" flex items-center justify-center h-full pt-3">
                         <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png" alt="" className=" lg:w-[10%] lg:h-[10%] w-[20%] h-[20%] max-w-full max-h-full " />
                     </div>
-                </body>
+                </main>
                 <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduCJM} />
                 <ColeccionesMarcas marca={marca} />
                 <Footer />
