@@ -54,17 +54,13 @@ const Footer = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6 border-b-[2px] pb-4 mt-6 pt-6 place-items-center">
-                <Link to={NAVIGATION_LINKS.cjmHome} className="hover:scale-105 transition-transform">
+                <Link
+                    to={NAVIGATION_LINKS.bassariHome}
+                    className="hover:scale-105 transition-transform md:col-span-2 lg:col-span-1"
+                >
                     <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png"
-                        alt="CJM"
-                        className="h-16"
-                    />
-                </Link>
-                <Link to={NAVIGATION_LINKS.arenaHome} className="hover:scale-105 transition-transform">
-                    <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png"
-                        alt="Arena"
+                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png"
+                        alt="Bassari"
                         className="h-16"
                     />
                 </Link>
@@ -82,13 +78,17 @@ const Footer = () => {
                         className="h-16"
                     />
                 </Link>
-                <Link
-                    to={NAVIGATION_LINKS.bassariHome}
-                    className="hover:scale-105 transition-transform md:col-span-2 lg:col-span-1"
-                >
+                <Link to={NAVIGATION_LINKS.arenaHome} className="hover:scale-105 transition-transform">
                     <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png"
-                        alt="Bassari"
+                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png"
+                        alt="Arena"
+                        className="h-16"
+                    />
+                </Link>
+                <Link to={NAVIGATION_LINKS.cjmHome} className="hover:scale-105 transition-transform">
+                    <img
+                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png"
+                        alt="CJM"
                         className="h-16"
                     />
                 </Link>

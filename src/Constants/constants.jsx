@@ -55,7 +55,13 @@ export const COPYRIGHT_TEXT = "© CJM WORLDWIDE S.L. 2025 - Todos los Derechos R
 export const NAVIGATION_LINKS = {
     about: "/about",
     contact: "/contact",
-    events: "/contact", // Ajustar si el enlace es distinto para eventos
+    events: "/contact",
+    cjmHome: "https://www.cjmw.eu/#/cjmHome",
+    arenaHome: "https://www.cjmw.eu/#/arenaHome",
+    flamencoHome: "https://www.cjmw.eu/#/flamencoHome",
+    harbourHome: "https://www.cjmw.eu/#/harbourHome",
+    bassariHome: "https://www.cjmw.eu/#/bassariHome"
+
 };
 
 //
