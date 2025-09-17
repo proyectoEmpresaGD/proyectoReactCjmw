@@ -336,18 +336,18 @@ const CarruselHome = ({ imagesMobile = [], imagesDesktop = [], texts, names, rou
                     const imgSrc = cdnUrl(rawImg);
                     const textImg = texts?.[idx] ? cdnUrl(texts[idx]) : null;
 
+                    // === CAMBIO: posicionamiento condicional para CJM ===
+                    const esCJM = names?.[idx] === 'CJM';
+
                     const overlay = textImg ? (
-                        <div className="absolute bottom-[40%] left-1/2 transform -translate-x-1/2 text-center w-[80%] lg:w-[35%] p-4">
+                        <div
+                            className={`absolute bottom-[40%] ${esCJM ? 'left-1/2' : 'left-[49.8%]'} -translate-x-1/2 text-center w-[80%] lg:w-[35%] p-4`}
+                        >
                             <img
                                 src={textImg}
                                 alt={names?.[idx] || ''}
                                 onClick={() => handleClick(idx)}
-                                className="cursor-pointer"
-                                style={
-                                    names?.[idx] === 'CJM'
-                                        ? { width: '250px', height: 'auto', margin: 'auto' }
-                                        : { width: '550px', height: 'auto' }
-                                }
+                                className={`cursor-pointer ${esCJM ? 'w-[250px]' : 'w-[550px]'} h-auto mx-auto`}
                             />
                         </div>
                     ) : null;
