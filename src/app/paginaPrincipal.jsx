@@ -22,7 +22,7 @@ const imagesMobile = [
 ];
 
 const videos = [
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/VIDEOS/WEB%20FONDO%20TAKUMI.mp4",
+    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/VIDEOS/WEB%20FONDO%20TAKUMI_HOME.mp4",
 ];
 
 const texts = [
