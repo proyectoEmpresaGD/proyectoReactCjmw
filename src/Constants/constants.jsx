@@ -189,10 +189,9 @@ export const coleccionesPorMarca = {
         "KASSUMAY", "TRIBAL", "UNIVERS",
     ],
     ARE: [
-        "CRANE", "ATMOSPHERE", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA",
-        "JEWEL", "KANNATURA", "LINOTTO", "KANNATURA VOL II",
-        "MEDITERRANEAN STRIPES", "MONTANA", "NOMAD", "PAPIRO",
-        "PURITTY", "STONE", "STRATOS", "TAIGA", "TOUCH", "RUSTICA"
+        "CRANE", "KANNATURA", "KANNATURA VOL II", "ATMOSPHERE", "JEWEL", "COSY", "PURITTY", "MONTANA", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA", "LINOTTO",
+        "MEDITERRANEAN STRIPES", "NOMAD", "PAPIRO",
+        "STONE", "STRATOS", "TAIGA", "TOUCH", "RUSTICA"
     ],
     "HAR": [
         "BOLONIA&VARADERO",
@@ -237,14 +236,14 @@ export const coleccionesPorMarca = {
         "FRESCO",
         "MEDITERRANEAN STRIPES",
         "ROADS TO ASIA",
-        "SABANNA",
         "SALT & PEPPER",
         "SET OF THREADS",
         "SUEDER",
         "TAYLORED",
         "URBAN CONTEMPORARY",
         "VELVETY",
-        "VERANDA"
+        "VERANDA",
+        "SABANNA"
     ]
 };
 
