@@ -189,7 +189,7 @@ export const coleccionesPorMarca = {
         "KASSUMAY", "TRIBAL", "UNIVERS",
     ],
     ARE: [
-        "ATMOSPHERE", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA",
+        "CRANE", "ATMOSPHERE", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA",
         "JEWEL", "KANNATURA", "LINOTTO", "KANNATURA VOL II",
         "MEDITERRANEAN STRIPES", "MONTANA", "NOMAD", "PAPIRO",
         "PURITTY", "STONE", "STRATOS", "TAIGA", "TOUCH", "RUSTICA"
