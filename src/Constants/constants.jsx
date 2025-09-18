@@ -216,6 +216,7 @@ export const coleccionesPorMarca = {
         "TEDDY",
         "SISAL",
         "VELLUTISSIMO",
+        "RIVIERA",
         "ARTISAN WEAVES",
         "BUCLÉ",
         "COURTYARD GARDEN",
@@ -225,7 +226,7 @@ export const coleccionesPorMarca = {
         "LUXURY DRAPES",
         "EASTERN MEMORIES",
         "GENESIS",
-        "RIVIERA",
+
         "REVOLTOSO"
 
     ],
