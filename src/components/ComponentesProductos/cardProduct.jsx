@@ -16,15 +16,9 @@ const LazyImage = ({ src, alt, className }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef(null);
     useEffect(() => {
-        const obs = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setVisible(true);
-                    obs.disconnect();
-                }
-            },
-            { threshold: 0.1 }
-        );
+        const obs = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) { setVisible(true); obs.disconnect(); }
+        }, { threshold: 0.1 });
         if (ref.current) obs.observe(ref.current);
         return () => obs.disconnect();
     }, []);
@@ -35,9 +29,7 @@ const LazyImage = ({ src, alt, className }) => {
                     src={src}
                     alt={alt}
                     className={className}
-                    onError={(e) => {
-                        e.currentTarget.src = defaultImageUrl;
-                    }}
+                    onError={(e) => { e.currentTarget.src = defaultImageUrl; }}
                 />
             )}
         </div>
@@ -53,18 +45,19 @@ export default function CardProduct() {
 
     const containerRef = useRef(null);
     const sentinelRef = useRef(null);
-    const controllerRef = useRef(null); // AbortController global
+    const observerRef = useRef(null);
+    const controllerRef = useRef(null);
 
-    // --- Compatibilidad con hash params (#/products?... )
+    // Hash params
     const getHashParams = () => {
         const hash = window.location.hash;
-        const queryStart = hash.indexOf('?');
-        if (queryStart === -1) return new URLSearchParams();
-        return new URLSearchParams(hash.slice(queryStart + 1));
+        const i = hash.indexOf('?');
+        if (i === -1) return new URLSearchParams();
+        return new URLSearchParams(hash.slice(i + 1));
     };
     const hashParams = getHashParams();
 
-    // --- URL params
+    // URL params
     const searchQuery = params.get('search');
     const pidEnc = params.get('pid');
     const productId = params.get('productId');
@@ -76,11 +69,10 @@ export default function CardProduct() {
     const type = params.get('type');
     const mantenimiento = params.get('mantenimiento');
 
-    // decrypt pid
     const decryptedPid = pidEnc ? CryptoJS.AES.decrypt(pidEnc, secretKey).toString(CryptoJS.enc.Utf8) : null;
     const fetchByIdParam = decryptedPid || productId;
 
-    // --- state
+    // State
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -88,55 +80,56 @@ export default function CardProduct() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [page, setPage] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
+    const [hasMore, setHasMore] = useState(false);
     const [filters, setFilters] = useState({});
     const [activeCategory, setActiveCategory] = useState(null);
 
-    // --- UI
-    const [searchInput, setSearchInput] = useState(''); // sincronizado con ?search
+    // UI
+    const [searchInput, setSearchInput] = useState('');
     const [sortOrder, setSortOrder] = useState('alpha-asc');
     const [viewMode, setViewMode] = useState('grid4');
 
-    // --- sync page from URL
+    // sync page from URL
     useEffect(() => {
         const p = parseInt(params.get('page') || '1', 10);
         if (p !== page) setPage(p);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search]);
 
-    // --- sincroniza el input con ?search= de la URL
-    useEffect(() => {
-        setSearchInput(searchQuery || '');
-    }, [searchQuery]);
+    useEffect(() => { setSearchInput(searchQuery || ''); }, [searchQuery]);
+    useEffect(() => { setActiveCategory(uso || fabricType || fabricPattern || mantenimiento || null); }, [uso, fabricType, fabricPattern, mantenimiento]);
 
-    // --- activeCategory para SubMenu
-    useEffect(() => {
-        setActiveCategory(uso || fabricType || fabricPattern || mantenimiento || null);
-    }, [uso, fabricType, fabricPattern, mantenimiento]);
+    const getArray = (key) => params.getAll(key).filter(Boolean);
 
-    // --- Build filtros para backend
     const buildAppliedFilters = () => {
-        const ap = { ...filters };
+        const ap = {};
+        const brands = getArray("brand");
+        const colors = getArray("color");
+        const collections = getArray("collection");
+        const fabricTypes = getArray("fabricType");
+        const patterns = getArray("fabricPattern");
+        const martindales = getArray("martindale");
+
+        if (brands.length) ap.brand = brands;
+        if (colors.length) ap.color = colors;
+        if (collections.length) ap.collection = collections;
+        if (fabricTypes.length) ap.fabricType = fabricTypes;
+        if (patterns.length) ap.fabricPattern = patterns;
+        if (martindales.length) ap.martindale = martindales;
+
+        // sigue igual para search, type, etc.
         if (searchQuery) ap.search = searchQuery;
-        if (type === 'papel') ap.fabricType = ['WALLPAPER', 'PAPEL PINTADO'];
-        if (fabricPattern) ap.fabricPattern = [fabricPattern];
-        if (uso) ap.uso = [uso];
-        if (brand) ap.brand = [brand];
-        if (fabricType) ap.fabricType = [fabricType];
-        if (collection) ap.collection = [collection];
-        if (mantenimiento) ap.mantenimiento = [mantenimiento];
+        if (type === "papel") ap.fabricType = ["WALLPAPER", "PAPEL PINTADO"];
+
         return ap;
     };
 
-    // --- imágenes: grid usa 'Baja'; modal precarga 'Buena'
+
+    // imágenes
     const loadLowRes = async (prod) => {
         try {
-            const low = await fetch(`${apiUrl}/api/images/${prod.codprodu}/Baja`).then((r) =>
-                r.ok ? r.json() : null
-            );
-            return {
-                ...prod,
-                imageBaja: cdnUrl(low ? `https://${low.ficadjunto}` : defaultImageUrl),
-            };
+            const low = await fetch(`${apiUrl}/api/images/${prod.codprodu}/Baja`).then((r) => r.ok ? r.json() : null);
+            return { ...prod, imageBaja: cdnUrl(low ? `https://${low.ficadjunto}` : defaultImageUrl) };
         } catch {
             return { ...prod, imageBaja: defaultImageUrl };
         }
@@ -144,9 +137,7 @@ export default function CardProduct() {
 
     const preloadHighResInto = async (prod) => {
         try {
-            const hi = await fetch(`${apiUrl}/api/images/${prod.codprodu}/Buena`).then((r) =>
-                r.ok ? r.json() : null
-            );
+            const hi = await fetch(`${apiUrl}/api/images/${prod.codprodu}/Buena`).then((r) => r.ok ? r.json() : null);
             if (hi) {
                 setSelectedProduct((prev) =>
                     prev && prev.codprodu === prod.codprodu
@@ -154,96 +145,119 @@ export default function CardProduct() {
                         : prev
                 );
             }
-        } catch {
-            // silencioso
-        }
+        } catch { }
     };
 
-    // --- fetch products
-    const fetchProducts = useCallback(
-        async (pageNum = 1, appliedFilters = {}) => {
-            controllerRef.current?.abort();
-            const controller = new AbortController();
-            controllerRef.current = controller;
+    // fetch products (arreglo: fallback hasMore y total coherentes)
+    const fetchProducts = useCallback(async (pageNum = 1, appliedFilters = {}) => {
+        controllerRef.current?.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
 
-            setLoading(true);
-            setError(null);
+        setLoading(true);
+        setError(null);
 
-            try {
-                let data, list;
+        try {
+            let data, list;
 
-                // 1) Si viene ?search=... usa el endpoint nuevo paginado
-                if (appliedFilters.search && String(appliedFilters.search).trim()) {
-                    const u = new URL(`${apiUrl}/api/products/search-products`);
-                    u.searchParams.set('query', String(appliedFilters.search).trim());
-                    u.searchParams.set('limit', itemsPerPage);
-                    u.searchParams.set('page', pageNum);
-
-                    let respS = await fetch(u, { signal: controller.signal });
-                    // fallback al clásico si el nuevo no existe
-                    if (!respS.ok) {
-                        const legacy = new URL(`${apiUrl}/api/products/search`);
-                        legacy.searchParams.set('query', String(appliedFilters.search).trim());
-                        legacy.searchParams.set('limit', itemsPerPage);
-                        legacy.searchParams.set('page', pageNum);
-                        respS = await fetch(legacy, { signal: controller.signal });
-                    }
-
-                    if (!respS.ok) throw new Error('Error searching');
-                    data = await respS.json();
+            // Search
+            if (appliedFilters.search && String(appliedFilters.search).trim()) {
+                const u = new URL(`${apiUrl}/api/products/search-products`);
+                u.searchParams.set('query', String(appliedFilters.search).trim());
+                u.searchParams.set('limit', itemsPerPage);
+                u.searchParams.set('page', pageNum);
+                let resp = await fetch(u, { signal: controller.signal });
+                if (!resp.ok) {
+                    const legacy = new URL(`${apiUrl}/api/products/search`);
+                    legacy.searchParams.set('query', String(appliedFilters.search).trim());
+                    legacy.searchParams.set('limit', itemsPerPage);
+                    legacy.searchParams.set('page', pageNum);
+                    resp = await fetch(legacy, { signal: controller.signal });
+                }
+                if (!resp.ok) throw new Error('Error searching');
+                data = await resp.json();
+                list = data.products || [];
+            } else {
+                // Filtros
+                const hasFilters =
+                    Object.keys(appliedFilters).length > 0 &&
+                    Object.entries(appliedFilters).some(
+                        ([k, v]) => k !== 'search' && (Array.isArray(v) ? v.length > 0 : Boolean(v))
+                    );
+                if (hasFilters) {
+                    const resp = await fetch(
+                        `${apiUrl}/api/products/filter?page=${pageNum}&limit=${itemsPerPage}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(appliedFilters),
+                            signal: controller.signal,
+                        }
+                    );
+                    if (!resp.ok) throw new Error('Error filtering');
+                    data = await resp.json();
                     list = data.products || [];
                 } else {
-                    // 2) Hay filtros (sin 'search') -> POST /filter
-                    const hasFilters =
-                        Object.keys(appliedFilters).length > 0 &&
-                        Object.entries(appliedFilters).some(([k, v]) =>
-                            k !== 'search' && (Array.isArray(v) ? v.length > 0 : Boolean(v))
-                        );
-
-                    if (hasFilters) {
-                        const respF = await fetch(
-                            `${apiUrl}/api/products/filter?page=${pageNum}&limit=${itemsPerPage}`,
-                            {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(appliedFilters),
-                                signal: controller.signal,
-                            }
-                        );
-                        if (!respF.ok) throw new Error('Error filtering');
-                        data = await respF.json();
-                        list = data.products || [];
-                    } else {
-                        // 3) Sin filtros ni search -> catálogo normal
-                        const respA = await fetch(
-                            `${apiUrl}/api/products?limit=${itemsPerPage}&page=${pageNum}`,
-                            { signal: controller.signal }
-                        );
-                        if (!respA.ok) throw new Error('Error fetching');
-                        data = await respA.json();
-                        list = data.products || data;
-                    }
+                    // Catálogo
+                    const resp = await fetch(`${apiUrl}/api/products?limit=${itemsPerPage}&page=${pageNum}`, { signal: controller.signal });
+                    if (!resp.ok) throw new Error('Error fetching');
+                    data = await resp.json();
+                    list = data.products || data;
                 }
-
-                const wi = await Promise.all((list || []).map(loadLowRes));
-                setProducts((prev) => (pageNum > 1 ? [...prev, ...wi] : wi));
-
-                const total =
-                    data.pagination?.totalResults ??
-                    data.total ??
-                    (wi.length === itemsPerPage ? pageNum * itemsPerPage + 1 : (pageNum - 1) * itemsPerPage + wi.length);
-
-                setTotalProducts(total);
-            } catch (err) {
-                if (err.name !== 'AbortError') setError(err.message);
-            } finally {
-                setLoading(false);
             }
-        },
-        []
-    );
 
-    // --- fetch por id (abre modal)
+            const wi = await Promise.all((list || []).map(loadLowRes));
+
+            // Primera página sin datos → corta
+            if (pageNum === 1 && wi.length === 0) {
+                setProducts([]);
+                setTotalProducts(0);
+                setHasMore(false);
+                try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+                return;
+            }
+
+            setProducts(prev => (pageNum > 1 ? [...prev, ...wi] : wi));
+
+            // --- NUEVO: cálculo robusto de total/hasMore
+            const totalFromApi =
+                data?.pagination?.totalResults ??
+                data?.total ??
+                data?.pagination?.totalValidResults ??
+                null;
+
+            const hasNextFromApi =
+                typeof data?.pagination?.hasNextPage === 'boolean'
+                    ? data.pagination.hasNextPage
+                    : undefined;
+
+            if (totalFromApi !== null && Number.isFinite(totalFromApi)) {
+                setTotalProducts(totalFromApi);
+                const computedHasMore =
+                    typeof hasNextFromApi === 'boolean'
+                        ? hasNextFromApi
+                        : (pageNum * itemsPerPage) < totalFromApi;
+                setHasMore(computedHasMore);
+                if (!computedHasMore) { try { observerRef.current?.disconnect(); observerRef.current = null; } catch { } }
+            } else {
+                // Fallback sin total: si llenaste la página, asumimos que hay más.
+                const maybeMore = wi.length === itemsPerPage;
+                setHasMore(maybeMore);
+                // total heurístico para que el botón/observer tengan una referencia
+                const fallbackTotal = (pageNum - 1) * itemsPerPage + wi.length + (maybeMore ? 1 : 0);
+                setTotalProducts(fallbackTotal);
+                if (!maybeMore) { try { observerRef.current?.disconnect(); observerRef.current = null; } catch { } }
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') setError(err.message);
+            setHasMore(false);
+            try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    // fetch por id (modal)
     const fetchById = useCallback(async (id) => {
         controllerRef.current?.abort();
         const controller = new AbortController();
@@ -266,8 +280,9 @@ export default function CardProduct() {
         }
     }, []);
 
-    // --- efecto principal: recarga según URL (page/filtros/search)
+    // efecto principal según URL
     useEffect(() => {
+        try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
         if (fetchByIdParam) {
             fetchById(fetchByIdParam);
         } else {
@@ -279,85 +294,99 @@ export default function CardProduct() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search, fetchByIdParam]);
 
-    // --- filtros desde <Filtro> (compatibilidad)
-    const handleFilteredProducts = (prods, selFilters) => {
-        setProducts(prods);
+    // filtros desde <Filtro> (acepta total opcional)
+    const handleFilteredProducts = (prods, selFilters, total) => {
+        try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+        const safe = Array.isArray(prods) ? prods : [];
+        const normalizedTotal = Number.isFinite(total) ? total : safe.length;
+
+        setProducts(safe);
         setFilters(selFilters);
         setPage(1);
-        navigate(`/products?page=1`);
+
+        // Si no hay resultados cortamos el scroll
+        if (normalizedTotal === 0) {
+            setTotalProducts(0);
+            setHasMore(false);
+            const u = new URLSearchParams(location.search);
+            u.set('page', '1');
+            navigate(`/products?${u.toString()}`);
+            try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch { }
+            return;
+        }
+
+        // Si hay resultados: hay más si llenamos la primera página
+        setTotalProducts(
+            normalizedTotal > itemsPerPage && safe.length >= itemsPerPage
+                ? itemsPerPage + 1
+                : normalizedTotal
+        );
+        setHasMore(normalizedTotal > itemsPerPage && safe.length >= itemsPerPage);
+
+        const u = new URLSearchParams(location.search);
+        u.set('page', '1');
+        navigate(`/products?${u.toString()}`);
+        try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch { }
     };
 
-    // --- navegación con debounce desde el input (buscador)
+    // buscador con debounce
     const debouncedNavigateSearch = useRef(
         debounce((val) => {
             const u = new URLSearchParams(location.search);
-            if (val && val.trim().length >= 3) {
-                u.set('search', val.trim());
-                u.set('page', '1');
-            } else {
-                u.delete('search');
-                u.set('page', '1');
-            }
+            if (val && val.trim().length >= 3) { u.set('search', val.trim()); u.set('page', '1'); }
+            else { u.delete('search'); u.set('page', '1'); }
             navigate(`/products?${u.toString()}`);
         }, 400)
     ).current;
 
     const onChangeSearchInput = (e) => {
         const val = e.target.value;
-        setSearchInput(val); // filtro local inmediato
-        debouncedNavigateSearch(val); // búsqueda servidor con debounce
+        setSearchInput(val);
+        debouncedNavigateSearch(val);
     };
 
     const onKeyDownSearchInput = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            debouncedNavigateSearch.cancel(); // fuerza búsqueda inmediata
+            debouncedNavigateSearch.cancel();
             const val = (searchInput || '').trim();
             const u = new URLSearchParams(location.search);
-            if (val && val.length >= 3) {
-                u.set('search', val);
-                u.set('page', '1');
-            } else {
-                u.delete('search');
-                u.set('page', '1');
-            }
+            if (val && val.length >= 3) { u.set('search', val); u.set('page', '1'); }
+            else { u.delete('search'); u.set('page', '1'); }
             navigate(`/products?${u.toString()}`);
         }
     };
 
-    // --- load more
+    // cargar más
     const loadMore = () => {
-        if (!loading && products.length < totalProducts) {
-            const nxt = page + 1;
-            setPage(nxt);
-            const u = new URLSearchParams(location.search);
-            u.set('page', nxt.toString());
-            navigate(`/products?${u.toString()}`);
-        }
+        if (loading || !hasMore) return;
+        const nxt = page + 1;
+        setPage(nxt);
+        const u = new URLSearchParams(location.search);
+        u.set('page', nxt.toString());
+        navigate(`/products?${u.toString()}`);
     };
 
-    // --- infinite scroll robusto
+    // observer: solo si realmente hay más
     useEffect(() => {
-        const obs = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && !loading && products.length < totalProducts) {
-                    loadMore();
-                }
-            },
-            { rootMargin: '200px' }
-        );
+        if (observerRef.current) { try { observerRef.current.disconnect(); } catch { } observerRef.current = null; }
+
+        if (!(hasMore && !loading)) return;
+
+        const obs = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !loading && hasMore) loadMore();
+        }, { root: null, rootMargin: '600px', threshold: 0 });
+
         const el = sentinelRef.current;
         if (el) obs.observe(el);
-        return () => {
-            if (el) obs.unobserve(el);
-            obs.disconnect();
-        };
-    }, [loading, products.length, totalProducts, page, location.search]);
+        observerRef.current = obs;
 
-    // --- dedup por codprodu
+        return () => { try { obs.disconnect(); } catch { }; observerRef.current = null; };
+    }, [hasMore, loading, page, location.search]);
+
+    // dedup y orden local
     const uniqueProducts = products.filter((p, i, arr) => arr.findIndex((x) => x.codprodu === p.codprodu) === i);
 
-    // --- filtro/orden local mientras llegan resultados
     let displayed = uniqueProducts.filter((p) => {
         const term = searchInput.trim().toLowerCase();
         if (!term) return true;
@@ -372,7 +401,6 @@ export default function CardProduct() {
         return 0;
     });
 
-    // --- scroll top al limpiar búsqueda local
     useEffect(() => {
         if (!searchInput.trim() && containerRef.current) {
             containerRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -384,17 +412,14 @@ export default function CardProduct() {
             {/* Filtros globales */}
             <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
 
-            {/* Submenú categorías/atajos */}
+            {/* Submenú categorías */}
             <SubMenuCarousel
                 onFilterClick={(cat) => {
+                    try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
                     setFilters({});
                     setPage(1);
+                    if (!cat) return navigate('/products');
 
-                    if (!cat) {
-                        return navigate('/products');
-                    }
-
-                    // Estilos / fabricPattern
                     if (cat === 'FLORAL') return navigate('/products?fabricPattern=FLORAL');
                     if (cat === 'LISO') return navigate('/products?fabricPattern=LISO');
                     if (cat === 'FALSO_LISO') return navigate('/products?fabricPattern=FALSO_LISO');
@@ -408,20 +433,15 @@ export default function CardProduct() {
                     if (cat === 'RAFIA') return navigate('/products?fabricPattern=RAFIA');
                     if (cat === 'TELAS TROPICALES') return navigate('/products?fabricPattern=TELAS TROPICALES');
 
-                    // Funcionalidad / mantenimiento
                     if (cat === 'EASYCLEAN') return navigate('/products?mantenimiento=EASYCLEAN');
-
-                    // Usos
                     if (cat === 'IMO') return navigate('/products?uso=IMO');
                     if (cat === 'OUTDOOR') return navigate('/products?uso=OUTDOOR');
                     if (cat === 'FR') return navigate('/products?uso=FR');
 
-                    // Tipos / fabricType
                     if (cat === 'VISILLO') return navigate('/products?fabricType=VISILLO');
                     if (cat === 'TERCIOPELO') return navigate('/products?fabricType=TERCIOPELO');
                     if (type !== 'tela' && cat === 'WALLPAPER') return navigate('/products?fabricType=WALLPAPER');
 
-                    // Cualquier otro caso
                     navigate(`/products?fabricPattern=${encodeURIComponent(cat)}`);
                 }}
                 type={type}
@@ -430,7 +450,6 @@ export default function CardProduct() {
 
             {/* search + sort + view */}
             <div className="mt-6 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-                {/* Buscador interno: servidor + filtro local */}
                 <div className="relative w-full md:w-1/3 lg:w-1/4">
                     <input
                         type="text"
@@ -438,23 +457,9 @@ export default function CardProduct() {
                         onChange={onChangeSearchInput}
                         onKeyDown={onKeyDownSearchInput}
                         placeholder={t('searchPlaceholder', 'Encuentra el producto...')}
-                        className="
-              w-full h-10
-              bg-gray-50 placeholder-gray-400 text-gray-700
-              px-4 pr-10
-              rounded-full
-              ring-1 ring-gray-300 shadow-sm
-              focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#26659E]
-              transition
-            "
+                        className="w-full h-10 bg-gray-50 placeholder-gray-400 text-gray-700 px-4 pr-10 rounded-full ring-1 ring-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#26659E] transition"
                     />
-                    <svg
-                        className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 w-5 h-5 text-gray-400"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
+                    <svg className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z" />
                     </svg>
                     {searchInput && searchInput.length < 3 && (
@@ -464,56 +469,25 @@ export default function CardProduct() {
                     )}
                 </div>
 
-                {/* sort & view toggles */}
                 <div className="flex items-center space-x-2">
                     <span className="font-medium text-gray-700">{t('sortBy')}:</span>
-                    <button
-                        onClick={() => setSortOrder('alpha-asc')}
-                        className={`p-2 rounded-lg ${sortOrder === 'alpha-asc' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`}
-                        title="A → Z"
-                    >
-                        <FaSortAlphaDown />
-                    </button>
-                    <button
-                        onClick={() => setSortOrder('alpha-desc')}
-                        className={`p-2 rounded-lg ${sortOrder === 'alpha-desc' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`}
-                        title="Z → A"
-                    >
-                        <FaSortAlphaUp />
-                    </button>
-                    <button
-                        onClick={() => setViewMode('grid4')}
-                        className={`p-2 rounded-lg ${viewMode === 'grid4' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`}
-                        title="Vista grid"
-                    >
-                        <FaThLarge />
-                    </button>
-                    <button
-                        onClick={() => setViewMode('grid2')}
-                        className={`p-2 rounded-lg ${viewMode === 'grid2' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`}
-                        title="Vista lista"
-                    >
-                        <FaThList />
-                    </button>
+                    <button onClick={() => setSortOrder('alpha-asc')} className={`p-2 rounded-lg ${sortOrder === 'alpha-asc' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="A → Z"><FaSortAlphaDown /></button>
+                    <button onClick={() => setSortOrder('alpha-desc')} className={`p-2 rounded-lg ${sortOrder === 'alpha-desc' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="Z → A"><FaSortAlphaUp /></button>
+                    <button onClick={() => setViewMode('grid4')} className={`p-2 rounded-lg ${viewMode === 'grid4' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="Vista grid"><FaThLarge /></button>
+                    <button onClick={() => setViewMode('grid2')} className={`p-2 rounded-lg ${viewMode === 'grid2' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="Vista lista"><FaThList /></button>
                 </div>
             </div>
 
-            {/* products grid */}
+            {/* grid */}
             <div className={viewMode === 'grid4' ? 'mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6' : 'mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6'}>
                 {displayed.map((p, i) => (
                     <div key={`${p.codprodu}-${i}`} className="flex flex-col p-2 bg-white rounded-lg shadow hover:shadow-xl transition">
                         <div
                             className={`relative w-full ${viewMode === 'grid2' ? 'h-56 md:h-96' : 'h-32 md:h-60 '} overflow-hidden cursor-pointer rounded`}
-                            onClick={() => {
-                                setSelectedProduct(p);
-                                setModalOpen(true);
-                                preloadHighResInto(p);
-                            }}
+                            onClick={() => { setSelectedProduct(p); setModalOpen(true); preloadHighResInto(p); }}
                         >
                             <LazyImage src={p.imageBaja || defaultImageUrl} alt={p.nombre} className="object-cover w-full h-full" />
-                            <div className="absolute bottom-2 right-2 px-2 py-1 text-xs text-white bg-black/50 rounded md:hidden">
-                                {t('touchToView')}
-                            </div>
+                            <div className="absolute bottom-2 right-2 px-2 py-1 text-xs text-white bg-black/50 rounded md:hidden">{t('touchToView')}</div>
                         </div>
                         <div className="flex-1 mt-2 md:mt-4 text-center">
                             <h3 className="md:text-lg text-sm font-semibold text-gray-800">{p.nombre}</h3>
@@ -523,18 +497,18 @@ export default function CardProduct() {
                 ))}
             </div>
 
-            {/* infinite‐scroll sentinel */}
-            <div ref={sentinelRef} />
+            {/* sentinel solo si hay más */}
+            {hasMore && <div ref={sentinelRef} />}
 
-            {/* loaders & messages */}
+            {/* loaders & mensajes */}
             {loading && <SkeletonLoader repeticiones={itemsPerPage} />}
             {!loading && displayed.length === 0 && !error && (
                 <div className="mt-8 text-center text-gray-500">{t('noProductsFound')}</div>
             )}
             {!loading && error && <div className="mt-8 text-center text-red-500">{error}</div>}
 
-            {/* fallback “Load more” */}
-            {!searchInput.trim() && products.length < totalProducts && !loading && (
+            {/* botón “Load more” opcional */}
+            {/* {!searchInput.trim() && hasMore && !loading && (
                 <div className="flex justify-center mt-8">
                     <button
                         onClick={loadMore}
@@ -543,11 +517,16 @@ export default function CardProduct() {
                         {t('loadMore')} <FaAngleDoubleRight className="ml-2" />
                     </button>
                 </div>
-            )}
+            )} */}
 
-            {/* detail modal */}
+            {/* modal */}
             {selectedProduct && (
-                <Modal isOpen={modalOpen} close={() => setModalOpen(false)} product={selectedProduct} onApplyFilters={handleFilteredProducts} />
+                <Modal
+                    isOpen={modalOpen}
+                    close={() => setModalOpen(false)}
+                    product={selectedProduct}
+                    onApplyFilters={handleFilteredProducts}
+                />
             )}
         </div>
     );

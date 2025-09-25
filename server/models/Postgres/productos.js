@@ -3,11 +3,6 @@
  * ------------
  * Capa de acceso a datos para la tabla `productos` y búsquedas auxiliares.
  * Incluye utilidades para exclusiones de nombres y adjunta imágenes cuando procede.
- *
- * Notas:
- * - Se usa `unaccent(upper(...))` para búsquedas case/diacritic-insensitive.
- * - Donde se adjuntan imágenes se utilizan peticiones a ImagenModel por "Baja" o "Buena".
- * - Todas las funciones lanzan Error en caso de fallo; el controller es quien decide el código HTTP.
  */
 
 import pg from 'pg';
@@ -34,11 +29,6 @@ export class ProductModel {
     'CLEMENTINE'
   ];
 
-  /**
-   * Construye una cláusula SQL y su array de valores para excluir por nombre.
-   * @param {number} startIndex - Índice base para los placeholders ($1, $2, ...)
-   * @returns {{ clause: string, values: any[] }}
-   */
   static getExcludedNamesClause(startIndex = 1) {
     const placeholders = this.excludedNames.map((_, i) => `$${i + startIndex}`);
     return {
@@ -47,13 +37,6 @@ export class ProductModel {
     };
   }
 
-  /**
-   * Helper: adjunta URLs de imagen (Buena y/o Baja) a un producto.
-   * No lanza si falla la imagen: rellena con null.
-   * @param {object} product
-   * @param {('Buena'|'Baja'|('Buena'|'Baja')[])} tipos - qué calidades traer
-   * @returns {Promise<object>}
-   */
   static async attachImages(product, tipos = ['Baja']) {
     const want = Array.isArray(tipos) ? tipos : [tipos];
     try {
@@ -72,8 +55,7 @@ export class ProductModel {
         result[key] = img?.ficadjunto ? `https://${img.ficadjunto}` : null;
       });
       return result;
-    } catch (err) {
-      // Falla silenciosa: mantenemos la fila aunque no haya imagen
+    } catch {
       return { ...product, imageBuena: null, imageBaja: null };
     }
   }
@@ -84,8 +66,6 @@ export class ProductModel {
 
   /**
    * Listado paginado simple (con DISTINCT ON nombre), con exclusiones por nombre.
-   * @param {{CodFamil?:string, CodSubFamil?:string, requiredLimit?:number, offset?:number}}
-   * @returns {Promise<object[]>}
    */
   static async getAll({ CodFamil, CodSubFamil, requiredLimit = 16, offset = 0 }) {
     const accumulatedProducts = [];
@@ -129,14 +109,7 @@ export class ProductModel {
     }
   }
 
-  /**
-   * Obtiene un producto por ID exacto.
-   * No incluye imágenes (el controller puede adjuntarlas si lo desea).
-   * @param {{id:string, res?:any}}
-   * @returns {Promise<object|null>}
-   */
   static async getById({ id, res }) {
-    // Si hay capa de cache en res, la respeta
     const cacheKey = `product:${id}`;
     if (res?.cache) {
       const cached = await res.cache.get(cacheKey);
@@ -159,11 +132,6 @@ export class ProductModel {
     return null;
   }
 
-  /**
-   * Obtiene productos por familia (codfamil) con exclusiones y nombre no vacío.
-   * @param {string} codfamil
-   * @returns {Promise<object[]>}
-   */
   static async getByCodFamil(codfamil) {
     const exclusion = this.getExcludedNamesClause(2);
     const query = `
@@ -179,9 +147,7 @@ export class ProductModel {
   }
 
   /**
-   * Devuelve productos por tipo de producto (papeles/telas).
-   * @param {{type:'papeles'|'telas', limit?:number, offset?:number}}
-   * @returns {Promise<{products: object[], total: number}>}
+   * Devuelve productos por tipo de producto (papel|telas).
    */
   static async getByType({ type, limit = 16, offset = 0 }) {
     let query =
@@ -190,7 +156,7 @@ export class ProductModel {
     const params = [];
     let index = 1;
 
-    if (type === 'papeles') {
+    if (type === 'papel') {
       query += ` AND "tipo" = 'WALLPAPER'`;
     } else if (type === 'telas') {
       query += ` AND "tipo" <> 'WALLPAPER'`;
@@ -201,18 +167,13 @@ export class ProductModel {
     params.push(...exclusion.values);
     index += exclusion.values.length;
 
-    query += ` LIMIT $${index++} OFFSET $${index++}`;
+    query += ` ORDER BY "nombre", "codprodu" LIMIT $${index++} OFFSET $${index++}`;
     params.push(limit, offset);
 
     const { rows } = await pool.query(query, params);
     return { products: rows, total: rows.length };
   }
 
-  /**
-   * Devuelve todos los productos de una colección exacta (case-sensitive por diseño original).
-   * @param {string} coleccion
-   * @returns {Promise<object[]>}
-   */
   static async getByCollectionExact(coleccion) {
     const exclusion = this.getExcludedNamesClause(2);
     const query = `
@@ -227,12 +188,6 @@ export class ProductModel {
     return rows;
   }
 
-  /**
-   * Devuelve productos de la misma colección excluyendo un codprodu concreto.
-   * Solo productos con imagen "Buena".
-   * @param {{coleccion:string, excludeCodprodu:string}}
-   * @returns {Promise<object[]>} productos con imageBuena/imageBaja cuando sea posible
-   */
   static async getByCollectionExcluding({ coleccion, excludeCodprodu }) {
     const exclusion = this.getExcludedNamesClause(3);
     const query = `
@@ -251,16 +206,12 @@ export class ProductModel {
     const values = [coleccion, excludeCodprodu, ...exclusion.values];
     const { rows } = await pool.query(query, values);
 
-    // Adjunta imágenes (Buena y Baja si están)
     const withImages = await Promise.all(
       rows.map((p) => this.attachImages(p, ['Buena', 'Baja']))
     );
     return withImages;
   }
 
-  // ProductModel.js
-  // ProductModel.js
-  // ProductModel.js
   static async getProductByCollection({ coleccion }) {
     const sql = `
     SELECT DISTINCT ON (p.nombre) p.*
@@ -270,10 +221,8 @@ export class ProductModel {
       AND p.nombre <> ''
     ORDER BY p.nombre, p.codprodu;
   `;
-
     const { rows } = await pool.query(sql, [coleccion]);
 
-    // Asegúrate de que attachImages complete imageBuena / imageBaja
     const withImages = await Promise.all(
       rows.map((p) => this.attachImages(p, ['Buena', 'Baja']))
     );
@@ -281,12 +230,6 @@ export class ProductModel {
     return withImages;
   }
 
-  /**
-   * Productos similares por estilo, excluyendo el nombre y la colección concretos.
-   * Garantiza que exista una imagen "Baja".
-   * @param {{estilo:string, excludeNombre:string, excludeColeccion:string, limit?:number}}
-   * @returns {Promise<object[]>}
-   */
   static async getSimilarByStyle({ estilo, excludeNombre, excludeColeccion, limit = 4 }) {
     const exclusion = this.getExcludedNamesClause(5);
     const query = `
@@ -315,12 +258,6 @@ export class ProductModel {
   // 2) BÚSQUEDAS (CLÁSICA / PARA HEADER / PARA CARDPRODUCT)
   // ---------------------------------------------------------------------------
 
-  /**
-   * Búsqueda "clásica" (nombre, colección, tonalidad) con similarity.
-   * Devuelve productos con imagen "Baja".
-   * @param {{query:string, limit?:number, offset?:number, res?:any}}
-   * @returns {Promise<{products: object[], total:number}>}
-   */
   static async search({ query, limit = 10, offset = 0, res }) {
     if (!query || query.trim() === '') {
       return { products: [], total: 0 };
@@ -360,7 +297,6 @@ export class ProductModel {
           const img = await ImagenModel.getByCodproduAndCodclaarchivo({
             codprodu: product.codprodu,
             codclaarchivo: 'Baja',
-            res
           });
           return { ...product, image: img?.ficadjunto ? `https://${img.ficadjunto}` : defaultImg };
         } catch {
@@ -370,22 +306,13 @@ export class ProductModel {
     );
 
     return { products: productsWithImages, total: productsWithImages.length };
-    // (El controller se encarga de devolver 200 con [] si no hay resultados)
   }
 
-  /**
-   * Búsqueda rápida (para SearchBar/header): productos + colecciones.
-   * - Productos: por nombre/tonalidad, DISTINCT ON nombre.
-   * - Colecciones: por LIKE en coleccion.
-   * @param {{query:string, prodLimit?:number, colLimit?:number}}
-   * @returns {Promise<{products: object[], collections: string[]}>}
-   */
   static async searchQuick({ query, prodLimit = 8, colLimit = 6 }) {
     const term = (query || '').trim();
     if (!term) return { products: [], collections: [] };
     const norm = `%${term}%`;
 
-    // Productos
     const exclusion = this.getExcludedNamesClause(2);
     const sqlProducts = `
       SELECT DISTINCT ON (p.nombre)
@@ -404,7 +331,6 @@ export class ProductModel {
     const prodParams = [norm, ...exclusion.values, prodLimit];
     const { rows: prodRows } = await pool.query(sqlProducts, prodParams);
 
-    // Mínima imagen 'Baja' para sugerencia (opcional)
     const products = await Promise.all(
       prodRows.map(async (p) => {
         try {
@@ -419,7 +345,6 @@ export class ProductModel {
       })
     );
 
-    // Colecciones
     const sqlCollections = `
       SELECT DISTINCT upper(coleccion) as coleccion
       FROM productos
@@ -433,13 +358,6 @@ export class ProductModel {
     return { products, collections };
   }
 
-  /**
-   * Búsqueda paginada para CardProduct (solo productos).
-   * - Busca por nombre/tonalidad.
-   * - Si 0 resultados → fallback por colección EXACTA (case-insensitive).
-   * @param {{query:string, limit?:number, offset?:number}}
-   * @returns {Promise<{products: object[], total:number}>}
-   */
   static async searchProducts({ query, limit = 16, offset = 0 }) {
     const term = (query || '').trim();
     if (!term) return { products: [], total: 0 };
@@ -465,7 +383,6 @@ export class ProductModel {
     const { rows } = await pool.query(baseSql, params);
 
     if (rows.length === 0) {
-      // Fallback por colección exacta (case-insensitive)
       const sqlCol = `
         SELECT p.*
         FROM productos p
@@ -486,86 +403,95 @@ export class ProductModel {
   }
 
   // ---------------------------------------------------------------------------
-  // 3) BÚSQUEDAS AUXILIARES (colecciones, tipos, estilos)
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Autocompletado de colecciones (ILIKE).
-   * @param {string} searchTerm
-   * @returns {Promise<string[]>}
-   */
-  static async searchCollections(searchTerm) {
-    try {
-      const query = `
-        SELECT DISTINCT UPPER(coleccion) AS coleccion
-        FROM productos
-        WHERE coleccion ILIKE $1
-          AND nombre IS NOT NULL
-      `;
-      const searchValue = `%${searchTerm}%`;
-      const { rows } = await pool.query(query, [searchValue]);
-      return rows.map(row => row.coleccion);
-    } catch (error) {
-      console.error('Error searching collections:', error);
-      throw new Error('Error searching collections');
-    }
-  }
-
-  /**
-   * Autocompletado de tipos (ILIKE).
-   * @param {string} searchTerm
-   * @returns {Promise<string[]>}
-   */
-  static async searchFabricTypes(searchTerm) {
-    try {
-      const query = `
-        SELECT DISTINCT UPPER(tipo) AS tipo
-        FROM productos
-        WHERE tipo ILIKE $1
-          AND nombre IS NOT NULL
-      `;
-      const searchValue = `%${searchTerm}%`;
-      const { rows } = await pool.query(query, [searchValue]);
-      return rows.map(row => row.tipo);
-    } catch (error) {
-      console.error('Error searching fabric types:', error);
-      throw new Error('Error searching fabric types');
-    }
-  }
-
-  /**
-   * Autocompletado de patrones/estilos (ILIKE).
-   * @param {string} searchTerm
-   * @returns {Promise<string[]>}
-   */
-  static async searchFabricPatterns(searchTerm) {
-    try {
-      const query = `
-        SELECT DISTINCT UPPER(estilo) AS estilo
-        FROM productos
-        WHERE estilo ILIKE $1
-          AND nombre IS NOT NULL
-      `;
-      const searchValue = `%${searchTerm}%`;
-      const { rows } = await pool.query(query, [searchValue]);
-      return rows.map(row => row.estilo);
-    } catch (error) {
-      console.error('Error searching fabric patterns:', error);
-      throw new Error('Error searching fabric patterns');
-    }
-  }
-
-  // ---------------------------------------------------------------------------
   // 4) FILTROS (GENERALES Y POR MARCA)
   // ---------------------------------------------------------------------------
 
   /**
+   * Filtro general — **tu lógica original** + paginación consistente.
+   * Devuelve { products, total } donde total = COUNT(DISTINCT codprodu) con MISMAS condiciones.
+   */
+  static async filter(filters, limit = 16, offset = 0) {
+    // Construimos UNA cláusula WHERE reusable
+    let where = `"nombre" IS NOT NULL AND "nombre" <> ''`;
+    const params = [];
+    let index = 1;
+
+    // 1) Marca
+    if (filters.brand?.length) {
+      where += ` AND "codmarca" = ANY($${index++})`;
+      params.push(filters.brand);
+    }
+    // 2) Colección (ILIKE ANY)
+    if (filters.collection?.length) {
+      where += ` AND "coleccion" ILIKE ANY($${index++})`;
+      params.push(filters.collection.map(c => `%${c}%`));
+    }
+    // 3) Color
+    if (filters.color?.length) {
+      where += ` AND "colorprincipal" = ANY($${index++})`;
+      params.push(filters.color);
+    }
+    // 4) Tipo
+    if (filters.fabricType?.length) {
+      where += ` AND "tipo" = ANY($${index++})`;
+      params.push(filters.fabricType);
+    }
+    // 5) Estilo
+    if (filters.fabricPattern?.length) {
+      where += ` AND "estilo" = ANY($${index++})`;
+      params.push(filters.fabricPattern);
+    }
+    // 6) Uso (FR / OUTDOOR / IMO) – (tu OR con ILIKE %…%)
+    if (filters.uso?.length) {
+      const usoConds = [];
+      if (filters.uso.includes('FR')) usoConds.push(`"uso" ILIKE '%FR%'`);
+      if (filters.uso.includes('OUTDOOR')) usoConds.push(`"uso" ILIKE '%OUTDOOR%'`);
+      if (filters.uso.includes('IMO')) usoConds.push(`"uso" ILIKE '%IMO%'`);
+      if (usoConds.length) where += ` AND (${usoConds.join(' OR ')})`;
+    }
+    // 7) Martindale
+    if (filters.martindale?.length) {
+      where += ` AND "martindale" = ANY($${index++})`;
+      params.push(filters.martindale);
+    }
+    // 8) Mantenimiento (texto)
+    if (filters.mantenimiento?.length) {
+      where += ` AND ("mantenimiento"::text) ILIKE ANY($${index++})`;
+      params.push(filters.mantenimiento.map(m => `%${m}%`));
+    }
+
+    // Exclusiones (tu helper)
+    const exclusion = this.getExcludedNamesClause(index);
+    where += ` AND ${exclusion.clause}`;
+    params.push(...exclusion.values);
+    index += exclusion.values.length;
+
+    // --- TOTAL consistente (mismas condiciones) ---
+    const countQuery = `
+      SELECT COUNT(DISTINCT "codprodu")::int AS total
+      FROM productos
+      WHERE ${where}
+    `;
+    const { rows: countRows } = await pool.query(countQuery, params);
+    const total = countRows[0]?.total || 0;
+
+    // --- Página actual (misma lógica tuya: DISTINCT ON ("nombre")) ---
+    const dataQuery = `
+      SELECT DISTINCT ON ("nombre") *
+      FROM productos
+      WHERE ${where}
+      ORDER BY "nombre", "codprodu"
+      LIMIT $${index++}
+      OFFSET $${index++}
+    `;
+    const dataParams = [...params, limit, offset];
+
+    const { rows } = await pool.query(dataQuery, dataParams);
+    return { products: rows, total };
+  }
+
+  /**
    * Devuelve los valores distintos para construir los filtros del catálogo.
-   * Incluye `mantenimiento::text` (ej. XML a texto) para poder hacer DISTINCT.
-   * @returns {Promise<{
-   *   brands:string[], collections:string[], fabricTypes:string[], fabricPatterns:string[],
-   *   martindaleValues:any[], colors:string[], tonalidades:string[], mantenimientos:string[]
-   * }>}
    */
   static async getFilters() {
     try {
@@ -600,83 +526,6 @@ export class ProductModel {
     }
   }
 
-  /**
-   * Filtro general (brand, collection, color, tipo, estilo, uso, martindale, mantenimiento).
-   * @param {object} filters
-   * @param {number} limit
-   * @param {number} offset
-   * @returns {Promise<{products:object[], total:number}>}
-   */
-  static async filter(filters, limit = 16, offset = 0) {
-    let query =
-      'SELECT DISTINCT ON ("nombre") * ' +
-      "FROM productos WHERE \"nombre\" IS NOT NULL AND \"nombre\" <> ''";
-    const params = [];
-    let index = 1;
-
-    // 1) Marca
-    if (filters.brand?.length) {
-      query += ` AND "codmarca" = ANY($${index++})`;
-      params.push(filters.brand);
-    }
-    // 2) Colección (ILIKE ANY)
-    if (filters.collection?.length) {
-      query += ` AND "coleccion" ILIKE ANY($${index++})`;
-      params.push(filters.collection.map(c => `%${c}%`));
-    }
-    // 3) Color
-    if (filters.color?.length) {
-      query += ` AND "colorprincipal" = ANY($${index++})`;
-      params.push(filters.color);
-    }
-    // 4) Tipo
-    if (filters.fabricType?.length) {
-      query += ` AND "tipo" = ANY($${index++})`;
-      params.push(filters.fabricType);
-    }
-    // 5) Estilo
-    if (filters.fabricPattern?.length) {
-      query += ` AND "estilo" = ANY($${index++})`;
-      params.push(filters.fabricPattern);
-    }
-    // 6) Uso (FR / OUTDOOR / IMO)
-    if (filters.uso?.length) {
-      const usoConds = [];
-      if (filters.uso.includes('FR')) usoConds.push(`"uso" ILIKE '%FR%'`);
-      if (filters.uso.includes('OUTDOOR')) usoConds.push(`"uso" ILIKE '%OUTDOOR%'`);
-      if (filters.uso.includes('IMO')) usoConds.push(`"uso" ILIKE '%IMO%'`);
-      if (usoConds.length) query += ` AND (${usoConds.join(' OR ')})`;
-    }
-    // 7) Martindale
-    if (filters.martindale?.length) {
-      query += ` AND "martindale" = ANY($${index++})`;
-      params.push(filters.martindale);
-    }
-    // 8) Mantenimiento (texto)
-    if (filters.mantenimiento?.length) {
-      query += ` AND ("mantenimiento"::text) ILIKE ANY($${index++})`;
-      params.push(filters.mantenimiento.map(m => `%${m}%`));
-    }
-
-    // Exclusiones
-    const exclusion = this.getExcludedNamesClause(index);
-    query += ` AND ${exclusion.clause}`;
-    params.push(...exclusion.values);
-    index += exclusion.values.length;
-
-    // Límite y offset
-    query += ` LIMIT $${index++} OFFSET $${index++}`;
-    params.push(limit, offset);
-
-    const { rows } = await pool.query(query, params);
-    return { products: rows, total: rows.length };
-  }
-
-  /**
-   * Devuelve filtros derivados de una marca concreta.
-   * @param {string} brand
-   * @returns {Promise<{collections:string[], fabricTypes:string[], fabricPatterns:string[], martindaleValues:any[]}>}
-   */
   static async getFiltersByBrand(brand) {
     try {
       const { rows: collections } = await pool.query(
@@ -712,11 +561,6 @@ export class ProductModel {
   // 5) MUTACIONES (CREATE / UPDATE / DELETE)
   // ---------------------------------------------------------------------------
 
-  /**
-   * Crea un producto. Invalida cachés si hay capa en res.
-   * @param {{input:{CodProdu:string, DesProdu:string, CodFamil:string, Comentario?:string, UrlImagen?:string}, res?:any}}
-   * @returns {Promise<object>}
-   */
   static async create({ input, res }) {
     const { CodProdu, DesProdu, CodFamil, Comentario, UrlImagen } = input;
     const { rows } = await pool.query(
@@ -734,11 +578,6 @@ export class ProductModel {
     return rows[0];
   }
 
-  /**
-   * Actualiza un producto por codprodu. Invalida caches relacionadas.
-   * @param {{id:string, input:Record<string, any>, res?:any}}
-   * @returns {Promise<object>}
-   */
   static async update({ id, input, res }) {
     const fields = Object.keys(input)
       .map((key, index) => `"${key}" = $${index + 2}`)
@@ -757,11 +596,6 @@ export class ProductModel {
     return rows[0];
   }
 
-  /**
-   * Elimina un producto por id. Invalida caches relacionadas.
-   * @param {{id:string, res?:any}}
-   * @returns {Promise<object>}
-   */
   static async delete({ id, res }) {
     const { rows } = await pool.query(
       'DELETE FROM productos WHERE "codprodu" = $1 RETURNING *;',

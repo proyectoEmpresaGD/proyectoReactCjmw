@@ -121,8 +121,6 @@ export class ProductController {
 
   /**
    * GET /api/products/search
-   * Búsqueda “clásica” por nombre/colección/tonalidad (server-side).
-   * Nota: devolvemos 200 con lista vacía para simplificar el frontend.
    */
   async search(req, res) {
     try {
@@ -160,8 +158,6 @@ export class ProductController {
 
   /**
    * GET /api/products/searchQuick
-   * Sugerencias rápidas para la barra de búsqueda (productos + colecciones).
-   * Parámetros: query, prodLimit (8), colLimit (6)
    */
   async searchQuick(req, res) {
     try {
@@ -184,8 +180,6 @@ export class ProductController {
 
   /**
    * GET /api/products/searchProducts
-   * Búsqueda paginada para CardProduct (solo productos).
-   * Si no encuentra por nombre/tonalidad, hace fallback por colección exacta (insensible a mayúsculas).
    */
   async searchProducts(req, res) {
     try {
@@ -226,7 +220,6 @@ export class ProductController {
 
   /**
    * GET /api/products/filters
-   * Devuelve todos los valores únicos para filtros (marcas, colecciones, tipo, etc.)
    */
   async getFilters(req, res) {
     try {
@@ -241,7 +234,6 @@ export class ProductController {
 
   /**
    * GET /api/products/filtersByBrand?brand=ARE
-   * Devuelve subconjunto de filtros para una marca (colecciones, tipo, estilo, martindale)
    */
   async getFiltersByBrand(req, res) {
     try {
@@ -265,7 +257,6 @@ export class ProductController {
 
   /**
    * GET /api/products/getCollectionsByBrand?brand=ARE
-   * Nota: el modelo no tiene getCollectionsByBrand; lo resolvemos con getFiltersByBrand y devolvemos solo colecciones.
    */
   async getCollectionsByBrand(req, res) {
     try {
@@ -291,38 +282,36 @@ export class ProductController {
 
   /**
    * POST /api/products/filter?limit=16&page=1
-   * Filtrado avanzado (brand, collection, color, tipo, estilo, uso, martindale, mantenimiento…)
-   * El modelo ya aplica exclusiones y devolvemos paginación.
+   * Mantiene TUS filtros originales y añade paginación consistente.
    */
   async filterProducts(req, res) {
-    const filters = req.body;
-    const limit = toInt(req.query.limit, 16);
-    const page = toInt(req.query.page, 1);
-    const offset = (page - 1) * limit;
-
     try {
+      const page = Math.max(1, parseInt(req.query.page || '1', 10));
+      const limit = Math.max(1, Math.min(100, parseInt(req.query.limit || '16', 10)));
+      const offset = (page - 1) * limit;
+
+      const filters = req.body || {};
+
+      // usa TU método filter (con misma lógica) pero ahora devuelve total real
       const { products, total } = await ProductModel.filter(filters, limit, offset);
 
-      // Post-filtro de consistencia (idéntico al que ya usabas):
-      const validProducts = products.filter(product =>
-        !/^(LIBRO|PORTADA|SET|KIT|COMPOSICION ESPECIAL|COLECCIÓN|ALFOMBRA|ANUNCIADA|MULETON|ATLAS|QUALITY SAMPLE|PERCHA|ALQUILER|CALCUTA C35|TAPILLA|LÁMINA|ACCESORIOS MUESTRARIOS|CONTRAPORTADA|ALFOMBRAS|AGARRADERAS|ARRENDAMIENTOS INTRACOMUNITARIOS|\d+)/i.test(product.desprodu)
-        && !/CUTTING|PERCHA|FUERA DE COLECCIÓN/i.test(product.desprodu)
-        && ['ARE', 'FLA', 'CJM', 'HAR', 'BAS'].includes(product.codmarca)
-      );
+      const totalPages = Math.ceil(total / limit);
+      const hasNextPage = page < totalPages;
 
-      okCache(res, 3600);
-      res.json({
-        products: validProducts,
+      okCache(res, 300);
+      return res.json({
+        products,
         pagination: {
           currentPage: page,
           limit,
           totalResults: total,
-          totalValidResults: validProducts.length
+          totalPages,
+          hasNextPage
         }
       });
     } catch (error) {
       console.error('Error filtering products:', error);
-      res.status(500).json({ error: 'Error filtering products', details: error.message });
+      return res.status(500).json({ error: 'Error filtering products', details: error.message });
     }
   }
 
@@ -358,7 +347,6 @@ export class ProductController {
 
   /**
    * GET /api/products/codfamil/:codfamil
-   * Listado por código de familia (simple)
    */
   async getByCodFamil(req, res) {
     try {
@@ -375,11 +363,6 @@ export class ProductController {
   // 3) Búsquedas internas por texto para autocompletados
   // ===========================================================================
 
-  /**
-   * GET /api/products/searchCollections?searchTerm=FOO
-   * Devuelve colecciones (texto) que matchean el término.
-   * Se devuelve 200 con [] (mejor para UX de autocompletado).
-   */
   async searchCollections(req, res) {
     try {
       const { searchTerm } = req.query;
@@ -394,9 +377,6 @@ export class ProductController {
     }
   }
 
-  /**
-   * GET /api/products/searchFabricTypes?searchTerm=...
-   */
   async searchFabricTypes(req, res) {
     try {
       const { searchTerm } = req.query;
@@ -412,9 +392,6 @@ export class ProductController {
     }
   }
 
-  /**
-   * GET /api/products/searchFabricPatterns?searchTerm=...
-   */
   async searchFabricPatterns(req, res) {
     try {
       const { searchTerm } = req.query;
@@ -434,11 +411,6 @@ export class ProductController {
   // 4) Consultas por relación / similitud / colección exacta
   // ===========================================================================
 
-  /**
-   * GET /api/products/byCollection?collection=ATMOSPHERE
-   * Devuelve productos de una colección exacta (case-sensitive en DB,
-   * pero el modelo ya hace igualdad por valor exacto).
-   */
   async getByExactCollection(req, res) {
     try {
       const { collection } = req.query;
@@ -460,10 +432,6 @@ export class ProductController {
     }
   }
 
-  /**
-   * GET /api/products/similarByStyle?estilo=...&excludeNombre=...&excludeColeccion=...
-   * Devuelve productos “parecidos” por estilo con imagen disponible.
-   */
   async getSimilarByStyle(req, res) {
     try {
       const { estilo, excludeNombre, excludeColeccion } = req.query;
@@ -511,11 +479,6 @@ export class ProductController {
     }
   }
 
-
-  /**
-   * GET /api/products/byCollectionExcluding?coleccion=...&excludeCodprodu=...
-   * Devuelve productos de la colección (excluyendo el código dado) con imagen “Buena”.
-   */
   async getByCollectionExcluding(req, res) {
     try {
       const { coleccion, excludeCodprodu } = req.query;

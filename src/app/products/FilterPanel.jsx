@@ -138,12 +138,12 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
     };
 
     const handleApply = () => {
-        // Expand martindale keys into actual numeric values
+        // Expandir martindale en valores reales
         let chosen = [];
         martSel.forEach(key => {
-            const [minStr, maxStr] = key.split('-');
+            const [minStr, maxStr] = key.split("-");
             const min = parseInt(minStr, 10);
-            const max = maxStr.endsWith('+') ? Infinity : parseInt(maxStr, 10);
+            const max = maxStr.endsWith("+") ? Infinity : parseInt(maxStr, 10);
             martindaleValues.forEach(v => { if (v >= min && v <= max) chosen.push(v); });
         });
         chosen = Array.from(new Set(chosen));
@@ -156,6 +156,7 @@ export default function FilterPanel({ isOpen, close, applyFilters, currentFilter
             fabricPattern: patternsSel,
             martindale: chosen
         });
+
         setMarcaActiva(null);
         clearAll();
         close();
