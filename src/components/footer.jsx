@@ -89,7 +89,7 @@ const Footer = () => {
                     <img
                         src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png"
                         alt="CJM"
-                        className="md:h-10 h-6"
+                        className="h-10"
                     />
                 </Link>
             </div>
