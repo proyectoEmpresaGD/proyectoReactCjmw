@@ -487,7 +487,6 @@ export default function CardProduct() {
                             onClick={() => { setSelectedProduct(p); setModalOpen(true); preloadHighResInto(p); }}
                         >
                             <LazyImage src={p.imageBaja || defaultImageUrl} alt={p.nombre} className="object-cover w-full h-full" />
-                            <div className="absolute bottom-2 right-2 px-2 py-1 text-xs text-white bg-black/50 rounded md:hidden">{t('touchToView')}</div>
                         </div>
                         <div className="flex-1 mt-2 md:mt-4 text-center">
                             <h3 className="md:text-lg text-sm font-semibold text-gray-800">{p.nombre}</h3>

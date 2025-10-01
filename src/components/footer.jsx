@@ -55,7 +55,7 @@ const Footer = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6 border-b-[2px] pb-4 mt-6 pt-6 place-items-center">
                 <Link
-                    to={NAVIGATION_LINKS.bassariHome}
+                    to="https://www.cjmw.eu/#/bassariHome"
                     className="hover:scale-105 transition-transform md:col-span-2 lg:col-span-1"
                 >
                     <img
@@ -64,32 +64,32 @@ const Footer = () => {
                         className="h-16"
                     />
                 </Link>
-                <Link to={NAVIGATION_LINKS.flamencoHome} className="hover:scale-105 transition-transform">
+                <Link to="https://www.cjmw.eu/#/flamencoHome" className="hover:scale-105 transition-transform">
                     <img
                         src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png"
                         alt="Flamenco"
                         className="h-16"
                     />
                 </Link>
-                <Link to={NAVIGATION_LINKS.harbourHome} className="hover:scale-105 transition-transform">
+                <Link to="https://www.cjmw.eu/#/harbourHome" className="hover:scale-105 transition-transform">
                     <img
                         src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png"
                         alt="Harbour"
                         className="h-16"
                     />
                 </Link>
-                <Link to={NAVIGATION_LINKS.arenaHome} className="hover:scale-105 transition-transform">
+                <Link to="https://www.cjmw.eu/#/arenaHome" className="hover:scale-105 transition-transform">
                     <img
                         src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png"
                         alt="Arena"
                         className="h-16"
                     />
                 </Link>
-                <Link to={NAVIGATION_LINKS.cjmHome} className="hover:scale-105 transition-transform">
+                <Link to="https://www.cjmw.eu/#/cjmHome" className="hover:scale-105 transition-transform">
                     <img
                         src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png"
                         alt="CJM"
-                        className="h-16"
+                        className="h-10"
                     />
                 </Link>
             </div>

@@ -77,9 +77,6 @@ function CarruselProductosColeccionEspecifica({ coleccion, onProductClick }) {
                     loading="lazy"
                     onError={(e) => { e.currentTarget.src = "/img/default.webp"; }}
                 />
-                <div className="absolute bottom-2 right-2 px-2 py-1 text-xs text-black bg-black/50 rounded md:hidden">
-                    Toca para ver
-                </div>
             </div>
             <div className="flex-1 mt-4 text-center">
                 <h3 className="text-lg font-semibold text-gray-800">{p.nombre}</h3>
