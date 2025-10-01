@@ -37,7 +37,7 @@ function PresentacionMarca({ nombreColeccion, titulo, imagenFondo, descripcion }
                     distancePx={24}
                     className={`
             w-[90%] lg:w-[40%] 
-            bg-[#D6D2C4] p-6 md:p-10 shadow-xl rounded z-10
+            bg-white p-6 md:p-10 shadow-xl rounded z-10
             -mt-12 lg:mt-0
             lg:absolute lg:right-0 lg:top-1/2 lg:transform lg:-translate-y-1/2 lg:translate-x-1/4
           `}

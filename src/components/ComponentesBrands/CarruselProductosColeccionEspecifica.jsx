@@ -65,7 +65,7 @@ function CarruselProductosColeccionEspecifica({ coleccion, onProductClick }) {
     }), [productos.length]);
 
     const Tarjeta = ({ p }) => (
-        <div className="flex flex-col p-2 bg-[#D6D2C4] rounded-lg shadow hover:shadow-xl transition">
+        <div className="flex flex-col p-2 rounded-lg shadow hover:shadow-xl transition">
             <div
                 className="relative w-full h-48 overflow-hidden cursor-pointer rounded"
                 onClick={() => onProductClick && onProductClick(p)}
@@ -77,13 +77,13 @@ function CarruselProductosColeccionEspecifica({ coleccion, onProductClick }) {
                     loading="lazy"
                     onError={(e) => { e.currentTarget.src = "/img/default.webp"; }}
                 />
-                <div className="absolute bottom-2 right-2 px-2 py-1 text-xs text-white bg-black/50 rounded md:hidden">
+                <div className="absolute bottom-2 right-2 px-2 py-1 text-xs text-black bg-black/50 rounded md:hidden">
                     Toca para ver
                 </div>
             </div>
             <div className="flex-1 mt-4 text-center">
-                <h3 className="text-lg font-semibold text-white">{p.nombre}</h3>
-                <p className="mt-1 text-sm text-white">{p.tonalidad}</p>
+                <h3 className="text-lg font-semibold text-gray-800">{p.nombre}</h3>
+                <p className="mt-1 text-sm text-gray-500">{p.tonalidad}</p>
             </div>
         </div>
     );
@@ -93,7 +93,7 @@ function CarruselProductosColeccionEspecifica({ coleccion, onProductClick }) {
     // ≤ 4 → grid igual que antes
     if (!usarCarrusel) {
         return (
-            <div className="mt-6 lg:px-[0%] px-[2%] grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className=" lg:px-[0%] px-[2%] grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {productos.map((p, i) => (
                     <div key={`${p.codprodu || p.id || "prod"}-${i}`}>
                         <Tarjeta p={p} />

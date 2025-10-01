@@ -189,11 +189,14 @@ export const coleccionesPorMarca = {
         "KASSUMAY", "TRIBAL", "UNIVERS",
     ],
     ARE: [
-        "CRANE", "KANNATURA", "KANNATURA VOL II", "ATMOSPHERE", "JEWEL", "COSY", "PURITTY", "MONTANA", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA", "LINOTTO",
+        "TAKUMI", "LIGHTHOUSE", "MADAMA BUTTERFLY", "CRANE", "SOBOKUNA", "COSY", "KANNATURA VOL II", "KANNATURA", "ATMOSPHERE", "JEWEL", "PURITTY", "MONTANA", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA", "LINOTTO",
         "MEDITERRANEAN STRIPES", "NOMAD", "PAPIRO",
         "STONE", "STRATOS", "TAIGA", "TOUCH", "RUSTICA"
     ],
-    "HAR": [
+    HAR: [
+        "BOHEMIAN",
+        "HUSKY",
+        "FUTURE",
         "BOLONIA&VARADERO",
         "CARIBBEAN PARTY",
         "DUKE",
@@ -210,7 +213,8 @@ export const coleccionesPorMarca = {
         "OYSTER",
         "PARABAN"
     ],
-    "FLA": [
+    FLA: [
+
         "GRAZALEMA",
         "MARRAKECH",
         "TEDDY",
@@ -226,11 +230,10 @@ export const coleccionesPorMarca = {
         "LUXURY DRAPES",
         "EASTERN MEMORIES",
         "GENESIS",
-
         "REVOLTOSO"
 
     ],
-    "CJM": [
+    CJM: [
         "TOKIO",
         "COLONY",
         "COLONY WALLPAPER",
@@ -495,6 +498,8 @@ export const apiUrl = import.meta.env.VITE_API_BASE_URL;
 export const defaultImageUrlModalProductos = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
 export const mantenimientoImages = {
     "LAVAR A 30º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',
+    "LAVAR A 30º DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/02-Lavar-a-30%C2%BA-delicado.jpg',
+    "LAVAR A 30º MUY DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/03-Lavar-a-30%C2%BA-muy-delicado.jpg',
     "LAVAR A 40º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
     "LAVAR A 90º": '',
     "NO LAVAR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",

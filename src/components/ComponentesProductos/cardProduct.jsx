@@ -501,7 +501,6 @@ export default function CardProduct() {
             {hasMore && <div ref={sentinelRef} />}
 
             {/* loaders & mensajes */}
-            {loading && <SkeletonLoader repeticiones={itemsPerPage} />}
             {!loading && displayed.length === 0 && !error && (
                 <div className="mt-8 text-center text-gray-500">{t('noProductsFound')}</div>
             )}
