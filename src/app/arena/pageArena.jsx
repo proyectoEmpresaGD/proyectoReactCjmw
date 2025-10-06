@@ -47,7 +47,7 @@ function ArenaHome() {
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/MINIATURA-BROUCHURE-ARENA-Y-HARBOUR-BOHEMIAN.jpg",
             pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
             title: "COSY",
-            description: "",
+            description: t('BrouchureBohemianArena'),
         },
         {
             imageUrl:

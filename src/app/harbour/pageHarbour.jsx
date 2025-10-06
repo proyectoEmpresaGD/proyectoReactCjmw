@@ -44,7 +44,7 @@ function HarbourHome() {
                 "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BROCHURE_COSY_ARENA_HARBOUR.jpg",
             pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
             title: "BOHEMIAN",
-            description: t('BrouchureHarbour'),
+            description: t('BrouchureBohemianHarbour'),
         },
         {
             imageUrl:
