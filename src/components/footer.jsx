@@ -13,19 +13,47 @@ const Footer = () => {
     const { setMarcaActiva } = useMarca();
     const { t } = useTranslation('footer');
 
+    const brandLinks = [
+        {
+            to: "/bassariHome",
+            img: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png",
+            alt: "Bassari",
+        },
+        {
+            to: "/flamencoHome",
+            img: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png",
+            alt: "Flamenco",
+        },
+        {
+            to: "/harbourHome",
+            img: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png",
+            alt: "Harbour",
+        },
+        {
+            to: "/arenaHome",
+            img: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png",
+            alt: "Arena",
+        },
+        {
+            to: "/cjmHome",
+            img: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png",
+            alt: "CJM",
+        },
+    ];
+
     return (
         <footer className=" bg-white text-gray-900 p-6 xl:p-12">
             <div className="w-full border-b border-gray-500 pb-6">
                 <div className="flex flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-between">
                     <div className="hidden lg:block w-[120px]" />
                     <div className="flex justify-center mb-4 lg:mb-0">
-                        <a href="#" onClick={() => setMarcaActiva(null)} className="flex items-center">
+                        <Link to="/" onClick={() => setMarcaActiva(null)} className="flex items-center">
                             <img
                                 src={LOGO_URL}
                                 alt={t('altLogo')}
                                 className="w-20 h-20 object-contain rounded-full"
                             />
-                        </a>
+                        </Link>
                     </div>
                     <nav className="flex items-center justify-center gap-4">
                         <a
@@ -54,44 +82,20 @@ const Footer = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6 border-b-[2px] pb-4 mt-6 pt-6 place-items-center">
-                <Link
-                    to="https://www.cjmw.eu/#/bassariHome"
-                    className="hover:scale-105 transition-transform md:col-span-2 lg:col-span-1"
-                >
-                    <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png"
-                        alt="Bassari"
-                        className="h-16"
-                    />
-                </Link>
-                <Link to="https://www.cjmw.eu/#/flamencoHome" className="hover:scale-105 transition-transform">
-                    <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png"
-                        alt="Flamenco"
-                        className="h-16"
-                    />
-                </Link>
-                <Link to="https://www.cjmw.eu/#/harbourHome" className="hover:scale-105 transition-transform">
-                    <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png"
-                        alt="Harbour"
-                        className="h-16"
-                    />
-                </Link>
-                <Link to="https://www.cjmw.eu/#/arenaHome" className="hover:scale-105 transition-transform">
-                    <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png"
-                        alt="Arena"
-                        className="h-16"
-                    />
-                </Link>
-                <Link to="https://www.cjmw.eu/#/cjmHome" className="hover:scale-105 transition-transform">
-                    <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png"
-                        alt="CJM"
-                        className="h-10"
-                    />
-                </Link>
+                {brandLinks.map(({ to, img, alt }, index) => (
+                    <Link
+                        key={to}
+                        to={to}
+                        className={`hover:scale-105 transition-transform ${index === 0 ? 'md:col-span-2 lg:col-span-1' : ''}`.trim()}
+                        onClick={() => setMarcaActiva(null)}
+                    >
+                        <img
+                            src={img}
+                            alt={alt}
+                            className={alt === 'CJM' ? 'h-10' : 'h-16'}
+                        />
+                    </Link>
+                ))}
             </div>
 
             <nav className="mt-4 flex flex-col lg:flex-row items-center justify-between gap-4">

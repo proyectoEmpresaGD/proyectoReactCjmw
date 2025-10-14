@@ -13,7 +13,7 @@ i18n
         ns: [
             "about", "blog", "buttonFiltro", "cardProduct", "cart", "clients", "coleccionesMarcas",
             "collectionCarousel", "common", "contacts", "contract", "cookieConsent", "filterPanel",
-            "filterPanelNew", "footer", "geocodingService", "header", "instructions", "newCollection",
+            "filterPanelNew", "footer", "geocodingService", "header", "instructions", "media", "newCollection",
             "notificationPopup", "pageArena", "pageBassari", "pageFlamenco", "pageHarbour",
             "productModal", "productPage", "sameStyleCarousel", "search", "shareButton",
             "subMenuCarousel", "works"

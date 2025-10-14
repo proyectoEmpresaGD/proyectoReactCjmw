@@ -304,40 +304,31 @@ export const carruselConfig = {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //src\components\ComponentesContact\contacts.jsx
+export const CONTACT_CONSENT_VERSION = '2025-01';
 
-export const contactInfo = {
-    montilla: {
-        direccion: "Avenida de Europa 19",
-        telefono: "+34-957-656-475",
-        nombre: "MONTILLA",
-        correo: "info@cjmw.eu"
-    },
-    madrid: {
-        direccion: "C/ Juan Álvarez Mendizabal 53",
-        telefono: "+34-673 342 185",
-        nombre: "MADRID",
-        correo: "info@cjmw.eu"
-    },
-    barcelona: {
-        direccion: "Aribau 228 Bajos 1º",
-        telefono: "+34-666-538-045",
-        nombre: "BARCELONA",
-        correo: "info@cjmw.eu"
-    },
-    holanda: {
-        direccion: "Nieuve showroom, ETC DESIGN CENTER 1e Etage Stand 32",
-        telefono: "+31-614-446-800",
-        nombre: "HOLANDA",
-        correo: "info@cjmw.eu"
-    },
-};
+export const CONTACT_BANNER_IMAGE =
+    'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/03_AMBIENTES%20PARA%20PAGINA%20CONTACTS/ARN_COSY_8.jpg';
 
-export const contactTexts = {
-    sectionTitle: "Contáctanos",
-    showroomTitle: "Visita nuestros showrooms",
-    contactButtonText: "Contáctenos",
-    socialMediaFollow: "Síguenos en",
-};
+// src/Constants/constants.js
+
+export const contactInfo = [
+    {
+        id: 'cjm',
+        nombre: 'CJM Group',
+        direccion: 'Av. de Europa, 19',
+        codigoPostal: '14550',
+        ciudad: 'Montilla',
+        pais: 'España',
+        telefono: '+34 957 65 64 75',
+        correo: 'info@cjmw.eu',
+        horario: 'De lunes a viernes, de 9:00 a 18:00',
+        googleMapsUrl:
+            'https://www.google.com/maps/place/CJM+Group/@37.5860011,-4.6604229,17z/data=!3m1!4b1!4m6!3m5!1s0xd6d1489062003d9:0x240df88bc1abecb9!8m2!3d37.5859969!4d-4.657848!16s%2Fg%2F11z9l6xfv?entry=ttu&g_ep=EgoyMDI1MTAwMS4wIKXMDSoASAFQAw%3D%3D',
+        googleMapsEmbed:
+            'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3140.979995544716!2d-4.660422924888231!3d37.58600107196062!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6d1489062003d9%3A0x240df88bc1abecb9!2sCJM%20Group!5e0!3m2!1ses!2ses!4v1728235637896!5m2!1ses!2ses',
+    },
+];
+
 
 //
 //

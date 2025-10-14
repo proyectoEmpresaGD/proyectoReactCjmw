@@ -1,5 +1,119 @@
 {
-    "sectionTitle": "Contáctanos",
-    "showroomTitle": "Visita nuestro Showroom",
-    "followUs": "Síguenos en"
+    "hero": {
+        "kicker": "Contacto CJMW",
+        "title": "Conecta con nuestro equipo",
+        "subtitle": "Atendemos proyectos residenciales y contract con la máxima atención y confidencialidad.",
+        "bannerAlt": "Muestrario textil en un showroom de CJMW"
+    },
+    "form": {
+        "title": "Envíanos tu solicitud",
+        "description": "Completa el formulario para que podamos responder a tu consulta con la persona adecuada.",
+        "profile": {
+            "label": "Soy",
+            "options": {
+                "private": "Particular",
+                "professional": "Profesional"
+            }
+        },
+        "reason": {
+            "label": "Motivo de contacto",
+            "options": {
+                "general": "Consulta general",
+                "catalogue": "Catálogo y muestras",
+                "partnership": "Distribución y colaboración",
+                "press": "Prensa y comunicación",
+                "other": "Otro"
+            }
+        },
+        "firstName": {
+            "label": "Nombre"
+        },
+        "lastName": {
+            "label": "Apellidos"
+        },
+        "email": {
+            "label": "Correo electrónico"
+        },
+        "company": {
+            "label": "Empresa",
+            "help": "Indícanos tu empresa si contactas como profesional."
+        },
+        "country": {
+            "label": "País"
+        },
+        "postalCode": {
+            "label": "Código postal"
+        },
+        "province": {
+            "label": "Provincia / Estado"
+        },
+        "message": {
+            "label": "Mensaje",
+            "help": "Detalla tu proyecto o consulta (máx. {{max}} caracteres)."
+        },
+        "attachment": {
+            "label": "Archivo adjunto (opcional)",
+            "help": "Aceptamos PDF, JPG o PNG de hasta 2 MB."
+        },
+        "actions": {
+            "submit": "Enviar solicitud",
+            "sending": "Enviando…"
+        },
+        "feedback": {
+            "success": "Hemos recibido tu mensaje. Te responderemos en un plazo máximo de 48 horas laborables.",
+            "error": "No hemos podido enviar tu solicitud. Inténtalo de nuevo o escríbenos a info@cjmw.eu.",
+            "validation": "Revisa los campos marcados para continuar."
+        },
+        "errors": {
+            "profile": "Selecciona tu perfil.",
+            "firstName": "Introduce tu nombre.",
+            "lastName": "Introduce tus apellidos.",
+            "emailRequired": "Introduce un correo electrónico.",
+            "emailInvalid": "El formato del correo no es válido.",
+            "country": "Indica tu país.",
+            "postalCode": "Introduce un código postal.",
+            "reason": "Selecciona el motivo de contacto.",
+            "messageRequired": "El mensaje es obligatorio.",
+            "messageLength": "El mensaje no puede superar los {{max}} caracteres.",
+            "consent": "Necesitamos tu consentimiento para tramitar la solicitud.",
+            "invalidFileType": "Formato de archivo no permitido. Usa PDF, JPG o PNG.",
+            "invalidFileSize": "El archivo supera el tamaño máximo permitido (2 MB)."
+        },
+        "legal": {
+            "consentLabel": "Consiento el tratamiento de mis datos según la versión {{version}} de la política de privacidad.",
+            "marketingLabel": "Acepto recibir comunicaciones comerciales y novedades.",
+            "dataRetention": "Conservamos tus datos durante 180 días para la gestión de la solicitud.",
+            "privacy": "Consulta nuestra <privacyLink>política de privacidad</privacyLink>.",
+            "rights": "Puedes ejercer tus derechos de acceso, rectificación, oposición y supresión escribiendo a info@cjmw.eu."
+        }
+    },
+    "showrooms": {
+        "kicker": "Showrooms",
+        "title": "Visita nuestra sede principal",
+        "subtitle": "Te recibimos en Montilla con cita previa para asesorarte en cada proyecto.",
+        "viewInMaps": "Ver en Google Maps",
+        "focusMap": "Ver {location} en el mapa"
+    },
+    "map": {
+        "title": "Localización",
+        "subtitle": "Encuentra nuestra sede central en Montilla (Córdoba).",
+        "apiKeyMissing": "Configura la clave VITE_GOOGLE_MAPS_API_KEY para mostrar el mapa.",
+        "loadError": "No se pudo cargar el mapa de Google. Inténtalo más tarde.",
+        "loading": "Cargando mapa…"
+    },
+    "compliance": {
+        "kicker": "Compromiso RGPD",
+        "title": "Tratamos tus datos con responsabilidad",
+        "description": "Utilizamos la información únicamente para gestionar tu solicitud y la conservamos un máximo de 180 días.",
+        "points": {
+            "security": {
+                "title": "Seguridad y confidencialidad",
+                "description": "Datos cifrados en tránsito y acceso restringido a personal autorizado."
+            },
+            "rights": {
+                "title": "Tus derechos",
+                "description": "Gestionamos solicitudes de derechos desde info@cjmw.eu en menos de 30 días."
+            }
+        }
+    }
 }

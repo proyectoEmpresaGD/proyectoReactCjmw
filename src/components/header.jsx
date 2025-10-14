@@ -235,6 +235,7 @@ export const Header = ({ closeModal }) => {
                         </div>
 
                         <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('about')}</Link>
+                        <Link to="/media" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('media')}</Link>
                         <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contact')}</Link>
                         <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contract')}</Link>
                     </div>
@@ -364,6 +365,9 @@ export const Header = ({ closeModal }) => {
                         </div>
                         <button onClick={() => handleLinkClick('/about')} className="block text-gray-800 font-semibold py-2">
                             {t('about')}
+                        </button>
+                        <button onClick={() => handleLinkClick('/media')} className="block text-gray-800 font-semibold py-2">
+                            {t('media')}
                         </button>
                         <button onClick={() => handleLinkClick('/contact')} className="block text-gray-800 font-semibold py-2">
                             {t('contact')}

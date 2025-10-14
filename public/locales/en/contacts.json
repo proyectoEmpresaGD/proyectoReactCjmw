@@ -1,5 +1,119 @@
 {
-    "sectionTitle": "Get in Touch",
-    "showroomTitle": "Visit Our Showroom",
-    "followUs": "Follow Us on"
+    "hero": {
+        "kicker": "CJMW contact",
+        "title": "Let’s craft something together",
+        "subtitle": "We help private clients, studios and hospitality partners with tailored textile solutions.",
+        "bannerAlt": "Textile moodboard inside a CJMW showroom"
+    },
+    "form": {
+        "title": "Send us your request",
+        "description": "Fill in the form so we can connect you with the right person in our team.",
+        "profile": {
+            "label": "I am",
+            "options": {
+                "private": "A private client",
+                "professional": "A professional"
+            }
+        },
+        "reason": {
+            "label": "Reason for contact",
+            "options": {
+                "general": "General enquiry",
+                "catalogue": "Catalogue & samples",
+                "partnership": "Distribution & partnerships",
+                "press": "Press & communications",
+                "other": "Other"
+            }
+        },
+        "firstName": {
+            "label": "First name"
+        },
+        "lastName": {
+            "label": "Last name"
+        },
+        "email": {
+            "label": "Email"
+        },
+        "company": {
+            "label": "Company",
+            "help": "Let us know your company if you are contacting us as a professional."
+        },
+        "country": {
+            "label": "Country"
+        },
+        "postalCode": {
+            "label": "Postcode"
+        },
+        "province": {
+            "label": "State / Province"
+        },
+        "message": {
+            "label": "Message",
+            "help": "Share the details of your project (max. {{max}} characters)."
+        },
+        "attachment": {
+            "label": "Attachment (optional)",
+            "help": "We accept PDF, JPG or PNG files up to 2 MB."
+        },
+        "actions": {
+            "submit": "Submit enquiry",
+            "sending": "Sending…"
+        },
+        "feedback": {
+            "success": "Thank you! We will get back to you within 48 business hours.",
+            "error": "We could not submit your request. Please try again or email info@cjmw.eu.",
+            "validation": "Please review the highlighted fields."
+        },
+        "errors": {
+            "profile": "Select your profile.",
+            "firstName": "Enter your first name.",
+            "lastName": "Enter your last name.",
+            "emailRequired": "Enter an email address.",
+            "emailInvalid": "This email address is not valid.",
+            "country": "Tell us your country.",
+            "postalCode": "Enter a postcode.",
+            "reason": "Choose a reason for contacting us.",
+            "messageRequired": "The message is required.",
+            "messageLength": "The message must be shorter than {{max}} characters.",
+            "consent": "We need your consent to process the request.",
+            "invalidFileType": "Unsupported file format. Use PDF, JPG or PNG.",
+            "invalidFileSize": "The file exceeds the 2 MB limit."
+        },
+        "legal": {
+            "consentLabel": "I consent to the processing of my data according to privacy policy version {{version}}.",
+            "marketingLabel": "I agree to receive commercial communications and inspiration.",
+            "dataRetention": "We retain your data for 180 days exclusively to manage the request.",
+            "privacy": "Read our <privacyLink>privacy policy</privacyLink>.",
+            "rights": "Exercise your rights at info@cjmw.eu. We answer within 30 days."
+        }
+    },
+    "showrooms": {
+        "kicker": "Showrooms",
+        "title": "Visit our flagship location",
+        "subtitle": "Book an appointment in Montilla to receive tailored guidance for your project.",
+        "viewInMaps": "Open in Google Maps",
+        "focusMap": "Show {location} on the map"
+    },
+    "map": {
+        "title": "Location",
+        "subtitle": "Discover our Montilla headquarters on the map.",
+        "apiKeyMissing": "Set the VITE_GOOGLE_MAPS_API_KEY environment variable to display the map.",
+        "loadError": "We could not load Google Maps. Please try again later.",
+        "loading": "Loading map…"
+    },
+    "compliance": {
+        "kicker": "GDPR compliance",
+        "title": "Your data stays protected",
+        "description": "We only use your information to answer this request and remove it after 180 days.",
+        "points": {
+            "security": {
+                "title": "Security & confidentiality",
+                "description": "Encrypted in transit and restricted to authorised team members."
+            },
+            "rights": {
+                "title": "Your rights",
+                "description": "Contact info@cjmw.eu to exercise your rights — we reply within 30 days."
+            }
+        }
+    }
 }

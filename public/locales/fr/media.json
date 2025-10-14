@@ -1,0 +1,39 @@
+{
+    "hero": {
+        "badge": "CJMGROUP Brochures",
+        "title": "Brochures pour inspirer vos projets",
+        "description": "Retrouvez nos publications numériques pour explorer les textures, les collections et les histoires créatives derrière chaque lancement.",
+        "brochuresHighlight": "Brochures façon livre",
+        "videosHighlight": "Vidéos immersives",
+        "imageAlt": "Équipe créative consultant des catalogues"
+    },
+    "sectionTitle": "Explorez nos ressources",
+    "brandSectionHeading": "Brochures {{brand}}",
+    "brandVisitLink": "Voir la page {{brand}}",
+    "brands": {
+        "arena": "Arena",
+        "harbour": "Harbour",
+        "bassari": "Bassari",
+        "flamenco": "Flamenco"
+    },
+    "tabs": {
+        "label": "Filtres de contenu",
+        "brochures": "Brochures",
+        "videos": "Vidéos"
+    },
+    "brochuresSection": {
+        "label": "Brochure",
+        "view": "Voir la brochure",
+        "download": "Télécharger le PDF"
+    },
+    "videosSection": {
+        "view": "Voir la vidéo",
+        "cta": "Lire"
+    },
+    "viewer": {
+        "brochureLabel": "Brochure",
+        "download": "Télécharger le PDF",
+        "close": "Fermer le lecteur",
+        "videoClose": "Fermer la vidéo"
+    }
+}
