@@ -2,23 +2,49 @@ import PropTypes from 'prop-types';
 import { Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useMemo, useState, useCallback } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 
-// Overrides para portadas específicas
+/** Overrides por portada: fit, pad, focus/position, scale */
 const RAW_OVERRIDES = {
-    'puritty': { fit: 'contain', pad: 10, shadow: true },
-    'caribbean party': { fit: 'contain', pad: 10, shadow: true },
-    'african soul': { fit: 'contain', pad: 10, shadow: true },
-    'riviera': { fit: 'contain', pad: 10, shadow: true },
-    'flamenco': { fit: 'contain', pad: 10, shadow: true },
-    'caribbean-party': { fit: 'contain', pad: 10, shadow: true },
+    puritty: { fit: 'contain', pad: 10 },
+    'caribbean party': { fit: 'contain', pad: 10 },
+    'african soul': { fit: 'contain', pad: 10 },
+    riviera: { fit: 'contain', pad: 10 },
+    flamenco: { fit: 'contain', pad: 10 },
+
+    // Ajuste fino para Bohemian (ligeramente hacia la izquierda)
+    bohemian: { fit: 'cover', position: '12% 50%', scale: 1.06 },
 };
 
+/** Normaliza: quita diacríticos y unifica espacios/guiones/bajos */
 const normalizeKey = (s = '') =>
-    String(s).trim().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    String(s)
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+        .replace(/[\s_-]+/g, ' ')
+        .trim();
+
+/** Mapa de foco → clases Tailwind para object-position */
+const focusToClass = (focus) => {
+    switch ((focus || 'center').toLowerCase()) {
+        case 'left': return 'object-left';
+        case 'right': return 'object-right';
+        case 'top': return 'object-top';
+        case 'bottom': return 'object-bottom';
+        case 'left-top': return 'object-left-top';
+        case 'right-top': return 'object-right-top';
+        case 'left-bottom': return 'object-left-bottom';
+        case 'right-bottom': return 'object-right-bottom';
+        default: return 'object-center';
+    }
+};
 
 const BrochureCard = ({ brochure }) => {
     const { t } = useTranslation('media');
     const [meta, setMeta] = useState({ w: 0, h: 0 });
+    const reduceMotion = useReducedMotion();
 
     const overrides = useMemo(() => {
         const byId = RAW_OVERRIDES[normalizeKey(brochure.id)];
@@ -27,85 +53,85 @@ const BrochureCard = ({ brochure }) => {
         return byTitle ?? {};
     }, [brochure.id, brochure.title]);
 
-    const isLowRes = meta.w > 0 && meta.h > 0 && Math.min(meta.w, meta.h) < 900;
-    const fitContain =
-        overrides.fit === 'contain' ||
-        brochure.fitMode === 'contain' ||
-        isLowRes;
-
-    const containPad = overrides.pad ?? (isLowRes ? 8 : 6);
-
     const onLoad = useCallback((e) => {
         const img = e.currentTarget;
         setMeta({ w: img.naturalWidth || 0, h: img.naturalHeight || 0 });
     }, []);
 
-    return (
-        <article className="group relative overflow-hidden rounded-xl bg-white shadow-md transition hover:-translate-y-[2px] hover:shadow-lg sm:rounded-2xl">
-            {/* Contenedor proporcional sin “marco” visible */}
-            <div
-                className="relative overflow-hidden"
-                style={{
-                    aspectRatio: '4 / 5',
-                    maxHeight: '360px',
-                    minHeight: '240px',
-                }}
-            >
-                {/* Eliminamos inset grande: imagen usa casi todo el espacio */}
-                {(overrides.shadow || isLowRes) && (
-                    <div className="pointer-events-none absolute inset-0 rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.14)]" />
-                )}
+    // Heurística de baja resolución
+    const isLowRes = meta.w > 0 && meta.h > 0 && Math.min(meta.w, meta.h) < 900;
 
-                <img
+    /** COVER por defecto; CONTAIN si override/prop o baja resolución */
+    const fitContain =
+        overrides.fit === 'contain' ||
+        brochure.fitMode === 'contain' ||
+        isLowRes;
+
+    // Padding mínimo en contain
+    const containPad = overrides.pad ?? (isLowRes ? 6 : 4);
+
+    // Posición y escala personalizables
+    const focusClass = focusToClass(overrides.focus || brochure.focus);
+    const position = overrides.position || brochure.position; // "x% y%"
+    const baseScale = !fitContain ? (overrides.scale || brochure.scale || 1) : 1;
+
+    // Animaciones (sin sombras)
+    const liftHover = reduceMotion ? {} : { y: -4 };
+    const tap = reduceMotion ? {} : { scale: 0.985 };
+    const imgHover = reduceMotion ? {} : { scale: baseScale * 1.035 };
+
+    return (
+        <motion.article
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={reduceMotion ? {} : { opacity: 1, y: 0 }}
+            whileHover={liftHover}
+            whileTap={tap}
+            transition={{ type: 'spring', stiffness: 380, damping: 26, mass: 0.6 }}
+            className="group relative w-full overflow-hidden rounded-2xl bg-white flex flex-col items-center text-center"
+        >
+            {/* Imagen 4:5 a todo el ancho, sin sombras */}
+            <div className="relative overflow-hidden rounded-t-2xl w-full" style={{ aspectRatio: '4 / 5' }}>
+                <motion.img
                     src={brochure.coverImage}
-                    alt={brochure.title}
+                    alt={`Portada del catálogo ${brochure.title}`}
                     loading="lazy"
+                    decoding="async"
                     onLoad={onLoad}
                     className={[
-                        'relative h-full w-full rounded-lg',
-                        fitContain
-                            ? 'object-contain'
-                            : 'object-cover transition duration-700 group-hover:scale-[1.03]',
+                        'h-full w-full mx-auto will-change-transform',
+                        fitContain ? 'object-contain' : `object-cover ${focusClass}`,
                     ].join(' ')}
-                    style={
-                        fitContain
-                            ? {
-                                padding: containPad,
-                                imageRendering: 'auto',
-                                backgroundColor: 'transparent',
-                            }
-                            : undefined
-                    }
+                    style={{
+                        ...(fitContain ? { padding: containPad } : {}),
+                        ...(position ? { objectPosition: position } : {}),
+                        transform: `scale(${baseScale})`,
+                    }}
+                    whileHover={imgHover}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 />
-
-                {/* degradado en hover */}
-                <div className="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
             </div>
 
-            {/* Texto + CTA */}
-            <div className="space-y-3 p-4 sm:p-5">
-                <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-500">
-                        {t('brochuresSection.label')}
-                    </p>
-                    <h3 className="mt-1 line-clamp-2 text-lg font-semibold text-gray-900">
-                        {brochure.title}
-                    </h3>
-                    {brochure.subtitle && (
-                        <p className="mt-0.5 text-sm text-emerald-600">{brochure.subtitle}</p>
-                    )}
-                </div>
-
-                <p className="text-sm text-gray-600 line-clamp-3">
-                    {brochure.description}
+            {/* Texto centrado */}
+            <div className="p-4 sm:p-5 flex flex-col items-center text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-500">
+                    {t('brochuresSection.label')}
                 </p>
+                <h3 className="mt-1 text-lg font-semibold text-gray-900">
+                    {brochure.title}
+                </h3>
+                {brochure.subtitle && (
+                    <p className="mt-0.5 text-sm text-gray-700">{brochure.subtitle}</p>
+                )}
+                {brochure.description && (
+                    <p className="mt-3 text-sm text-gray-600">{brochure.description}</p>
+                )}
 
-                <div className="pt-1.5">
+                <div className="mt-4">
                     <a
                         href={brochure.pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700"
+                        className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-900"
                         aria-label={`${t('brochuresSection.view')} ${brochure.title}`}
                     >
                         <Eye size={18} />
@@ -113,7 +139,7 @@ const BrochureCard = ({ brochure }) => {
                     </a>
                 </div>
             </div>
-        </article>
+        </motion.article>
     );
 };
 
@@ -126,6 +152,13 @@ BrochureCard.propTypes = {
         coverImage: PropTypes.string.isRequired,
         pdfUrl: PropTypes.string.isRequired,
         fitMode: PropTypes.oneOf(['cover', 'contain']),
+        // ajustes opcionales desde datos:
+        focus: PropTypes.oneOf([
+            'left', 'center', 'right', 'top', 'bottom',
+            'left-top', 'right-top', 'left-bottom', 'right-bottom',
+        ]),
+        position: PropTypes.string, // ej: "12% 50%"
+        scale: PropTypes.number,    // ej: 1.06
     }).isRequired,
 };
 
