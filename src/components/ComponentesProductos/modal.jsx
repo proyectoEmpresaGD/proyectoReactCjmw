@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import ModalMapa from "./modalMapa";
 import { useCart } from '../CartContext';
@@ -653,240 +654,171 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
         ...(selectedProduct?.mantenimiento ? getMantenimientoDestacados(selectedProduct.mantenimiento) : []),
     ];
 
-    const renderEtiqueta = () => {
-        const detailItems = [
-            { label: 'Pattern', value: selectedProduct.tonalidad },
-            {
-                label: 'Weight',
-                value: selectedProduct.gramaje ? `${selectedProduct.gramaje} g/m²` : null,
-            },
-            { label: 'Width', value: selectedProduct.ancho },
-            {
-                label: 'Martindale',
-                value: selectedProduct.martindale ? `${selectedProduct.martindale} cycles` : null,
-            },
-            { label: 'Composition', value: selectedProduct.composicion },
-            {
-                label: 'Rapport Hor',
-                value: selectedProduct.repminhor
-                    ? `${parseFloat(selectedProduct.repminhor).toFixed(2)} cm`
-                    : null,
-            },
-            {
-                label: 'Rapport Vert',
-                value: selectedProduct.repminver
-                    ? `${parseFloat(selectedProduct.repminver).toFixed(2)} cm`
-                    : null,
-            },
-        ].filter((item) => item.value);
-
-        const normativaList = selectedProduct.normativa
-            ?.split(';')
-            .map((item) => item.trim())
-            .filter((item) => item.length > 0);
-
-        const especificacionesList = selectedProduct.especificaciones
-            ?.split(';')
-            .map((item) => item.trim())
-            .filter((item) => item.length > 0);
-
-        const usageIcons = selectedProduct.uso
-            ?.split(';')
-            .map((u) => u.trim())
-            .filter((code) => usoBase64[code])
-            .map((code) => (
-                <img
-                    key={code}
-                    src={usoBase64[code]}
-                    alt={code}
-                    className="h-6 w-6 object-contain"
-                />
-            ));
-
-        const careIcons = Array.from(
-            new DOMParser().parseFromString(selectedProduct.mantenimiento || '<root/>', 'text/xml')
-                .getElementsByTagName('Valor')
-        )
-            .map((node) => node.textContent.trim())
-            .filter((code) => mantBase64[code])
-            .map((code) => (
-                <img
-                    key={code}
-                    src={mantBase64[code]}
-                    alt={code}
-                    className="h-6 w-6 object-contain"
-                />
-            ));
-
-        return (
-            <div
-                ref={etiquetaRef}
-                className="mx-auto flex h/full w-full max-w-[21cm] flex-col gap-8 bg-white text-gray-800"
-                style={{
-                    minHeight: '29.7cm',
-                    padding: '2cm',
-                    boxSizing: 'border-box',
-                    fontFamily: '"Helvetica Neue", Arial, sans-serif',
-                }}
-            >
-                <header className="flex flex-col items-center gap-4 border-b border-gray-200 pb-6 text-center">
-                    {pdfLogo && (
-                        <img
-                            src={pdfLogo}
-                            alt="Marca"
-                            className="h-16 w-auto object-contain"
-                        />
-                    )}
-                    <h1 className="text-center text-3xl font-semibold tracking-wide text-gray-900">
-                        {selectedProduct.nombre}
-                    </h1>
-                </header>
-
-                <main className="flex flex-1 flex-col gap-8">
-                    <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div className="flex h-full items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
-                            {pdfProductImage && (
-                                <img
-                                    src={pdfProductImage}
-                                    alt="Producto"
-                                    className="h-full w-full max-h-[18cm] rounded-xl object-cover"
-                                />
-                            )}
-                        </div>
-
-                        <div className="flex h-full flex-col gap-4">
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-                                    Technical Details
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    Detailed information about the fabric to guide your next project.
-                                </p>
-                            </div>
-                            <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                                {detailItems.map(({ label, value }) => (
-                                    <div
-                                        key={label}
-                                        className="flex h-full flex-col gap-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 shadow-sm"
-                                    >
-                                        <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                            {label}
-                                        </span>
-                                        <span className="text-sm font-medium text-gray-900">{value}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {(normativaList?.length || especificacionesList?.length) && (
-                        <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                            {normativaList?.length > 0 && (
-                                <div className="rounded-2xl border border-gray-200 bg-white/60 p-5 shadow-sm">
-                                    <h2 className="text-base font-semibold uppercase tracking-[0.2em] text-gray-600">
-                                        Normativa
-                                    </h2>
-                                    <ul className="mt-3 space-y-2 text-sm text-gray-700">
-                                        {normativaList.map((item, index) => (
-                                            <li key={`normativa-${index}`} className="flex items-start gap-3">
-                                                <span className="mt-[6px] h-2 w-2 rounded-full bg-gray-400" />
-                                                <span className="flex-1 leading-snug">{item}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-
-                            {especificacionesList?.length > 0 && (
-                                <div className="rounded-2xl border border-gray-200 bg-white/60 p-5 shadow-sm">
-                                    <h2 className="text-base font-semibold uppercase tracking-[0.2em] text-gray-600">
-                                        Especificaciones
-                                    </h2>
-                                    <ul className="mt-3 space-y-2 text-sm text-gray-700">
-                                        {especificacionesList.map((item, index) => (
-                                            <li key={`especificacion-${index}`} className="flex items-start gap-3">
-                                                <span className="mt-[6px] h-2 w-2 rounded-full bg-gray-400" />
-                                                <span className="flex-1 leading-snug">{item}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </section>
-                    )}
-
-                    {(usageIcons?.length || careIcons?.length || (selectedProduct.direcciontela && direccionBase64[selectedProduct.direcciontela])) && (
-                        <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {(usageIcons?.length || careIcons?.length) && (
-                                <div className="rounded-2xl border border-gray-200 bg:white/60 p-5 shadow-sm">
-                                    <div className="flex flex-col gap-5">
-                                        {usageIcons?.length > 0 && (
-                                            <div>
-                                                <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-                                                    Usages
-                                                </h3>
-                                                <div className="mt-3 flex flex-wrap items-center gap-3">
-                                                    {usageIcons}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {careIcons?.length > 0 && (
-                                            <div>
-                                                <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-                                                    Cares
-                                                </h3>
-                                                <div className="mt-3 flex flex-wrap items-center gap-3">
-                                                    {careIcons}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {selectedProduct.direcciontela && direccionBase64[selectedProduct.direcciontela] && (
-                                <div className="flex h-full items-center justify-center">
-                                    <div className="flex w-full max-w-xs flex-col items-center gap-3 rounded-2xl border border-gray-200 bg-white/60 p-5 text-center shadow-sm">
-                                        <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-                                            Fabric Direction
-                                        </h3>
-                                        <img
-                                            src={direccionBase64[selectedProduct.direcciontela]}
-                                            alt={selectedProduct.direcciontela}
-                                            className="h-16 w-16 object-contain"
-                                        />
-                                        <span className="text-sm font-medium text-gray-900">
-                                            {selectedProduct.direcciontela}
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-                        </section>
-                    )}
-                </main>
-
-                <footer className="mt-auto flex flex-col gap-6 border-t border-gray-200 pt-6 text-sm text-gray-600 md:flex-row md:items-start md:justify-between">
-                    <div className="space-y-1 text-left">
-                        <p className="font-semibold text-gray-700">CJM WORLDWIDE S.L</p>
-                        <p>B14570873</p>
-                        <p>AVDA. DE EUROPA 19</p>
-                        <p>14550 MONTILLA (SPAIN)</p>
-                        <p>+34 957 656 475</p>
-                        <p>www.cjmw.eu</p>
-                    </div>
-                    <div className="flex flex-col items-center gap-3">
-                        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
-                            Scan for details
-                        </span>
-                        <div className="rounded-2xl border border-gray-200 p-2 shadow-sm">
-                            <QRCode value={encryptProductId(selectedProduct.codprodu)} size={96} />
-                        </div>
-                    </div>
-                </footer>
+    const renderEtiqueta = () => (
+        <div
+            ref={etiquetaRef}
+            style={{
+                width: '21cm',
+                height: '29.4cm',
+                padding: '1cm',
+                background: '#fff',
+                boxSizing: 'border-box',
+                fontSize: '14px',
+                fontFamily: 'Arial, sans-serif',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                position: 'relative',
+            }}
+        >
+            {/* Logo */}
+            <div>
+                {pdfLogo && (
+                    <img
+                        src={pdfLogo}
+                        alt="Marca"
+                        style={{ width: '200px', margin: '0 auto', display: 'block' }}
+                    />
+                )}
+                <div style={{ fontSize: '24px' }}>{selectedProduct.nombre}</div>
             </div>
-        );
-    };
+
+            {/* Imagen */}
+            <div className='mx-auto mt-6 justify-center flex'>
+                {pdfProductImage && (
+                    <img
+                        src={pdfProductImage}
+                        alt="Producto"
+                        style={{
+                            width: '10cm',
+                            height: '10cm',
+                            objectFit: 'cover',
+                            display: 'block'
+                        }}
+                    />
+                )}
+            </div>
+
+            {/* Ficha técnica extendida */}
+            <div className='grid grid-cols-2 mx-auto text-[9px] mt-2'>
+                <div className='text-end pr-2'>
+                    {selectedProduct.tonalidad && <p>Pattern:</p>}
+                    {selectedProduct.gramaje && <p>Weight:</p>}
+                    {selectedProduct.ancho && <p>Width:</p>}
+                    {selectedProduct.martindale && <p>Martindale:</p>}
+                    {selectedProduct.composicion && <p>Composition:</p>}
+                    {selectedProduct.repminhor && <p>Rapport Hor:</p>}
+                    {selectedProduct.repminver && <p>Rapport Vert:</p>}
+                    {selectedProduct.normativa && <p>Normativa:</p>}
+                    {selectedProduct.especificaciones && <p>Especificaciones:</p>}
+                </div>
+
+                <div className='text-start'>
+                    {selectedProduct.tonalidad && <p>{selectedProduct.tonalidad}</p>}
+                    {selectedProduct.gramaje && <p>{selectedProduct.gramaje} g/m²</p>}
+                    {selectedProduct.ancho && <p>{selectedProduct.ancho}</p>}
+                    {selectedProduct.martindale && <p>{selectedProduct.martindale} cycles</p>}
+                    {selectedProduct.composicion && <p>{selectedProduct.composicion}</p>}
+                    {selectedProduct.repminhor && <p>{parseFloat(selectedProduct.repminhor).toFixed(2)} cm</p>}
+                    {selectedProduct.repminver && <p>{parseFloat(selectedProduct.repminver).toFixed(2)} cm</p>}
+
+                    {selectedProduct.normativa && (
+                        <div>
+                            {selectedProduct.normativa
+                                .split(';')
+                                .filter(item => item.trim() !== '')
+                                .map((item, index) => (
+                                    <p key={`normativa-${index}`}>{item.trim()}</p>
+                                ))}
+                        </div>
+                    )}
+
+                    {selectedProduct.especificaciones && (
+                        <div>
+                            {selectedProduct.especificaciones
+                                .split(';')
+                                .filter(item => item.trim() !== '')
+                                .map((item, index) => (
+                                    <p key={`especificacion-${index}`}>{item.trim()}</p>
+                                ))}
+                        </div>
+                    )}
+                </div>
+
+            </div>
+
+            {/* Usos y cuidados */}
+            <div className="grid grid-cols-2 mx-auto text-[12px] mt-6">
+                <div className="text-end pr-2">
+                    <p>Usages:</p>
+                </div>
+                <div className="text-start flex flex-wrap gap-[4px] mt-[4px] ml-35px]">
+                    {selectedProduct.uso?.split(';')
+                        .map(u => u.trim())
+                        .filter(code => usoBase64[code])
+                        .map(code => (
+                            <img
+                                key={code}
+                                src={usoBase64[code]}
+                                alt={code}
+                                style={{ width: '18px', height: '18px' }}
+                            />
+                        ))}
+                </div>
+
+                <div className="text-end pr-2">
+                    <p>Cares:</p>
+                </div>
+                <div className="text-start flex flex-wrap gap-[4px] mt-[4px] ml-[2px]">
+                    {Array.from(
+                        new DOMParser().parseFromString(
+                            selectedProduct.mantenimiento || '<root/>',
+                            'text/xml'
+                        ).getElementsByTagName('Valor')
+                    )
+                        .map(n => n.textContent.trim())
+                        .filter(code => mantBase64[code])
+                        .map(code => (
+                            <img
+                                key={code}
+                                src={mantBase64[code]}
+                                alt={code}
+                                style={{ width: '18px', height: '18px' }}
+                            />
+                        ))}
+                </div>
+            </div>
+
+            {/* Dirección tela */}
+            {selectedProduct.direcciontela && direccionBase64[selectedProduct.direcciontela] && (
+                <div className="mt-6 text-[10px] justify-center absolute left-10 bottom-5 items-center gap-2">
+                    <img
+                        src={direccionBase64[selectedProduct.direcciontela]}
+                        alt={selectedProduct.direcciontela}
+                        style={{
+                            width: selectedProduct.direcciontela === 'RAILROADED' ? '50px' : '40px',
+                            height: selectedProduct.direcciontela === 'RAILROADED' ? '38px' : '50px'
+                        }}
+                    />
+                    <span>{selectedProduct.direcciontela}</span>
+                </div>
+            )}
+
+
+            <div className='absolute bottom-5 right-10 grid grid-cols-2 gap-4 items-center'>
+                <div className='text-[8px] text-end mr-2'>
+                    <p>CJM WORLDWIDE S.L</p>
+                    <p>B14570873</p>
+                    <p>AVDA. DE EUROPA 19</p>
+                    <p>14550 MONTILLA (SPAIN)</p>
+                    <p>+34 957 656 475</p>
+                    <p>www.cjmw.eu</p>
+                </div>
+                <div>
+                    <QRCode value={encryptProductId(selectedProduct.codprodu)} size={90} />
+                </div>
+            </div>
+        </div>
+    );
 
     // Función para generar el PDF usando jsPDF con el formato solicitado.
     // Se utiliza el logo correspondiente según el campo codmarca del producto.
@@ -1064,7 +996,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     {/* Contador de colores disponibles */}
                                     <div className="flex items-center justify-start h-[3rem] mb-4">
                                         <div className="flex bg-black text-white border-2 border-black font-semibold items-center py-[2px] px-2 rounded-md transition duration-200 mx-1 h-full">
-                                            <div className="flex items-center justify-center text:white font-semibold rounded-full w-9 h-9">
+                                            <div className="flex items-center justify-center text-white font-semibold rounded-full w-9 h-9">
                                                 {productsForCarousel.length}
                                             </div>
                                             <p className="ml-2 text-md">
