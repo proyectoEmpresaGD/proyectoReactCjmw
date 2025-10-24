@@ -72,7 +72,7 @@ const CarruselColeccion = ({
                             <img
                                 src={item.imageBaja}
                                 alt={item.nombre}
-                                className="w-full h-[200px] object-cover rounded-lg"
+                                className="w-full h-[150px] md:h-[200px] object-cover rounded-lg"
                             />
                             <div className="p-2 text-center">
                                 <p className="text-sm text-gray-500">{t('fabrics')}</p>

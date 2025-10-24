@@ -226,6 +226,25 @@ function HeroMedia({ imageSrc, videos = [], overlay }) {
     );
 }
 
+function LoopVideo({ src, overlay }) {
+    if (!src) return null;
+    return (
+        <div className="relative h-screen w-full overflow-hidden">
+            <video
+                src={cdnUrl(src)}
+                className="absolute inset-0 w-full h-full object-cover"
+                autoPlay
+                muted
+                playsInline
+                loop
+                controls={false}
+                preload="auto"
+            />
+            {overlay}
+        </div>
+    );
+}
+
 /**
  * CarruselHome
  * - Mantiene tu transición vertical original (translateY + transition-transform).
@@ -352,14 +371,28 @@ const CarruselHome = ({ imagesMobile = [], imagesDesktop = [], texts, names, rou
                         </div>
                     ) : null;
 
-                    // Slide 0 -> Hero con crossfade y control de reproducción
+                    // Slide 0 -> SOLO VIDEO en loop + logo de ARENA encima
                     if (idx === 0) {
+                        const arenaLogo = texts?.[4] ? cdnUrl(texts[4]) : null;
+                        const arenaRoute = routes?.[4];
+                        const arenaOverlay = arenaLogo ? (
+                            <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 lg:-translate-x-[48%] text-center w-[80%] lg:w-[30%] p-4">
+                                <img
+                                    src={arenaLogo}
+                                    alt="ARENA"
+                                    onClick={() => arenaRoute && navigate(arenaRoute)}
+                                    className="cursor-pointer w-[550px] h-auto mx-auto"
+                                />
+                            </div>
+                        ) : null;
+
                         return (
                             <div key={idx} className="h-screen w-full relative">
-                                <HeroMedia imageSrc={imgSrc} videos={videos} overlay={overlay} />
+                                <LoopVideo src={videos?.[0]} overlay={arenaOverlay} />
                             </div>
                         );
                     }
+
 
                     // Resto de slides -> sin cambios
                     return (

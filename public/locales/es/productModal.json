@@ -32,5 +32,18 @@
     "successAlt": "Éxito",
     "addedSuccess": "Agregado correctamente",
     "iconTitle": "Significado del icono",
-    "closeBtn": "Cerrar"
+    "closeBtn": "Cerrar",
+    "sheet": {
+        "pattern": "Patrón",
+        "weight": "Peso",
+        "width": "Ancho",
+        "martindale": "Martindale",
+        "composition": "Composición",
+        "rapportH": "Rapport Horizontal",
+        "rapportV": "Rapport Vertical",
+        "standards": "Normativa",
+        "specifications": "Especificaciones",
+        "usages": "Usos",
+        "cares": "Cuidados"
+    }
 }

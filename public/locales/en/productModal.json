@@ -32,5 +32,18 @@
     "successAlt": "Success",
     "addedSuccess": "Added successfully",
     "iconTitle": "Icon meaning",
-    "closeBtn": "Close"
+    "closeBtn": "Close",
+    "sheet": {
+        "pattern": "Pattern",
+        "weight": "Weight",
+        "width": "Width",
+        "martindale": "Martindale",
+        "composition": "Composition",
+        "rapportH": "Horizontal rapport",
+        "rapportV": "Vertical rapport",
+        "standards": "Standards",
+        "specifications": "Specifications",
+        "usages": "Usages",
+        "cares": "Cares"
+    }
 }

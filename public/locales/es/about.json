@@ -21,5 +21,37 @@
         "paragraph2": "El proceso de fabricación se lleva a cabo aplicando estrategias de gestión de la cadena de suministro. CJMW coordina a todos sus proveedores, externaliza sus operaciones logísticas y desarrolla sus propias creaciones dentro de la empresa.",
         "paragraph3": "Utilizar servicios externos facilita la entrega justo a tiempo y nos permite ofrecer un servicio inmediato al cliente final, siendo nuestra plataforma de venta una extensión directa de nuestra empresa.",
         "imageAlt": "Nuestra sede en Montilla"
+    },
+    "nuestrasMarcas": {
+        "title": "NUESTRAS MARCAS",
+        "subtitle": "Cinco firmas, una misma exigencia de calidad",
+        "paragraph1": "Diseño, innovación y durabilidad. Estas son nuestras marcas, el sello que nos representa en hogares y proyectos contract alrededor del mundo."
+    },
+    "stats": {
+        "years": "Años",
+        "countries": "Países",
+        "brands": "Marcas"
+    },
+    "timeline": {
+        "step1Title": "Diseño",
+        "step1Desc": "Concepto y desarrollo en Montilla (Córdoba).",
+        "step2Title": "Fabricación",
+        "step2Desc": "Producción en España con proveedores coordinados.",
+        "step3Title": "Distribución",
+        "step3Desc": "Logística externalizada y entrega Just-In-Time."
+    },
+    "badges": {
+        "design": "Diseño",
+        "innovation": "Innovación",
+        "quality": "Calidad"
+    },
+    "contactCTA": {
+        "eyebrow": "Hablemos",
+        "title": "¿Tienes un proyecto en mente?",
+        "description": "Nuestro equipo puede ayudarte a elegir los tejidos adecuados para potenciar cada espacio. Cuéntanos tu idea y te asesoramos sin compromiso.",
+        "button": "Ir a contacto"
+    },
+    "generic": {
+        "aboutHeroAlt": "Imagen principal de la página About"
     }
 }

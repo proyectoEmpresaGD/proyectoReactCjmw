@@ -32,5 +32,18 @@
     "successAlt": "Succès",
     "addedSuccess": "Ajouté avec succès",
     "iconTitle": "Signification de l'icône",
-    "closeBtn": "Fermer"
+    "closeBtn": "Fermer",
+    "sheet": {
+        "pattern": "Motif",
+        "weight": "Poids",
+        "width": "Laize",
+        "martindale": "Martindale",
+        "composition": "Composition",
+        "rapportH": "Raccord horizontal",
+        "rapportV": "Raccord vertical",
+        "standards": "Normes",
+        "specifications": "Spécifications",
+        "usages": "Usages",
+        "cares": "Entretien"
+    }
 }

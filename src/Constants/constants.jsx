@@ -238,7 +238,6 @@ export const coleccionesPorMarca = {
         "COLONY",
         "COLONY WALLPAPER",
         "FRESCO",
-        "MEDITERRANEAN STRIPES",
         "ROADS TO ASIA",
         "SALT & PEPPER",
         "SET OF THREADS",

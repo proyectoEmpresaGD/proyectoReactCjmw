@@ -1,6 +1,7 @@
 {
-    "short_name": "CJMW APP",
-    "name": "CJMW Group",
+    "short_name": "CJM Group",
+    "name": "CJM Group",
+    "description": "CJM Group combina tradición textil y diseño contemporáneo. Cada rollo de tela refleja nuestra pasión por la textura, el color y la calidad que define a los mejores tejidos.",
     "icons": [
         {
             "src": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/ESCUDOS/ESCUDO%20FAMILIAR/64X64_transparente.png",

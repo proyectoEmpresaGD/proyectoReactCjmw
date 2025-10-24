@@ -2,24 +2,56 @@
     "overview": {
         "subtitle": "At a glance",
         "title": "CJM: Transforming spaces with quality fabrics",
-        "paragraph1": "CJM is responsible for the global business of CJM, HARBOUR, ARENA, and FLAMENCO—our four decorative textile brands. Founded on November 23, 2000 by the Caracuel Jiménez Marqués family, the company focuses on developing, producing, and selling fabrics for interior and exterior furnishings for both home and contract markets.",
-        "paragraph2": "At CJM, quality fabric manufacturing and design go hand in hand. Our two commercial divisions are constantly expanding worldwide, present in over 30 countries across four continents.",
-        "paragraph3": "Ecology and sustainability mean creating lasting value for our customers, employees, and society. The foundation of CJM’s sustainable business strategy is responsibility for environmental impact in the development of its fabrics and decorative installations.",
+        "paragraph1": "CJM oversees the global business of CJM, HARBOUR, ARENA and FLAMENCO, our four decorative textile brands. Founded on November 23, 2000 by the Caracuel Jiménez Marqués family, the company focuses on the development, production and sale of fabrics for indoor and outdoor furniture, for both home and contract markets.",
+        "paragraph2": "At CJM, fabric manufacturing and design go hand in hand. Our two business divisions are in constant global expansion, with a presence in more than 30 countries across four continents.",
+        "paragraph3": "Ecology and sustainability mean creating lasting value for our customers, employees and society. The foundation of CJM’s sustainable business strategy is taking responsibility for environmental impact throughout the development of our fabrics and decorative solutions.",
         "imageAlt": "Transforming spaces"
     },
     "madeInSpain": {
         "title": "Made in Spain",
         "subtitle": "From Andalusia to the world",
-        "paragraph1": "CJM WORLDWIDE LTD. designs and manufactures all its fabrics and wallpapers in Spain. Our production philosophy involves including our suppliers as an intrinsic value of our company, thus ensuring high-quality products.",
-        "paragraph2": "We are an open company and for the development of our four brands we incorporate each culture’s personality and influences into every new collection. We embrace difference, research, and forge our own path.",
-        "paragraph3": "We firmly believe in the design and innovation of CJMW, HARBOUR, ARENA, and FLAMENCO.",
+        "paragraph1": "CJM WORLDWIDE LTD. designs and manufactures all of its fabrics and wallpapers in Spain. Our production philosophy is to involve our suppliers as an intrinsic value of the company to achieve products of high qualitative value.",
+        "paragraph2": "We are an open company and, in developing our four brands, we embrace the personality and influences of each culture for every new collection. We enjoy difference, researching, and walking our own path.",
+        "paragraph3": "We strongly believe in the design and innovation of CJMW, HARBOUR, ARENA and FLAMENCO.",
         "imageAlt": "Made in Spain"
     },
     "headquarters": {
         "title": "Headquarters",
-        "paragraph1": "Our headquarters are located in Montilla, Córdoba, Spain, where we handle the design, warehousing, and wholesale distribution of our fabrics. We maintain platforms for a stable manufacturing and distribution process.",
-        "paragraph2": "The manufacturing process is carried out using supply chain management strategies. CJMW coordinates all its suppliers, outsources its logistics operations, and develops its own in-house creations.",
-        "paragraph3": "Using external services facilitates just-in-time delivery and allows us to provide immediate service to the end customer, making our sales platform an extension of our company.",
-        "imageAlt": "Our Montilla headquarters"
+        "paragraph1": "Our headquarters are in Montilla, Córdoba, Spain, where we design, store and wholesale our fabrics. We count on platforms that ensure a stable manufacturing and distribution process.",
+        "paragraph2": "Manufacturing is carried out by applying supply chain management strategies. CJMW coordinates all its suppliers, outsources its logistics operations and develops its own creations in-house.",
+        "paragraph3": "Using external services facilitates just-in-time delivery and allows us to offer immediate service to the end customer, with our sales platform acting as a direct extension of the company.",
+        "imageAlt": "Our headquarters in Montilla"
+    },
+    "nuestrasMarcas": {
+        "title": "OUR BRANDS",
+        "subtitle": "Five labels, the same quality standard",
+        "paragraph1": "Design, innovation and durability. These are our brands—the seal that represents us in homes and contract projects around the world."
+    },
+    "stats": {
+        "years": "Years",
+        "countries": "Countries",
+        "brands": "Brands"
+    },
+    "timeline": {
+        "step1Title": "Design",
+        "step1Desc": "Concept and development in Montilla (Córdoba).",
+        "step2Title": "Manufacturing",
+        "step2Desc": "Production in Spain with coordinated suppliers.",
+        "step3Title": "Distribution",
+        "step3Desc": "Outsourced logistics and Just-In-Time delivery."
+    },
+    "badges": {
+        "design": "Design",
+        "innovation": "Innovation",
+        "quality": "Quality"
+    },
+    "contactCTA": {
+        "eyebrow": "Let’s talk",
+        "title": "Do you have a project in mind?",
+        "description": "Our team can help you choose the right fabrics to elevate every space. Tell us your idea and we’ll advise you with no obligation.",
+        "button": "Go to contact"
+    },
+    "generic": {
+        "aboutHeroAlt": "About hero"
     }
 }

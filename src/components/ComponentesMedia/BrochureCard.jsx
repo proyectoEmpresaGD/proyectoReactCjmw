@@ -13,7 +13,7 @@ const RAW_OVERRIDES = {
     flamenco: { fit: 'contain', pad: 10 },
 
     // Ajuste fino para Bohemian (ligeramente hacia la izquierda)
-    bohemian: { fit: 'cover', position: '12% 50%', scale: 1.06 },
+    bohemian: { fit: 'cover', scale: 1.06 },
 };
 
 /** Normaliza: quita diacríticos y unifica espacios/guiones/bajos */
