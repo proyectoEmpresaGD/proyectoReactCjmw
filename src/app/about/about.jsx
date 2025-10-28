@@ -27,11 +27,11 @@ const CTA_BG = "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIEN
 
 // --- MARCAS (sin i18n): pon aquí tus rutas ---
 const BRANDS = [
-    { logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png", to: "/cjmHome" },
+    { logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png", to: "/bassariHome" },
     { logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png", to: "/harbourHome" },
     { logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png", to: "/arenaHome" },
     { logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png", to: "/flamencoHome" },
-    { logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png", to: "/bassariHome" }
+    { logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png", to: "/cjmHome" }
 ];
 
 // --- UI pequeñas y reutilizables ---
@@ -406,7 +406,22 @@ export default function About() {
                                         <P>{hq?.paragraph3}</P>
                                     </div>
 
-
+                                    {/* Timeline alineada con tus textos: Diseño → Fabricación → Distribución (i18n) */}
+                                    <div className="mt-10">
+                                        <ol className="relative border-s border-gray-200 pl-6">
+                                            {[
+                                                { t: tl?.step1Title, d: tl?.step1Desc },
+                                                { t: tl?.step2Title, d: tl?.step2Desc },
+                                                { t: tl?.step3Title, d: tl?.step3Desc }
+                                            ].map((item, i) => (
+                                                <li key={i} className={`ms-4 ${i < 2 ? "mb-8" : ""}`}>
+                                                    <div className="absolute w-3 h-3 bg-gray-400 rounded-full -start-1.5 mt-1.5" />
+                                                    <h3 className="font-semibold text-gray-800">{item.t}</h3>
+                                                    <p className="text-sm text-gray-600 mt-1">{item.d}</p>
+                                                </li>
+                                            ))}
+                                        </ol>
+                                    </div>
                                 </Glass>
                             </Reveal>
 

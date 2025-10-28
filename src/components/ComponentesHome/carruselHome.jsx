@@ -360,13 +360,13 @@ const CarruselHome = ({ imagesMobile = [], imagesDesktop = [], texts, names, rou
 
                     const overlay = textImg ? (
                         <div
-                            className={`absolute bottom-[40%] ${esCJM ? 'left-1/2' : 'left-[49.8%]'} -translate-x-1/2 text-center w-[80%] lg:w-[35%] p-4`}
+                            className={`absolute bottom-[15%] md:bottom-[5%] ${esCJM ? 'left-1/2' : 'left-[50%]'} -translate-x-1/2 text-center w-[80%] lg:w-[35%] p-4`}
                         >
                             <img
                                 src={textImg}
                                 alt={names?.[idx] || ''}
                                 onClick={() => handleClick(idx)}
-                                className={`cursor-pointer ${esCJM ? 'w-[250px]' : 'w-[550px]'} h-auto mx-auto`}
+                                className={`cursor-pointer ${esCJM ? 'w-[250px]' : 'w-[400px]'} h-auto mx-auto`}
                             />
                         </div>
                     ) : null;
@@ -376,7 +376,7 @@ const CarruselHome = ({ imagesMobile = [], imagesDesktop = [], texts, names, rou
                         const arenaLogo = texts?.[4] ? cdnUrl(texts[4]) : null;
                         const arenaRoute = routes?.[4];
                         const arenaOverlay = arenaLogo ? (
-                            <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 lg:-translate-x-[48%] text-center w-[80%] lg:w-[30%] p-4">
+                            <div className="absolute bottom-[15%] md:bottom-[5%] left-1/2 -translate-x-1/2 text-center w-[80%] lg:w-[30%] p-4">
                                 <img
                                     src={arenaLogo}
                                     alt="ARENA"
@@ -421,7 +421,7 @@ const CarruselHome = ({ imagesMobile = [], imagesDesktop = [], texts, names, rou
 
             {/* Dots desktop */}
             {names?.length > 0 && (
-                <div className="absolute bottom-5 left-0 right-0 hidden md:flex justify-center space-x-8">
+                <div className="absolute bottom-5 left-0 right-6 hidden md:flex justify-center space-x-8">
                     {names.map((name, idx) => (
                         <span
                             key={idx}
