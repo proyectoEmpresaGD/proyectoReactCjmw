@@ -177,6 +177,13 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     const { setMarcaActiva } = useMarca();
     const [collectionProducts, setCollectionProducts] = useState([]);
     const [recommendedProducts, setRecommendedProducts] = useState([]);
+    const brandRoutes = {
+        ARE: '/arenaHome',
+        HAR: '/harbourHome',
+        BAS: '/bassariHome',
+        CJM: '/cjmHome',
+        FLA: '/flamencoHome',
+    };
     const prevColeccionRef = useRef();
     const prevNombreRef = useRef();
 
@@ -455,6 +462,23 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
         } catch { }
     };
 
+    const handleCollectionClick = () => {
+        if (!selectedProduct?.coleccion) return;
+        const params = new URLSearchParams({ collection: selectedProduct.coleccion });
+        close();
+        navigate(`/products?${params.toString()}`);
+    };
+
+    const handleMarcaClick = () => {
+        if (!selectedProduct?.codmarca) return;
+        const code = (selectedProduct.codmarca || '').toUpperCase();
+        const route = brandRoutes[code];
+        if (!route) return;
+        setMarcaActiva(code);
+        close();
+        navigate(route);
+    };
+
     const handleClose = () => {
         close();
         setMarcaActiva(null);
@@ -688,6 +712,39 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
 
     if (!isOpen) return null;
 
+    const productHeader = (
+        <div className="rounded-3xl border border-white/60 bg-white/80 p-4 sm:p-5 shadow-lg">
+            <div className="flex flex-col gap-3">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">{selectedProduct?.nombre || t('noProductName')}</h1>
+                    {selectedProduct?.tonalidad && (
+                        <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] text-gray-500">{selectedProduct.tonalidad}</p>
+                    )}
+                </div>
+                <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+                    {selectedProduct?.coleccion && (
+                        <button
+                            type="button"
+                            onClick={handleCollectionClick}
+                            className="rounded-full bg-gray-100 px-3 py-1 text-gray-700 transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                        >
+                            {t('collection')}: {selectedProduct.coleccion}
+                        </button>
+                    )}
+                    {selectedProduct?.codmarca && (
+                        <button
+                            type="button"
+                            onClick={handleMarcaClick}
+                            className="rounded-full bg-gray-100 px-3 py-1 text-gray-700 transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                        >
+                            {t('brand')}: {getNombreMarca(selectedProduct.codmarca)}
+                        </button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <CartProvider>
             <div
@@ -700,22 +757,13 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         <div className="relative rounded-3xl border border-white/50 bg-gradient-to-br from-white via-gray-50 to-gray-100 shadow-2xl overflow-hidden">
                             <div className="pointer-events-none absolute -top-32 right-8 h-64 w-64 rounded-full bg-gray-300/40 blur-3xl" />
                             <div className="pointer-events-none absolute -bottom-24 left-4 h-56 w-56 rounded-full bg-gray-200/40 blur-2xl" />
-                            <div className="relative space-y-8 sm:space-y-10 p-3 max-w-[90vw] md:w-full sm:p-4 md:p-6 lg:p-10">
+                            <div className="relative space-y-6 sm:space-y-8 p-3 max-w-[90vw] md:w-full sm:p-4 md:p-6 lg:p-10">
 
-                                {/* Barra superior */}
-                                <div className="flex items-start justify-between gap-3 sm:gap-4">
-                                    <div className="shrink-0">
-                                        <Filtro
-                                            setFilteredProducts={(filteredProducts, selectedFilters) => {
-                                                if (onApplyFilters) onApplyFilters(filteredProducts, selectedFilters);
-                                                close();
-                                            }}
-                                            page={1}
-                                        />
-                                    </div>
+                                {/* Barra superior (acciones + header, invertido en móvil) */}
+                                <div className="flex flex-wrap items-start justify-between gap-6 sm:gap-8">
+                                    {/* Acciones: primero en móvil, a la derecha en desktop */}
+                                    <div className="order-1 lg:order-2 w-full lg:w-auto ml-auto flex items-center gap-2 sm:gap-3 justify-end lg:justify-end">
 
-                                    <div className="flex items-center gap-2">
-                                        {/* Compartir */}
                                         <button
                                             ref={shareBtnRef}
                                             onClick={onShareButtonClick}
@@ -769,12 +817,28 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                             />
                                         </button>
                                     </div>
+
+                                    {/* Header: segundo en móvil, alineado y con mismo ancho que la imagen */}
+                                    <div className="order-2 lg:order-1 w-full lg:w-7/12 mx-auto lg:mx-0">
+                                        {productHeader}
+                                    </div>
+                                </div>
+
+                                {/* (Opcional) Filtro debajo del header para no perder funcionalidad */}
+                                <div className="shrink-0">
+                                    <Filtro
+                                        setFilteredProducts={(filteredProducts, selectedFilters) => {
+                                            if (onApplyFilters) onApplyFilters(filteredProducts, selectedFilters);
+                                            close();
+                                        }}
+                                        page={1}
+                                    />
                                 </div>
 
                                 {/* Contenido principal */}
                                 <div className="flex flex-col gap-8 lg:gap-10 lg:flex-row">
                                     {/* Imagen / zoom */}
-                                    <div className="relative lg:w-7/12 w-full max-w-[100%] mx-auto">
+                                    <div className="lg:w-7/12 w-full max-w-[100%] mx-auto lg:mx-0">
                                         <div
                                             className="relative rounded-3xl bg-transparent shadow-2xl border-0 p-0 overflow-hidden"
                                             style={{ width: '100%' }}
@@ -815,63 +879,44 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     </div>
 
                                     {/* Info y acciones */}
-                                    <div className="flex-1 space-y-6">
-                                        <div className="rounded-3xl border border-white/60 bg-white/80 p-4 sm:p-6 shadow-lg">
-                                            <div className="flex flex-col gap-6">
-                                                <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-start md:justify-between">
+                                    <div className="flex-1 space-y-5 sm:space-y-6">
+                                        <div className="rounded-3xl border border-white/60 bg-white/80 p-4 sm:p-5 shadow-lg">
+                                            <div className="space-y-4 sm:space-y-5">
+                                                <div className="rounded-2xl border border-gray-200 bg-white/90 px-4 sm:px-5 py-4 shadow-sm sm:flex sm:items-center sm:justify-between">
                                                     <div>
-                                                        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">{selectedProduct?.nombre || t('noProductName')}</h1>
-                                                        {selectedProduct?.tonalidad && (
-                                                            <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] text-gray-500">{selectedProduct.tonalidad}</p>
-                                                        )}
-                                                        <div className="mt-2 sm:mt-3 flex flex-wrap gap-2 text-sm text-gray-600">
-                                                            {selectedProduct?.coleccion && (
-                                                                <span className="rounded-full bg-gray-100 px-3 py-1">{t('collection')}: {selectedProduct.coleccion}</span>
-                                                            )}
-                                                            {selectedProduct?.codmarca && (
-                                                                <span className="rounded-full bg-gray-100 px-3 py-1">{t('brand')}: {getNombreMarca(selectedProduct.codmarca)}</span>
-                                                            )}
-                                                        </div>
+                                                        <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-gray-500">{t('chooseQuantity')}</p>
+                                                        <p className="text-sm text-gray-600">{t('smallSample')}</p>
+                                                    </div>
+                                                    <div className="mt-3 sm:mt-0 flex items-center gap-3 sm:gap-4">
+                                                        <select
+                                                            id="quantity"
+                                                            className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none"
+                                                            value={quantity}
+                                                            onChange={(e) => setQuantity(Number(e.target.value))}
+                                                        >
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
+                                                            <option value="3">3</option>
+                                                        </select>
+                                                        <p className="text-xl sm:text-2xl font-semibold text-gray-900">3€</p>
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-4">
-                                                    <div className="rounded-2xl border border-gray-200 bg-white/90 px-4 sm:px-5 py-4 shadow-sm sm:flex sm:items-center sm:justify-between">
-                                                        <div>
-                                                            <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-gray-500">{t('chooseQuantity')}</p>
-                                                            <p className="text-sm text-gray-600">{t('smallSample')}</p>
-                                                        </div>
-                                                        <div className="mt-3 sm:mt-0 flex items-center gap-3 sm:gap-4">
-                                                            <select
-                                                                id="quantity"
-                                                                className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none"
-                                                                value={quantity}
-                                                                onChange={(e) => setQuantity(Number(e.target.value))}
-                                                            >
-                                                                <option value="1">1</option>
-                                                                <option value="2">2</option>
-                                                                <option value="3">3</option>
-                                                            </select>
-                                                            <p className="text-xl sm:text-2xl font-semibold text-gray-900">3€</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <button
-                                                        onClick={handleAddToCart}
-                                                        className="inline-flex items-center gap-3 self-start rounded-full border border-neutral-200 bg-neutral-100 px-5 py-3 text-sm font-semibold text-neutral-900 shadow-sm transition hover:bg-neutral-200"
-                                                        title={t('orderSample')}
-                                                        type="button"
-                                                    >
-                                                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/50 border border-neutral-200">
-                                                            <img
-                                                                src="https://bassari.eu/ImagenesTelasCjmw/Iconos/QUALITY/fabric.png"
-                                                                alt={t('sampleAlt')}
-                                                                className="h-7 w-7 object-contain"
-                                                            />
-                                                        </span>
-                                                        <span>{t('addToCart')}</span>
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    onClick={handleAddToCart}
+                                                    className="inline-flex items-center gap-3 self-start rounded-full border border-neutral-200 bg-neutral-100 px-5 py-3 text-sm font-semibold text-neutral-900 shadow-sm transition hover:bg-neutral-200"
+                                                    title={t('orderSample')}
+                                                    type="button"
+                                                >
+                                                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/50 border border-neutral-200">
+                                                        <img
+                                                            src="https://bassari.eu/ImagenesTelasCjmw/Iconos/QUALITY/fabric.png"
+                                                            alt={t('sampleAlt')}
+                                                            className="h-7 w-7 object-contain"
+                                                        />
+                                                    </span>
+                                                    <span>{t('addToCart')}</span>
+                                                </button>
 
                                                 {usoMantenimientoIcons.length > 0 && (
                                                     <div className="flex flex-wrap gap-4 rounded-2xl border border-white/60 bg-white/70 p-4 text-sm text-gray-700 shadow-inner">
@@ -900,7 +945,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                                 title={colorProduct.tonalidad}
                                                             >
                                                                 <img src={colorProduct.imageBaja} alt={colorProduct.tonalidad} className="h-full w-full object-cover" />
-                                                                <span className="absolute inset-x-1 bottom-1 rounded-full bg-black/60 px-1 text-[10px] font-medium text-white">
+                                                                <span className="absolute inset-x-1 bottom-1 rounded-full bg-black/60 px-1 py-0.5 text-[10px] font-medium text-white leading-tight break-words whitespace-normal">
                                                                     {colorProduct.tonalidad}
                                                                 </span>
                                                             </button>
@@ -1140,10 +1185,10 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         </div>
                         <style>
                             {`
-                                @media (max-width: 640px) {
-                                    .pdf-img { max-width: 90%; }
-                                }
-                                `}
+                @media (max-width: 640px) {
+                  .pdf-img { max-width: 90%; }
+                }
+              `}
                         </style>
                         {/* BODY */}
                         <div
@@ -1163,8 +1208,8 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     borderRadius: '18px',
                                     padding: '0.45cm',
                                     width: '90%',
-                                    minWidth: 0,         // 👈 permite encoger dentro del grid
-                                    overflow: 'hidden',  // 👈 evita que la imagen empuje el contenedor
+                                    minWidth: 0,
+                                    overflow: 'hidden',
                                     boxSizing: 'border-box'
                                 }}
                             >
@@ -1173,9 +1218,9 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                         src={pdfProductImage}
                                         alt="Producto"
                                         style={{
-                                            width: '100%',     // se ajusta al ancho disponible
-                                            height: 'auto',    // mantiene proporción
-                                            objectFit: 'contain', // usa 'cover' si quieres recorte
+                                            width: '100%',
+                                            height: 'auto',
+                                            objectFit: 'contain',
                                             borderRadius: '14px',
                                             display: 'block'
                                         }}
@@ -1199,7 +1244,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     selectedProduct?.repminver && { k: 'rv', lab: t('rapportV'), val: `${parseFloat(selectedProduct.repminver).toFixed(2)} cm` },
                                     selectedProduct?.composicion && { k: 'comp', lab: t('composition'), val: selectedProduct.composicion },
                                     selectedProduct?.gramaje && { k: 'w', lab: t('weight'), val: `${selectedProduct.gramaje} g/m²` },
-                                    selectedProduct?.ancho && { k: 'wd', lab: t('width'), val: selectedProduct.ancho }
+                                    selectedProduct?.ancho && { k: 'wd', lab: t('width'), val: { selectedProduct }.ancho }
                                 ]
                                     .filter(Boolean)
                                     .map(card => (
@@ -1414,7 +1459,6 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                                     alignItems: 'center'
                                                                 }}
                                                             >
-                                                                {/* Punto */}
                                                                 <span
                                                                     style={{
                                                                         display: 'inline-block',
@@ -1424,10 +1468,9 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                                         backgroundColor: '#0f172a',
                                                                         flexShrink: 0,
                                                                         position: 'relative',
-                                                                        top: '0.50em',   // 🔥 Ajuste óptico más bajo (centrado real en PDF)
+                                                                        top: '0.50em',
                                                                     }}
                                                                 />
-                                                                {/* Texto */}
                                                                 <span
                                                                     style={{
                                                                         fontSize: '13px',
@@ -1465,7 +1508,6 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                     {t('sheet.specifications')}
                                                 </div>
 
-                                                {/* Bullets personalizados centrados */}
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.18cm' }}>
                                                     {(selectedProduct?.especificaciones || '')
                                                         .split(';')
@@ -1481,7 +1523,6 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                                     alignItems: 'center'
                                                                 }}
                                                             >
-                                                                {/* Punto */}
                                                                 <span
                                                                     style={{
                                                                         display: 'inline-block',
@@ -1491,10 +1532,9 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                                         backgroundColor: '#0f172a',
                                                                         flexShrink: 0,
                                                                         position: 'relative',
-                                                                        top: '0.40em',   // 🔥 Ajuste óptico más bajo (centrado real en PDF)
+                                                                        top: '0.40em',
                                                                     }}
                                                                 />
-                                                                {/* Texto */}
                                                                 <span
                                                                     style={{
                                                                         fontSize: '13px',

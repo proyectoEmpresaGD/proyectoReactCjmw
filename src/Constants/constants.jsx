@@ -43,9 +43,9 @@ export const SOCIAL_MEDIA_LINKS = {
 
 // Links para PDF de políticas y términos
 export const PDF_LINKS = {
-    terminosCompra: "public/pdfs/LSSI TÉRMINOS Y CONDICIONES DE COMPRA, CJM WORLDWIDE S.L..pdf",
-    politicaCookies: "public/pdfs/LSSI POLITICA DE COOKIES, CJM WORLDWIDE S.L..pdf",
-    politicaPrivacidad: "public/pdfs/LSSI POLITICA DE PRIVACIDAD, CJM WORLDWIDE S.L..pdf",
+    terminosCompra: "https://bassari.eu/ImagenesTelasCjmw/PDF/NORMATIVA%20PAGINA%20WEB/LSSI%20T%C3%89RMINOS%20Y%20CONDICIONES%20DE%20COMPRA%2C%20CJM%20WORLDWIDE%20S.L..pdf ",
+    politicaCookies: "https://bassari.eu/ImagenesTelasCjmw/PDF/NORMATIVA%20PAGINA%20WEB/LSSI%20POLITICA%20DE%20COOKIES%2C%20CJM%20WORLDWIDE%20S.L..pdf ",
+    politicaPrivacidad: "https://bassari.eu/ImagenesTelasCjmw/PDF/NORMATIVA%20PAGINA%20WEB/LSSI%20POLITICA%20DE%20PRIVACIDAD%2C%20CJM%20WORLDWIDE%20S.L..pdf ",
 };
 
 // Texto del pie de página
