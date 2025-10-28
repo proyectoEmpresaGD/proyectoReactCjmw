@@ -1244,7 +1244,8 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     selectedProduct?.repminver && { k: 'rv', lab: t('rapportV'), val: `${parseFloat(selectedProduct.repminver).toFixed(2)} cm` },
                                     selectedProduct?.composicion && { k: 'comp', lab: t('composition'), val: selectedProduct.composicion },
                                     selectedProduct?.gramaje && { k: 'w', lab: t('weight'), val: `${selectedProduct.gramaje} g/m²` },
-                                    selectedProduct?.ancho && { k: 'wd', lab: t('width'), val: { selectedProduct }.ancho }
+                                    selectedProduct?.ancho && { k: 'wd', lab: t('width'), val: `${selectedProduct.ancho}` }
+
                                 ]
                                     .filter(Boolean)
                                     .map(card => (
