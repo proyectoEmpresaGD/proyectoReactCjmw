@@ -542,14 +542,16 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     const getDireccionImage = (direccion) => {
         if (!direccion || !direccionLogos[direccion]) return null;
         return (
-            <div className="inline-flex items-center gap-3 rounded-full border border-gray-200 bg-white/80 px-4 py-2 shadow-sm">
+            <div className="inline-flex items-center gap-3 rounded-full border border-gray-200 px-4 py-2">
                 <img
                     src={direccionLogos[direccion]}
                     alt={direccion}
-                    className={direccion === "RAILROADED" ? "h-7 w-9" : "h-8 w-8"}
+                    className={`${direccion === 'RAILROADED' ? 'h-7 w-9' : 'h-8 w-8'} object-contain`}
                     onClick={() => navigate('/usages')}
                 />
-                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-gray-600">{direccion}</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-gray-600 leading-none">
+                    {direccion}
+                </span>
             </div>
         );
     };
@@ -1008,7 +1010,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                                         <div className="rounded-2xl border border-white/60 bg-white/80 p-5 shadow-sm">
                                             <p className="text-[11px] sm:text-xs uppercase tracking-[0.25em] text-gray-500">{t('usages')}</p>
-                                            <div className="mt-3 flex flex-wrap items-center gap-3">
+                                            <div className="mt-4 flex flex-wrap items-center gap-3">
                                                 {getUsoImages(selectedProduct?.uso).length > 0 ? getUsoImages(selectedProduct?.uso) : (
                                                     <span className="text-sm text-gray-400">{t('notAvailable')}</span>
                                                 )}
@@ -1016,7 +1018,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                         </div>
                                         <div className="rounded-2xl border border-white/60 bg-white/80 p-5 shadow-sm">
                                             <p className="text-[11px] sm:text-xs uppercase tracking-[0.25em] text-gray-500">{t('cares')}</p>
-                                            <div className="mt-3 flex flex-wrap items-center gap-3">
+                                            <div className="mt-4 flex flex-wrap items-center gap-3">
                                                 {getMantenimientoImages(selectedProduct?.mantenimiento).length > 0 ? getMantenimientoImages(selectedProduct?.mantenimiento) : (
                                                     <span className="text-sm text-gray-400">{t('notAvailable')}</span>
                                                 )}
@@ -1120,54 +1122,87 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
-                                padding: '0.7cm 1cm',
+                                padding: '0.55cm 1cm',
                                 background: 'rgba(255,255,255,0.9)',
                                 borderRadius: '20px',
-                                border: '1px solid rgba(148,163,184,0.25)'
+                                border: '1px solid rgba(148,163,184,0.25)',
+                                gap: '0.8cm'
                             }}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                                {pdfLogo && (
-                                    <img
-                                        src={pdfLogo}
-                                        alt="brand"
-                                        style={{ width: '4.2cm', height: 'auto', objectFit: 'contain' }}
-                                    />
-                                )}
-                                <div>
-                                    <div style={{ fontSize: '26px', fontWeight: 700, letterSpacing: '-0.02em' }}>
-                                        {selectedProduct?.nombre}
-                                    </div>
-                                    {selectedProduct?.tonalidad && (
-                                        <div
-                                            style={{
-                                                marginTop: '0.1cm',
-                                                fontSize: '12px',
-                                                letterSpacing: '0.28em',
-                                                textTransform: 'uppercase',
-                                                color: '#64748b'
-                                            }}
-                                        >
-                                            {selectedProduct.tonalidad}
-                                        </div>
-                                    )}
+                            <div
+                                style={{
+                                    flex: '1 1 0',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'flex-start',
+                                    gap: '0.18cm'
+                                }}
+                            >
+                                <div style={{ fontSize: '26px', fontWeight: 700, letterSpacing: '-0.02em' }}>
+                                    {selectedProduct?.nombre}
+                                </div>
+                                {selectedProduct?.tonalidad && (
                                     <div
                                         style={{
-                                            marginTop: '0.2cm',
-                                            fontSize: '13px',
-                                            color: '#475569',
-                                            display: 'flex',
-                                            gap: '0.6cm',
-                                            flexWrap: 'wrap'
+                                            fontSize: '12px',
+                                            letterSpacing: '0.28em',
+                                            textTransform: 'uppercase',
+                                            color: '#64748b'
                                         }}
                                     >
-                                        {selectedProduct?.coleccion && <span>{`${t('collection')}: ${selectedProduct.coleccion}`}</span>}
-                                        {selectedProduct?.codmarca && <span>{`${t('brand')}: ${getNombreMarca(selectedProduct.codmarca)}`}</span>}
+                                        {selectedProduct.tonalidad}
                                     </div>
+                                )}
+                                <div
+                                    style={{
+                                        fontSize: '13px',
+                                        color: '#475569',
+                                        display: 'flex',
+                                        gap: '0.55cm',
+                                        flexWrap: 'wrap',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    {selectedProduct?.coleccion && (
+                                        <span
+                                            style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'baseline',
+                                                gap: '0.08cm',
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                        >
+                                            <span>{`${t('collection')}:`}</span>
+                                            <span>{selectedProduct.coleccion}</span>
+                                        </span>
+                                    )}
+                                    {selectedProduct?.codmarca && (
+                                        <span
+                                            style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'baseline',
+                                                gap: '0.08cm',
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                        >
+                                            <span>{`${t('brand')}:`}</span>
+                                            <span>{getNombreMarca(selectedProduct.codmarca)}</span>
+                                        </span>
+                                    )}
                                 </div>
                             </div>
 
-                            <div style={{ textAlign: 'right' }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-end',
+                                    justifyContent: 'center',
+                                    gap: '0.12cm',
+                                    minWidth: '3cm'
+                                }}
+                            >
                                 <div
                                     style={{
                                         fontSize: '11px',
@@ -1178,10 +1213,18 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                 >
                                     {t('techSheet')}
                                 </div>
-                                <div style={{ marginTop: '0.15cm', fontSize: '18px', fontWeight: 600 }}>
+                                <div style={{ fontSize: '18px', fontWeight: 600 }}>
                                     {selectedProduct?.codprodu}
                                 </div>
                             </div>
+
+                            {pdfLogo && (
+                                <img
+                                    src={pdfLogo}
+                                    alt="brand"
+                                    style={{ width: '4.2cm', height: 'auto', objectFit: 'contain' }}
+                                />
+                            )}
                         </div>
                         <style>
                             {`
@@ -1245,7 +1288,6 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                     selectedProduct?.composicion && { k: 'comp', lab: t('composition'), val: selectedProduct.composicion },
                                     selectedProduct?.gramaje && { k: 'w', lab: t('weight'), val: `${selectedProduct.gramaje} g/m²` },
                                     selectedProduct?.ancho && { k: 'wd', lab: t('width'), val: `${selectedProduct.ancho}` }
-
                                 ]
                                     .filter(Boolean)
                                     .map(card => (
@@ -1309,7 +1351,8 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                             textTransform: 'uppercase',
                                             letterSpacing: '0.18em',
                                             color: '#64748b',
-                                            marginBottom: '0.18cm'
+                                            marginBottom: '0.32cm',
+
                                         }}
                                     >
                                         {t('sheet.usages')}
@@ -1383,7 +1426,6 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                 display: 'inline-flex',
                                                 alignItems: 'center',
                                                 gap: '0.35cm',
-                                                background: 'rgba(15,23,42,0.08)',
                                                 borderRadius: '9999px',
                                                 padding: '0.25cm 0.55cm'
                                             }}
@@ -1391,7 +1433,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                             <img
                                                 src={direccionBase64[selectedProduct.direcciontela]}
                                                 alt={selectedProduct.direcciontela}
-                                                style={{ width: '28px', height: '28px', objectFit: 'contain' }}
+                                                style={{ width: '28px', height: '28px', objectFit: 'contain', position: 'relative', top: '6px' }}
                                             />
                                             <span
                                                 style={{
