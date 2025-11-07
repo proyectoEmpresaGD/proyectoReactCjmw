@@ -99,16 +99,34 @@ export default function CardProduct() {
     useEffect(() => { setSearchInput(searchQuery || ''); }, [searchQuery]);
     useEffect(() => { setActiveCategory(uso || fabricType || fabricPattern || mantenimiento || null); }, [uso, fabricType, fabricPattern, mantenimiento]);
 
-    const getArray = (key) => params.getAll(key).filter(Boolean);
+    const getArray = (key) => {
+        const seen = new Set();
+        const values = params
+            .getAll(key)
+            .map(value => (value == null ? '' : value.trim()))
+            .filter(Boolean)
+            .filter(value => {
+                const normalized = value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toUpperCase();
+                if (seen.has(normalized)) return false;
+                seen.add(normalized);
+                return true;
+            });
+        return values;
+    };
 
     const buildAppliedFilters = () => {
         const ap = {};
-        const brands = getArray("brand");
-        const colors = getArray("color");
-        const collections = getArray("collection");
-        const fabricTypes = getArray("fabricType");
-        const patterns = getArray("fabricPattern");
-        const martindales = getArray("martindale");
+        const brands = getArray('brand');
+        const colors = getArray('color');
+        const collections = getArray('collection');
+        const fabricTypes = getArray('fabricType');
+        const patterns = getArray('fabricPattern');
+        const martindales = getArray('martindale')
+            .map(value => Number(value))
+            .filter(Number.isFinite);
+        const martindaleRanges = getArray('martindaleRange');
+        const usos = getArray('uso');
+        const mantenimientos = getArray('mantenimiento');
 
         if (brands.length) ap.brand = brands;
         if (colors.length) ap.color = colors;
@@ -116,14 +134,15 @@ export default function CardProduct() {
         if (fabricTypes.length) ap.fabricType = fabricTypes;
         if (patterns.length) ap.fabricPattern = patterns;
         if (martindales.length) ap.martindale = martindales;
-
+        if (martindaleRanges.length) ap.martindaleRanges = martindaleRanges;
+        if (usos.length) ap.uso = usos;
+        if (mantenimientos.length) ap.mantenimiento = mantenimientos;
         // sigue igual para search, type, etc.
         if (searchQuery) ap.search = searchQuery;
-        if (type === "papel") ap.fabricType = ["WALLPAPER", "PAPEL PINTADO"];
+        if (type === 'papel') ap.fabricType = ['WALLPAPER', 'PAPEL PINTADO'];
 
         return ap;
     };
-
 
     // imágenes
     const loadLowRes = async (prod) => {
@@ -308,7 +327,7 @@ export default function CardProduct() {
         if (normalizedTotal === 0) {
             setTotalProducts(0);
             setHasMore(false);
-            const u = new URLSearchParams(location.search);
+            const u = new URLSearchParams();
             u.set('page', '1');
             navigate(`/products?${u.toString()}`);
             try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch { }
@@ -323,7 +342,7 @@ export default function CardProduct() {
         );
         setHasMore(normalizedTotal > itemsPerPage && safe.length >= itemsPerPage);
 
-        const u = new URLSearchParams(location.search);
+        const u = new URLSearchParams();
         u.set('page', '1');
         navigate(`/products?${u.toString()}`);
         try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch { }
@@ -332,9 +351,9 @@ export default function CardProduct() {
     // buscador con debounce
     const debouncedNavigateSearch = useRef(
         debounce((val) => {
-            const u = new URLSearchParams(location.search);
-            if (val && val.trim().length >= 3) { u.set('search', val.trim()); u.set('page', '1'); }
-            else { u.delete('search'); u.set('page', '1'); }
+            const u = new URLSearchParams();
+            if (val && val.trim().length >= 3) { u.set('search', val.trim()); }
+            u.set('page', '1');
             navigate(`/products?${u.toString()}`);
         }, 400)
     ).current;
@@ -350,9 +369,9 @@ export default function CardProduct() {
             e.preventDefault();
             debouncedNavigateSearch.cancel();
             const val = (searchInput || '').trim();
-            const u = new URLSearchParams(location.search);
-            if (val && val.length >= 3) { u.set('search', val); u.set('page', '1'); }
-            else { u.delete('search'); u.set('page', '1'); }
+            const u = new URLSearchParams();
+            if (val && val.length >= 3) { u.set('search', val); }
+            u.set('page', '1');
             navigate(`/products?${u.toString()}`);
         }
     };
@@ -414,35 +433,47 @@ export default function CardProduct() {
 
             {/* Submenú categorías */}
             <SubMenuCarousel
-                onFilterClick={(cat) => {
+                onFilterClick={(sel) => {
+                    // sel puede venir null (para limpiar) o como { key, groupKey }
                     try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+
                     setFilters({});
                     setPage(1);
-                    if (!cat) return navigate('/products');
 
-                    if (cat === 'FLORAL') return navigate('/products?fabricPattern=FLORAL');
-                    if (cat === 'LISO') return navigate('/products?fabricPattern=LISO');
-                    if (cat === 'FALSO_LISO') return navigate('/products?fabricPattern=FALSO_LISO');
-                    if (cat === 'GEOMETRICO') return navigate('/products?fabricPattern=GEOMETRICO');
-                    if (cat === 'RAYAS') return navigate('/products?fabricPattern=RAYAS');
-                    if (cat === 'CUADROS') return navigate('/products?fabricPattern=CUADROS');
-                    if (cat === 'ESPIGA') return navigate('/products?fabricPattern=ESPIGA');
-                    if (cat === 'ETNICO') return navigate('/products?fabricPattern=ETNICO');
-                    if (cat === 'CON ANIMALES') return navigate('/products?fabricPattern=CON ANIMALES');
-                    if (cat === 'CON TEXTURAS') return navigate('/products?fabricPattern=CON TEXTURAS');
-                    if (cat === 'RAFIA') return navigate('/products?fabricPattern=RAFIA');
-                    if (cat === 'TELAS TROPICALES') return navigate('/products?fabricPattern=TELAS TROPICALES');
+                    // reconstruye SIEMPRE la query desde cero para no arrastrar filtros previos
+                    const u = new URLSearchParams();
+                    u.set('page', '1');
 
-                    if (cat === 'EASYCLEAN') return navigate('/products?mantenimiento=EASYCLEAN');
-                    if (cat === 'IMO') return navigate('/products?uso=IMO');
-                    if (cat === 'OUTDOOR') return navigate('/products?uso=OUTDOOR');
-                    if (cat === 'FR') return navigate('/products?uso=FR');
+                    if (!sel) {
+                        // limpiar todo
+                        navigate(`/products?${u.toString()}`);
+                        return;
+                    }
 
-                    if (cat === 'VISILLO') return navigate('/products?fabricType=VISILLO');
-                    if (cat === 'TERCIOPELO') return navigate('/products?fabricType=TERCIOPELO');
-                    if (type !== 'tela' && cat === 'WALLPAPER') return navigate('/products?fabricType=WALLPAPER');
+                    const { key, groupKey } = typeof sel === 'string'
+                        ? { key: sel, groupKey: 'patterns' } // compat si alguna vez llega string
+                        : sel;
 
-                    navigate(`/products?fabricPattern=${encodeURIComponent(cat)}`);
+                    switch (groupKey) {
+                        case 'types':        // TIPOS → fabricType
+                            u.set('fabricType', key);
+                            break;
+                        case 'patterns':     // DIBUJOS → fabricPattern
+                            u.set('fabricPattern', key);
+                            break;
+                        case 'usage':        // USO → uso
+                            u.set('uso', key);
+                            break;
+                        case 'maintenance':  // MANTENIMIENTO → mantenimiento
+                            u.set('mantenimiento', key);
+                            break;
+                        default:
+                            // fallback conservador: lo tratamos como patrón
+                            u.set('fabricPattern', key);
+                            break;
+                    }
+
+                    navigate(`/products?${u.toString()}`);
                 }}
                 type={type}
                 activeCategory={activeCategory}
@@ -507,15 +538,15 @@ export default function CardProduct() {
 
             {/* botón “Load more” opcional */}
             {/* {!searchInput.trim() && hasMore && !loading && (
-                <div className="flex justify-center mt-8">
-                    <button
-                        onClick={loadMore}
-                        className="flex items-center px-8 py-3 text-lg text-white bg-[#26659E] rounded-full hover:bg-[#1f527a] transition"
-                    >
-                        {t('loadMore')} <FaAngleDoubleRight className="ml-2" />
-                    </button>
-                </div>
-            )} */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={loadMore}
+            className="flex items-center px-8 py-3 text-lg text-white bg-[#26659E] rounded-full hover:bg-[#1f527a] transition"
+          >
+            {t('loadMore')} <FaAngleDoubleRight className="ml-2" />
+          </button>
+        </div>
+      )} */}
 
             {/* modal */}
             {selectedProduct && (

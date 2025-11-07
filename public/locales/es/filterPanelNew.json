@@ -3,13 +3,119 @@
     "selectedCount": "{{count}} seleccionados",
     "clearAll": "Limpiar todo",
     "apply": "Aplicar filtros",
+    "hero": {
+        "badge": "Filtro inteligente",
+        "tagline": "Tu panel creativo a pantalla completa",
+        "support": "Afina colecciones, colores y usos con una estética serena y resultados inmediatos."
+    },
+    "categoryHeading": "Explora categorías",
+    "categoryIntro": "Encuentra inspiración al instante",
+    "categoryDescription": "Previsualiza un producto destacado de cada categoría y aplícalo a tus filtros con un clic.",
+    "insights": {
+        "previewTip": "Activa un filtro desde aquí y descubre piezas recomendadas al instante."
+    },
+    "mobileNav": {
+        "title": "Navega rápido",
+        "helper": "Salta a la sección que necesitas sin perderte.",
+        "goTo": "Ir a {{label}}"
+    },
+    "quicknav": {
+        "title": "Navegación rápida"
+    },
+    "filters": {
+        "onlySelected": "Solo seleccionadas"
+    },
+    "actions": {
+        "selectAll": "Seleccionar todo",
+        "clear": "Limpiar"
+    },
+    "recommendations": {
+        "title": "Recomendaciones",
+        "subtitle": "Empieza con una selección pensada para estilos y usos actuales",
+        "items": {
+            "japandiWarm": {
+                "title": "Japandi cálido",
+                "description": "Neutros acogedores y líneas limpias para espacios serenos."
+            },
+            "coastalLinen": {
+                "title": "Costero fresco",
+                "description": "Azules suaves y texturas ligeras con opción outdoor."
+            },
+            "velvetLuxe": {
+                "title": "Velvet Luxe",
+                "description": "Tonos joya y tacto sofisticado para salones con carácter."
+            },
+            "contractPro": {
+                "title": "Contract / Proyecto",
+                "description": "Rendimiento alto, fácil limpieza y máxima resistencia."
+            },
+            "kidsPets": {
+                "title": "Kids & Pets",
+                "description": "Tejidos sufridos, lavables e ideales para el día a día."
+            },
+            "maximalistGeo": {
+                "title": "Maximalismo geométrico",
+                "description": "Gráficos marcados para puntos focales con personalidad."
+            },
+            "earthyTerracotta": {
+                "title": "Terracota & tierra",
+                "description": "Paleta cálida y natural para ambientes acogedores."
+            },
+            "biophilicGreen": {
+                "title": "Verde biofílico",
+                "description": "Verdes relajantes y mantenimiento sencillo."
+            },
+            "monoCharcoal": {
+                "title": "Monocromo carbón",
+                "description": "Grises y negros sobrios para un look contemporáneo."
+            },
+            "greigeMinimal": {
+                "title": "Greige minimal",
+                "description": "Mezcla de gris y beige para minimalismo cálido."
+            },
+            "cozyNeutrals": {
+                "title": "Neutros acogedores",
+                "description": "Texturas suaves y lisos para un ambiente calmado."
+            },
+            "statementSpaces": {
+                "title": "Espacios con carácter",
+                "description": "Geometrías y azules para composiciones con fuerza."
+            },
+            "familyFriendly": {
+                "title": "Familiar y resistente",
+                "description": "Lavables y resistentes para convivir sin preocupaciones."
+            }
+        }
+    },
+    "colorRail": {
+        "title": "Paleta de colores",
+        "subtitle": "Pulsa un punto para filtrar al instante.",
+        "clear": "Limpiar color"
+    },
+    "categoryGallery": {
+        "title": "Filtros visuales",
+        "helper": "Recorre las tarjetas y activa las sensaciones que buscas.",
+        "scrollHint": "Desliza",
+        "navPrev": "Desplazar galería a la izquierda",
+        "navNext": "Desplazar galería a la derecha"
+    },
+    "categoryCard": {
+        "empty": "Sin vista previa",
+        "cta": "Añadir filtro",
+        "selected": "Filtro activo"
+    },
+    "aria": {
+        "closePanel": "Cerrar filtros",
+        "removeFilter": "Quitar filtro {{label}}"
+    },
     "categories": {
         "brands": "Marcas",
         "collections": "Colecciones",
         "fabricTypes": "Tipos de tela",
         "patterns": "Dibujo",
         "colors": "Colores",
-        "martindale": "Martindale"
+        "martindale": "Martindale",
+        "specialFabrics": "Telas especiales"
     },
     "placeholders": {
         "searchmarcas": "Buscar marcas...",
@@ -110,6 +216,21 @@
             "RAYA": "Raya",
             "VISILLO": "Visillo",
             "FLORAL": "Floral"
+        },
+        "colors": {
+            "GRIS": "Gris",
+            "NEGRO": "Negro",
+            "VERDE": "Verde",
+            "BEIGE": "Beige",
+            "BLANCO": "Blanco",
+            "MARRON": "Marrón",
+            "AZUL": "Azul",
+            "AMARILLO": "Amarillo",
+            "NARANJA": "Naranja",
+            "ROJO": "Rojo",
+            "MORADO": "Morado",
+            "VIOLETA": "Violeta",
+            "ROSA": "Rosa"
         }
     }
 }

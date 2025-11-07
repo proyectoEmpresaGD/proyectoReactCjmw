@@ -410,53 +410,102 @@ export class ProductModel {
    * Filtro general — **tu lógica original** + paginación consistente.
    * Devuelve { products, total } donde total = COUNT(DISTINCT codprodu) con MISMAS condiciones.
    */
-  static async filter(filters, limit = 16, offset = 0) {
+  static async filter(rawFilters = {}, limit = 16, offset = 0) {
+    const toArray = value => (Array.isArray(value) ? value : []);
+
+    const normalizeStringList = (values, { uppercase = false } = {}) => {
+      const seen = new Set();
+      const list = [];
+      toArray(values).forEach(value => {
+        if (value == null) return;
+        let str = String(value).trim();
+        if (!str) return;
+        if (uppercase) str = str.toUpperCase();
+        const key = str
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu, '')
+          .toUpperCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+        list.push(str);
+      });
+      return list;
+    };
+
+    const normalizeNumberList = values => {
+      const seen = new Set();
+      const list = [];
+      toArray(values).forEach(value => {
+        const num = Number(value);
+        if (!Number.isFinite(num)) return;
+        if (seen.has(num)) return;
+        seen.add(num);
+        list.push(num);
+      });
+      return list;
+    };
+
+    const filters = {
+      brand: normalizeStringList(rawFilters.brand, { uppercase: true }),
+      collection: normalizeStringList(rawFilters.collection),
+      color: normalizeStringList(rawFilters.color, { uppercase: true }),
+      fabricType: normalizeStringList(rawFilters.fabricType, { uppercase: true }),
+      fabricPattern: normalizeStringList(rawFilters.fabricPattern, { uppercase: true }),
+      uso: normalizeStringList(rawFilters.uso, { uppercase: true }),
+      mantenimiento: normalizeStringList(rawFilters.mantenimiento),
+      martindale: normalizeNumberList(rawFilters.martindale),
+    };
+
     // Construimos UNA cláusula WHERE reusable
     let where = `"nombre" IS NOT NULL AND "nombre" <> ''`;
     const params = [];
     let index = 1;
 
     // 1) Marca
-    if (filters.brand?.length) {
-      where += ` AND "codmarca" = ANY($${index++})`;
+    if (filters.brand.length) {
+      where += ` AND UPPER(TRIM("codmarca")) = ANY($${index++})`;
       params.push(filters.brand);
     }
     // 2) Colección (ILIKE ANY)
-    if (filters.collection?.length) {
-      where += ` AND "coleccion" ILIKE ANY($${index++})`;
+    if (filters.collection.length) {
+      where += ` AND COALESCE(TRIM("coleccion"), '') ILIKE ANY($${index++})`;
       params.push(filters.collection.map(c => `%${c}%`));
     }
     // 3) Color
-    if (filters.color?.length) {
-      where += ` AND "colorprincipal" = ANY($${index++})`;
+    if (filters.color.length) {
+      where += ` AND UPPER(TRIM("colorprincipal")) = ANY($${index++})`;
       params.push(filters.color);
     }
     // 4) Tipo
-    if (filters.fabricType?.length) {
-      where += ` AND "tipo" = ANY($${index++})`;
+    if (filters.fabricType.length) {
+      where += ` AND UPPER(TRIM("tipo")) = ANY($${index++})`;
       params.push(filters.fabricType);
     }
     // 5) Estilo
-    if (filters.fabricPattern?.length) {
-      where += ` AND "estilo" = ANY($${index++})`;
+    if (filters.fabricPattern.length) {
+      where += ` AND UPPER(TRIM("estilo")) = ANY($${index++})`;
       params.push(filters.fabricPattern);
     }
-    // 6) Uso (FR / OUTDOOR / IMO) – (tu OR con ILIKE %…%)
-    if (filters.uso?.length) {
-      const usoConds = [];
-      if (filters.uso.includes('FR')) usoConds.push(`"uso" ILIKE '%FR%'`);
-      if (filters.uso.includes('OUTDOOR')) usoConds.push(`"uso" ILIKE '%OUTDOOR%'`);
-      if (filters.uso.includes('IMO')) usoConds.push(`"uso" ILIKE '%IMO%'`);
-      if (usoConds.length) where += ` AND (${usoConds.join(' OR ')})`;
+    // 6) Uso dinámico (cada valor puede existir combinado en el campo)
+    if (filters.uso.length) {
+      const usageColumn = `UPPER(COALESCE(TRIM("uso"), ''))`;
+      const usoConditions = filters.uso.map(value => {
+        const placeholder = `$${index++}`;
+        params.push(`%${value}%`);
+        return `${usageColumn} LIKE ${placeholder}`;
+      });
+      if (usoConditions.length) {
+        where += ` AND (${usoConditions.join(' OR ')})`;
+      }
     }
     // 7) Martindale
-    if (filters.martindale?.length) {
+    if (filters.martindale.length) {
       where += ` AND "martindale" = ANY($${index++})`;
       params.push(filters.martindale);
     }
     // 8) Mantenimiento (texto)
-    if (filters.mantenimiento?.length) {
-      where += ` AND ("mantenimiento"::text) ILIKE ANY($${index++})`;
+    if (filters.mantenimiento.length) {
+      where += ` AND COALESCE(TRIM("mantenimiento"::text), '') ILIKE ANY($${index++})`;
       params.push(filters.mantenimiento.map(m => `%${m}%`));
     }
 
@@ -494,31 +543,103 @@ export class ProductModel {
    * Devuelve los valores distintos para construir los filtros del catálogo.
    */
   static async getFilters() {
-    try {
-      const { rows: brands } = await pool.query('SELECT DISTINCT codmarca FROM productos');
-      const { rows: collections } = await pool.query('SELECT DISTINCT coleccion FROM productos');
-      const { rows: fabricTypes } = await pool.query('SELECT DISTINCT tipo FROM productos');
-      const { rows: fabricPatterns } = await pool.query('SELECT DISTINCT estilo FROM productos');
-      const { rows: martindale } = await pool.query('SELECT DISTINCT martindale FROM productos');
-      const { rows: colors } = await pool.query('SELECT DISTINCT colorprincipal FROM productos');
-      const { rows: tonalidades } = await pool.query('SELECT DISTINCT tonalidad FROM productos');
+    const cleanValue = value => {
+      if (value == null) return '';
+      if (typeof value === 'string') return value.trim();
+      return String(value).trim();
+    };
 
-      // mantenimiento a texto para DISTINCT
+    const splitMultiValue = value =>
+      cleanValue(value)
+        .split(/[;|/,\n\r]+/)
+        .map(part => part.trim())
+        .filter(Boolean);
+
+    const uniqueList = values => {
+      const seen = new Set();
+      const list = [];
+      values.forEach(value => {
+        const cleaned = cleanValue(value);
+        if (!cleaned) return;
+        const key = cleaned
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu, '')
+          .toUpperCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+        list.push(cleaned);
+      });
+      return list;
+    };
+
+    try {
+      const { rows: brands } = await pool.query(`
+        SELECT DISTINCT TRIM(codmarca) AS codmarca
+        FROM productos
+        WHERE codmarca IS NOT NULL AND TRIM(codmarca) <> ''
+      `);
+      const { rows: collections } = await pool.query(`
+        SELECT DISTINCT TRIM(coleccion) AS coleccion
+        FROM productos
+        WHERE coleccion IS NOT NULL AND TRIM(coleccion) <> ''
+      `);
+      const { rows: fabricTypes } = await pool.query(`
+        SELECT DISTINCT TRIM(tipo) AS tipo
+        FROM productos
+        WHERE tipo IS NOT NULL AND TRIM(tipo) <> ''
+      `);
+      const { rows: fabricPatterns } = await pool.query(`
+        SELECT DISTINCT TRIM(estilo) AS estilo
+        FROM productos
+        WHERE estilo IS NOT NULL AND TRIM(estilo) <> ''
+      `);
+      const { rows: martindale } = await pool.query(`
+        SELECT DISTINCT martindale
+        FROM productos
+        WHERE martindale IS NOT NULL
+      `);
+      const { rows: colors } = await pool.query(`
+        SELECT DISTINCT TRIM(colorprincipal) AS colorprincipal
+        FROM productos
+        WHERE colorprincipal IS NOT NULL AND TRIM(colorprincipal) <> ''
+      `);
+
+      const { rows: tonalidades } = await pool.query(`
+        SELECT DISTINCT TRIM(tonalidad) AS tonalidad
+        FROM productos
+        WHERE tonalidad IS NOT NULL AND TRIM(tonalidad) <> ''
+      `);
+
+      const { rows: usosRaw } = await pool.query(`
+        SELECT DISTINCT TRIM(uso) AS uso
+        FROM productos
+        WHERE uso IS NOT NULL AND TRIM(uso) <> ''
+      `);
+
+      const usageValues = uniqueList(
+        usosRaw.flatMap(row => splitMultiValue(row.uso))
+      );
+
       const { rows: mantenimientos } = await pool.query(`
         SELECT DISTINCT mantenimiento::text AS mantenimiento
         FROM productos
-        WHERE mantenimiento IS NOT NULL
+        WHERE mantenimiento IS NOT NULL AND mantenimiento::text <> ''
       `);
 
+      const maintenanceValues = uniqueList(
+        mantenimientos.flatMap(row => splitMultiValue(row.mantenimiento))
+      );
+
       return {
-        brands: brands.map(b => b.codmarca),
-        collections: collections.map(c => c.coleccion),
-        fabricTypes: fabricTypes.map(f => f.tipo),
-        fabricPatterns: fabricPatterns.map(f => f.estilo),
-        martindaleValues: martindale.map(m => m.martindale),
-        colors: colors.map(c => c.colorprincipal),
-        tonalidades: tonalidades.map(t => t.tonalidad),
-        mantenimientos: mantenimientos.map(m => m.mantenimiento).filter(Boolean),
+        brands: uniqueList(brands.map(b => b.codmarca)),
+        collections: uniqueList(collections.map(c => c.coleccion)),
+        fabricTypes: uniqueList(fabricTypes.map(f => f.tipo)),
+        fabricPatterns: uniqueList(fabricPatterns.map(f => f.estilo)),
+        martindaleValues: [...new Set(martindale.map(m => Number(m.martindale)).filter(Number.isFinite))],
+        colors: uniqueList(colors.map(c => c.colorprincipal)),
+        tonalidades: uniqueList(tonalidades.map(t => t.tonalidad)),
+        uso: usageValues,
+        mantenimientos: maintenanceValues,
       };
     } catch (error) {
       console.error('Error fetching filters:', error);

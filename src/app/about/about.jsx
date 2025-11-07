@@ -16,9 +16,8 @@ const HOVER_IMG = "transition-transform duration-500 hover:-translate-y-1";
 
 // Imágenes coherentes con tu marca (puedes cambiarlas cuando quieras)
 const IMG_OVERVIEW = "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/01_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINA%20HOME/BASSARI/TRIBAL/Buena%20calidad/BASSARI%20TRIBAL%20DAKAR%20BOUE%20SABLE%20ET%20GRIS%20NUAGE.jpg";
-const IMG_MADE = "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/ARENA%20AMBIENTE/KANNATURA/ARN_RAFIAS_AMBIENTE_KLIM.jpg";
-const IMG_HQ = "https://bassari.eu/ImagenesTelasCjmw/ImagenesAmbienteParaCarruselesWeb/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01942%20CARIBBEAN%20PARTY%20JUNGLE%20INDIGO_%20SILLA%20PISCINA_CABECERO%20CARIBBEAN%20INDIGO.jpg";
-
+const IMG_MADE = "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/ARENA%20AMBIENTE/KANNATURA/ARN_RAFIAS_AMBIENTE_KLIM.jpg";
+const IMG_HQ = "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01923%20CARIBBEAN%20PARTY%20PALM%20BEACH%20INDIGO_%20SILLA%20DERECHA.jpg";
 // HERO (puedes cambiarlo por el de confecciones.jsx)
 const HERO_IMG = "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/01_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINA%20HOME/HARBOUR/HARB_AMB_BOHEMIAN_05CARROUSEL.jpg";
 
@@ -407,21 +406,7 @@ export default function About() {
                                     </div>
 
                                     {/* Timeline alineada con tus textos: Diseño → Fabricación → Distribución (i18n) */}
-                                    <div className="mt-10">
-                                        <ol className="relative border-s border-gray-200 pl-6">
-                                            {[
-                                                { t: tl?.step1Title, d: tl?.step1Desc },
-                                                { t: tl?.step2Title, d: tl?.step2Desc },
-                                                { t: tl?.step3Title, d: tl?.step3Desc }
-                                            ].map((item, i) => (
-                                                <li key={i} className={`ms-4 ${i < 2 ? "mb-8" : ""}`}>
-                                                    <div className="absolute w-3 h-3 bg-gray-400 rounded-full -start-1.5 mt-1.5" />
-                                                    <h3 className="font-semibold text-gray-800">{item.t}</h3>
-                                                    <p className="text-sm text-gray-600 mt-1">{item.d}</p>
-                                                </li>
-                                            ))}
-                                        </ol>
-                                    </div>
+
                                 </Glass>
                             </Reveal>
 

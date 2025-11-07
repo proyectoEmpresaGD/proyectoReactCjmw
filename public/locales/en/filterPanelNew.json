@@ -3,13 +3,123 @@
     "selectedCount": "{{count}} selected",
     "clearAll": "Clear all",
     "apply": "Apply filters",
+    "hero": {
+        "badge": "Smart filtering",
+        "tagline": "Your full-screen creative control center",
+        "support": "Fine-tune collections, colors, and uses with a calm aesthetic and instant feedback."
+    },
+    "categoryHeading": "Explore categories",
+    "categoryIntro": "Find inspiration instantly",
+    "categoryDescription": "Preview a highlighted product for each category and add it to your filters with a single click.",
+    "insights": {
+        "previewTip": "Activate a filter here and instantly preview curated pieces."
+    },
+    "mobileNav": {
+        "title": "Jump around",
+        "helper": "Hop directly to any filter section without endless scrolling.",
+        "goTo": "Go to {{label}}"
+    },
+    "filters": {
+        "onlySelected": "Only selected"
+    },
+    "actions": {
+        "selectAll": "Select all",
+        "clear": "Clear"
+    },
+    "recommendations": {
+        "title": "Recommendations",
+        "subtitle": "Start with curated selections for today’s styles and uses",
+        "items": {
+            "japandiWarm": {
+                "title": "Warm Japandi",
+                "description": "Cozy neutrals and clean lines for serene spaces."
+            },
+            "coastalLinen": {
+                "title": "Coastal fresh",
+                "description": "Soft blues and airy textures, outdoor-ready."
+            },
+            "velvetLuxe": {
+                "title": "Velvet Luxe",
+                "description": "Jewel tones and plush feel for statement living rooms."
+            },
+            "contractPro": {
+                "title": "Contract / Project",
+                "description": "High performance, easy care and maximum durability."
+            },
+            "kidsPets": {
+                "title": "Kids & Pets",
+                "description": "Hard-wearing, washable fabrics for everyday life."
+            },
+            "maximalistGeo": {
+                "title": "Maximalist geometric",
+                "description": "Bold graphics to create strong focal points."
+            },
+            "earthyTerracotta": {
+                "title": "Terracotta & earth",
+                "description": "Warm natural palette for inviting atmospheres."
+            },
+            "biophilicGreen": {
+                "title": "Biophilic green",
+                "description": "Relaxing greens with straightforward maintenance."
+            },
+            "monoCharcoal": {
+                "title": "Monochrome charcoal",
+                "description": "Greys and blacks for a crisp contemporary look."
+            },
+            "greigeMinimal": {
+                "title": "Greige minimal",
+                "description": "Grey-beige mix for warm minimalism."
+            },
+            "cozyNeutrals": {
+                "title": "Cozy neutrals",
+                "description": "Soft textures and solids for a calm mood."
+            },
+            "statementSpaces": {
+                "title": "Statement spaces",
+                "description": "Geometric patterns and blues with presence."
+            },
+            "familyFriendly": {
+                "title": "Family-friendly",
+                "description": "Washable and resilient for worry-free living."
+            },
+            "easyCare": {
+                "title": "EasyCare",
+                "description": "Residential upholstery: 50,000 to 100,000 cycles"
+            }
+        }
+    },
+    "colorRail": {
+        "title": "Color swatches",
+        "subtitle": "Tap a dot to filter immediately.",
+        "clear": "Clear color filter"
+    },
+    "categoryGallery": {
+        "title": "Visual filters",
+        "helper": "Browse immersive cards and activate the moods you love.",
+        "scrollHint": "Swipe",
+        "navPrev": "Scroll gallery left",
+        "navNext": "Scroll gallery right"
+    },
+    "categoryCard": {
+        "empty": "Preview unavailable",
+        "cta": "Add filter",
+        "selected": "Active filter"
+    },
+    "aria": {
+        "closePanel": "Close filters",
+        "removeFilter": "Remove filter {{label}}"
+    },
     "categories": {
         "brands": "Brands",
         "collections": "Collections",
         "fabricTypes": "Fabric types",
         "patterns": "Patterns",
         "colors": "Colors",
-        "martindale": "Martindale"
+        "martindale": "Martindale",
+        "specialFabrics": "Special fabrics"
+    },
+    "quicknav": {
+        "title": "Quick navigation"
     },
     "placeholders": {
         "searchmarcas": "Search brands...",
@@ -110,6 +220,21 @@
             "RAYA": "Stripe",
             "VISILLO": "Voile",
             "FLORAL": "Floral"
+        },
+        "colors": {
+            "GRIS": "Grey",
+            "NEGRO": "Black",
+            "VERDE": "Green",
+            "BEIGE": "Beige",
+            "BLANCO": "White",
+            "MARRON": "Brown",
+            "AZUL": "Blue",
+            "AMARILLO": "Yellow",
+            "NARANJA": "Orange",
+            "ROJO": "Red",
+            "MORADO": "Purple",
+            "VIOLETA": "Violet",
+            "ROSA": "Pink"
         }
     }
 }

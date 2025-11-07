@@ -54,10 +54,28 @@ export const Header = ({ closeModal }) => {
     const brandsRef = useRef(null);
     const productsRef = useRef(null);
 
+    // --- NUEVO: mapa ruta -> código de marca y sincronización estado/ruta ---
+    const pathToBrand = {
+        '/arenaHome': 'ARE',
+        '/harbourHome': 'HAR',
+        '/bassariHome': 'BAS',
+        '/cjmHome': 'CJM',
+        '/flamencoHome': 'FLA',
+    };
+
+    useEffect(() => {
+        const code = pathToBrand[location.pathname] || null;
+        if (code && marcaActiva !== code) {
+            setMarcaActiva(code);
+        }
+    }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Logo robusto: prioriza marcaActiva, luego ruta, luego fallback
+    const codeFromPath = pathToBrand[location.pathname];
     const logoSrc =
-        marcaActiva && brandLogos[marcaActiva]
-            ? brandLogos[marcaActiva]
-            : brandLogos[location.pathname] || defaultLogo;
+        (marcaActiva && brandLogos[marcaActiva]) ? brandLogos[marcaActiva]
+            : (codeFromPath && brandLogos[codeFromPath]) ? brandLogos[codeFromPath]
+                : brandLogos[location.pathname] || defaultLogo;
 
     const closeAllDropdowns = () => {
         setShowBrandsDropdown(false);

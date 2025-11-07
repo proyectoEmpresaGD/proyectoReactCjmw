@@ -478,10 +478,17 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
         close();
         navigate(route);
     };
-
     const handleClose = () => {
         close();
-        setMarcaActiva(null);
+
+        // detectar si estoy en una home de marca y NO borrar marcaActiva en ese caso
+        const brandPaths = ['/arenaHome', '/harbourHome', '/bassariHome', '/cjmHome', '/flamencoHome'];
+        const onBrandHome = brandPaths.includes(location.pathname);
+        if (!onBrandHome) {
+            setMarcaActiva(null);
+        }
+
+        // limpiar params de producto si venías con pid/productId
         const hash = window.location.hash;
         const hasHashParams = hash.startsWith("#/products") && (hash.includes("pid=") || hash.includes("productId="));
         const searchParams = new URLSearchParams(location.search);
