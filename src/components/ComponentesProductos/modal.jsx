@@ -721,6 +721,11 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
 
     if (!isOpen) return null;
 
+    const isSingleWord = (txt) => {
+        if (!txt) return false;
+        return !/\s/.test(txt.trim());
+    };
+
     const productHeader = (
         <div className="rounded-3xl border border-white/60 bg-white/80 p-4 sm:p-5 shadow-lg">
             <div className="flex flex-col gap-3">
@@ -744,7 +749,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         <button
                             type="button"
                             onClick={handleMarcaClick}
-                            className="rounded-full bg-gray-100 px-3 py-1 text-gray-700 transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                            className="rounded-full bg-gray-100 px-3 py-1 text-gray-700 transición hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
                         >
                             {t('brand')}: {getNombreMarca(selectedProduct.codmarca)}
                         </button>
@@ -949,12 +954,18 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                             <button
                                                                 type="button"
                                                                 key={i}
-                                                                className="relative h-14 w-14 sm:h-16 sm:w-16 overflow-hidden rounded-xl border border-white/70 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                                                                className="relative w-24 sm:w-24 aspect-square overflow-hidden rounded-xl border border-white/70 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
                                                                 onClick={() => handleColorClick(colorProduct)}
                                                                 title={colorProduct.tonalidad}
                                                             >
                                                                 <img src={colorProduct.imageBaja} alt={colorProduct.tonalidad} className="h-full w-full object-cover" />
-                                                                <span className="absolute inset-x-1 bottom-1 rounded-full bg-black/60 px-1 py-0.5 text-[10px] font-medium text-white leading-tight break-words whitespace-normal">
+                                                                <span
+                                                                    className={
+                                                                        `absolute inset-x-1 bottom-1 rounded-full bg-black/60 px-2 py-0.5 text-[9px] sm:text-[10px] font-medium text-white leading-tight text-center ` +
+                                                                        (isSingleWord(colorProduct.tonalidad) ? 'whitespace-nowrap' : 'whitespace-normal')
+                                                                    }
+                                                                    style={{ hyphens: 'none' }}
+                                                                >
                                                                     {colorProduct.tonalidad}
                                                                 </span>
                                                             </button>
@@ -1581,7 +1592,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                                         borderRadius: '50%',
                                                                         backgroundColor: '#0f172a',
                                                                         flexShrink: 0,
-                                                                        position: 'relative',
+                                                                        posición: 'relative',
                                                                         top: '0.40em',
                                                                     }}
                                                                 />

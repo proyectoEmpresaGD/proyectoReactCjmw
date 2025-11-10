@@ -1,9 +1,32 @@
+// src/app/products/SubMenuCarousel.jsx
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaChevronDown, FaChevronRight, FaSpinner, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { cdnUrl } from '../../Constants/cdn';
 import { fetchCategoryPreview, groupCategories } from '../filters/categoryConfig';
+
+/* ==============================
+   Hook de media query (mobile-only)
+============================== */
+function useMediaQuery(query) {
+    const getMatch = () => (typeof window !== 'undefined' && 'matchMedia' in window)
+        ? window.matchMedia(query).matches
+        : false;
+    const [matches, setMatches] = useState(getMatch);
+    useEffect(() => {
+        if (typeof window === 'undefined' || !('matchMedia' in window)) return;
+        const mql = window.matchMedia(query);
+        const onChange = () => setMatches(mql.matches);
+        onChange();
+        mql.addEventListener?.('change', onChange);
+        return () => mql.removeEventListener?.('change', onChange);
+    }, [query]);
+    return matches;
+}
+
+// === Solo renderizar en pantallas pequeñas (< 1024px) ===
+const useIsSmallScreen = () => useMediaQuery('(max-width: 1023.98px)');
 
 // Normaliza texto (acentos/espacios/mayús) para comparaciones seguras
 const norm = (v = '') =>
@@ -19,61 +42,36 @@ const norm = (v = '') =>
  * - TYPE_KEYS: deben mapear a fabricType
  * - USAGE_KEYS: deben mapear a uso
  * - MAINT_KEYS: deben mapear a mantenimiento
- *
- * Añadimos TODOS los que has indicado en la sección TIPOS.
- * Usamos la versión normalizada (sin tildes, mayúsculas).
  */
 const TYPE_KEYS = new Set([
     // Ya existentes / comunes
     'WALLPAPER', 'PAPEL PINTADO',
     'VISILLO', 'TERCIOPELO', 'DIMOUT', 'BLACKOUT', 'SCREEN', 'POLIPIEL', 'LANA',
 
-    // LISTA "TIPOS" que pides mapear a fabricType:
-    'ALGODON',            // Algodón
-    'BLACKOUT',          // Blackout
-    'CUADROS',           // Cuadros
-    'DIMOUT',            // Dimout
-    'DRALON ACRILICO',   // Dralon acrílico
-    'ESTAMPADO',         // Estampado
-    'FOSCURIT',          // Foscurit
-    'JACQUARD',          // Jacquard
-    'YUTE',              // Yute
-    'LANA',              // Lana
-    'LINO',              // Lino
-    'LISO',              // Liso
-    'OLEFINA',           // Olefina
-    'POLIESTER',         // Poliéster
-    'POLIPIEL',          // Polipiel
-    'POLIPROPILENO',     // Polipropileno
-    'POLIOLEFINA',       // Poliolefina
-    'RAYAS',             // Rayas
-    'TERCIOPELO',        // Terciopelo
-    'VISILLO',           // Visillo
-    'PAPEL PINTADO'      // Papel pintado
+    // LISTA "TIPOS"
+    'ALGODON', 'BLACKOUT', 'CUADROS', 'DIMOUT', 'DRALON ACRILICO',
+    'ESTAMPADO', 'FOSCURIT', 'JACQUARD', 'YUTE', 'LANA', 'LINO', 'LISO',
+    'OLEFINA', 'POLIESTER', 'POLIPIEL', 'POLIPROPILENO', 'POLIOLEFINA',
+    'RAYAS', 'TERCIOPELO', 'VISILLO', 'PAPEL PINTADO'
 ]);
 
-const USAGE_KEYS = new Set([
-    'FR', 'OUTDOOR', 'IMO'
-]);
-
-const MAINT_KEYS = new Set([
-    'EASYCLEAN', 'EASY CLEAN', 'EASY-CLEAN'
-]);
+const USAGE_KEYS = new Set(['FR', 'OUTDOOR', 'IMO']);
+const MAINT_KEYS = new Set(['EASYCLEAN', 'EASY CLEAN', 'EASY-CLEAN']);
 
 /** Dada una key y un groupKey original, decide el groupKey correcto */
 const inferGroupKey = (key, originalGroupKey) => {
     const k = norm(key);
-
     if (TYPE_KEYS.has(k)) return 'types';
     if (USAGE_KEYS.has(k)) return 'usage';
     if (MAINT_KEYS.has(k)) return 'maintenance';
-
-    // Si no coincide con ninguno de los conjuntos, respetamos el original
-    // y, si no viene, caemos a 'patterns' (fabricPattern)
     return originalGroupKey || 'patterns';
 };
 
 export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCategory }) {
+    const isSmall = useIsSmallScreen();
+    // Si NO es pantalla pequeña, no renderizar (inutilizable en desktop/tablet)
+    if (!isSmall) return null;
+
     const { t } = useTranslation('subMenuCarousel');
     const navigate = useNavigate();
 
@@ -219,8 +217,8 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
                 onMouseEnter={() => handleFocusCategory(cat)}
                 onFocus={() => handleFocusCategory(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A] ${isActive
-                        ? 'bg-[#1E3A8A] text-white shadow-lg shadow-blue-200'
-                        : 'bg-white/70 text-gray-700 border border-slate-200 hover:bg-white'
+                    ? 'bg-[#1E3A8A] text-white shadow-lg shadow-blue-200'
+                    : 'bg-white/70 text-gray-700 border border-slate-200 hover:bg-white'
                     }`}
             >
                 {label}
@@ -228,83 +226,9 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
         );
     };
 
-    const desktopMenu = (
-        <div className="hidden lg:block absolute left-1/2 top-full mt-3 -translate-x-1/2 w-[min(1080px,95vw)] z-50">
-            <div className="rounded-3xl bg-white/90 backdrop-blur-xl shadow-2xl ring-1 ring-black/5 overflow-hidden">
-                <div className="grid grid-cols-[2.1fr_1fr]">
-                    <div className="p-8 space-y-7 max-h-[460px] overflow-y-auto">
-                        {sections.map(([groupLabel, cats]) => (
-                            <div key={groupLabel}>
-                                <div className="flex items-center justify-between mb-3">
-                                    <h4 className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                                        {groupLabel}
-                                    </h4>
-                                    <span className="h-px flex-1 ml-4 bg-gradient-to-r from-slate-200 to-transparent" />
-                                </div>
-                                <div className="flex flex-wrap gap-2.5">
-                                    {cats.map(renderCategoryButton)}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="relative bg-gradient-to-br from-[#0b1736] via-[#132f5f] to-[#1f4f8d] text-white p-8 flex flex-col">
-                        <div className="space-y-3">
-                            <p className="text-xs uppercase tracking-[0.5em] text-white/60">
-                                {t('previewTitle', 'Vista previa')}
-                            </p>
-                            <h3 className="text-2xl font-semibold leading-tight">
-                                {hoveredCategory
-                                    ? t('previewLabel', { label: t(hoveredCategory.labelKey) })
-                                    : t('hoverInfo')}
-                            </h3>
-                        </div>
-                        <div className="mt-6 flex-1 flex items-center justify-center">
-                            {loadingPreview ? (
-                                <FaSpinner className="animate-spin text-3xl text-white/70" />
-                            ) : previewData && previewData.imageUrl ? (
-                                <div
-                                    className="w-full group cursor-pointer"
-                                    onClick={() => {
-                                        if (!previewData?.id) return;
-                                        navigate(`/products?productId=${previewData.id}`);
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <div className="aspect-[4/3] overflow-hidden rounded-2xl shadow-xl shadow-black/20">
-                                        <img
-                                            src={cdnUrl(previewData.imageUrl)}
-                                            alt={previewData.name}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                        />
-                                    </div>
-                                    <div className="mt-4 flex items-center justify-between">
-                                        <span className="text-sm font-medium text-white/90">
-                                            {previewData.name}
-                                        </span>
-                                        <span className="flex items-center text-xs font-semibold uppercase tracking-widest text-white/70">
-                                            {t('previewCta', 'Ver producto')}
-                                            <FaChevronRight className="ml-2" />
-                                        </span>
-                                    </div>
-                                </div>
-                            ) : (
-                                <p className="text-sm text-white/60 text-center leading-relaxed">
-                                    {t(
-                                        'emptyPreview',
-                                        'Selecciona una categoría para descubrir un producto destacado.'
-                                    )}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-
+    // Solo usamos el menú móvil; el desktop queda descartado al no renderizar en >=lg
     const mobileMenu = (
-        <div className="lg:hidden fixed inset-0 z-50 flex items-end" onClick={() => setOpen(false)}>
+        <div className="fixed inset-0 z-50 flex items-end" onClick={() => setOpen(false)}>
             <div
                 className="w-full max-h-[85vh] bg-white rounded-t-3xl shadow-2xl p-6 overflow-y-auto"
                 onClick={e => e.stopPropagation()}
@@ -357,8 +281,8 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
                                                 selectCategory(cat);
                                             }}
                                             className={`px-4 py-2 rounded-2xl text-sm font-medium transition shadow-sm ${isActive
-                                                    ? 'bg-[#1E3A8A] text-white shadow-blue-200'
-                                                    : 'bg-slate-100 text-slate-700'
+                                                ? 'bg-[#1E3A8A] text-white shadow-blue-200'
+                                                : 'bg-slate-100 text-slate-700'
                                                 }`}
                                         >
                                             {label}
@@ -389,7 +313,6 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
 
             {open && (
                 <>
-                    {desktopMenu}
                     {mobileMenu}
                 </>
             )}

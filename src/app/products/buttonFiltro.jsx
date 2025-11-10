@@ -16,10 +16,9 @@ const EMPTY_FILTERS = {
     mantenimiento: [],
     martindaleRanges: [],
 };
-const normalizeKey = (value) => value
-    ?.normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toUpperCase();
+
+const normalizeKey = (value) =>
+    value?.normalize('NFD').replace(/\p{Diacritic}/gu, '').toUpperCase();
 
 const parseSearchFilters = (search) => {
     const params = new URLSearchParams(search);
@@ -27,7 +26,7 @@ const parseSearchFilters = (search) => {
         const seen = new Set();
         return params
             .getAll(key)
-            .map(value => (value == null ? '' : value.trim()))
+            .map((value) => (value == null ? '' : value.trim()))
             .filter(Boolean)
             .filter((value) => {
                 const comparable = normalizeKey(value);
@@ -39,8 +38,8 @@ const parseSearchFilters = (search) => {
     };
 
     const asNumbers = getAll('martindale')
-        .map(value => Number(value))
-        .filter(value => Number.isFinite(value));
+        .map((value) => Number(value))
+        .filter((value) => Number.isFinite(value));
 
     return {
         brand: getAll('brand'),
@@ -51,9 +50,10 @@ const parseSearchFilters = (search) => {
         martindale: asNumbers,
         uso: getAll('uso'),
         mantenimiento: getAll('mantenimiento'),
-        martindaleRanges: getAll('martindaleRange')
+        martindaleRanges: getAll('martindaleRange'),
     };
 };
+
 export default function FiltroButton({ clearFiltersCallback }) {
     const { t } = useTranslation('buttonFiltro');
     const navigate = useNavigate();
@@ -63,8 +63,6 @@ export default function FiltroButton({ clearFiltersCallback }) {
 
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [filters, setFilters] = useState(EMPTY_FILTERS);
-
-
 
     useEffect(() => {
         const urlFilters = parseSearchFilters(location.search);
@@ -101,7 +99,8 @@ export default function FiltroButton({ clearFiltersCallback }) {
             selectedFilters.fabricPattern.forEach((v) => qs.append('fabricPattern', v));
         if (selectedFilters.martindale?.length)
             selectedFilters.martindale.forEach((v) => qs.append('martindale', v));
-        if (selectedFilters.martindaleRanges?.length) selectedFilters.martindaleRanges.forEach(v => qs.append('martindaleRange', v));
+        if (selectedFilters.martindaleRanges?.length)
+            selectedFilters.martindaleRanges.forEach((v) => qs.append('martindaleRange', v));
         if (selectedFilters.uso?.length)
             selectedFilters.uso.forEach((v) => qs.append('uso', v));
         if (selectedFilters.mantenimiento?.length)
@@ -122,12 +121,12 @@ export default function FiltroButton({ clearFiltersCallback }) {
 
     return (
         <>
-            {/* BOTÓN FLOTANTE */}
-            <div className="fixed top-1/4 left-6 z-20 group">
+            {/* BOTÓN FLOTANTE: oculto en móvil/tablet. Visible solo en ≥ lg */}
+            <div className="hidden lg:block fixed top-1/4 left-6 z-20 group">
                 <button
                     onClick={openPanel}
                     className="flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#26659E] transition"
-                    aria-label={t('openButton')}
+                    aria-label={t('openButton', 'Abrir filtros')}
                 >
                     <FaSlidersH className="w-5 h-5 text-gray-700" />
                     {hasAnyFilter && (
@@ -135,13 +134,13 @@ export default function FiltroButton({ clearFiltersCallback }) {
                     )}
                 </button>
 
-                {/* TOOLTIP */}
+                {/* TOOLTIP (solo se ve en desktop porque el wrapper está oculto en <lg) */}
                 <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap bg-[#26659E] text-white text-xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                     {t('tooltip', 'Encuentra lo que deseas')}
                 </span>
             </div>
 
-            {/* PANEL LATERAL */}
+            {/* PANEL LATERAL (el propio FilterPanel ya no renderiza en <lg) */}
             <FilterPanel
                 isOpen={isPanelOpen}
                 close={() => setIsPanelOpen(false)}

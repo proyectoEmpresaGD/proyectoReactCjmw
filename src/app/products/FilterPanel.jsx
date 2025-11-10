@@ -10,6 +10,28 @@ import { cdnUrl } from '../../Constants/cdn';
 import { CATEGORY_CONFIG, fetchCategoryPreview } from '../../components/filters/categoryConfig';
 
 /* ==============================
+   Hook de media query (desktop-only)
+============================== */
+function useMediaQuery(query) {
+    const getMatch = () => (typeof window !== 'undefined' && 'matchMedia' in window)
+        ? window.matchMedia(query).matches
+        : false;
+    const [matches, setMatches] = useState(getMatch);
+    useEffect(() => {
+        if (typeof window === 'undefined' || !('matchMedia' in window)) return;
+        const mql = window.matchMedia(query);
+        const onChange = () => setMatches(mql.matches);
+        onChange();
+        mql.addEventListener?.('change', onChange);
+        return () => mql.removeEventListener?.('change', onChange);
+    }, [query]);
+    return matches;
+}
+
+// === Solo renderizar en pantallas grandes (>= 1024px) ===
+const useIsLargeScreen = () => useMediaQuery('(min-width: 1024px)');
+
+/* ==============================
    Constantes y utilidades
 ============================== */
 // Galería: unimos usos + mantenimiento en una sección “Telas especiales”
@@ -124,6 +146,10 @@ export default function FilterPanel({
     currentFilters,
     productType = 'tela'
 }) {
+    const isLarge = useIsLargeScreen();
+    // Si NO es pantalla grande, no renderizar (inutilizable en móvil/tablet)
+    if (!isLarge) return null;
+
     const { t } = useTranslation('filterPanelNew');
     const { t: tCategories } = useTranslation('subMenuCarousel');
     const { setMarcaActiva } = useMarca();
@@ -930,7 +956,7 @@ export default function FilterPanel({
         return (<>{text.slice(0, i)}<mark className="rounded px-0.5 bg-yellow-200/70">{text.slice(i, i + q.length)}</mark>{text.slice(i + q.length)}</>);
     };
 
-    // Early return
+    // Early return: si el panel no está abierto, no bloqueamos scroll (pero mantenemos diseño)
     if (!isOpen) return null;
 
     return (
@@ -1002,7 +1028,7 @@ export default function FilterPanel({
 
                                     {/* Contenido desplazable */}
                                     <div className="min-h-0 overflow-y-auto px-4 pt-4 pb-28 sm:px-10 sm:pt-8 sm:pb-36">
-                                        {/* Paleta móvil */}
+                                        {/* Paleta móvil (no se muestra en desktop-only, pero no molesta) */}
                                         {colors.length > 0 && (
                                             <div className="mb-6 lg:hidden">
                                                 <p className="text-xs font-semibold text-slate-600 sm:uppercase sm:tracking-[0.35em]">{t('colorRail.title')}</p>
@@ -1312,7 +1338,7 @@ export default function FilterPanel({
                                 className="mx-auto w-full max-w-[1600px] px-3 sm:px-6"
                                 style={{
                                     paddingTop: '12px',
-                                    paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', // simétrico + notch
+                                    paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
                                 }}
                             >
                                 <button
