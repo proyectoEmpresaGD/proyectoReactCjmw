@@ -49,5 +49,6 @@
     "previewLabel": "Example: {{label}}",
     "previewTitle": "Preview",
     "previewCta": "View product",
-    "emptyPreview": "Pick a category to discover a highlighted product."
+    "emptyPreview": "Pick a category to discover a highlighted product.",
+    "closeButton": "Close filters"
 }

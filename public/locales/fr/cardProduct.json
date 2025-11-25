@@ -1,4 +1,52 @@
 {
     "touchToView": "Touchez pour voir",
-    "noProductsFound": "Aucun produit trouvé"
+    "noProductsFound": "Aucun produit trouvé",
+    "searchPlaceholder": "Recherchez par nom, couleur ou collection...",
+    "minChars": "Saisissez au moins 3 caractères pour rechercher",
+    "sortBy": "Trier",
+    "sortAsc": "A → Z",
+    "sortDesc": "Z → A",
+    "viewMode": "Vue",
+    "gridView": "Grille",
+    "listView": "Liste",
+    "clearFilters": "Réinitialiser les filtres",
+    "activeFilters": "Filtres actifs",
+    "filters": {
+        "brand": "Marque",
+        "color": "Couleur",
+        "collection": "Collection",
+        "fabricType": "Type de tissu",
+        "fabricPattern": "Motif",
+        "martindale": "Martindale",
+        "martindaleRange": "Résistance",
+        "usage": "Usage",
+        "maintenance": "Entretien",
+        "search": "Recherche",
+        "type": "Type"
+    },
+    "hero": {
+        "eyebrow": "Catalogue de produits",
+        "defaultTitle": "Tous les produits",
+        "defaultSubtitle": "Explorez notre sélection et combinez les filtres pour trouver la texture idéale.",
+        "searchTitle": "Résultats pour \"{{term}}\"",
+        "searchSubtitle": "Affichage des correspondances avec votre recherche.",
+        "brandTitle": "Sélection {{value}}",
+        "collectionTitle": "Collection {{value}}",
+        "fabricTypeTitle": "{{value}}",
+        "fabricPatternTitle": "Motifs {{value}}",
+        "usageTitle": "Conçu pour {{value}}",
+        "maintenanceTitle": "Entretien {{value}}",
+        "fallbackFilteredSubtitle": "Vous avez appliqué des filtres personnalisés à cette sélection."
+    },
+    "sale": {
+        "badge": "En promotion",
+        "discountBadge": "-{{discount}}%",
+        "priceLabel": "Offre : {{price}}",
+        "originalLabel": "Avant : {{price}}",
+        "christmasBadge": "Spécial Noël",
+        "holidayTitle": "Spécial Noël",
+        "holidayMaxDiscount": "Jusqu'à -{{maxDiscount}}%",
+        "holidayShowAll": "Voir tous les produits",
+        "holidayShowOnly": "Voir uniquement Spécial Noël"
+    }
 }

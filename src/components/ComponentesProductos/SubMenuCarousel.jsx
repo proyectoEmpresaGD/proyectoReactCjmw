@@ -1,8 +1,8 @@
 // src/app/products/SubMenuCarousel.jsx
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaChevronDown, FaChevronRight, FaSpinner, FaTimes } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { FaTimes } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { cdnUrl } from '../../Constants/cdn';
 import { fetchCategoryPreview, groupCategories } from '../filters/categoryConfig';
 
@@ -10,10 +10,13 @@ import { fetchCategoryPreview, groupCategories } from '../filters/categoryConfig
    Hook de media query (mobile-only)
 ============================== */
 function useMediaQuery(query) {
-    const getMatch = () => (typeof window !== 'undefined' && 'matchMedia' in window)
-        ? window.matchMedia(query).matches
-        : false;
+    const getMatch = () =>
+        (typeof window !== 'undefined' && 'matchMedia' in window)
+            ? window.matchMedia(query).matches
+            : false;
+
     const [matches, setMatches] = useState(getMatch);
+
     useEffect(() => {
         if (typeof window === 'undefined' || !('matchMedia' in window)) return;
         const mql = window.matchMedia(query);
@@ -22,10 +25,11 @@ function useMediaQuery(query) {
         mql.addEventListener?.('change', onChange);
         return () => mql.removeEventListener?.('change', onChange);
     }, [query]);
+
     return matches;
 }
 
-// === Solo renderizar en pantallas pequeñas (< 1024px) ===
+// Solo queremos que SE MUESTRE en pantallas pequeñas (< 1024px)
 const useIsSmallScreen = () => useMediaQuery('(max-width: 1023.98px)');
 
 // Normaliza texto (acentos/espacios/mayús) para comparaciones seguras
@@ -68,38 +72,43 @@ const inferGroupKey = (key, originalGroupKey) => {
 };
 
 export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCategory }) {
+    // TODOS los hooks se ejecutan SIEMPRE en el mismo orden
     const isSmall = useIsSmallScreen();
-    // Si NO es pantalla pequeña, no renderizar (inutilizable en desktop/tablet)
-    if (!isSmall) return null;
-
     const { t } = useTranslation('subMenuCarousel');
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [open, setOpen] = useState(false);
     const [previewData, setPreviewData] = useState(null);
     const [hoveredKey, setHoveredKey] = useState(null);
     const [loadingPreview, setLoadingPreview] = useState(false);
 
-    const timeoutRef = useRef(null);
-    const cacheRef = useRef({});                 // cache pos/neg
+    const cacheRef = useRef({});          // cache pos/neg
     const isMountedRef = useRef(true);
 
     // Promesas en vuelo por categoría
-    const inFlightRef = useRef(new Map());       // cacheKey -> Promise
-    const lastTokenRef = useRef(new Map());      // cacheKey -> number
-    const MISS = Symbol('MISS');                 // marca cache negativa
+    const inFlightRef = useRef(new Map()); // cacheKey -> Promise
+    const lastTokenRef = useRef(new Map()); // cacheKey -> number
+    const MISS = Symbol('MISS');           // marca cache negativa
 
     useEffect(() => {
         return () => {
             isMountedRef.current = false;
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
         };
     }, []);
 
     // sections = [ [groupLabel, cats[]] ]
     // cada cat debe tener: { key, labelKey, groupKey }
-    const sections = useMemo(() => Object.entries(groupCategories(t, type)), [t, type]);
-    const flatCategories = useMemo(() => sections.flatMap(([, cats]) => cats), [sections]);
+    const sections = useMemo(
+        () => Object.entries(groupCategories(t, type)),
+        [t, type]
+    );
+
+    const flatCategories = useMemo(
+        () => sections.flatMap(([, cats]) => cats),
+        [sections]
+    );
+
     const hoveredCategory = useMemo(
         () => flatCategories.find(cat => cat.key === hoveredKey),
         [flatCategories, hoveredKey]
@@ -193,40 +202,49 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
         }
     }, [activeCategory, flatCategories, loadPreview, open]);
 
-    const openMenu = () => {
-        clearTimeout(timeoutRef.current);
+    // ESCUCHAR openProductFilters SOLO EN MÓVIL
+    useEffect(() => {
+        if (!isSmall) return;
+
+        const handler = (event) => {
+            const requestedType = event?.detail?.productType;
+
+            if (requestedType && requestedType !== type) {
+                const qs = new URLSearchParams(window.location.search);
+                qs.set('type', requestedType);
+                navigate(`/products?${qs.toString()}`, { state: { openFilters: true } });
+                return;
+            }
+
+            setOpen(true);
+        };
+
+        window.addEventListener('openProductFilters', handler);
+        return () => window.removeEventListener('openProductFilters', handler);
+    }, [isSmall, navigate, type]);
+
+    // Si venimos de otra ruta con state.openFilters, abrir directamente el menú en móvil
+    useEffect(() => {
+        if (!isSmall) return;
+        if (!location.state || !location.state.openFilters) return;
+
         setOpen(true);
-    };
 
-    const closeMenu = () => {
-        timeoutRef.current = setTimeout(() => {
-            setOpen(false);
-            setPreviewData(null);
-            setHoveredKey(null);
-            setLoadingPreview(false);
-        }, 160);
-    };
+        const { openFilters, ...restState } = location.state;
+        const cleanedState = Object.keys(restState).length ? restState : null;
 
-    const renderCategoryButton = (cat) => {
-        const label = t(cat.labelKey);
-        const isActive = norm(activeCategory) === norm(cat.key);
-        return (
-            <button
-                key={`${inferGroupKey(cat.key, cat.groupKey)}:${cat.key}`}
-                onClick={() => selectCategory(cat)}
-                onMouseEnter={() => handleFocusCategory(cat)}
-                onFocus={() => handleFocusCategory(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A] ${isActive
-                    ? 'bg-[#1E3A8A] text-white shadow-lg shadow-blue-200'
-                    : 'bg-white/70 text-gray-700 border border-slate-200 hover:bg-white'
-                    }`}
-            >
-                {label}
-            </button>
+        navigate(
+            `${location.pathname}${location.search}${location.hash || ''}`,
+            { replace: true, state: cleanedState },
         );
-    };
+    }, [isSmall, location.hash, location.pathname, location.search, location.state, navigate]);
 
-    // Solo usamos el menú móvil; el desktop queda descartado al no renderizar en >=lg
+    // 👇 early return DESPUÉS de todos los hooks
+    if (!isSmall) {
+        return null;
+    }
+
+    // Solo usamos el menú móvil
     const mobileMenu = (
         <div className="fixed inset-0 z-50 flex items-end" onClick={() => setOpen(false)}>
             <div
@@ -238,15 +256,20 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
                         <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
                             {t('previewTitle', 'Vista previa')}
                         </p>
+                        {/* Título corto, ya no la frase larga del botón */}
                         <h3 className="text-lg font-semibold text-slate-900">
-                            {t('triggerDefault')}
+                            {t('panelTitle', 'Filtros')}
                         </h3>
                     </div>
+                    {/* Botón de cerrar más visible pero manteniendo estética limpia */}
                     <button
                         onClick={() => setOpen(false)}
-                        className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 text-white font-semibold shadow-md shadow-slate-500/40 hover:bg-slate-800 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-700"
                     >
                         <FaTimes />
+                        <span className="text-sm">
+                            {t('closeButton', 'Cerrar filtros')}
+                        </span>
                     </button>
                 </div>
 
@@ -297,25 +320,10 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
         </div>
     );
 
+    // Ya no hay botón con el texto largo; solo se abre desde el botón de filtros del header
     return (
-        <div className="relative mt-10" onMouseEnter={openMenu} onMouseLeave={closeMenu}>
-            <div className="flex justify-center">
-                <button
-                    onClick={() => setOpen(o => !o)}
-                    className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#1F4F8D] to-[#4DA4FF] text-white shadow-lg shadow-blue-200/60 hover:shadow-blue-300/70 transition"
-                >
-                    <span className="text-base font-semibold tracking-wide">
-                        {t('triggerDefault')}
-                    </span>
-                    <FaChevronDown className={`transition-transform ${open ? 'rotate-180' : ''}`} />
-                </button>
-            </div>
-
-            {open && (
-                <>
-                    {mobileMenu}
-                </>
-            )}
-        </div>
+        <>
+            {open && mobileMenu}
+        </>
     );
 }

@@ -1,4 +1,52 @@
 {
     "touchToView": "Toca para ver",
-    "noProductsFound": "No se encontraron productos"
+    "noProductsFound": "No se encontraron productos",
+    "searchPlaceholder": "Busca por nombre, color o colección...",
+    "minChars": "Escribe al menos 3 caracteres para buscar",
+    "sortBy": "Ordenar",
+    "sortAsc": "A → Z",
+    "sortDesc": "Z → A",
+    "viewMode": "Vista",
+    "gridView": "Cuadrícula",
+    "listView": "Listado",
+    "clearFilters": "Quitar filtros",
+    "activeFilters": "Filtros activos",
+    "filters": {
+        "brand": "Marca",
+        "color": "Color",
+        "collection": "Colección",
+        "fabricType": "Tipo de tejido",
+        "fabricPattern": "Diseño",
+        "martindale": "Martindale",
+        "martindaleRange": "Resistencia",
+        "usage": "Uso",
+        "maintenance": "Mantenimiento",
+        "search": "Búsqueda",
+        "type": "Tipo"
+    },
+    "hero": {
+        "eyebrow": "Catálogo de productos",
+        "defaultTitle": "Todos los productos",
+        "defaultSubtitle": "Explora nuestra selección y combina filtros para encontrar la textura perfecta.",
+        "searchTitle": "Resultados para \"{{term}}\"",
+        "searchSubtitle": "Mostramos coincidencias con tu búsqueda.",
+        "brandTitle": "Selección de {{value}}",
+        "collectionTitle": "Colección {{value}}",
+        "fabricTypeTitle": "{{value}}",
+        "fabricPatternTitle": "Diseños {{value}}",
+        "usageTitle": "Pensado para {{value}}",
+        "maintenanceTitle": "Cuidados {{value}}",
+        "fallbackFilteredSubtitle": "Has aplicado filtros personalizados a la selección."
+    },
+    "sale": {
+        "badge": "En oferta",
+        "discountBadge": "-{{discount}}%",
+        "priceLabel": "Oferta: {{price}}",
+        "originalLabel": "Antes: {{price}}",
+        "christmasBadge": "Especial Navidad",
+        "holidayTitle": "Especial Navidad",
+        "holidayMaxDiscount": "Hasta -{{maxDiscount}}%",
+        "holidayShowAll": "Ver todos los productos",
+        "holidayShowOnly": "Ver solo Especial Navidad"
+    }
 }

@@ -1,5 +1,5 @@
 // src/app/products/buttonFiltro.jsx
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaSlidersH } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -54,12 +54,39 @@ const parseSearchFilters = (search) => {
     };
 };
 
+/* ==============================
+   Hook de media query (desktop-only para FilterPanel)
+============================== */
+function useMediaQuery(query) {
+    const getMatch = () =>
+        (typeof window !== 'undefined' && 'matchMedia' in window)
+            ? window.matchMedia(query).matches
+            : false;
+
+    const [matches, setMatches] = useState(getMatch);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !('matchMedia' in window)) return;
+        const mql = window.matchMedia(query);
+        const onChange = () => setMatches(mql.matches);
+        onChange();
+        mql.addEventListener?.('change', onChange);
+        return () => mql.removeEventListener?.('change', onChange);
+    }, [query]);
+
+    return matches;
+}
+
+const useIsLargeScreen = () => useMediaQuery('(min-width: 1024px)');
+
 export default function FiltroButton({ clearFiltersCallback }) {
     const { t } = useTranslation('buttonFiltro');
     const navigate = useNavigate();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const productType = params.get('type') === 'papel' ? 'papel' : 'tela';
+
+    const isLarge = useIsLargeScreen();
 
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [filters, setFilters] = useState(EMPTY_FILTERS);
@@ -74,9 +101,48 @@ export default function FiltroButton({ clearFiltersCallback }) {
         });
     }, [location.search]);
 
-    const openPanel = () => {
+    const openPanel = useCallback(() => {
+        // Solo tiene sentido abrir FilterPanel si es escritorio
+        if (!isLarge) return;
         setIsPanelOpen(true);
-    };
+    }, [isLarge]);
+
+    // Navegación con state: { openFilters: true } → solo abre panel en escritorio
+    useEffect(() => {
+        if (!isLarge) return;
+
+        if (location.state?.openFilters) {
+            openPanel();
+
+            // limpiamos el state para que no se quede pegado
+            const { openFilters: _ignored, ...restState } = location.state || {};
+            const cleanedState = Object.keys(restState).length ? restState : null;
+            navigate(
+                `${location.pathname}${location.search}${location.hash || ''}`,
+                { replace: true, state: cleanedState },
+            );
+        }
+    }, [isLarge, location.hash, location.pathname, location.search, location.state, navigate, openPanel]);
+
+    // Evento global: openProductFilters
+    // 👉 Aquí SOLO reaccionamos en escritorio; en móvil lo maneja SubMenuCarousel
+    useEffect(() => {
+        if (!isLarge) return;
+
+        const handleExternalOpen = (event) => {
+            const requestedType = event?.detail?.productType;
+            if (requestedType && requestedType !== productType) {
+                const qs = new URLSearchParams(location.search);
+                qs.set('type', requestedType);
+                navigate(`/products?${qs.toString()}`, { state: { openFilters: true } });
+                return;
+            }
+            openPanel();
+        };
+
+        window.addEventListener('openProductFilters', handleExternalOpen);
+        return () => window.removeEventListener('openProductFilters', handleExternalOpen);
+    }, [isLarge, location.search, navigate, openPanel, productType]);
 
     const applyFilters = (selectedFilters) => {
         setFilters({
@@ -140,7 +206,7 @@ export default function FiltroButton({ clearFiltersCallback }) {
                 </span>
             </div>
 
-            {/* PANEL LATERAL (el propio FilterPanel ya no renderiza en <lg) */}
+            {/* PANEL LATERAL (FilterPanel solo renderiza en >= lg internamente) */}
             <FilterPanel
                 isOpen={isPanelOpen}
                 close={() => setIsPanelOpen(false)}

@@ -49,5 +49,6 @@
     "previewLabel": "Exemple : {{label}}",
     "previewTitle": "Aperçu",
     "previewCta": "Voir le produit",
-    "emptyPreview": "Sélectionnez une catégorie pour découvrir un produit mis en avant."
+    "emptyPreview": "Sélectionnez une catégorie pour découvrir un produit mis en avant.",
+    "closeButton": "Fermer les filtres"
 }

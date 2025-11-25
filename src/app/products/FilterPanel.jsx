@@ -28,7 +28,7 @@ function useMediaQuery(query) {
     return matches;
 }
 
-// === Solo renderizar en pantallas grandes (>= 1024px) ===
+// === Solo considerar pantallas grandes (>= 1024px) ===
 const useIsLargeScreen = () => useMediaQuery('(min-width: 1024px)');
 
 /* ==============================
@@ -146,9 +146,7 @@ export default function FilterPanel({
     currentFilters,
     productType = 'tela'
 }) {
-    const isLarge = useIsLargeScreen();
-    // Si NO es pantalla grande, no renderizar (inutilizable en móvil/tablet)
-    if (!isLarge) return null;
+    const isLarge = useIsLargeScreen(); // hook siempre se ejecuta
 
     const { t } = useTranslation('filterPanelNew');
     const { t: tCategories } = useTranslation('subMenuCarousel');
@@ -605,10 +603,8 @@ export default function FilterPanel({
 
     /* ==============================
        RECOMENDACIONES (Tendencias)
-       (Eliminadas las que usaban 'LAVABLE')
-    ============================== */
+============================== */
     const recommendationPresets = useMemo(() => ([
-        // — Minimalismo cálido / Japandi
         {
             id: 'japandiWarm',
             title: t('recommendations.items.japandiWarm.title'),
@@ -620,7 +616,6 @@ export default function FilterPanel({
                 { type: 'martindaleRange', value: '0-20000' },
             ],
         },
-        // — Coastal / Mediterráneo
         {
             id: 'coastalLinen',
             title: t('recommendations.items.coastalLinen.title'),
@@ -632,7 +627,6 @@ export default function FilterPanel({
                 { type: 'usage', value: 'OUTDOOR' },
             ],
         },
-        // — Velvet Luxe (tono joya)
         {
             id: 'velvetLuxe',
             title: t('recommendations.items.velvetLuxe.title'),
@@ -644,7 +638,6 @@ export default function FilterPanel({
                 { type: 'martindaleRange', value: '50000-100000' },
             ],
         },
-        // — Maximalismo gráfico (statement)
         {
             id: 'maximalistGeo',
             title: t('recommendations.items.maximalistGeo.title'),
@@ -656,7 +649,6 @@ export default function FilterPanel({
                 { type: 'martindaleRange', value: '20000-50000' },
             ],
         },
-        // — Terracota & Tierra
         {
             id: 'earthyTerracotta',
             title: t('recommendations.items.earthyTerracotta.title'),
@@ -668,7 +660,6 @@ export default function FilterPanel({
                 { type: 'martindaleRange', value: '20000-50000' },
             ],
         },
-        // — Monocromo Carbón
         {
             id: 'monoCharcoal',
             title: t('recommendations.items.monoCharcoal.title'),
@@ -680,7 +671,6 @@ export default function FilterPanel({
                 { type: 'fabricPattern', value: 'LISO' },
             ],
         },
-        // — Greige Minimal
         {
             id: 'greigeMinimal',
             title: t('recommendations.items.greigeMinimal.title'),
@@ -692,7 +682,6 @@ export default function FilterPanel({
                 { type: 'fabricPattern', value: 'LISO' },
             ],
         },
-        // — 3 originales útiles
         {
             id: 'cozyNeutrals',
             title: t('recommendations.items.cozyNeutrals.title'),
@@ -715,7 +704,6 @@ export default function FilterPanel({
                 { type: 'usage', value: 'OUTDOOR' },
             ],
         },
-        // extra ejemplo del diff
         {
             id: 'easyCare',
             title: t('recommendations.items.easyCare.title'),
@@ -956,8 +944,9 @@ export default function FilterPanel({
         return (<>{text.slice(0, i)}<mark className="rounded px-0.5 bg-yellow-200/70">{text.slice(i, i + q.length)}</mark>{text.slice(i + q.length)}</>);
     };
 
-    // Early return: si el panel no está abierto, no bloqueamos scroll (pero mantenemos diseño)
-    if (!isOpen) return null;
+    // Early return seguro: después de TODOS los hooks
+    //   - no se renderiza nada si no está abierto o no es pantalla grande
+    if (!isOpen || !isLarge) return null;
 
     return (
         <>
@@ -1155,31 +1144,21 @@ export default function FilterPanel({
                             {/* DERECHA — FILTROS */}
                             <aside ref={asideRef} className="min-h-0 overflow-y-auto bg-white/40 px-3 sm:px-6 pt-4 pb-28 sm:pt-6 sm:pb-36">
                                 {/* Quick nav */}
-                                {[
-                                    { key: 'marcas', label: t('categories.brands'), has: brands.length > 0 },
-                                    { key: 'colecciones', label: t('categories.collections'), has: collections.length > 0 },
-                                    { key: 'tipos', label: t('categories.fabricTypes'), has: fabricTypes.length > 0 },
-                                    { key: 'martindale', label: t('categories.martindale'), has: MARTINDALE_RANGES.length > 0 },
-                                ].some(i => i.has) && (
-                                        <div className="mb-4 hidden sm:block">
-                                            <div className="mb-2 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-500">
-                                                <FaListUl className="text-slate-400" />
-                                                {t('quicknav.title')}
-                                            </div>
-                                            <div className="flex flex-wrap gap-2">
-                                                {[
-                                                    { key: 'marcas', label: t('categories.brands'), has: brands.length > 0 },
-                                                    { key: 'colecciones', label: t('categories.collections'), has: collections.length > 0 },
-                                                    { key: 'tipos', label: t('categories.fabricTypes'), has: fabricTypes.length > 0 },
-                                                    { key: 'martindale', label: t('categories.martindale'), has: MARTINDALE_RANGES.length > 0 },
-                                                ].filter(i => i.has).map((item) => (
-                                                    <button key={item.key} type="button" onClick={() => handleQuickNav(item.key)} className="rounded-full border border-white/70 bg-white/85 px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:-translate-y-0.5 transition">
-                                                        {item.label}
-                                                    </button>
-                                                ))}
-                                            </div>
+                                {quickNavItems.length > 0 && (
+                                    <div className="mb-4 hidden sm:block">
+                                        <div className="mb-2 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-500">
+                                            <FaListUl className="text-slate-400" />
+                                            {t('quicknav.title')}
                                         </div>
-                                    )}
+                                        <div className="flex flex-wrap gap-2">
+                                            {quickNavItems.map((item) => (
+                                                <button key={item.key} type="button" onClick={() => handleQuickNav(item.key)} className="rounded-full border border-white/70 bg-white/85 px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:-translate-y-0.5 transition">
+                                                    {item.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Contenedor con gap para separar tarjetas */}
                                 <div className="flex flex-col gap-3 sm:gap-4">

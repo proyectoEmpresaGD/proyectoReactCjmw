@@ -24,6 +24,9 @@ export const createProductRouter = () => {
     productsRouter.post('/filter', productController.filterProducts.bind(productController));
     productsRouter.get('/codfamil/:codfamil', productController.getByCodFamil.bind(productController));
 
+    // 🎄 NUEVO: productos “Especial Navidad”
+    productsRouter.get('/holiday', productController.getHolidayProducts.bind(productController));
+
     // ==============================
     // 3. BÚSQUEDAS (rutas con nombre)
     // ==============================
@@ -51,6 +54,8 @@ export const createProductRouter = () => {
     productsRouter.post('/byProductCollection',
         productController.getProductByCollection.bind(productController)
     );
+
+
 
     // ==============================
     // 6. Rutas por ID (¡AL FINAL!)

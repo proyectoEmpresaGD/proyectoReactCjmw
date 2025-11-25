@@ -29,6 +29,25 @@ export class ProductModel {
     'CLEMENTINE'
   ];
 
+
+  static holidayNamePrefixes = [
+    'ADELFAS',
+    'GENESIS',
+    // añade aquí más prefijos de familias a liquidar
+  ];
+
+  static getHolidayNameClause(startIndex = 1) {
+    if (!this.holidayNamePrefixes || this.holidayNamePrefixes.length === 0) {
+      return { clause: 'TRUE', values: [] };
+    }
+    const patterns = this.holidayNamePrefixes.map(p => `${p.toUpperCase()}%`);
+    return {
+      clause: `UPPER(unaccent("nombre")) LIKE ANY($${startIndex})`,
+      values: [patterns],
+    };
+  }
+
+
   static getExcludedNamesClause(startIndex = 1) {
     const placeholders = this.excludedNames.map((_, i) => `$${i + startIndex}`);
     return {
@@ -252,6 +271,62 @@ export class ProductModel {
       rows.map((p) => this.attachImages(p, ['Buena', 'Baja']))
     );
     return withImages;
+  }
+
+  /**
+    * NUEVO:
+    * Listado rápido de productos “Especial Navidad”
+    * usando prefijos de nombre (ADELFAS, GENESIS, etc.).
+    * Devuelve { products, total }.
+    */
+  static async getHolidayProducts({ limit = 16, offset = 0 }) {
+    // Si no hay prefijos configurados, devolvemos vacío
+    if (!this.holidayNamePrefixes || this.holidayNamePrefixes.length === 0) {
+      return { products: [], total: 0 };
+    }
+
+    let where = `"nombre" IS NOT NULL AND "nombre" <> ''`;
+    const params = [];
+    let index = 1;
+
+    // Exclusiones globales
+    const exclusion = this.getExcludedNamesClause(index);
+    where += ` AND ${exclusion.clause}`;
+    params.push(...exclusion.values);
+    index += exclusion.values.length;
+
+    // Prefijos de Navidad
+    const patterns = this.holidayNamePrefixes.map(p => `${p.toUpperCase()}%`);
+    where += ` AND UPPER(unaccent("nombre")) LIKE ANY($${index++})`;
+    params.push(patterns);
+
+    // Total consistente
+    const countQuery = `
+      SELECT COUNT(DISTINCT "codprodu")::int AS total
+      FROM productos
+      WHERE ${where}
+    `;
+    const { rows: countRows } = await pool.query(countQuery, params);
+    const total = countRows[0]?.total || 0;
+
+    // Página actual
+    const dataQuery = `
+      SELECT DISTINCT ON ("nombre") *, TRUE AS "isChristmas"
+      FROM productos
+      WHERE ${where}
+      ORDER BY "nombre", "codprodu"
+      LIMIT $${index++}
+      OFFSET $${index++}
+    `;
+    const dataParams = [...params, limit, offset];
+    const { rows } = await pool.query(dataQuery, dataParams);
+
+    // Adjuntamos imagen Baja desde backend para acelerar el front
+    const withImages = await Promise.all(
+      rows.map(p => this.attachImages(p, ['Baja']))
+    );
+
+    return { products: withImages, total };
   }
 
   // ---------------------------------------------------------------------------

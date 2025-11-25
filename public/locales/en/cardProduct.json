@@ -1,4 +1,52 @@
 {
     "touchToView": "Tap to view",
-    "noProductsFound": "No products found"
+    "noProductsFound": "No products found",
+    "searchPlaceholder": "Search by name, color or collection...",
+    "minChars": "Type at least 3 characters to search",
+    "sortBy": "Sort",
+    "sortAsc": "A → Z",
+    "sortDesc": "Z → A",
+    "viewMode": "View",
+    "gridView": "Grid",
+    "listView": "List",
+    "clearFilters": "Clear filters",
+    "activeFilters": "Active filters",
+    "filters": {
+        "brand": "Brand",
+        "color": "Color",
+        "collection": "Collection",
+        "fabricType": "Fabric type",
+        "fabricPattern": "Pattern",
+        "martindale": "Martindale",
+        "martindaleRange": "Resistance",
+        "usage": "Usage",
+        "maintenance": "Care",
+        "search": "Search",
+        "type": "Type"
+    },
+    "hero": {
+        "eyebrow": "Product catalog",
+        "defaultTitle": "All products",
+        "defaultSubtitle": "Explore our collection and combine filters to find the perfect texture.",
+        "searchTitle": "Results for \"{{term}}\"",
+        "searchSubtitle": "Showing matches for your search.",
+        "brandTitle": "{{value}} selection",
+        "collectionTitle": "{{value}} collection",
+        "fabricTypeTitle": "{{value}}",
+        "fabricPatternTitle": "{{value}} patterns",
+        "usageTitle": "Designed for {{value}}",
+        "maintenanceTitle": "Care: {{value}}",
+        "fallbackFilteredSubtitle": "You've applied personalised filters to this view."
+    },
+    "sale": {
+        "badge": "On sale",
+        "discountBadge": "-{{discount}}%",
+        "priceLabel": "Offer: {{price}}",
+        "originalLabel": "Was: {{price}}",
+        "christmasBadge": "Christmas Special",
+        "holidayTitle": "Christmas Special",
+        "holidayMaxDiscount": "Up to -{{maxDiscount}}%",
+        "holidayShowAll": "Show all products",
+        "holidayShowOnly": "Show only Christmas Special"
+    }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     RiMenu3Fill,
@@ -8,6 +8,7 @@ import {
     RiArrowDropDownLine,
     RiArrowDropUpLine,
 } from 'react-icons/ri';
+import { FaSlidersH } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCart from './shoppingCart';
 import { useCart } from './CartContext';
@@ -54,7 +55,7 @@ export const Header = ({ closeModal }) => {
     const brandsRef = useRef(null);
     const productsRef = useRef(null);
 
-    // --- NUEVO: mapa ruta -> código de marca y sincronización estado/ruta ---
+    // --- mapa ruta -> código de marca y sincronización estado/ruta ---
     const pathToBrand = {
         '/arenaHome': 'ARE',
         '/harbourHome': 'HAR',
@@ -77,16 +78,16 @@ export const Header = ({ closeModal }) => {
             : (codeFromPath && brandLogos[codeFromPath]) ? brandLogos[codeFromPath]
                 : brandLogos[location.pathname] || defaultLogo;
 
-    const closeAllDropdowns = () => {
+    const closeAllDropdowns = useCallback(() => {
         setShowBrandsDropdown(false);
         setShowProductsDropdown(false);
         setShowUserDropdown(false);
         setShowLanguageDropdown(false);
-    };
-    const closeSearchAndCart = () => {
+    }, []);
+    const closeSearchAndCart = useCallback(() => {
         setShowSearchBar(false);
         setShowCart(false);
-    };
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = event => {
@@ -110,7 +111,7 @@ export const Header = ({ closeModal }) => {
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [closeAllDropdowns, closeSearchAndCart]);
 
     const toggleDropdown = dropdown => {
         closeAllDropdowns();
@@ -134,6 +135,40 @@ export const Header = ({ closeModal }) => {
         setShowMenu(false);
         closeAllDropdowns();
     };
+
+    // NUEVO: abrir filtros (mobile → SubMenuCarousel, desktop → FilterPanel)
+    const hasActiveFilters = useMemo(() => {
+        if (!location.pathname.startsWith('/products')) return false;
+        const params = new URLSearchParams(location.search);
+        const filterKeys = [
+            'brand',
+            'color',
+            'collection',
+            'fabricType',
+            'fabricPattern',
+            'martindale',
+            'martindaleRange',
+            'uso',
+            'mantenimiento',
+        ];
+        return filterKeys.some((key) => params.getAll(key).length > 0);
+    }, [location.pathname, location.search]);
+
+    const openFilters = useCallback(() => {
+        closeAllDropdowns();
+        closeSearchAndCart();
+        setShowMenu(false);
+
+        if (location.pathname.startsWith('/products')) {
+            // Ya estamos en products: disparamos evento global
+            window.dispatchEvent(new CustomEvent('openProductFilters'));
+            return;
+        }
+
+        // No estamos en products:
+        // Navegamos a /products y marcamos en el state que hay que abrir filtros
+        navigate('/products', { state: { openFilters: true } });
+    }, [closeAllDropdowns, closeSearchAndCart, location.pathname, navigate]);
 
     const changeLanguage = opt => {
         i18n.changeLanguage(opt.value);
@@ -260,6 +295,21 @@ export const Header = ({ closeModal }) => {
 
                     {/* Icons */}
                     <div className="flex items-center space-x-4">
+                        {/* Filters (icono, SIN texto tipo “Encuentra el tejido…”) */}
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={openFilters}
+                                className="text-gray-800 focus:outline-none relative"
+                                aria-label={t('openFilters', 'Abrir filtros')}
+                            >
+                                <FaSlidersH size={20} />
+                                {hasActiveFilters && (
+                                    <span className="absolute top-0 right-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#26659E]" />
+                                )}
+                            </button>
+                        </div>
+
                         {/* User */}
                         <div className="relative" ref={userRef}>
                             <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('user')}>
@@ -306,9 +356,6 @@ export const Header = ({ closeModal }) => {
 
                         {/* Language */}
                         <div className="relative" ref={languageRef}>
-                            {/* <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('language')}>
-                                <FaGlobe size={24} />
-                            </button> */}
                             {showLanguageDropdown && (
                                 <div className="absolute top-full right-0 mt-2 bg-slate-100 shadow-lg rounded-md py-2 w-32 z-50">
                                     {languageOptions.map(opt => (
@@ -381,6 +428,15 @@ export const Header = ({ closeModal }) => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Botón de filtros en móvil: texto corto “Filtros”, no el texto largo */}
+                        <button
+                            onClick={openFilters}
+                            className="mt-6 w-full rounded-lg bg-[#26659E] py-3 text-center text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-[#26659E]/60"
+                        >
+                            {t('filtersButtonLabel', 'Filtros')}
+                        </button>
+
                         <button onClick={() => handleLinkClick('/about')} className="block text-gray-800 font-semibold py-2">
                             {t('about')}
                         </button>

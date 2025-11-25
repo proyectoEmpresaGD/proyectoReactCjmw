@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { useCart } from '../CartContext';
-import SkeletonLoader from '../ComponentesProductos/skeletonLoader';
 import Modal from './modal';
 import Filtro from '../../app/products/buttonFiltro';
 import SubMenuCarousel from './SubMenuCarousel';
@@ -10,18 +9,34 @@ import CryptoJS from 'crypto-js';
 import { useTranslation } from 'react-i18next';
 import { cdnUrl } from '../../Constants/cdn';
 import { secretKey, itemsPerPage, defaultImageUrl, apiUrl } from '../../Constants/constants';
-import { FaSortAlphaDown, FaSortAlphaUp, FaThLarge, FaThList, FaAngleDoubleRight } from 'react-icons/fa';
+import { FaSortAlphaDown, FaSortAlphaUp, FaThLarge, FaThList } from 'react-icons/fa';
+import {
+    FiCompass,
+    FiFilter,
+    FiGrid,
+    FiLayers,
+    FiSearch,
+    FiTag,
+    FiTool,
+    FiType,
+} from 'react-icons/fi';
 
 const LazyImage = ({ src, alt, className }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef(null);
+
     useEffect(() => {
         const obs = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) { setVisible(true); obs.disconnect(); }
+            if (entry.isIntersecting) {
+                setVisible(true);
+                obs.disconnect();
+            }
         }, { threshold: 0.1 });
+
         if (ref.current) obs.observe(ref.current);
         return () => obs.disconnect();
     }, []);
+
     return (
         <div ref={ref} className="w-full h-full bg-gray-100">
             {visible && (
@@ -35,6 +50,196 @@ const LazyImage = ({ src, alt, className }) => {
         </div>
     );
 };
+
+const asBoolean = (value) => {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value !== 0;
+    if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase();
+        return ['true', '1', 'yes', 'si', 'sí'].includes(normalized);
+    }
+    return false;
+};
+
+const extractNumber = (value) => {
+    if (value == null) return null;
+    const sanitized = String(value)
+        .replace(/[^0-9,.-]/g, '')
+        .replace(/,(?=\d{3}(?:\D|$))/g, '')
+        .replace(',', '.');
+    const num = Number(sanitized);
+    return Number.isFinite(num) ? num : null;
+};
+
+const formatPrice = (value, currencyHint) => {
+    if (!Number.isFinite(value)) return null;
+
+    if (typeof currencyHint === 'string') {
+        const trimmed = currencyHint.trim();
+        if (/^[A-Za-z]{3}$/.test(trimmed)) {
+            try {
+                return new Intl.NumberFormat(undefined, {
+                    style: 'currency',
+                    currency: trimmed.toUpperCase(),
+                }).format(value);
+            } catch {
+                // fallback
+            }
+        }
+        if (trimmed.length > 0 && trimmed.length <= 2) {
+            return `${trimmed} ${value.toLocaleString()}`;
+        }
+    }
+
+    try {
+        return new Intl.NumberFormat(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+        }).format(value);
+    } catch {
+        return value.toString();
+    }
+};
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   NAVIDAD: Prefijos y descuento por defecto (DESACTIVADO)
+   ────────────────────────────────────────────────────────────────────────────── */
+// const STATIC_SALE_PREFIXES = ['ADELFAS', 'GENESIS'];
+// const HOLIDAY_DEFAULT_DISCOUNT = 30; // 30%
+
+const resolveSaleInfo = (product = {}) => {
+    const normalizedName = (product.nombre || '')
+        .trim()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+        .toUpperCase();
+
+    /* NAVIDAD OFF: detección por prefijo desactivada */
+    // const nameIsStaticSale = STATIC_SALE_PREFIXES.some((prefix) =>
+    //     normalizedName.startsWith(prefix)
+    // );
+    const nameIsStaticSale = false;
+
+    const saleFlags = [
+        product.enOferta,
+        product.oferta,
+        product.esOferta,
+        product.esoferta,
+        product.isOnSale,
+        product.en_promocion,
+        product.promocion,
+        product.promo,
+    ];
+
+    const rawSalePrice =
+        product.precioOferta ??
+        product.precio_oferta ??
+        product.precioPromocion ??
+        product.precio_promocion ??
+        product.salePrice ??
+        product.priceOffer ??
+        product.offerPrice ??
+        null;
+
+    const rawOriginalPrice =
+        product.precioOriginal ??
+        product.precio_original ??
+        product.precio ??
+        product.precioVenta ??
+        product.price ??
+        product.precioLista ??
+        null;
+
+    const rawDiscount =
+        product.descuento ??
+        product.discount ??
+        product.porcentajeDescuento ??
+        product.porcentaje_descuento ??
+        product.offPercent ??
+        product.discountPercent ??
+        null;
+
+    const salePriceNumber = extractNumber(rawSalePrice);
+    const originalPriceNumber = extractNumber(rawOriginalPrice);
+    const explicitDiscount = extractNumber(rawDiscount);
+
+    let derivedDiscount = Number.isFinite(explicitDiscount)
+        ? Math.round(explicitDiscount)
+        : null;
+
+    if (
+        derivedDiscount == null &&
+        Number.isFinite(salePriceNumber) &&
+        Number.isFinite(originalPriceNumber) &&
+        originalPriceNumber > 0
+    ) {
+        const computed = Math.round((1 - salePriceNumber / originalPriceNumber) * 100);
+        if (Number.isFinite(computed) && computed > 0) {
+            derivedDiscount = computed;
+        }
+    }
+
+    /* NAVIDAD OFF: si es estático y sin descuento, antes forzábamos 30% */
+    // if (nameIsStaticSale && derivedDiscount == null) {
+    //     derivedDiscount = HOLIDAY_DEFAULT_DISCOUNT;
+    // }
+
+    const currencyHint =
+        product.moneda ||
+        product.currency ||
+        product.simboloMoneda ||
+        product.currencySymbol ||
+        null;
+
+    const salePrice = Number.isFinite(salePriceNumber)
+        ? formatPrice(salePriceNumber, currencyHint)
+        : rawSalePrice != null
+            ? String(rawSalePrice)
+            : null;
+
+    const originalPrice = Number.isFinite(originalPriceNumber)
+        ? formatPrice(originalPriceNumber, currencyHint)
+        : rawOriginalPrice != null
+            ? String(rawOriginalPrice)
+            : null;
+
+    const isOnSale =
+        /* NAVIDAD OFF: quitamos el OR con nameIsStaticSale */
+        // nameIsStaticSale ||
+        saleFlags.some(asBoolean) ||
+        Boolean(derivedDiscount) ||
+        Boolean(salePrice);
+
+    return {
+        isOnSale,
+        /* NAVIDAD OFF: esta marca queda siempre false */
+        isLiquidation: false,
+        discount: Number.isFinite(derivedDiscount) ? derivedDiscount : null,
+        salePrice,
+        originalPrice,
+    };
+};
+
+const CONTEXT_TOKEN_KEYS = [
+    'search',
+    'brand',
+    'collection',
+    'fabricType',
+    'fabricPattern',
+    'uso',
+    'mantenimiento',
+    'type',
+];
+const TOKEN_ORDER = [
+    'search',
+    'brand',
+    'collection',
+    'fabricType',
+    'fabricPattern',
+    'uso',
+    'mantenimiento',
+    'type',
+];
 
 export default function CardProduct() {
     const { t } = useTranslation('cardProduct');
@@ -66,10 +271,15 @@ export default function CardProduct() {
     const brand = params.get('brand') || hashParams.get('brand');
     const fabricType = params.get('fabricType') || hashParams.get('fabricType');
     const collection = params.get('collection');
-    const type = params.get('type');
+    const typeParam = params.get('type');
     const mantenimiento = params.get('mantenimiento');
 
-    const decryptedPid = pidEnc ? CryptoJS.AES.decrypt(pidEnc, secretKey).toString(CryptoJS.enc.Utf8) : null;
+    /* NAVIDAD OFF: parámetro de URL desactivado */
+    // const isHolidayParam = params.get('holiday') === '1';
+
+    const decryptedPid = pidEnc
+        ? CryptoJS.AES.decrypt(pidEnc, secretKey).toString(CryptoJS.enc.Utf8)
+        : null;
     const fetchByIdParam = decryptedPid || productId;
 
     // State
@@ -89,6 +299,9 @@ export default function CardProduct() {
     const [sortOrder, setSortOrder] = useState('alpha-asc');
     const [viewMode, setViewMode] = useState('grid4');
 
+    /* NAVIDAD OFF: estado y sync eliminados */
+    // const [showOnlyHoliday, setShowOnlyHoliday] = useState(isHolidayParam);
+
     // sync page from URL
     useEffect(() => {
         const p = parseInt(params.get('page') || '1', 10);
@@ -96,17 +309,30 @@ export default function CardProduct() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search]);
 
-    useEffect(() => { setSearchInput(searchQuery || ''); }, [searchQuery]);
-    useEffect(() => { setActiveCategory(uso || fabricType || fabricPattern || mantenimiento || null); }, [uso, fabricType, fabricPattern, mantenimiento]);
+    /* NAVIDAD OFF: sync del flag */
+    // useEffect(() => {
+    //     setShowOnlyHoliday(isHolidayParam);
+    // }, [isHolidayParam]);
+
+    useEffect(() => {
+        setSearchInput(searchQuery || '');
+    }, [searchQuery]);
+
+    useEffect(() => {
+        setActiveCategory(uso || fabricType || fabricPattern || mantenimiento || null);
+    }, [uso, fabricType, fabricPattern, mantenimiento]);
 
     const getArray = (key) => {
         const seen = new Set();
         const values = params
             .getAll(key)
-            .map(value => (value == null ? '' : value.trim()))
+            .map((value) => (value == null ? '' : value.trim()))
             .filter(Boolean)
-            .filter(value => {
-                const normalized = value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toUpperCase();
+            .filter((value) => {
+                const normalized = value
+                    .normalize('NFD')
+                    .replace(/\p{Diacritic}/gu, '')
+                    .toUpperCase();
                 if (seen.has(normalized)) return false;
                 seen.add(normalized);
                 return true;
@@ -122,7 +348,7 @@ export default function CardProduct() {
         const fabricTypes = getArray('fabricType');
         const patterns = getArray('fabricPattern');
         const martindales = getArray('martindale')
-            .map(value => Number(value))
+            .map((value) => Number(value))
             .filter(Number.isFinite);
         const martindaleRanges = getArray('martindaleRange');
         const usos = getArray('uso');
@@ -137,18 +363,22 @@ export default function CardProduct() {
         if (martindaleRanges.length) ap.martindaleRanges = martindaleRanges;
         if (usos.length) ap.uso = usos;
         if (mantenimientos.length) ap.mantenimiento = mantenimientos;
-        // sigue igual para search, type, etc.
         if (searchQuery) ap.search = searchQuery;
-        if (type === 'papel') ap.fabricType = ['WALLPAPER', 'PAPEL PINTADO'];
+        if (typeParam === 'papel') ap.fabricType = ['WALLPAPER', 'PAPEL PINTADO'];
 
         return ap;
     };
 
-    // imágenes
+    // imágenes (para rutas normales)
     const loadLowRes = async (prod) => {
         try {
-            const low = await fetch(`${apiUrl}/api/images/${prod.codprodu}/Baja`).then((r) => r.ok ? r.json() : null);
-            return { ...prod, imageBaja: cdnUrl(low ? `https://${low.ficadjunto}` : defaultImageUrl) };
+            const low = await fetch(
+                `${apiUrl}/api/images/${prod.codprodu}/Baja`
+            ).then((r) => (r.ok ? r.json() : null));
+            return {
+                ...prod,
+                imageBaja: cdnUrl(low ? `https://${low.ficadjunto}` : defaultImageUrl),
+            };
         } catch {
             return { ...prod, imageBaja: defaultImageUrl };
         }
@@ -156,7 +386,9 @@ export default function CardProduct() {
 
     const preloadHighResInto = async (prod) => {
         try {
-            const hi = await fetch(`${apiUrl}/api/images/${prod.codprodu}/Buena`).then((r) => r.ok ? r.json() : null);
+            const hi = await fetch(
+                `${apiUrl}/api/images/${prod.codprodu}/Buena`
+            ).then((r) => (r.ok ? r.json() : null));
             if (hi) {
                 setSelectedProduct((prev) =>
                     prev && prev.codprodu === prod.codprodu
@@ -164,10 +396,17 @@ export default function CardProduct() {
                         : prev
                 );
             }
-        } catch { }
+        } catch {
+            // silent
+        }
     };
 
-    // fetch products (arreglo: fallback hasMore y total coherentes)
+    /* ──────────────────────────────────────────────────────────────────────────
+       NAVIDAD: fetch de productos especiales (DESACTIVADO)
+       ────────────────────────────────────────────────────────────────────────── */
+    // const fetchHolidayProducts = useCallback(async (pageNum = 1) => { ... }, []);
+
+    // fetch normal de productos
     const fetchProducts = useCallback(async (pageNum = 1, appliedFilters = {}) => {
         controllerRef.current?.abort();
         const controller = new AbortController();
@@ -177,7 +416,8 @@ export default function CardProduct() {
         setError(null);
 
         try {
-            let data, list;
+            let data;
+            let list;
 
             // Search
             if (appliedFilters.search && String(appliedFilters.search).trim()) {
@@ -185,6 +425,7 @@ export default function CardProduct() {
                 u.searchParams.set('query', String(appliedFilters.search).trim());
                 u.searchParams.set('limit', itemsPerPage);
                 u.searchParams.set('page', pageNum);
+
                 let resp = await fetch(u, { signal: controller.signal });
                 if (!resp.ok) {
                     const legacy = new URL(`${apiUrl}/api/products/search`);
@@ -197,12 +438,14 @@ export default function CardProduct() {
                 data = await resp.json();
                 list = data.products || [];
             } else {
-                // Filtros
                 const hasFilters =
                     Object.keys(appliedFilters).length > 0 &&
                     Object.entries(appliedFilters).some(
-                        ([k, v]) => k !== 'search' && (Array.isArray(v) ? v.length > 0 : Boolean(v))
+                        ([k, v]) =>
+                            k !== 'search' &&
+                            (Array.isArray(v) ? v.length > 0 : Boolean(v))
                     );
+
                 if (hasFilters) {
                     const resp = await fetch(
                         `${apiUrl}/api/products/filter?page=${pageNum}&limit=${itemsPerPage}`,
@@ -217,8 +460,10 @@ export default function CardProduct() {
                     data = await resp.json();
                     list = data.products || [];
                 } else {
-                    // Catálogo
-                    const resp = await fetch(`${apiUrl}/api/products?limit=${itemsPerPage}&page=${pageNum}`, { signal: controller.signal });
+                    const resp = await fetch(
+                        `${apiUrl}/api/products?limit=${itemsPerPage}&page=${pageNum}`,
+                        { signal: controller.signal }
+                    );
                     if (!resp.ok) throw new Error('Error fetching');
                     data = await resp.json();
                     list = data.products || data;
@@ -227,18 +472,21 @@ export default function CardProduct() {
 
             const wi = await Promise.all((list || []).map(loadLowRes));
 
-            // Primera página sin datos → corta
             if (pageNum === 1 && wi.length === 0) {
                 setProducts([]);
                 setTotalProducts(0);
                 setHasMore(false);
-                try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+                try {
+                    observerRef.current?.disconnect();
+                    observerRef.current = null;
+                } catch {
+                    //
+                }
                 return;
             }
 
-            setProducts(prev => (pageNum > 1 ? [...prev, ...wi] : wi));
+            setProducts((prev) => (pageNum > 1 ? [...prev, ...wi] : wi));
 
-            // --- NUEVO: cálculo robusto de total/hasMore
             const totalFromApi =
                 data?.pagination?.totalResults ??
                 data?.total ??
@@ -255,22 +503,40 @@ export default function CardProduct() {
                 const computedHasMore =
                     typeof hasNextFromApi === 'boolean'
                         ? hasNextFromApi
-                        : (pageNum * itemsPerPage) < totalFromApi;
+                        : pageNum * itemsPerPage < totalFromApi;
                 setHasMore(computedHasMore);
-                if (!computedHasMore) { try { observerRef.current?.disconnect(); observerRef.current = null; } catch { } }
+                if (!computedHasMore) {
+                    try {
+                        observerRef.current?.disconnect();
+                        observerRef.current = null;
+                    } catch {
+                        //
+                    }
+                }
             } else {
-                // Fallback sin total: si llenaste la página, asumimos que hay más.
                 const maybeMore = wi.length === itemsPerPage;
                 setHasMore(maybeMore);
-                // total heurístico para que el botón/observer tengan una referencia
-                const fallbackTotal = (pageNum - 1) * itemsPerPage + wi.length + (maybeMore ? 1 : 0);
+                const fallbackTotal =
+                    (pageNum - 1) * itemsPerPage + wi.length + (maybeMore ? 1 : 0);
                 setTotalProducts(fallbackTotal);
-                if (!maybeMore) { try { observerRef.current?.disconnect(); observerRef.current = null; } catch { } }
+                if (!maybeMore) {
+                    try {
+                        observerRef.current?.disconnect();
+                        observerRef.current = null;
+                    } catch {
+                        //
+                    }
+                }
             }
         } catch (err) {
             if (err.name !== 'AbortError') setError(err.message);
             setHasMore(false);
-            try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+            try {
+                observerRef.current?.disconnect();
+                observerRef.current = null;
+            } catch {
+                //
+            }
         } finally {
             setLoading(false);
         }
@@ -285,7 +551,9 @@ export default function CardProduct() {
         setLoading(true);
         setError(null);
         try {
-            const r = await fetch(`${apiUrl}/api/products/${id}`, { signal: controller.signal });
+            const r = await fetch(`${apiUrl}/api/products/${id}`, {
+                signal: controller.signal,
+            });
             if (!r.ok) throw new Error('Error fetching by ID');
             const prod = await r.json();
             const low = await loadLowRes(prod);
@@ -301,21 +569,40 @@ export default function CardProduct() {
 
     // efecto principal según URL
     useEffect(() => {
-        try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+        try {
+            observerRef.current?.disconnect();
+            observerRef.current = null;
+        } catch {
+            //
+        }
+
         if (fetchByIdParam) {
             fetchById(fetchByIdParam);
         } else {
-            const ap = buildAppliedFilters();
             const p = parseInt(params.get('page') || '1', 10);
+
+            /* NAVIDAD OFF: siempre tiramos del fetch normal */
+            // if (isHolidayParam) {
+            //     fetchHolidayProducts(p);
+            // } else {
+            //     const ap = buildAppliedFilters();
+            //     fetchProducts(p, ap);
+            // }
+            const ap = buildAppliedFilters();
             fetchProducts(p, ap);
         }
         return () => controllerRef.current?.abort();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.search, fetchByIdParam]);
+    }, [location.search, fetchByIdParam /* , isHolidayParam */]);
 
     // filtros desde <Filtro> (acepta total opcional)
     const handleFilteredProducts = (prods, selFilters, total) => {
-        try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+        try {
+            observerRef.current?.disconnect();
+            observerRef.current = null;
+        } catch {
+            //
+        }
         const safe = Array.isArray(prods) ? prods : [];
         const normalizedTotal = Number.isFinite(total) ? total : safe.length;
 
@@ -323,18 +610,23 @@ export default function CardProduct() {
         setFilters(selFilters);
         setPage(1);
 
-        // Si no hay resultados cortamos el scroll
+        /* NAVIDAD OFF: no forzamos estado del holiday */
+        // setShowOnlyHoliday(false);
+
         if (normalizedTotal === 0) {
             setTotalProducts(0);
             setHasMore(false);
             const u = new URLSearchParams();
             u.set('page', '1');
             navigate(`/products?${u.toString()}`);
-            try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch { }
+            try {
+                window.scrollTo({ top: 0, behavior: 'auto' });
+            } catch {
+                //
+            }
             return;
         }
 
-        // Si hay resultados: hay más si llenamos la primera página
         setTotalProducts(
             normalizedTotal > itemsPerPage && safe.length >= itemsPerPage
                 ? itemsPerPage + 1
@@ -345,14 +637,20 @@ export default function CardProduct() {
         const u = new URLSearchParams();
         u.set('page', '1');
         navigate(`/products?${u.toString()}`);
-        try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch { }
+        try {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        } catch {
+            //
+        }
     };
 
     // buscador con debounce
     const debouncedNavigateSearch = useRef(
         debounce((val) => {
             const u = new URLSearchParams();
-            if (val && val.trim().length >= 3) { u.set('search', val.trim()); }
+            if (val && val.trim().length >= 3) {
+                u.set('search', val.trim());
+            }
             u.set('page', '1');
             navigate(`/products?${u.toString()}`);
         }, 400)
@@ -370,7 +668,9 @@ export default function CardProduct() {
             debouncedNavigateSearch.cancel();
             const val = (searchInput || '').trim();
             const u = new URLSearchParams();
-            if (val && val.length >= 3) { u.set('search', val); }
+            if (val && val.length >= 3) {
+                u.set('search', val);
+            }
             u.set('page', '1');
             navigate(`/products?${u.toString()}`);
         }
@@ -388,31 +688,66 @@ export default function CardProduct() {
 
     // observer: solo si realmente hay más
     useEffect(() => {
-        if (observerRef.current) { try { observerRef.current.disconnect(); } catch { } observerRef.current = null; }
+        if (observerRef.current) {
+            try {
+                observerRef.current.disconnect();
+            } catch {
+                //
+            }
+            observerRef.current = null;
+        }
 
         if (!(hasMore && !loading)) return;
 
-        const obs = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting && !loading && hasMore) loadMore();
-        }, { root: null, rootMargin: '600px', threshold: 0 });
+        const obs = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !loading && hasMore) loadMore();
+            },
+            { root: null, rootMargin: '600px', threshold: 0 }
+        );
 
         const el = sentinelRef.current;
         if (el) obs.observe(el);
         observerRef.current = obs;
 
-        return () => { try { obs.disconnect(); } catch { }; observerRef.current = null; };
+        return () => {
+            try {
+                obs.disconnect();
+            } catch {
+                //
+            }
+            observerRef.current = null;
+        };
     }, [hasMore, loading, page, location.search]);
 
-    // dedup y orden local
-    const uniqueProducts = products.filter((p, i, arr) => arr.findIndex((x) => x.codprodu === p.codprodu) === i);
+    // dedup
+    const uniqueProducts = products.filter(
+        (p, i, arr) => arr.findIndex((x) => x.codprodu === p.codprodu) === i
+    );
 
-    let displayed = uniqueProducts.filter((p) => {
+    // ✅ info de oferta (sin lógica de navidad)
+    const productsWithSaleInfo = useMemo(
+        () =>
+            uniqueProducts.map((p) => ({
+                ...p,
+                _saleInfo: resolveSaleInfo(p),
+            })),
+        [uniqueProducts]
+    );
+
+    // filtrado visible
+    let displayed = productsWithSaleInfo.filter((p) => {
         const term = searchInput.trim().toLowerCase();
         if (!term) return true;
         const name = (p.nombre || '').toLowerCase();
         const tone = (p.tonalidad || '').toLowerCase();
         return name.includes(term) || tone.includes(term);
     });
+
+    /* NAVIDAD OFF: filtro “ver solo navidad” */
+    // if (showOnlyHoliday) {
+    //     displayed = displayed.filter((p) => p._saleInfo.isLiquidation);
+    // }
 
     displayed.sort((a, b) => {
         if (sortOrder === 'alpha-asc') return (a.nombre || '').localeCompare(b.nombre || '');
@@ -426,137 +761,901 @@ export default function CardProduct() {
         }
     }, [searchInput]);
 
+    const filterLabelMap = useMemo(
+        () => ({
+            brand: t('filters.brand', 'Marca'),
+            color: t('filters.color', 'Color'),
+            collection: t('filters.collection', 'Colección'),
+            fabricType: t('filters.fabricType', 'Tipo de tejido'),
+            fabricPattern: t('filters.fabricPattern', 'Diseño'),
+            martindale: t('filters.martindale', 'Martindale'),
+            martindaleRange: t('filters.martindaleRange', 'Resistencia'),
+            uso: t('filters.usage', 'Uso'),
+            mantenimiento: t('filters.maintenance', 'Mantenimiento'),
+            search: t('filters.search', 'Búsqueda'),
+            type: t('filters.type', 'Tipo'),
+        }),
+        [t]
+    );
+
+    const translateSummaryTitle = useCallback(
+        (key, options, fallbackFactory) => {
+            const translation = t(key, options ?? {});
+            if (translation && translation !== key) {
+                return translation;
+            }
+            if (typeof fallbackFactory === 'function') {
+                return fallbackFactory();
+            }
+            return fallbackFactory;
+        },
+        [t]
+    );
+
+    const chipEntries = useMemo(() => {
+        const entries = [];
+        const currentParams = new URLSearchParams(location.search);
+
+        const pushEntries = (key, values) => {
+            values.forEach((value) => {
+                if (value != null && String(value).trim()) {
+                    entries.push({ key, value: String(value).trim() });
+                }
+            });
+        };
+
+        pushEntries('brand', currentParams.getAll('brand'));
+        pushEntries('color', currentParams.getAll('color'));
+        pushEntries('collection', currentParams.getAll('collection'));
+        pushEntries('fabricType', currentParams.getAll('fabricType'));
+        pushEntries('fabricPattern', currentParams.getAll('fabricPattern'));
+        pushEntries('martindale', currentParams.getAll('martindale'));
+        pushEntries('martindaleRange', currentParams.getAll('martindaleRange'));
+        pushEntries('uso', currentParams.getAll('uso'));
+        pushEntries('mantenimiento', currentParams.getAll('mantenimiento'));
+
+        const searchTerm = currentParams.get('search');
+        if (searchTerm) entries.push({ key: 'search', value: searchTerm });
+
+        const typeValue = currentParams.get('type');
+        if (typeValue) entries.push({ key: 'type', value: typeValue });
+
+        return entries;
+    }, [location.search]);
+
+    const handleRemoveFilter = (key, value) => {
+        const updated = new URLSearchParams(location.search);
+        if (key === 'search') {
+            updated.delete('search');
+        } else {
+            const values = updated.getAll(key).filter((v) => v !== value);
+            updated.delete(key);
+            values.forEach((v) => updated.append(key, v));
+        }
+        updated.set('page', '1');
+        navigate(`/products?${updated.toString()}`);
+    };
+
+    const handleClearFilters = () => {
+        const cleared = new URLSearchParams();
+        cleared.set('page', '1');
+        navigate(`/products?${cleared.toString()}`);
+
+        /* NAVIDAD OFF */
+        // setShowOnlyHoliday(false);
+    };
+
+    const contextSummary = useMemo(() => {
+        const trimmedSearch = (searchQuery || '').trim();
+        if (trimmedSearch) {
+            return {
+                badge: t('summary.badge.search', 'Búsqueda activa'),
+                title: translateSummaryTitle(
+                    'summary.title.search',
+                    { value: trimmedSearch },
+                    () => `${filterLabelMap.search}: "${trimmedSearch}"`
+                ),
+                description: t(
+                    'summary.description.search',
+                    'Puedes ajustar filtros para afinar la búsqueda.'
+                ),
+                icon: 'search',
+            };
+        }
+
+        const [brandValue] = getArray('brand');
+        if (brandValue) {
+            return {
+                badge: t('summary.badge.brand', 'Marca seleccionada'),
+                title: translateSummaryTitle(
+                    'summary.title.brand',
+                    { value: brandValue },
+                    () => `${filterLabelMap.brand}: ${brandValue}`
+                ),
+                description: t(
+                    'summary.description.brand',
+                    'Combina esta marca con otros filtros para encontrar la pieza ideal.'
+                ),
+                icon: 'brand',
+            };
+        }
+
+        const [collectionValue] = getArray('collection');
+        if (collectionValue) {
+            return {
+                badge: t('summary.badge.collection', 'Colección activa'),
+                title: translateSummaryTitle(
+                    'summary.title.collection',
+                    { value: collectionValue },
+                    () => `${filterLabelMap.collection}: ${collectionValue}`
+                ),
+                description: t(
+                    'summary.description.collection',
+                    'Explora otras categorías para complementar esta colección.'
+                ),
+                icon: 'collection',
+            };
+        }
+
+        const [typeValue] = getArray('fabricType');
+        if (typeValue) {
+            return {
+                badge: t('summary.badge.fabricType', 'Tipo destacado'),
+                title: translateSummaryTitle(
+                    'summary.title.fabricType',
+                    { value: typeValue },
+                    () => `${filterLabelMap.fabricType}: ${typeValue}`
+                ),
+                description: t(
+                    'summary.description.fabricType',
+                    'Filtra por color o colección para perfilar la búsqueda.'
+                ),
+                icon: 'fabricType',
+            };
+        }
+
+        const [patternValue] = getArray('fabricPattern');
+        if (patternValue) {
+            return {
+                badge: t('summary.badge.fabricPattern', 'Diseño elegido'),
+                title: translateSummaryTitle(
+                    'summary.title.fabricPattern',
+                    { value: patternValue },
+                    () => `${filterLabelMap.fabricPattern}: ${patternValue}`
+                ),
+                description: t(
+                    'summary.description.fabricPattern',
+                    'Añade colores o colecciones para descubrir combinaciones nuevas.'
+                ),
+                icon: 'fabricPattern',
+            };
+        }
+
+        const [usageValue] = getArray('uso');
+        if (usageValue) {
+            return {
+                badge: t('summary.badge.usage', 'Uso seleccionado'),
+                title: translateSummaryTitle(
+                    'summary.title.usage',
+                    { value: usageValue },
+                    () => `${filterLabelMap.uso}: ${usageValue}`
+                ),
+                description: t(
+                    'summary.description.usage',
+                    'Suma filtros de material o mantenimiento para asegurar la elección.'
+                ),
+                icon: 'usage',
+            };
+        }
+
+        const [maintenanceValue] = getArray('mantenimiento');
+        if (maintenanceValue) {
+            return {
+                badge: t('summary.badge.maintenance', 'Cuidado preferido'),
+                title: translateSummaryTitle(
+                    'summary.title.maintenance',
+                    { value: maintenanceValue },
+                    () => `${filterLabelMap.mantenimiento}: ${maintenanceValue}`
+                ),
+                description: t(
+                    'summary.description.maintenance',
+                    'Añade tipo de tejido o color para reducir aún más los resultados.'
+                ),
+                icon: 'maintenance',
+            };
+        }
+
+        if (typeParam) {
+            return {
+                badge: t('summary.badge.type', 'Tipo activo'),
+                title: translateSummaryTitle(
+                    'summary.title.type',
+                    { value: typeParam },
+                    () => `${filterLabelMap.type}: ${typeParam}`
+                ),
+                description: t(
+                    'summary.description.type',
+                    'Combina este tipo con filtros de diseño o uso para obtener mejores coincidencias.'
+                ),
+                icon: 'type',
+            };
+        }
+
+        if (chipEntries.length > 0) {
+            return {
+                badge: t('summary.badge.filtered', 'Filtros aplicados'),
+                title: t('summary.title.filtered', 'Vista personalizada'),
+                description: t(
+                    'summary.description.filtered',
+                    'Revisa y quita etiquetas para ampliar tu búsqueda.'
+                ),
+                icon: 'filtered',
+            };
+        }
+
+        return {
+            badge: t('summary.badge.catalog', 'Catálogo activo'),
+            title: t('summary.title.catalog', 'Explorando toda la colección'),
+            description: t(
+                'summary.description.catalog',
+                'Selecciona una categoría o usa los filtros para comenzar.'
+            ),
+            icon: 'catalog',
+        };
+    }, [
+        t,
+        searchQuery,
+        chipEntries.length,
+        typeParam,
+        getArray,
+        filterLabelMap,
+        translateSummaryTitle,
+    ]);
+
+    const contextTokens = useMemo(() => {
+        const grouped = new Map();
+        chipEntries.forEach(({ key, value }) => {
+            if (!CONTEXT_TOKEN_KEYS.includes(key)) return;
+            const trimmed = String(value).trim();
+            if (!trimmed) return;
+            if (!grouped.has(key)) grouped.set(key, new Set());
+            grouped.get(key).add(trimmed);
+        });
+        const tokens = Array.from(grouped.entries()).map(([key, valuesSet]) => ({
+            key,
+            label: filterLabelMap[key] || key,
+            values: Array.from(valuesSet),
+        }));
+        tokens.sort(
+            (a, b) => TOKEN_ORDER.indexOf(a.key) - TOKEN_ORDER.indexOf(b.key)
+        );
+        return tokens;
+    }, [chipEntries, filterLabelMap]);
+
+    const detailFilterGroups = useMemo(() => {
+        const grouped = new Map();
+        chipEntries.forEach(({ key, value }) => {
+            if (CONTEXT_TOKEN_KEYS.includes(key)) return;
+            const trimmed = String(value).trim();
+            if (!trimmed) return;
+            if (!grouped.has(key)) grouped.set(key, new Set());
+            grouped.get(key).add(trimmed);
+        });
+
+        return Array.from(grouped.entries())
+            .map(([key, valuesSet]) => ({
+                key,
+                label: filterLabelMap[key] || key,
+                values: Array.from(valuesSet),
+            }))
+            .sort((a, b) => (a.label || '').localeCompare(b.label || ''));
+    }, [chipEntries, filterLabelMap]);
+
+    const formatTokenValue = useCallback((key, value) => {
+        if (key === 'search') {
+            return `“${value}”`;
+        }
+        return value;
+    }, []);
+
+    const contextIconFor = useCallback((name) => {
+        switch (name) {
+            case 'search':
+                return <FiSearch className="h-6 w-6" aria-hidden="true" />;
+            case 'brand':
+                return <FiTag className="h-6 w-6" aria-hidden="true" />;
+            case 'collection':
+                return <FiLayers className="h-6 w-6" aria-hidden="true" />;
+            case 'fabricType':
+                return <FiType className="h-6 w-6" aria-hidden="true" />;
+            case 'fabricPattern':
+                return <FiGrid className="h-6 w-6" aria-hidden="true" />;
+            case 'usage':
+                return <FiCompass className="h-6 w-6" aria-hidden="true" />;
+            case 'maintenance':
+                return <FiTool className="h-6 w-6" aria-hidden="true" />;
+            case 'type':
+            case 'filtered':
+                return <FiFilter className="h-6 w-6" aria-hidden="true" />;
+            default:
+                return <FiLayers className="h-6 w-6" aria-hidden="true" />;
+        }
+    }, []);
+
+    const tokenIconFor = useCallback((key) => {
+        switch (key) {
+            case 'brand':
+                return <FiTag className="h-4 w-4" aria-hidden="true" />;
+            case 'collection':
+                return <FiLayers className="h-4 w-4" aria-hidden="true" />;
+            case 'fabricType':
+                return <FiType className="h-4 w-4" aria-hidden="true" />;
+            case 'fabricPattern':
+                return <FiGrid className="h-4 w-4" aria-hidden="true" />;
+            case 'uso':
+                return <FiCompass className="h-4 w-4" aria-hidden="true" />;
+            case 'mantenimiento':
+                return <FiTool className="h-4 w-4" aria-hidden="true" />;
+            case 'search':
+                return <FiSearch className="h-4 w-4" aria-hidden="true" />;
+            case 'type':
+            default:
+                return <FiFilter className="h-4 w-4" aria-hidden="true" />;
+        }
+    }, []);
+
+    const isListView = viewMode === 'grid2';
+
+    // 🔧 Ajuste de grid para que en móvil se vean 2 columnas y en desktop se mantenga la rejilla densa
+    const gridClassName = isListView
+        ? 'grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
+        : 'grid grid-cols-2 auto-rows-fr gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6';
+
+    const baseCardContainerClass =
+        'group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#26659E]/40 hover:shadow-lg';
+    const cardContainerClass = isListView
+        ? `${baseCardContainerClass} md:flex-row`
+        : baseCardContainerClass;
+
+    // 🔧 Ajuste de aspect ratio para que en pantallas medianas/grandes las tarjetas sean más cuadradas
+    const cardImageWrapperClass = isListView
+        ? 'relative w-full overflow-hidden aspect-[4/3] focus:outline-none md:w-60 md:flex-shrink-0 md:aspect-[3/4]'
+        : 'relative w-full overflow-hidden aspect-[3/4] md:aspect-square lg:aspect-[4/3] focus:outline-none';
+
+    const cardBodyClass = isListView
+        ? 'flex flex-1 flex-col gap-3 px-6 pb-6 pt-5'
+        : 'flex flex-1 flex-col gap-2 px-4 pb-4 pt-3';
+    const metaPillClass = isListView
+        ? 'inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs'
+        : 'inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.7rem]';
+    const saleStackClass = isListView
+        ? 'flex flex-wrap items-center gap-2 text-xs font-semibold text-rose-600 sm:text-sm'
+        : 'flex flex-wrap items-center gap-1.5 text-[0.7rem] font-semibold text-rose-600';
+
+    /* NAVIDAD OFF: resumen y botón de banner */
+    // const holidaySummary = useMemo(() => { ... }, [productsWithSaleInfo]);
+    // const handleToggleHolidayFilter = () => { ... };
+
+    const hasContextDetails =
+        chipEntries.length > 0 ||
+        !!(searchQuery || '').trim() ||
+        !!typeParam;
+
     return (
-        <div className="relative pb-10 px-4 lg:px-16" ref={containerRef}>
-            {/* Filtros globales */}
-            <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
+        <div className="relative px-4 pb-16 pt-10 lg:px-10" ref={containerRef}>
+            <div className="relative mx-auto max-w-7xl space-y-6">
+                {/* Filtros globales */}
+                <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
 
-            {/* Submenú categorías */}
-            <SubMenuCarousel
-                onFilterClick={(sel) => {
-                    // sel puede venir null (para limpiar) o como { key, groupKey }
-                    try { observerRef.current?.disconnect(); observerRef.current = null; } catch { }
+                {/* Submenú categorías */}
+                <SubMenuCarousel
+                    onFilterClick={(sel) => {
+                        try {
+                            observerRef.current?.disconnect();
+                            observerRef.current = null;
+                        } catch {
+                            //
+                        }
 
-                    setFilters({});
-                    setPage(1);
+                        setFilters({});
+                        setPage(1);
 
-                    // reconstruye SIEMPRE la query desde cero para no arrastrar filtros previos
-                    const u = new URLSearchParams();
-                    u.set('page', '1');
+                        /* NAVIDAD OFF */
+                        // setShowOnlyHoliday(false);
 
-                    if (!sel) {
-                        // limpiar todo
+                        // reconstruye la query desde cero
+                        const u = new URLSearchParams();
+                        u.set('page', '1');
+
+                        if (!sel) {
+                            navigate(`/products?${u.toString()}`);
+                            return;
+                        }
+
+                        const { key, groupKey } =
+                            typeof sel === 'string'
+                                ? { key: sel, groupKey: 'patterns' }
+                                : sel;
+
+                        switch (groupKey) {
+                            case 'types': // TIPOS → fabricType
+                                u.set('fabricType', key);
+                                break;
+                            case 'patterns': // DIBUJOS → fabricPattern
+                                u.set('fabricPattern', key);
+                                break;
+                            case 'usage': // USO → uso
+                                u.set('uso', key);
+                                break;
+                            case 'maintenance': // MANTENIMIENTO → mantenimiento
+                                u.set('mantenimiento', key);
+                                break;
+                            default:
+                                // fallback conservador
+                                u.set('fabricPattern', key);
+                                break;
+                        }
+
                         navigate(`/products?${u.toString()}`);
-                        return;
-                    }
+                    }}
+                    type={typeParam}
+                    activeCategory={activeCategory}
+                />
 
-                    const { key, groupKey } = typeof sel === 'string'
-                        ? { key: sel, groupKey: 'patterns' } // compat si alguna vez llega string
-                        : sel;
+                {/* Resumen contextual (compacto cuando no hay filtros) */}
+                {hasContextDetails ? (
+                    <div className="rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm backdrop-blur lg:p-10">
+                        <div className="flex flex-col gap-6">
+                            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                <div className="flex items-start gap-4">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#26659E]/10 text-[#26659E]">
+                                        {contextIconFor(contextSummary.icon)}
+                                    </div>
+                                    <div className="space-y-2 lg:max-w-2xl">
+                                        <span className="inline-flex text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">
+                                            {contextSummary.badge}
+                                        </span>
+                                        <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
+                                            {contextSummary.title}
+                                        </h1>
+                                        <p className="text-sm text-slate-500 sm:text-base">
+                                            {contextSummary.description}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3 self-start">
+                                    {chipEntries.length > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleClearFilters}
+                                            className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-[#26659E] hover:text-[#26659E]"
+                                        >
+                                            <span className="text-base leading-none">×</span>
+                                            {t('clearFilters', 'Quitar filtros')}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
 
-                    switch (groupKey) {
-                        case 'types':        // TIPOS → fabricType
-                            u.set('fabricType', key);
-                            break;
-                        case 'patterns':     // DIBUJOS → fabricPattern
-                            u.set('fabricPattern', key);
-                            break;
-                        case 'usage':        // USO → uso
-                            u.set('uso', key);
-                            break;
-                        case 'maintenance':  // MANTENIMIENTO → mantenimiento
-                            u.set('mantenimiento', key);
-                            break;
-                        default:
-                            // fallback conservador: lo tratamos como patrón
-                            u.set('fabricPattern', key);
-                            break;
-                    }
+                            <div className="space-y-6">
+                                <div>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                                            {t('summary.tokensTitle', 'Tu selección principal')}
+                                        </span>
+                                        {contextTokens.length > 0 && (
+                                            <span className="text-xs text-slate-400">
+                                                {t(
+                                                    'summary.tokenHelper',
+                                                    'Pulsa una etiqueta para quitarla.'
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {contextTokens.length > 0 ? (
+                                        <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                                            {contextTokens.map((token) => (
+                                                <div
+                                                    key={token.key}
+                                                    className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm transition hover:border-[#26659E]/70 hover:shadow-md"
+                                                >
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#26659E] shadow-sm">
+                                                            {tokenIconFor(token.key)}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
+                                                                {token.label}
+                                                            </p>
+                                                            <p className="text-sm font-semibold text-slate-700">
+                                                                {token.values.length === 1
+                                                                    ? formatTokenValue(
+                                                                        token.key,
+                                                                        token.values[0]
+                                                                    )
+                                                                    : t(
+                                                                        'summary.multipleValues',
+                                                                        {
+                                                                            count: token.values.length,
+                                                                            defaultValue:
+                                                                                '{{count}} valores seleccionados',
+                                                                        }
+                                                                    )}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="mt-3 flex flex-wrap gap-1.5">
+                                                        {token.values.map((value) => (
+                                                            <button
+                                                                key={`${token.key}-${value}`}
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    handleRemoveFilter(
+                                                                        token.key,
+                                                                        value
+                                                                    )
+                                                                }
+                                                                className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-[#26659E] hover:text-white"
+                                                            >
+                                                                <span>
+                                                                    {formatTokenValue(
+                                                                        token.key,
+                                                                        value
+                                                                    )}
+                                                                </span>
+                                                                <span
+                                                                    aria-hidden="true"
+                                                                    className="text-base leading-none"
+                                                                >
+                                                                    ×
+                                                                </span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="mt-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-500">
+                                            {t(
+                                                'summary.tokensEmpty',
+                                                'Aún no eliges filtros principales.'
+                                            )}
+                                        </p>
+                                    )}
+                                </div>
 
-                    navigate(`/products?${u.toString()}`);
-                }}
-                type={type}
-                activeCategory={activeCategory}
-            />
-
-            {/* search + sort + view */}
-            <div className="mt-6 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-                <div className="relative w-full md:w-1/3 lg:w-1/4">
-                    <input
-                        type="text"
-                        value={searchInput}
-                        onChange={onChangeSearchInput}
-                        onKeyDown={onKeyDownSearchInput}
-                        placeholder={t('searchPlaceholder', 'Encuentra el producto...')}
-                        className="w-full h-10 bg-gray-50 placeholder-gray-400 text-gray-700 px-4 pr-10 rounded-full ring-1 ring-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#26659E] transition"
-                    />
-                    <svg className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z" />
-                    </svg>
-                    {searchInput && searchInput.length < 3 && (
-                        <div className="absolute left-0 top-full mt-1 text-xs text-gray-500">
-                            {t('minChars', 'Escribe al menos 3 caracteres para buscar')}
-                        </div>
-                    )}
-                </div>
-
-                <div className="flex items-center space-x-2">
-                    <span className="font-medium text-gray-700">{t('sortBy')}:</span>
-                    <button onClick={() => setSortOrder('alpha-asc')} className={`p-2 rounded-lg ${sortOrder === 'alpha-asc' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="A → Z"><FaSortAlphaDown /></button>
-                    <button onClick={() => setSortOrder('alpha-desc')} className={`p-2 rounded-lg ${sortOrder === 'alpha-desc' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="Z → A"><FaSortAlphaUp /></button>
-                    <button onClick={() => setViewMode('grid4')} className={`p-2 rounded-lg ${viewMode === 'grid4' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="Vista grid"><FaThLarge /></button>
-                    <button onClick={() => setViewMode('grid2')} className={`p-2 rounded-lg ${viewMode === 'grid2' ? 'bg-[#26659E] text-white' : 'bg-gray-100 text-gray-600'}`} title="Vista lista"><FaThList /></button>
-                </div>
-            </div>
-
-            {/* grid */}
-            <div className={viewMode === 'grid4' ? 'mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6' : 'mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6'}>
-                {displayed.map((p, i) => (
-                    <div key={`${p.codprodu}-${i}`} className="flex flex-col p-2 bg-white rounded-lg shadow hover:shadow-xl transition">
-                        <div
-                            className={`relative w-full ${viewMode === 'grid2' ? 'h-56 md:h-96' : 'h-32 md:h-60 '} overflow-hidden cursor-pointer rounded`}
-                            onClick={() => { setSelectedProduct(p); setModalOpen(true); preloadHighResInto(p); }}
-                        >
-                            <LazyImage src={p.imageBaja || defaultImageUrl} alt={p.nombre} className="object-cover w-full h-full" />
-                        </div>
-                        <div className="flex-1 mt-2 md:mt-4 text-center">
-                            <h3 className="md:text-lg text-sm font-semibold text-gray-800">{p.nombre}</h3>
-                            <p className="mt-1 md:text-sm text-xs text-gray-500">{p.tonalidad}</p>
+                                <div>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                                            {t('summary.detailsTitle', 'Filtros detallados')}
+                                        </span>
+                                        {detailFilterGroups.length > 0 && (
+                                            <span className="text-xs text-slate-400">
+                                                {t(
+                                                    'summary.detailsHelper',
+                                                    'Pulsa una etiqueta para quitarla.'
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {detailFilterGroups.length > 0 ? (
+                                        <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                                            {detailFilterGroups.map((group) => (
+                                                <div
+                                                    key={group.key}
+                                                    className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm"
+                                                >
+                                                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
+                                                        {group.label}
+                                                    </p>
+                                                    <div className="mt-2 flex flex-wrap gap-1.5">
+                                                        {group.values.map((value) => (
+                                                            <button
+                                                                key={`${group.key}-${value}`}
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    handleRemoveFilter(
+                                                                        group.key,
+                                                                        value
+                                                                    )
+                                                                }
+                                                                className="group inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600 transition hover:border-[#26659E] hover:bg-white hover:text-[#26659E]"
+                                                            >
+                                                                <span>{value}</span>
+                                                                <span
+                                                                    aria-hidden="true"
+                                                                    className="text-base leading-none"
+                                                                >
+                                                                    ×
+                                                                </span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="mt-3 rounded-2xl border border-dashed border-slate-200 bg-white/80 p-4 text-sm text-slate-500">
+                                            {t(
+                                                'summary.detailsEmpty',
+                                                'No hay filtros adicionales aplicados.'
+                                            )}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                ))}
+                ) : (
+                    <div className="rounded-3xl border border-slate-200 bg-white/95 px-4 py-4 shadow-sm backdrop-blur lg:px-6 lg:py-5">
+                        <div className="flex items-start gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#26659E]/10 text-[#26659E]">
+                                {contextIconFor(contextSummary.icon)}
+                            </div>
+                            <div className="space-y-1">
+                                <span className="inline-flex text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-slate-500">
+                                    {contextSummary.badge}
+                                </span>
+                                <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">
+                                    {contextSummary.title}
+                                </h1>
+                                <p className="text-xs text-slate-500 sm:text-sm">
+                                    {contextSummary.description}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* search + sort + view */}
+                <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
+                    <div className="relative w-full md:max-w-md">
+                        <input
+                            type="text"
+                            value={searchInput}
+                            onChange={onChangeSearchInput}
+                            onKeyDown={onKeyDownSearchInput}
+                            placeholder={t(
+                                'searchPlaceholder',
+                                'Busca por nombre, color o colección...'
+                            )}
+                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-700 transition focus:border-[#26659E] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#26659E]/20"
+                        />
+                        <svg
+                            className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z"
+                            />
+                        </svg>
+                        {searchInput && searchInput.length < 3 && (
+                            <div className="absolute left-3 top-full mt-1 text-xs text-slate-400">
+                                {t(
+                                    'minChars',
+                                    'Escribe al menos 3 caracteres para buscar'
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex w-full flex-wrap items-center gap-3 md:w-auto md:justify-end">
+                        <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-sm text-slate-600">
+                            <span className="hidden pl-1 font-medium text-slate-700 sm:inline">
+                                {t('sortBy', 'Ordenar')}:
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setSortOrder('alpha-asc')}
+                                aria-pressed={sortOrder === 'alpha-asc'}
+                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${sortOrder === 'alpha-asc'
+                                    ? 'bg-[#26659E] text-white shadow-sm'
+                                    : 'hover:bg-white hover:text-[#26659E]'
+                                    }`}
+                            >
+                                <FaSortAlphaDown aria-hidden="true" />
+                                <span className="hidden sm:inline">
+                                    {t('sortAsc', 'A → Z')}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSortOrder('alpha-desc')}
+                                aria-pressed={sortOrder === 'alpha-desc'}
+                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${sortOrder === 'alpha-desc'
+                                    ? 'bg-[#26659E] text-white shadow-sm'
+                                    : 'hover:bg-white hover:text-[#26659E]'
+                                    }`}
+                            >
+                                <FaSortAlphaUp aria-hidden="true" />
+                                <span className="hidden sm:inline">
+                                    {t('sortDesc', 'Z → A')}
+                                </span>
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-sm text-slate-600">
+                            <span className="hidden pl-1 font-medium text-slate-700 sm:inline">
+                                {t('viewMode', 'Vista')}:
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('grid4')}
+                                aria-pressed={viewMode === 'grid4'}
+                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${viewMode === 'grid4'
+                                    ? 'bg-[#26659E] text-white shadow-sm'
+                                    : 'hover:bg-white hover:text-[#26659E]'
+                                    }`}
+                            >
+                                <FaThLarge aria-hidden="true" />
+                                <span className="hidden sm:inline">
+                                    {t('gridView', 'Cuadrícula')}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('grid2')}
+                                aria-pressed={viewMode === 'grid2'}
+                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${viewMode === 'grid2'
+                                    ? 'bg-[#26659E] text-white shadow-sm'
+                                    : 'hover:bg-white hover:text-[#26659E]'
+                                    }`}
+                            >
+                                <FaThList aria-hidden="true" />
+                                <span className="hidden sm:inline">
+                                    {t('listView', 'Listado')}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* NAVIDAD OFF: banner de “Especial Navidad” */}
+                {/* {holidaySummary.count > 0 && (
+                    <button ...> ... </button>
+                )} */}
+
+                {/* grid */}
+                <div className={gridClassName}>
+                    {displayed.map((p, i) => {
+                        const saleInfo = p._saleInfo;
+                        /* NAVIDAD OFF */
+                        const isChristmas = false;
+
+                        return (
+                            <div key={`${p.codprodu}-${i}`} className={cardContainerClass}>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedProduct(p);
+                                        setModalOpen(true);
+                                        preloadHighResInto(p);
+                                    }}
+                                    className={cardImageWrapperClass}
+                                >
+                                    <LazyImage
+                                        src={p.imageBaja || defaultImageUrl}
+                                        alt={p.nombre}
+                                        className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+                                    />
+                                    {saleInfo.isOnSale && (
+                                        <span
+                                            className={`pointer-events-none absolute left-3 top-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm ${isChristmas
+                                                ? 'bg-emerald-600'
+                                                : 'bg-rose-600'
+                                                }`}
+                                        >
+                                            {/* NAVIDAD OFF */}
+                                            {/* {isChristmas ? t('sale.christmasBadge','Especial Navidad') : ... } */}
+                                            {saleInfo.discount != null
+                                                ? t('sale.discountBadge', {
+                                                    discount: saleInfo.discount,
+                                                    defaultValue: `-${saleInfo.discount}%`,
+                                                })
+                                                : t('sale.badge', 'En oferta')}
+                                        </span>
+                                    )}
+                                    <div className="pointer-events-none absolute inset-0 bg-black/0 transition duration-300 group-hover:bg-black/10" />
+                                    <div className="pointer-events-none absolute inset-x-4 bottom-4 rounded-full bg-white/90 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-[#26659E] opacity-0 shadow-sm transition duration-300 group-hover:opacity-100">
+                                        {t('touchToView', 'Toca para ver')}
+                                    </div>
+                                </button>
+                                <div className={cardBodyClass}>
+                                    {p.coleccion && (
+                                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-[#26659E]/80">
+                                            {p.coleccion}
+                                        </span>
+                                    )}
+                                    <h3
+                                        className="text-base font-semibold text-slate-900 leading-tight md:text-lg"
+                                        style={{
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        {p.nombre}
+                                    </h3>
+                                    <div className="flex flex-wrap items-center gap-2 text-[0.7rem] text-slate-500 sm:text-xs">
+                                        {p.tonalidad && (
+                                            <span className={metaPillClass}>
+                                                <span
+                                                    className="h-2 w-2 rounded-full border border-slate-200"
+                                                    style={{
+                                                        backgroundColor:
+                                                            p.hexcolor || '#f1f5f9',
+                                                    }}
+                                                />
+                                                {p.tonalidad}
+                                            </span>
+                                        )}
+                                        {p.marca && (
+                                            <span className={metaPillClass}>
+                                                <span className="text-[0.65rem] font-semibold uppercase tracking-wide text-slate-400">
+                                                    {t('filters.brand', 'Marca')}:
+                                                </span>
+                                                {p.marca}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {saleInfo.isOnSale && (
+                                        <div className={saleStackClass}>
+                                            {saleInfo.salePrice && (
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-1 text-rose-600">
+                                                    {t('sale.priceLabel', {
+                                                        price: saleInfo.salePrice,
+                                                        defaultValue:
+                                                            saleInfo.salePrice,
+                                                    })}
+                                                </span>
+                                            )}
+                                            {saleInfo.originalPrice && (
+                                                <span className="text-slate-400 line-through">
+                                                    {t('sale.originalLabel', {
+                                                        price: saleInfo.originalPrice,
+                                                        defaultValue:
+                                                            saleInfo.originalPrice,
+                                                    })}
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* sentinel solo si hay más */}
+                {hasMore && <div ref={sentinelRef} />}
+
+                {/* loaders & mensajes */}
+                {!loading && displayed.length === 0 && !error && (
+                    <div className="mt-8 text-center text-gray-500">
+                        {t('noProductsFound')}
+                    </div>
+                )}
+                {!loading && error && (
+                    <div className="mt-8 text-center text-red-500">{error}</div>
+                )}
+
+                {/* modal */}
+                {selectedProduct && (
+                    <Modal
+                        isOpen={modalOpen}
+                        close={() => setModalOpen(false)}
+                        product={selectedProduct}
+                        onApplyFilters={handleFilteredProducts}
+                    />
+                )}
             </div>
-
-            {/* sentinel solo si hay más */}
-            {hasMore && <div ref={sentinelRef} />}
-
-            {/* loaders & mensajes */}
-            {!loading && displayed.length === 0 && !error && (
-                <div className="mt-8 text-center text-gray-500">{t('noProductsFound')}</div>
-            )}
-            {!loading && error && <div className="mt-8 text-center text-red-500">{error}</div>}
-
-            {/* botón “Load more” opcional */}
-            {/* {!searchInput.trim() && hasMore && !loading && (
-        <div className="flex justify-center mt-8">
-          <button
-            onClick={loadMore}
-            className="flex items-center px-8 py-3 text-lg text-white bg-[#26659E] rounded-full hover:bg-[#1f527a] transition"
-          >
-            {t('loadMore')} <FaAngleDoubleRight className="ml-2" />
-          </button>
-        </div>
-      )} */}
-
-            {/* modal */}
-            {selectedProduct && (
-                <Modal
-                    isOpen={modalOpen}
-                    close={() => setModalOpen(false)}
-                    product={selectedProduct}
-                    onApplyFilters={handleFilteredProducts}
-                />
-            )}
         </div>
     );
 }

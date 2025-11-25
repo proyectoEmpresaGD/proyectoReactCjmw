@@ -377,6 +377,44 @@ export class ProductController {
     }
   }
 
+  /**
+  * GET /api/products/holiday?limit=16&page=1
+  * Devuelve solo productos “Especial Navidad” según los prefijos de nombre.
+  */
+  async getHolidayProducts(req, res) {
+    try {
+      const limit = toInt(req.query.limit, 16);
+      const page = toInt(req.query.page, 1);
+      const offset = (page - 1) * limit;
+
+      const { products, total } = await ProductModel.getHolidayProducts({
+        limit,
+        offset
+      });
+
+      const totalPages = Math.ceil((total || 0) / limit) || 1;
+      const hasNextPage = page < totalPages;
+
+      okCache(res, 300); // cache corto para que vaya ágil
+      return res.json({
+        products,
+        pagination: {
+          currentPage: page,
+          limit,
+          totalResults: total,
+          totalPages,
+          hasNextPage
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching holiday products:', error);
+      return res.status(500).json({
+        error: 'Error fetching holiday products',
+        details: error.message
+      });
+    }
+  }
+
   async searchFabricTypes(req, res) {
     try {
       const { searchTerm } = req.query;
