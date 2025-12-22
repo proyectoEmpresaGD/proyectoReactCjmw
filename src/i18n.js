@@ -10,23 +10,22 @@ i18n
     .init({
         fallbackLng: 'en',
         supportedLngs: ['es', 'en', 'fr'],
-        ns: [
-            "about", "blog", "buttonFiltro", "cardProduct", "cart", "clients", "coleccionesMarcas",
-            "collectionCarousel", "common", "contacts", "contract", "cookieConsent", "filterPanel",
-            "filterPanelNew", "footer", "geocodingService", "header", "instructions", "media", "newCollection",
-            "notificationPopup", "pageArena", "pageBassari", "pageFlamenco", "pageHarbour",
-            "productModal", "productPage", "sameStyleCarousel", "search", "shareButton",
-            "subMenuCarousel", "works"
-        ],
+
+        ns: ['common'],
         defaultNS: 'common',
+
         backend: {
-            loadPath: '/locales/{{lng}}/{{ns}}.json'
+            loadPath: '/locales/{{lng}}/{{ns}}.json',
         },
+
         detection: {
             order: ['navigator'],
-            caches: []
+            caches: [],
         },
-        interpolation: { escapeValue: false }
+
+        interpolation: {
+            escapeValue: false,
+        },
     });
 
 export default i18n;
