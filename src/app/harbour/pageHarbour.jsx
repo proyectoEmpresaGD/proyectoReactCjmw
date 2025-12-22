@@ -66,7 +66,7 @@ function HarbourHome() {
                     className="grid grid-cols-1 gap-2"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION BOHEMIAN"
+                        titulo="NEW COLLECTION BOHEMIAN"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/BOHEMIAN/HARB_AMB_BOHEMIAN_01%2035X35.jpg"
                         descripcion="Takumi es una colección inspirada en la artesanía japonesa, con tejidos que evocan paciencia y detalle. Sus tonos suaves y colores únicos transforman tapicerías y cortinas en piezas armónicas y poéticas."
 
@@ -89,7 +89,7 @@ function HarbourHome() {
                     className="grid grid-cols-1 gap-6"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION HUSKY"
+                        titulo="NEW COLLECTION HUSKY"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/HUSKY/DSC00225%20MINIATURA.jpg"
                         descripcion="Husky: Dentro de la línea Harbour presentamos Husky, diseñadas para no incendiarse ni propagar llamas, ofreciendo protección en entornos peligrosos. Ofrece un 100% de opacidad, su gama cromática resulta fácil de integrar en todo tipo de proyectos, ideal para espacios contract como hoteles y restaurantes. Una opción elegante y práctica sin duda."
                     />
@@ -109,7 +109,7 @@ function HarbourHome() {
                     className="grid grid-cols-1 gap-6"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION FUTURE"
+                        titulo="NEW COLLECTION FUTURE"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/FUTURE/DSC00231%20MINIATURA.jpg"
                         descripcion="Nuestro tejido Future está diseñado para adaptarse con precisión a formas esféricas, ofreciendo un acabado uniforme y de gran calidad. Combina resistencia, flexibilidad y versatilidad, lo que lo convierte en la opción ideal para proyectos que requieren un material innovador y de alto rendimiento."
                     />

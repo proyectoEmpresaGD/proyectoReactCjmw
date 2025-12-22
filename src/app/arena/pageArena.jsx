@@ -70,7 +70,7 @@ function ArenaHome() {
                     className="grid grid-cols-1 gap-2"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION TAKUMI"
+                        titulo="NEW COLLECTION TAKUMI"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ARENA%20AMBIENTE/TAKUMI/_26A5010-2-OK%20MINIATURA.jpg"
                         descripcion="Takumi es una colección inspirada en la artesanía japonesa, con tejidos que evocan paciencia y detalle. Sus tonos suaves y colores únicos transforman tapicerías y cortinas en piezas armónicas y poéticas."
 
@@ -93,7 +93,7 @@ function ArenaHome() {
                     className="grid grid-cols-1 gap-6"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION LIGHTHOUSE"
+                        titulo="NEW COLLECTION LIGHTHOUSE"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ARENA%20AMBIENTE/LIGHTHOUSE/_26A4907-2-OK%2035x35.jpg"
                         descripcion="Lighthouse explora la ligereza y transparencia de los visillos, con un aire orgánico y mediterráneo. Son tejidos que dejan pasar la luz de forma natural, creando ambientes acogedores en cualquier espacio, ya sea urbano, costero o de montaña."
                     />
@@ -113,7 +113,7 @@ function ArenaHome() {
                     className="grid grid-cols-1 gap-6"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION MADAMA BUTTERFLY"
+                        titulo="NEW COLLECTION MADAMA BUTTERFLY"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ARENA%20AMBIENTE/MADAMA%20BUTTERFLY/ARN_AMB_FLORES_01%20MINIATURA.jpg"
                         descripcion="Inspiradas en la ópera Madame Butterfly, estas colecciones unen tradición y emoción.
                         GEISHA: transmite delicadeza con tonos pastel que evocan calma y elegancia.
@@ -136,7 +136,7 @@ function ArenaHome() {
                     className="grid grid-cols-1 gap-6"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION CRANE"
+                        titulo="NEW COLLECTION CRANE"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ARENA%20AMBIENTE/CRANE/ARN_AMB_CRANE_02%20MINIATURA.jpg"
                         descripcion="En Japón, la grulla simboliza fortuna y longevidad. De ahí nace Crane, un lino bordado que combina tradición y modernidad con un aire mediterráneo, vistiendo los espacios con elegancia y bienestar."
                     />
@@ -156,7 +156,7 @@ function ArenaHome() {
                     className="grid grid-cols-1 gap-6"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION SOBOKUNA"
+                        titulo="NEW COLLECTION SOBOKUNA"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ARENA%20AMBIENTE/SOBOKUNA/ARN_AMB_BIANCALANI_01%20MINIATURA.jpg"
                         descripcion="Una colección elegante, suave y atemporal que refleja la esencia de Arena y su conexión con la naturaleza.Explora todas las propuestas de la marca."
                     />
@@ -176,7 +176,7 @@ function ArenaHome() {
                     className="grid grid-cols-1 gap-6"
                 >
                     <PresentacionColeccion
-                        titulo="NEW COLECCTION COSY"
+                        titulo="NEW COLLECTION COSY"
                         imagenFondo="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/ARENA%20AMBIENTE/COSY/ARN_COSY_5%20MINIATURA.jpg"
                         descripcion="Cosy es un terciopelo rústico con carácter contemporáneo y una amplia gama cromática, de tierras y arcillas a neutros y tonos empolvados. Versátil y elegante, aporta textura, calidez y modernidad a cualquier espacio."
                     />
