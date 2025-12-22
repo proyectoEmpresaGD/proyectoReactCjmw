@@ -26,11 +26,11 @@ const videos = [
 ];
 
 const texts = [
-    "",
+    "public/Arena blanco transparente.png",
     "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png ",
     "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png",
     "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Harbour%20transparente%20BLANCO.png",
-    "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Arena%20blanco%20transparente.png",
+    "public/Arena blanco transparente.png",
     "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS%20BLANCOS/CJM%20marca%20blanco.png",
 ];
 
