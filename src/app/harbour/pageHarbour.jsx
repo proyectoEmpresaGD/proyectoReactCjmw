@@ -1,11 +1,9 @@
 import { Header } from "../../components/header"
-import React, { useState } from "react";
+import { useState } from "react";
 import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
-import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
-import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
 import { useTranslation } from 'react-i18next';
 import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carruselColecionesNuevas"
 import CarruselProductosColeccionEspecifica from "../../components/ComponentesBrands/CarruselProductosColeccionEspecifica";
@@ -38,23 +36,23 @@ function HarbourHome() {
 
     const marca = 'HAR';
     const { t } = useTranslation('pageHarbour');
-    const brochures = [
-        {
-            imageUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BROCHURE_COSY_ARENA_HARBOUR.jpg",
-            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
-            title: "BOHEMIAN",
-            description: t('BrouchureBohemianHarbour'),
-        },
-        {
-            imageUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BROCHURE_CARIBBEANPARTY.png",
-            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/HAR_CARIBBEAN_PARTY_BROUCHURE_SOLOTITULARES.pdf",
-            title: "CARIBBEAN PARTY",
-            description: t('BrouchureHarbour'),
-        },
+    // const brochures = [
+    //     {
+    //         imageUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BROCHURE_COSY_ARENA_HARBOUR.jpg",
+    //         pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
+    //         title: "BOHEMIAN",
+    //         description: t('BrouchureBohemianHarbour'),
+    //     },
+    //     {
+    //         imageUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BROCHURE_CARIBBEANPARTY.png",
+    //         pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/HAR_CARIBBEAN_PARTY_BROUCHURE_SOLOTITULARES.pdf",
+    //         title: "CARIBBEAN PARTY",
+    //         description: t('BrouchureHarbour'),
+    //     },
 
-    ];
+    // ];
 
     const slides = [
         {
@@ -128,7 +126,7 @@ function HarbourHome() {
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
-                <NotificationPopup brochures={brochures} />
+                {/* <NotificationPopup brochures={brochures} /> */}
                 {/* className=" bg-[#273A5C]" */}
                 {/* <main>
                     <div className=" flex items-center justify-center h-full pt-3">

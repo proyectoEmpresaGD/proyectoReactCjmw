@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Header } from "../../components/header"
 import Footer from "../../components/footer"
 import Carrusel from "../../components/ComponentesHome/carrusel"
-import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
-import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
-import BloquesInformativos from "../../components/ComponentesBrands/TiposDestacados";
 import PresentacionColeccion from "../../components/ComponentesBrands/ultimaColeccionTextoAnimado";
-import PresentacionMarca from "../../components/ComponentesBrands/presentacionMarca"
 import { useTranslation } from 'react-i18next';
 import CarruselProductosColeccionEspecifica from "../../components/ComponentesBrands/CarruselProductosColeccionEspecifica";
 import Modal from "../../components/ComponentesProductos/modal";
@@ -41,23 +37,23 @@ function ArenaHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/KANNATURA%20WALLPAPER/KANNATURA%20WALLPAPER%202.webp",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/ARENA%20AMBIENTE/KANNATURA%20WALLPAPER/KANNATURA%20WALLPAPER%20AND%20COSY.webp",
     ]
-    const brochures = [
-        {
-            imageUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/MINIATURA-BROUCHURE-ARENA-Y-HARBOUR-BOHEMIAN.jpg",
-            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
-            title: "COSY",
-            description: t('BrouchureBohemianArena'),
-        },
-        {
-            imageUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_ARENA.png",
-            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/CAT_ARENA_PURITTY_CJM_23_OK.pdf",
-            title: "PURITTY",
-            description: t('BrouchurePuritty'),
-        },
+    // const brochures = [
+    //     {
+    //         imageUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/MINIATURA-BROUCHURE-ARENA-Y-HARBOUR-BOHEMIAN.jpg",
+    //         pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
+    //         title: "COSY",
+    //         description: t('BrouchureBohemianArena'),
+    //     },
+    //     {
+    //         imageUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_ARENA.png",
+    //         pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/CAT_ARENA_PURITTY_CJM_23_OK.pdf",
+    //         title: "PURITTY",
+    //         description: t('BrouchurePuritty'),
+    //     },
 
-    ];
+    // ];
 
     // Slides del carrusel (pausa solo encima del contenido)
     const slides = [
@@ -194,7 +190,7 @@ function ArenaHome() {
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
-                <NotificationPopup brochures={brochures} />
+                {/* <NotificationPopup brochures={brochures} /> */}
                 {/* className=" bg-[#B5AFA4]" */}
                 <div >
                     {/* <BloquesInformativos

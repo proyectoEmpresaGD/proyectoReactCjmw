@@ -5,7 +5,6 @@ import Carrusel from "../../components/ComponentesHome/carrusel";
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection";
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas";
-import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
 import { useTranslation } from 'react-i18next';
 
 function BassariHome() {
@@ -37,16 +36,16 @@ function BassariHome() {
     const titles = ["BEDICK", "ASTEROIDE", "KARABANE"];
     const CodProduBas = ["BAS00058", "BAS00241", "BAS00128"];
 
-    const brochures = [
-        {
-            imageUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_BASSARI.jpg",
-            pdfUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf",
-            title: "AFRICAN SOUL",
-            description: t('BrouchureBassari'),
-        },
-    ];
+    // const brochures = [
+    //     {
+    //         imageUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_BASSARI.jpg",
+    //         pdfUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf",
+    //         title: "AFRICAN SOUL",
+    //         description: t('BrouchureBassari'),
+    //     },
+    // ];
 
     const videoDesktop = "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/BASS_PORTADAS_REELS-06.mp4";
     const videoMobile = "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/MOVIL/BASS_POST_11.mp4";
@@ -63,7 +62,7 @@ function BassariHome() {
         <CartProvider>
             <Header />
             <Carrusel images={shuffleArray([...images])} videoSrc={videoIntro} />
-            <NotificationPopup brochures={brochures} />
+            {/* <NotificationPopup brochures={brochures} /> */}
             <div className="flex items-center justify-center h-full mt-[2%]">
                 <img
                     src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png"

@@ -4,7 +4,6 @@ import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
-import NotificationPopup from "../../components/ComponentesBrands/NotificationPopup";
 import { useTranslation } from 'react-i18next';
 
 function FlamencoHome() {
@@ -48,29 +47,29 @@ function FlamencoHome() {
         "FLA001088",
     ]
 
-    const brochures = [
-        {
-            imageUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_FLAMENCO.png",
-            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_FLAMENCO_WEB.pdf",
-            title: "FLAMENCO",
-            description: t('BrouchureFlamenco'),
-        },
-        {
-            imageUrl:
-                "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_RIVIERA.png",
-            pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/FLA_RIVIERA_BROCHURE_OK.pdf",
-            title: "RIVIERA",
-            description: t('BrouchureRiviera'),
-        },
-    ];
+    // const brochures = [
+    //     {
+    //         imageUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_FLAMENCO.png",
+    //         pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_FLAMENCO_WEB.pdf",
+    //         title: "FLAMENCO",
+    //         description: t('BrouchureFlamenco'),
+    //     },
+    //     {
+    //         imageUrl:
+    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_RIVIERA.png",
+    //         pdfUrl: "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/FLA_RIVIERA_BROCHURE_OK.pdf",
+    //         title: "RIVIERA",
+    //         description: t('BrouchureRiviera'),
+    //     },
+    // ];
 
     return (
         <>
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
-                <NotificationPopup brochures={brochures} />
+                {/* <NotificationPopup brochures={brochures} /> */}
 
                 <div className="flex items-center justify-center h-full pt-3">
                     <img
