@@ -158,7 +158,13 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const modalRef = useRef(null);
-
+    const [artisticPairs, setArtisticPairs] = useState([]);
+    const [selectedArtisticIndex, setSelectedArtisticIndex] = useState(0);
+    const [mainItem, setMainItem] = useState({
+        key: 'product',
+        thumb: cdnUrl(product?.imageBaja || product?.imageBuena || defaultImageUrlModalProductos),
+        full: cdnUrl(product?.imageBuena || product?.imageBaja || defaultImageUrlModalProductos),
+    });
     const [direccionBase64, setDireccionBase64] = useState({});
     const [isViewerOpen, setIsViewerOpen] = useState(false);
     const [photoIndex, setPhotoIndex] = useState(0);
@@ -290,20 +296,32 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     useEffect(() => {
         if (!selectedProduct) return;
         if (selectedProduct.imageBuena || selectedProduct.imageBaja) {
-            setSelectedImage(selectedProduct.imageBuena || selectedProduct.imageBaja);
+            const full = cdnUrl(selectedProduct.imageBuena || selectedProduct.imageBaja);
+            const thumb = cdnUrl(selectedProduct.imageBaja || selectedProduct.imageBuena);
+
+            setMainItem({ key: 'product', thumb, full });
+            setSelectedImage(full);
+
             return;
         }
+
         (async () => {
             try {
                 const [buenaRes, bajaRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/Buena`),
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/Baja`)
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/PRODUCTO_BUENA`),
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/PRODUCTO_BAJA`)
                 ]);
                 const buena = buenaRes.ok ? await buenaRes.json() : null;
                 const baja = bajaRes.ok ? await bajaRes.json() : null;
-                const img = buena ? `https://${buena.ficadjunto}` : (baja ? `https://${baja.ficadjunto}` : defaultImageUrlModalProductos);
-                setSelectedProduct(p => ({ ...p, imageBuena: img, imageBaja: img }));
-                setSelectedImage(img);
+                const rawFull = buena?.ficadjunto ? `${buena.ficadjunto}` : (baja?.ficadjunto ? `${baja.ficadjunto}` : defaultImageUrlModalProductos);
+                const rawThumb = baja?.ficadjunto ? `${baja.ficadjunto}` : (buena?.ficadjunto ? `${buena.ficadjunto}` : defaultImageUrlModalProductos);
+
+                const full = cdnUrl(rawFull);
+                const thumb = cdnUrl(rawThumb);
+
+                setSelectedProduct(p => ({ ...p, imageBuena: full, imageBaja: thumb }));
+                setMainItem({ key: 'product', thumb, full });
+                setSelectedImage(full);
             } catch {
                 setSelectedImage(defaultImageUrlModalProductos);
             }
@@ -319,10 +337,10 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 const data = await res.json();
                 const productosMismoNombre = data.filter(p => p.nombre === selectedProduct.nombre);
                 const images = await Promise.all(productosMismoNombre.map(async prod => {
-                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`);
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/PRODUCTO_BUENA`);
                     const json = response.ok ? await response.json() : null;
                     if (!json?.ficadjunto) return null;
-                    return cdnUrl(`https://${json.ficadjunto}`);
+                    return cdnUrl(`${json.ficadjunto}`);
                 }));
                 const filtered = images.filter(Boolean);
                 setGalleryImages(filtered);
@@ -335,6 +353,60 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
         };
         fetchGalleryImages();
     }, [selectedProduct, selectedImage]);
+
+    useEffect(() => {
+        if (!selectedProduct?.codprodu) {
+            setArtisticPairs([]);
+            setSelectedArtisticIndex(0);
+            return;
+        }
+
+        let cancelled = false;
+
+        (async () => {
+            try {
+                const [bajaRes, buenaRes] = await Promise.all([
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/ARTISTICA_BAJA`),
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${selectedProduct.codprodu}/ARTISTICA_BUENA`)
+                ]);
+
+                const bajaJson = bajaRes.ok ? await bajaRes.json() : null;
+                const buenaJson = buenaRes.ok ? await buenaRes.json() : null;
+
+                const bajaUrl = bajaJson?.ficadjunto ? cdnUrl(bajaJson.ficadjunto) : null;
+                const buenaUrl = buenaJson?.ficadjunto ? cdnUrl(buenaJson.ficadjunto) : null;
+
+                if (!bajaUrl && !buenaUrl) {
+                    if (!cancelled) {
+                        setArtisticPairs([]);
+                        setSelectedArtisticIndex(0);
+                    }
+                    return;
+                }
+
+                const pairs = [{
+                    key: 'artistica',
+                    thumb: bajaUrl || buenaUrl,
+                    full: buenaUrl || bajaUrl
+                }];
+
+                if (!cancelled) {
+                    setArtisticPairs(pairs);
+                    setSelectedArtisticIndex(0);
+                }
+            } catch {
+                if (!cancelled) {
+                    setArtisticPairs([]);
+                    setSelectedArtisticIndex(0);
+                }
+            }
+        })();
+
+        return () => { cancelled = true; };
+    }, [selectedProduct?.codprodu]);
+
+
+
 
     // Relacionados por nombre
     useEffect(() => {
@@ -355,11 +427,11 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 const mismos = data.filter(p => p.nombre === selectedProduct.nombre);
                 const productsWithImages = await Promise.all(mismos.map(async prod => {
                     const [bRes, lRes] = await Promise.all([
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`).then(r => r.ok ? r.json() : null),
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Baja`).then(r => r.ok ? r.json() : null)
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/PRODUCTO_BUENA`).then(r => r.ok ? r.json() : null),
+                        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/PRODUCTO_BAJA`).then(r => r.ok ? r.json() : null)
                     ]);
-                    const rawB = bRes?.ficadjunto ? `https://${bRes.ficadjunto}` : null;
-                    const rawL = lRes?.ficadjunto ? `https://${lRes.ficadjunto}` : null;
+                    const rawB = bRes?.ficadjunto ? `${bRes.ficadjunto}` : null;
+                    const rawL = lRes?.ficadjunto ? `${lRes.ficadjunto}` : null;
                     return {
                         ...prod,
                         imageBuena: rawB ? cdnUrl(rawB) : (rawL ? cdnUrl(rawL) : defaultImageUrlModalProductos),
@@ -405,11 +477,11 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 if (uniqueByName.length > 0) {
                     const productsWithImages = await Promise.all(uniqueByName.map(async prod => {
                         const [b, l] = await Promise.all([
-                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Buena`).then(res => (res.ok ? res.json() : null)),
-                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/Baja`).then(res => (res.ok ? res.json() : null))
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/PRODUCTO_BUENA`).then(res => (res.ok ? res.json() : null)),
+                            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${prod.codprodu}/PRODUCTO_BAJA`).then(res => (res.ok ? res.json() : null))
                         ]);
-                        const rawB = b ? `https://${b.ficadjunto}` : defaultImageUrlModalProductos;
-                        const rawL = l ? `https://${l.ficadjunto}` : defaultImageUrlModalProductos;
+                        const rawB = b ? `${b.ficadjunto}` : defaultImageUrlModalProductos;
+                        const rawL = l ? `${l.ficadjunto}` : defaultImageUrlModalProductos;
                         return { ...prod, imageBuena: cdnUrl(rawB), imageBaja: cdnUrl(rawL) };
                     }));
                     setCollectionProducts(productsWithImages);
@@ -446,15 +518,15 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 return;
             }
             const [buenaResponse, bajaResponse] = await Promise.all([
-                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/Buena`),
-                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/Baja`)
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/PRODUCTO_BUENA`),
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${colorProduct.codprodu}/PRODUCTO_BAJA`)
             ]);
             const buenaImage = buenaResponse.ok ? await buenaResponse.json() : null;
             const bajaImage = bajaResponse.ok ? await bajaResponse.json() : null;
             const updatedProduct = {
                 ...colorProduct,
-                imageBuena: buenaImage ? `https://${buenaImage.ficadjunto}` : '',
-                imageBaja: bajaImage ? `https://${bajaImage.ficadjunto}` : ''
+                imageBuena: buenaImage ? `${buenaImage.ficadjunto}` : '',
+                imageBaja: bajaImage ? `${bajaImage.ficadjunto}` : ''
             };
             setSelectedProduct(updatedProduct);
             setSelectedImage(updatedProduct.imageBuena || updatedProduct.imageBaja);
@@ -890,6 +962,48 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                 on={{ view: ({ index }) => setPhotoIndex(index) }}
                                             />
                                         )}
+                                        {artisticPairs.length > 0 && (
+                                            <div className="mt-4 flex flex-wrap gap-3">
+                                                {artisticPairs.map((pair, idx) => {
+                                                    const isActive = idx === selectedArtisticIndex;
+
+                                                    return (
+                                                        <button
+                                                            key={pair.key || idx}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setSelectedArtisticIndex(idx);
+
+                                                                setArtisticPairs((prev) => {
+                                                                    const next = [...prev];
+                                                                    const clicked = next[idx];
+
+                                                                    // Swap: lo que está en grande pasa a miniatura; y la miniatura clicada pasa a grande
+                                                                    next[idx] = mainItem;
+                                                                    setMainItem(clicked);
+                                                                    setSelectedImage(clicked.full || clicked.thumb);
+
+                                                                    return next;
+                                                                });
+                                                            }}
+                                                            className={[
+                                                                'relative w-24 sm:w-24 aspect-square overflow-hidden rounded-xl border border-white/70 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg',
+                                                                'hover:shadow-md'
+                                                            ].join(' ')}
+                                                            title="Ver artística"
+                                                        >
+                                                            <img
+                                                                src={pair.thumb}
+                                                                alt="Artística"
+                                                                className="h-full w-full object-cover"
+                                                                loading="lazy"
+                                                            />
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+
                                     </div>
 
                                     {/* Info y acciones */}
@@ -943,7 +1057,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                         {/* Swatches */}
                                         {relatedProducts?.length > 1 && (
                                             <div className="rounded-3xl border border-white/60 bg-white/70 p-4 sm:p-5 shadow-sm">
-                                                <div className="flex flex-wrap gap-3">
+                                                <div className="flex flex-wrap justify-center gap-3">
                                                     {relatedProducts
                                                         .filter((p, idx, arr) =>
                                                             p.tonalidad && idx === arr.findIndex(q =>

@@ -56,28 +56,33 @@ export class ProductModel {
     };
   }
 
-  static async attachImages(product, tipos = ['Baja']) {
+  static async attachImages(product, tipos = ['PRODUCTO_BAJA']) {
     const want = Array.isArray(tipos) ? tipos : [tipos];
+
     try {
       const lookups = await Promise.all(
-        want.map(codclaarchivo =>
+        want.map((codclaarchivo) =>
           ImagenModel.getByCodproduAndCodclaarchivo({
             codprodu: product.codprodu,
-            codclaarchivo
+            codclaarchivo,
           })
         )
       );
+
       const result = { ...product };
+
       lookups.forEach((img, idx) => {
         const quality = want[idx];
-        const key = quality === 'Buena' ? 'imageBuena' : 'imageBaja';
-        result[key] = img?.ficadjunto ? `https://${img.ficadjunto}` : null;
+        const key = quality === 'PRODUCTO_BUENA' ? 'imageBuena' : 'imageBaja';
+        result[key] = img?.url ?? null;
       });
+
       return result;
     } catch {
       return { ...product, imageBuena: null, imageBaja: null };
     }
   }
+
 
   // ---------------------------------------------------------------------------
   // 1) LECTURAS BÁSICAS / LISTADOS
@@ -218,15 +223,15 @@ export class ProductModel {
         AND p.nombre <> ''
         AND ${exclusion.clause}
         AND EXISTS (
-          SELECT 1 FROM imagenesocproductos i
-           WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'Buena'
+          SELECT 1 FROM imagenesftpproductos i
+           WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'PRODUCTO_BUENA'
         )
     `;
     const values = [coleccion, excludeCodprodu, ...exclusion.values];
     const { rows } = await pool.query(query, values);
 
     const withImages = await Promise.all(
-      rows.map((p) => this.attachImages(p, ['Buena', 'Baja']))
+      rows.map((p) => this.attachImages(p, ['PRODUCTO_BUENA', 'PRODUCTO_BAJA']))
     );
     return withImages;
   }
@@ -243,7 +248,7 @@ export class ProductModel {
     const { rows } = await pool.query(sql, [coleccion]);
 
     const withImages = await Promise.all(
-      rows.map((p) => this.attachImages(p, ['Buena', 'Baja']))
+      rows.map((p) => this.attachImages(p, ['PRODUCTO_BUENA', 'PRODUCTO_BAJA']))
     );
 
     return withImages;
@@ -259,8 +264,8 @@ export class ProductModel {
         AND p.coleccion <> $3
         AND ${exclusion.clause}
         AND EXISTS (
-          SELECT 1 FROM imagenesocproductos i
-           WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'Baja'
+          SELECT 1 FROM imagenesftpproductos i
+           WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'PRODUCTO_BAJA'
         )
       LIMIT $4
     `;
@@ -268,7 +273,7 @@ export class ProductModel {
     const { rows } = await pool.query(query, values);
 
     const withImages = await Promise.all(
-      rows.map((p) => this.attachImages(p, ['Buena', 'Baja']))
+      rows.map((p) => this.attachImages(p, ['PRODUCTO_BUENA', 'PRODUCTO_BAJA']))
     );
     return withImages;
   }
@@ -323,7 +328,7 @@ export class ProductModel {
 
     // Adjuntamos imagen Baja desde backend para acelerar el front
     const withImages = await Promise.all(
-      rows.map(p => this.attachImages(p, ['Baja']))
+      rows.map(p => this.attachImages(p, ['PRODUCTO_BAJA']))
     );
 
     return { products: withImages, total };
@@ -371,9 +376,10 @@ export class ProductModel {
         try {
           const img = await ImagenModel.getByCodproduAndCodclaarchivo({
             codprodu: product.codprodu,
-            codclaarchivo: 'Baja',
+            codclaarchivo: 'PRODUCTO_BAJA',
           });
-          return { ...product, image: img?.ficadjunto ? `https://${img.ficadjunto}` : defaultImg };
+          return { ...product, image: img?.url ?? defaultImg };
+
         } catch {
           return { ...product, image: defaultImg };
         }
@@ -411,9 +417,9 @@ export class ProductModel {
         try {
           const low = await ImagenModel.getByCodproduAndCodclaarchivo({
             codprodu: p.codprodu,
-            codclaarchivo: 'Baja'
+            codclaarchivo: 'PRODUCTO_BAJA'
           });
-          return { ...p, image: low?.ficadjunto ? `https://${low.ficadjunto}` : null };
+          return { ...p, image: low?.url ?? null };
         } catch {
           return { ...p, image: null };
         }

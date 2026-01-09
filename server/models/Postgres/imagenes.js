@@ -8,23 +8,41 @@ const pool = new pg.Pool({
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
+function asIsUrl(value) {
+    if (value == null) return null;
+    const raw = String(value).trim();
+    return raw.length ? raw : null;
+}
+
+async function fetchImageRecord({ codprodu, codclaarchivo }) {
+    const { rows } = await pool.query(
+        'SELECT * FROM imagenesftpproductos WHERE codprodu=$1 AND codclaarchivo=$2;',
+        [codprodu, codclaarchivo]
+    );
+    return rows[0] ?? null;
+}
+
+function withUrl(record) {
+    if (!record) return null;
+    // url EXACTAMENTE como viene de BD
+    return { ...record, url: asIsUrl(record.ficadjunto) };
+}
+
 export class ImagenModel {
     // Obtener todas las imágenes
     static async getAll({ empresa, ejercicio, limit = 10, offset = 0, res }) {
         const cacheKey = `images:${empresa || 'all'}:${ejercicio || 'all'}:${limit}:${offset}`;
-        let cachedResponse;
 
-        // Verificación de la existencia de cache
-        if (res && res.cache) {
-            cachedResponse = await res.cache.get(cacheKey);
+        if (res?.cache) {
+            const cachedResponse = await res.cache.get(cacheKey);
             if (cachedResponse) {
                 res.set('Cache-Control', 'public, max-age=3600');
                 return cachedResponse;
             }
         }
 
-        let query = 'SELECT * FROM imagenesocproductos';
-        let params = [];
+        let query = 'SELECT * FROM imagenesftpproductos';
+        const params = [];
 
         if (empresa) {
             query += ' WHERE "empresa" = $1';
@@ -32,11 +50,7 @@ export class ImagenModel {
         }
 
         if (ejercicio) {
-            if (params.length > 0) {
-                query += ' AND "ejercicio" = $2';
-            } else {
-                query += ' WHERE "ejercicio" = $1';
-            }
+            query += params.length ? ' AND "ejercicio" = $2' : ' WHERE "ejercicio" = $1';
             params.push(ejercicio);
         }
 
@@ -46,8 +60,7 @@ export class ImagenModel {
         try {
             const { rows } = await pool.query(query, params);
 
-            // Cachear solo si existe res.cache
-            if (res && res.cache) {
+            if (res?.cache) {
                 await res.cache.set(cacheKey, rows);
                 res.set('Cache-Control', 'public, max-age=3600');
             }
@@ -61,75 +74,115 @@ export class ImagenModel {
 
     static async getById({ codprodu, codclaarchivo, res }) {
         const cacheKey = `image:${codprodu}:${codclaarchivo}`;
-        let cached = res?.cache && await res.cache.get(cacheKey);
-        if (cached) {
-            res.set('Cache-Control', 'public, max-age=3600');
-            return cached;
+
+        if (res?.cache) {
+            const cached = await res.cache.get(cacheKey);
+            if (cached) {
+                res.set('Cache-Control', 'public, max-age=3600');
+                return cached;
+            }
         }
 
-        const { rows } = await pool.query(
-            'SELECT * FROM imagenesocproductos WHERE codprodu=$1 AND codclaarchivo=$2;',
-            [codprodu, codclaarchivo]
-        );
-        if (!rows[0]) return null;
+        const record = await fetchImageRecord({ codprodu, codclaarchivo });
+        if (!record) return null;
 
-        const record = rows[0];
-        const base = process.env.IMG_BASE_URL.replace(/\/$/, '');
-        const fullUrl = record.ficadjunto
-            ? `${base}/${record.ficadjunto.replace(/^\/+/, '')}`
-            : null;
+        const result = withUrl(record);
 
-        const result = { ...record, url: fullUrl };
         if (res?.cache) {
             await res.cache.set(cacheKey, result);
             res.set('Cache-Control', 'public, max-age=3600');
         }
+
         return result;
     }
 
+    // Obtener imágenes por codprodu (opcionalmente filtradas por tipos/codclaarchivo)
+    static async getByCodprodu({ codprodu, types, res }) {
+        const normalizedTypes = Array.isArray(types) ? types.filter(Boolean) : null;
+        const typesKey = normalizedTypes?.length ? normalizedTypes.join(',') : 'all';
+        const cacheKey = `imagesByProduct:${codprodu}:${typesKey}`;
+
+        if (res?.cache) {
+            const cached = await res.cache.get(cacheKey);
+            if (cached) {
+                res.set('Cache-Control', 'public, max-age=3600');
+                return cached;
+            }
+        }
+
+        const params = [codprodu];
+        let query = 'SELECT * FROM imagenesftpproductos WHERE codprodu=$1';
+
+        if (normalizedTypes?.length) {
+            query += ' AND codclaarchivo = ANY($2)';
+            params.push(normalizedTypes);
+        }
+
+        query += ' ORDER BY codclaarchivo, linea NULLS LAST, descripcion NULLS LAST;';
+
+        try {
+            const { rows } = await pool.query(query, params);
+            const result = rows.map(withUrl);
+
+            if (res?.cache) {
+                await res.cache.set(cacheKey, result);
+                res.set('Cache-Control', 'public, max-age=3600');
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Error fetching images by product:', error);
+            throw new Error('Error fetching images by product');
+        }
+    }
+
+
     // Obtener una imagen por código de producto y clasificación de archivo
     static async getByCodproduAndCodclaarchivo({ codprodu, codclaarchivo, res }) {
-        const cacheKey = `image:${codprodu}:${codclaarchivo}`;
-        let cached = res?.cache && await res.cache.get(cacheKey);
-        if (cached) {
-            res.set('Cache-Control', 'public, max-age=3600');
-            return cached;
-        }
-
-        const { rows } = await pool.query(
-            'SELECT * FROM imagenesocproductos WHERE codprodu=$1 AND codclaarchivo=$2;',
-            [codprodu, codclaarchivo]
-        );
-        if (!rows[0]) return null;
-
-        const record = rows[0];
-        const base = process.env.IMG_BASE_URL.replace(/\/$/, '');
-        const fullUrl = record.ficadjunto
-            ? `${base}/${record.ficadjunto.replace(/^\/+/, '')}`
-            : null;
-
-        const result = { ...record, url: fullUrl };
-        if (res?.cache) {
-            await res.cache.set(cacheKey, result);
-            res.set('Cache-Control', 'public, max-age=3600');
-        }
-        return result;
+        // Reutiliza misma query y misma cacheKey
+        return this.getById({ codprodu, codclaarchivo, res });
     }
 
     // Crear una nueva imagen
     static async create({ input, res }) {
-        const { empresa, ejercicio, codprodu, linea, descripcion, codclaarchivo, ficadjunto, tipdocasociado, fecalta, ultfeccompra, ultfecventa, ultfecactprc } = input;
+        const {
+            empresa,
+            ejercicio,
+            codprodu,
+            linea,
+            descripcion,
+            codclaarchivo,
+            ficadjunto,
+            tipdocasociado,
+            fecalta,
+            ultfeccompra,
+            ultfecventa,
+            ultfecactprc,
+        } = input;
 
         try {
             const { rows } = await pool.query(
-                `INSERT INTO imagenesocproductos ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc")
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-                RETURNING *;`,
-                [empresa, ejercicio, codprodu, linea, descripcion, codclaarchivo, ficadjunto, tipdocasociado, fecalta, ultfeccompra, ultfecventa, ultfecactprc]
+                `INSERT INTO imagenesftpproductos ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc")
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+         RETURNING *;`,
+                [
+                    empresa,
+                    ejercicio,
+                    codprodu,
+                    linea,
+                    descripcion,
+                    codclaarchivo,
+                    ficadjunto,
+                    tipdocasociado,
+                    fecalta,
+                    ultfeccompra,
+                    ultfecventa,
+                    ultfecactprc,
+                ]
             );
 
-            if (res && res.cache) {
-                await res.cache.flushAll(); // Invalidar caché después de crear la imagen
+            if (res?.cache) {
+                await res.cache.flushAll();
             }
 
             return rows[0];
@@ -141,18 +194,23 @@ export class ImagenModel {
 
     // Actualizar una imagen
     static async update({ codprodu, codclaarchivo, input, res }) {
-        const fields = Object.keys(input).map((key, index) => `"${key}" = $${index + 3}`).join(", ");
+        const fields = Object.keys(input)
+            .map((key, index) => `"${key}" = $${index + 3}`)
+            .join(', ');
         const values = Object.values(input);
 
         try {
             const { rows } = await pool.query(
-                `UPDATE imagenesocproductos SET ${fields} WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;`,
+                `UPDATE imagenesftpproductos
+         SET ${fields}
+         WHERE "codprodu" = $1 AND "codclaarchivo" = $2
+         RETURNING *;`,
                 [codprodu, codclaarchivo, ...values]
             );
 
-            if (res && res.cache) {
-                await res.cache.del(`image:${codprodu}:${codclaarchivo}`); // Invalidar caché después de la actualización
-                await res.cache.flushAll(); // Invalidar otros caches si es necesario
+            if (res?.cache) {
+                await res.cache.del(`image:${codprodu}:${codclaarchivo}`);
+                await res.cache.flushAll();
             }
 
             return rows[0];
@@ -166,13 +224,13 @@ export class ImagenModel {
     static async delete({ codprodu, codclaarchivo, res }) {
         try {
             const { rows } = await pool.query(
-                'DELETE FROM imagenesocproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;',
+                'DELETE FROM imagenesftpproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;',
                 [codprodu, codclaarchivo]
             );
 
-            if (res && res.cache) {
-                await res.cache.del(`image:${codprodu}:${codclaarchivo}`); // Invalidar caché después de la eliminación
-                await res.cache.flushAll(); // Invalidar otros caches si es necesario
+            if (res?.cache) {
+                await res.cache.del(`image:${codprodu}:${codclaarchivo}`);
+                await res.cache.flushAll();
             }
 
             return rows[0];

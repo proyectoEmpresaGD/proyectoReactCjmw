@@ -373,11 +373,11 @@ export default function CardProduct() {
     const loadLowRes = async (prod) => {
         try {
             const low = await fetch(
-                `${apiUrl}/api/images/${prod.codprodu}/Baja`
+                `${apiUrl}/api/images/${prod.codprodu}/PRODUCTO_BAJA`
             ).then((r) => (r.ok ? r.json() : null));
             return {
                 ...prod,
-                imageBaja: cdnUrl(low ? `https://${low.ficadjunto}` : defaultImageUrl),
+                imageBaja: cdnUrl(low ? `${low.ficadjunto}` : defaultImageUrl),
             };
         } catch {
             return { ...prod, imageBaja: defaultImageUrl };
@@ -387,12 +387,12 @@ export default function CardProduct() {
     const preloadHighResInto = async (prod) => {
         try {
             const hi = await fetch(
-                `${apiUrl}/api/images/${prod.codprodu}/Buena`
+                `${apiUrl}/api/images/${prod.codprodu}/PRODUCTO_BUENA`
             ).then((r) => (r.ok ? r.json() : null));
             if (hi) {
                 setSelectedProduct((prev) =>
                     prev && prev.codprodu === prod.codprodu
-                        ? { ...prev, imageBuena: cdnUrl(`https://${hi.ficadjunto}`) }
+                        ? { ...prev, imageBuena: cdnUrl(`${hi.ficadjunto}`) }
                         : prev
                 );
             }

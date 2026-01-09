@@ -22,22 +22,32 @@ export class ImagenController {
     }
 
     // Obtener una imagen por ID
-    async getById(req, res) {
+    // Obtener imágenes por producto (opcionalmente filtradas por tipos)
+    async getByCodprodu(req, res) {
         try {
-            const { codprodu, codclaarchivo } = req.params;
-            const image = await ImagenModel.getById({ codprodu, codclaarchivo, res });
-            if (image) {
-                if (res && res.cache) {
-                    res.set('Cache-Control', 'public, max-age=3600');
-                }
-                res.json(image);
-            } else {
-                res.status(404).json({ message: 'Image not found' });
+            const { codprodu } = req.params;
+
+            const typesParam = req.query.types;
+            const types =
+                typeof typesParam === 'string' && typesParam.trim().length
+                    ? typesParam
+                        .split(',')
+                        .map((t) => t.trim())
+                        .filter(Boolean)
+                    : null;
+
+            const images = await ImagenModel.getByCodprodu({ codprodu, types, res });
+
+            // Devuelve siempre array (si no hay, [])
+            if (res?.cache) {
+                res.set('Cache-Control', 'public, max-age=3600');
             }
+            return res.json(images);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            return res.status(500).json({ error: error.message });
         }
     }
+
 
     // Obtener una imagen por código de producto y clasificación de archivo
     async getByCodproduAndCodclaarchivo(req, res) {
