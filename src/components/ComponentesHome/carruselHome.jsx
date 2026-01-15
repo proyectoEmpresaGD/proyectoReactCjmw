@@ -1,403 +1,257 @@
 // src/components/ComponentesHome/carruselHome.jsx
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { cdnUrl } from '../../Constants/cdn';
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { cdnUrl } from "../../Constants/cdn";
 
-// Config
-const IMAGE_SHOW_MS = 5000; // 5s imagen antes/después de los vídeos
-const FADE_MS = 500;        // duración del crossfade
-
-/**
- * Crossfade de dos <video> con pre-carga pausada.
- * - No se reproduce nada hasta que `playing === true`.
- * - Entre vídeos: precarga en buffer oculto, mantiene pausado a 0, y crossfade cuando toca.
- */
-function CrossfadeVideo({ sources = [], playing, onCycleEnd }) {
-    const [idx, setIdx] = useState(0);
-    const [active, setActive] = useState('A'); // 'A' | 'B'
-    const [srcA, setSrcA] = useState(null);
-    const [srcB, setSrcB] = useState(null);
-    const refA = useRef(null);
-    const refB = useRef(null);
-    const [opA, setOpA] = useState(0);
-    const [opB, setOpB] = useState(0);
-    const fadeTimeout = useRef(null);
-
-    // Montaje/reset cuando cambia la playlist
-    useEffect(() => {
-        clearTimeout(fadeTimeout.current);
-        if (!sources.length) {
-            setSrcA(null); setSrcB(null); setOpA(0); setOpB(0); setIdx(0);
-            return;
-        }
-        // Cargamos el primer vídeo en A en pausa y al inicio
-        const first = cdnUrl(sources[0]);
-        setSrcA(first);
-        setSrcB(null);
-        setIdx(0);
-        setActive('A');
-        setOpA(0);
-        setOpB(0);
-    }, [sources]);
-
-    // Control global de reproducción
-    useEffect(() => {
-        const vA = refA.current, vB = refB.current;
-        clearTimeout(fadeTimeout.current);
-
-        if (!playing) {
-            // Pausa todo y vuelve a 0 para que no avance en segundo plano
-            if (vA) { vA.pause(); try { vA.currentTime = 0; } catch { } }
-            if (vB) { vB.pause(); try { vB.currentTime = 0; } catch { } }
-            setOpA(0);
-            setOpB(0);
-            return;
-        }
-
-        // playing === true: arrancamos desde el buffer activo al frame 0
-        const playActive = async () => {
-            const v = active === 'A' ? refA.current : refB.current;
-            if (v) {
-                try { v.currentTime = 0; } catch { }
-                // aseguramos muted + playsInline para autoplay
-                await v.play().catch(() => { });
-            }
-            // hacemos visible el activo
-            if (active === 'A') { setOpA(1); setOpB(0); }
-            else { setOpA(0); setOpB(1); }
-        };
-        playActive();
-    }, [playing, active]);
-
-    // Cuando termina el vídeo activo
-    const handleEnded = () => {
-        if (!sources.length) return;
-        const next = idx + 1;
-
-        if (next < sources.length) {
-            // Preparar buffer inactivo con el siguiente vídeo (pausado a 0)
-            const nextSrc = cdnUrl(sources[next]);
-            const useA = active === 'B';
-            if (useA) setSrcA(nextSrc); else setSrcB(nextSrc);
-
-            // Esperamos a que React pinte el nuevo src y luego preparamos reproducción y crossfade
-            requestAnimationFrame(() => {
-                const nextRef = (useA ? refA : refB).current;
-                if (nextRef) {
-                    try { nextRef.currentTime = 0; } catch { }
-                    nextRef.pause(); // aseguramos pausa hasta el inicio del crossfade
-                }
-
-                // Iniciar crossfade: reproducir el siguiente y fundir opacidades
-                const doCrossfade = async () => {
-                    if (nextRef) await nextRef.play().catch(() => { });
-                    if (useA) {
-                        setOpA(1); setOpB(0);
-                    } else {
-                        setOpB(1); setOpA(0);
-                    }
-                    // Tras el fade, cambiamos activo y pausamos el anterior para ahorrar CPU
-                    clearTimeout(fadeTimeout.current);
-                    fadeTimeout.current = setTimeout(() => {
-                        const prevRef = (useA ? refB : refA).current;
-                        prevRef?.pause?.();
-                        setActive(useA ? 'A' : 'B');
-                        setIdx(next);
-                    }, FADE_MS);
-                };
-                doCrossfade();
-            });
-        } else {
-            // Terminó la lista completa
-            onCycleEnd?.();
-        }
-    };
-
-    useEffect(() => () => clearTimeout(fadeTimeout.current), []);
-
-    return (
-        <div className="absolute inset-0">
-            {/* Video A */}
-            {srcA && (
-                <video
-                    key={`A-${srcA}`}
-                    ref={refA}
-                    src={srcA}
-                    className="absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out"
-                    style={{ opacity: opA, transitionDuration: `${FADE_MS}ms` }}
-                    preload="auto"
-                    muted
-                    playsInline
-                    controls={false}
-                    onEnded={handleEnded}
-                />
-            )}
-            {/* Video B */}
-            {srcB && (
-                <video
-                    key={`B-${srcB}`}
-                    ref={refB}
-                    src={srcB}
-                    className="absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out"
-                    style={{ opacity: opB, transitionDuration: `${FADE_MS}ms` }}
-                    preload="auto"
-                    muted
-                    playsInline
-                    controls={false}
-                    onEnded={handleEnded}
-                />
-            )}
-        </div>
-    );
-}
-
-/**
- * HeroMedia
- * - Imagen 5s (vídeos precargados pero pausados y a 0, no se oyen ni avanzan).
- * - Crossfade imagen→vídeo arrancando desde 0.
- * - Playlist con crossfade entre vídeos.
- * - Al terminar, vuelve a imagen 5s y repite.
- */
-function HeroMedia({ imageSrc, videos = [], overlay }) {
-    const [phase, setPhase] = useState('image'); // 'image' | 'video'
-    const [showImage, setShowImage] = useState(true);
-    const [mountVideoLayer, setMountVideoLayer] = useState(false);
-    const [playingVideos, setPlayingVideos] = useState(false);
-    const imageTimerRef = useRef(null);
-
-    useEffect(() => () => clearTimeout(imageTimerRef.current), []);
-
-    // Fase imagen: mostrar imagen, montar capa de vídeo (preload pausado) pero NO reproducir
-    useEffect(() => {
-        if (phase !== 'image') return;
-        setMountVideoLayer(!!videos.length);
-        setPlayingVideos(false); // importantísimo: NO reproducir bajo la imagen
-
-        clearTimeout(imageTimerRef.current);
-        if (!videos.length) return; // si no hay vídeos, nos quedamos en imagen
-
-        imageTimerRef.current = setTimeout(() => {
-            // Iniciar crossfade: activar reproducción y desvanecer imagen a la vez
-            setPlayingVideos(true);  // los vídeos empiezan AHORA desde 0
-            setShowImage(false);
-            // Al finalizar el fade, estamos oficialmente en fase vídeo
-            setTimeout(() => setPhase('video'), FADE_MS);
-        }, IMAGE_SHOW_MS);
-    }, [phase, videos.length]);
-
-    // Fin de la playlist: volver a imagen (y parar vídeos para que no avancen)
-    const handleVideosCycleEnd = () => {
-        setPlayingVideos(false); // pausa y resetea en CrossfadeVideo
-        setShowImage(true);
-        setPhase('image');
-        // Mantener montada la capa de vídeo evita flashes en el siguiente ciclo
-        setMountVideoLayer(true);
-    };
-
-    return (
-        <div className="relative h-screen w-full overflow-hidden">
-            {/* Imagen arriba (se desvanece) */}
-            <img
-                src={imageSrc}
-                alt="Hero"
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out ${showImage ? 'opacity-100' : 'opacity-0'
-                    }`}
-                style={{ transitionDuration: `${FADE_MS}ms` }}
-            />
-
-            {/* Capa de vídeo debajo (se hace visible durante el fade) */}
-            {mountVideoLayer && videos.length > 0 && (
-                <div
-                    className={`absolute inset-0 transition-opacity ease-in-out ${showImage ? 'opacity-0' : 'opacity-100'
-                        }`}
-                    style={{ transitionDuration: `${FADE_MS}ms` }}
-                >
-                    <CrossfadeVideo
-                        sources={videos}
-                        playing={playingVideos}
-                        onCycleEnd={handleVideosCycleEnd}
-                    />
-                </div>
-            )}
-
-            {/* Overlay por encima de todo */}
-            {overlay}
-        </div>
-    );
-}
-
-function LoopVideo({ src, overlay }) {
-    if (!src) return null;
-    return (
-        <div className="relative h-screen w-full overflow-hidden">
-            <video
-                src={cdnUrl(src)}
-                className="absolute inset-0 w-full h-full object-cover"
-                autoPlay
-                muted
-                playsInline
-                loop
-                controls={false}
-                preload="auto"
-            />
-            {overlay}
-        </div>
-    );
-}
+const SWIPE_THRESHOLD_PX = 50; // cuánto hay que arrastrar para cambiar slide
+const TAP_MOVE_TOLERANCE_PX = 12; // tolerancia para considerar "tap"
+const SCROLL_LOCK_MS = 500; // anti spam wheel
 
 /**
  * CarruselHome
- * - Mantiene tu transición vertical original (translateY + transition-transform).
- * - Solo el slide 0 usa HeroMedia (con crossfade y pre-carga pausada).
+ * - Slider vertical a pantalla completa
+ * - Tap vs Swipe:
+ *   - Tap real => navega (imagen y logo)
+ *   - Swipe vertical => cambia slide, NO navega
+ * - Orden: Bassari, Flamenco, Arena, Harbour, CJM
+ * - NO muestra slides extra sin ruta / que no pertenezcan a esas marcas
  */
-const CarruselHome = ({ imagesMobile = [], imagesDesktop = [], texts, names, routes, videos = [] }) => {
+const CarruselHome = ({
+    imagesMobile = [],
+    imagesDesktop = [],
+    texts = [],
+    names = [],
+    routes = [],
+}) => {
+    const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [isScrolling, setIsScrolling] = useState(false);
-    const [isTap, setIsTap] = useState(true);
+
+    // isMobile
     const [isMobile, setIsMobile] = useState(() => {
-        if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
-        return window.matchMedia('(max-width: 768px)').matches;
+        if (typeof window === "undefined" || typeof window.matchMedia !== "function")
+            return false;
+        return window.matchMedia("(max-width: 768px)").matches;
     });
 
+    // Refs para gestos
+    const isScrollingRef = useRef(false);
     const containerRef = useRef(null);
-    const touchStartY = useRef(0);
-    const touchEndY = useRef(0);
-    const touchStartX = useRef(0);
-    const touchEndX = useRef(0);
-    const navigate = useNavigate();
+    const touchStart = useRef({ x: 0, y: 0 });
+    const touchLast = useRef({ x: 0, y: 0 });
+    const movedRef = useRef(false);
 
-    // Alternar mobile/desktop
+    // Detectar cambio mobile/desktop
     useEffect(() => {
-        if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-        const mq = window.matchMedia('(max-width: 768px)');
+        if (typeof window === "undefined" || typeof window.matchMedia !== "function")
+            return;
+        const mq = window.matchMedia("(max-width: 768px)");
         const handler = (e) => setIsMobile(e.matches);
-        mq.addEventListener?.('change', handler);
+        mq.addEventListener?.("change", handler);
         mq.addListener?.(handler); // fallback Safari
         return () => {
-            mq.removeEventListener?.('change', handler);
+            mq.removeEventListener?.("change", handler);
             mq.removeListener?.(handler);
         };
     }, []);
 
-    // Selección final de imágenes
-    const selectedImages = useMemo(
+    // Elegir imágenes según device
+    const rawSelectedImages = useMemo(
         () => (isMobile ? imagesMobile : imagesDesktop),
         [isMobile, imagesMobile, imagesDesktop]
     );
 
-    // Scroll con rueda (tu lógica original)
+    // Orden fijo
+    const ORDER = useMemo(() => ["BASSARI", "FLAMENCO", "ARENA", "HARBOUR", "CJM"], []);
+
+    /**
+     * Slides finales:
+     * - Solo las del ORDER
+     * - Solo si tienen route válido (para evitar la “última imagen que no va a ningún lado”)
+     */
+    const slides = useMemo(() => {
+        const nameToIndex = new Map();
+        (names || []).forEach((n, idx) => {
+            if (!n) return;
+            nameToIndex.set(String(n).trim().toUpperCase(), idx);
+        });
+
+        const out = [];
+        for (const key of ORDER) {
+            const idx = nameToIndex.get(key);
+            if (typeof idx !== "number") continue;
+
+            const route = routes?.[idx];
+            if (!route) continue; // ✅ si no hay ruta, no se muestra
+
+            out.push({
+                idx,
+                name: names[idx],
+                image: rawSelectedImages[idx],
+                text: texts?.[idx],
+                route,
+            });
+        }
+
+        return out;
+    }, [ORDER, names, rawSelectedImages, texts, routes]);
+
+    // Si cambia número de slides, evitar out of bounds
     useEffect(() => {
-        const handleScroll = (e) => {
-            if (isScrolling) return;
+        if (currentSlide > slides.length - 1) setCurrentSlide(0);
+    }, [slides.length, currentSlide]);
+
+    // Wheel scroll
+    useEffect(() => {
+        const cnt = containerRef.current;
+        if (!cnt) return;
+
+        const handleWheel = (e) => {
+            e.preventDefault?.();
+            if (isScrollingRef.current) return;
+
             const dir = e.deltaY > 0 ? 1 : -1;
-            setIsScrolling(true);
+
+            isScrollingRef.current = true;
             setCurrentSlide((prev) => {
-                if (dir === 1 && prev < selectedImages.length - 1) return prev + 1;
+                if (dir === 1 && prev < slides.length - 1) return prev + 1;
                 if (dir === -1 && prev > 0) return prev - 1;
                 return prev;
             });
-            setTimeout(() => setIsScrolling(false), 500);
-        };
-        const cnt = containerRef.current;
-        cnt?.addEventListener('wheel', handleScroll);
-        return () => cnt?.removeEventListener('wheel', handleScroll);
-    }, [selectedImages.length, isScrolling]);
 
-    // Gestos táctiles (tu lógica original)
-    useEffect(() => {
-        const onStart = (e) => {
-            touchStartY.current = e.touches[0].clientY;
-            touchStartX.current = e.touches[0].clientX;
-            setIsTap(true);
+            window.setTimeout(() => {
+                isScrollingRef.current = false;
+            }, SCROLL_LOCK_MS);
         };
+
+        cnt.addEventListener("wheel", handleWheel, { passive: false });
+        return () => cnt.removeEventListener("wheel", handleWheel);
+    }, [slides.length]);
+
+    // Touch gestures
+    useEffect(() => {
+        const cnt = containerRef.current;
+        if (!cnt) return;
+
+        const onStart = (e) => {
+            if (!e.touches?.[0]) return;
+            const t = e.touches[0];
+            touchStart.current = { x: t.clientX, y: t.clientY };
+            touchLast.current = { x: t.clientX, y: t.clientY };
+            movedRef.current = false;
+        };
+
         const onMove = (e) => {
-            touchEndY.current = e.touches[0].clientY;
-            touchEndX.current = e.touches[0].clientX;
-            if (
-                Math.abs(touchStartY.current - touchEndY.current) > 10 ||
-                Math.abs(touchStartX.current - touchEndX.current) > 10
-            ) {
-                setIsTap(false);
+            if (!e.touches?.[0]) return;
+            const t = e.touches[0];
+            touchLast.current = { x: t.clientX, y: t.clientY };
+
+            const dx = Math.abs(touchLast.current.x - touchStart.current.x);
+            const dy = Math.abs(touchLast.current.y - touchStart.current.y);
+
+            if (dx > TAP_MOVE_TOLERANCE_PX || dy > TAP_MOVE_TOLERANCE_PX) {
+                movedRef.current = true;
             }
         };
+
         const onEnd = () => {
-            const dy = touchStartY.current - touchEndY.current;
-            if (dy > 50 && currentSlide < selectedImages.length - 1) {
+            const dy = touchStart.current.y - touchLast.current.y;
+
+            if (dy > SWIPE_THRESHOLD_PX && currentSlide < slides.length - 1) {
                 setCurrentSlide((s) => s + 1);
-            } else if (dy < -50 && currentSlide > 0) {
+                return;
+            }
+            if (dy < -SWIPE_THRESHOLD_PX && currentSlide > 0) {
                 setCurrentSlide((s) => s - 1);
             }
         };
-        const cnt = containerRef.current;
-        cnt?.addEventListener('touchstart', onStart);
-        cnt?.addEventListener('touchmove', onMove);
-        cnt?.addEventListener('touchend', onEnd);
-        return () => {
-            cnt?.removeEventListener('touchstart', onStart);
-            cnt?.removeEventListener('touchmove', onMove);
-            cnt?.removeEventListener('touchend', onEnd);
-        };
-    }, [selectedImages.length, currentSlide]);
 
-    // Click
-    const handleClick = (idx) => {
-        if (isTap && routes?.[idx]) navigate(routes[idx]);
+        cnt.addEventListener("touchstart", onStart, { passive: true });
+        cnt.addEventListener("touchmove", onMove, { passive: true });
+        cnt.addEventListener("touchend", onEnd);
+
+        return () => {
+            cnt.removeEventListener("touchstart", onStart);
+            cnt.removeEventListener("touchmove", onMove);
+            cnt.removeEventListener("touchend", onEnd);
+        };
+    }, [currentSlide, slides.length]);
+
+    // Navegación segura (tap real)
+    const safeNavigate = (route) => {
+        if (!route) return;
+        if (movedRef.current) return; // ✅ si fue swipe, no navegamos
+        navigate(route);
     };
 
     return (
         <div className="relative h-screen overflow-hidden w-full" ref={containerRef}>
-            {/* TRANSICIÓN VERTICAL ORIGINAL */}
             <div
                 className="flex flex-col transition-transform duration-500 ease-in-out"
                 style={{ transform: `translateY(-${currentSlide * 100}vh)` }}
             >
-                {selectedImages.map((rawImg, idx) => {
-                    const imgSrc = cdnUrl(rawImg);
-                    const textImg = texts?.[idx] ? cdnUrl(texts[idx]) : null;
+                {slides.map((s, pos) => {
+                    const imgSrc = s.image ? cdnUrl(s.image) : null;
+                    const textImg = s.text ? cdnUrl(s.text) : null;
 
-                    // === CAMBIO: posicionamiento condicional para CJM ===
-                    const esCJM = names?.[idx] === 'CJM';
+                    const brandKey = String(s.name || "").trim().toUpperCase();
+                    const esCJM = brandKey === "CJM";
+                    const isBassariOrFlamenco = brandKey === "BASSARI" || brandKey === "FLAMENCO";
 
+                    // ✅ Overlay ajustado:
+                    // - En móvil: logos más pequeños en general
+                    // - En móvil: Bassari y Flamenco centrados verticalmente
+                    // - En desktop: comportamiento original
                     const overlay = textImg ? (
                         <div
-                            className={`absolute bottom-[15%] md:bottom-[5%] ${esCJM ? 'left-1/2' : 'left-[50%]'} -translate-x-1/2 text-center w-[80%] lg:w-[35%] p-4`}
+                            className={`
+                absolute
+                left-1/2 -translate-x-1/2
+                text-center
+                w-[80%] lg:w-[35%]
+                p-4
+                ${isMobile
+                                    ? isBassariOrFlamenco
+                                        ? "top-1/2 -translate-y-1/2"
+                                        : "bottom-[15%]"
+                                    : "bottom-[5%]"
+                                }
+              `}
                         >
                             <img
                                 src={textImg}
-                                alt={names?.[idx] || ''}
-                                onClick={() => handleClick(idx)}
-                                className={`cursor-pointer ${esCJM ? 'w-[250px]' : 'w-[400px]'} h-auto mx-auto`}
+                                alt={s.name || ""}
+                                onClick={() => safeNavigate(s.route)}
+                                draggable={false}
+                                className={`
+                  cursor-pointer mx-auto h-auto
+                  ${isMobile
+                                        ? esCJM
+                                            ? "w-[180px]"
+                                            : "w-[220px]"
+                                        : esCJM
+                                            ? "w-[250px]"
+                                            : "w-[400px]"
+                                    }
+                `}
                             />
                         </div>
                     ) : null;
 
-                    // Slide 0 -> SOLO VIDEO en loop + logo de ARENA encima
-                    if (idx === 0) {
-                        const arenaLogo = texts?.[4] ? cdnUrl(texts[4]) : null;
-                        const arenaRoute = routes?.[4];
-                        const arenaOverlay = arenaLogo ? (
-                            <div className="absolute bottom-[15%] md:bottom-[5%] left-1/2 -translate-x-1/2 text-center w-[80%] lg:w-[30%] p-4">
-                                <img
-                                    src={arenaLogo}
-                                    alt="ARENA"
-                                    onClick={() => arenaRoute && navigate(arenaRoute)}
-                                    className="cursor-pointer w-[550px] h-auto mx-auto"
-                                />
-                            </div>
-                        ) : null;
-
-                        return (
-                            <div key={idx} className="h-screen w-full relative">
-                                <LoopVideo src={videos?.[0]} overlay={arenaOverlay} />
-                            </div>
-                        );
-                    }
-
-
-                    // Resto de slides -> sin cambios
                     return (
-                        <div key={idx} className="h-screen w-full relative">
-                            <img src={imgSrc} alt={`Slide ${idx}`} className="w-full h-full object-cover" />
+                        <div key={`${s.idx}-${pos}`} className="h-screen w-full relative">
+                            {imgSrc ? (
+                                <img
+                                    src={imgSrc}
+                                    alt={`Slide ${s.name || s.idx}`}
+                                    className="w-full h-full object-cover cursor-pointer"
+                                    onClick={() => safeNavigate(s.route)}
+                                    draggable={false}
+                                />
+                            ) : (
+                                <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
+                                    Imagen no disponible
+                                </div>
+                            )}
                             {overlay}
                         </div>
                     );
@@ -405,31 +259,32 @@ const CarruselHome = ({ imagesMobile = [], imagesDesktop = [], texts, names, rou
             </div>
 
             {/* Indicadores móviles */}
-            {currentSlide > 0 && (
+            {slides.length > 1 && (
                 <div className="absolute right-2 top-1/4 md:hidden transition-opacity duration-300">
-                    <span className="block text-white font-bold rotate-90 mb-20" style={{ width: '1em' }}>
-                        {names?.[currentSlide] || ''}
+                    <span className="block text-white font-bold rotate-90 mb-20" style={{ width: "1em" }}>
+                        {slides?.[currentSlide]?.name || ""}
                     </span>
-                    {selectedImages.map((_, idx) => (
+                    {slides.map((_, idx) => (
                         <div
                             key={idx}
-                            className={`w-3 h-3 rounded-full mb-2 ${idx === currentSlide ? 'bg-white' : 'bg-white/50'}`}
+                            className={`w-3 h-3 rounded-full mb-2 ${idx === currentSlide ? "bg-white" : "bg-white/50"
+                                }`}
                         />
                     ))}
                 </div>
             )}
 
             {/* Dots desktop */}
-            {names?.length > 0 && (
+            {slides.length > 0 && (
                 <div className="absolute bottom-5 left-0 right-6 hidden md:flex justify-center space-x-8">
-                    {names.map((name, idx) => (
+                    {slides.map((s, idx) => (
                         <span
-                            key={idx}
+                            key={`${s.idx}-dot`}
                             onClick={() => setCurrentSlide(idx)}
-                            className={`cursor-pointer transition-colors ${idx === currentSlide ? 'text-black font-bold' : 'text-white/50'
+                            className={`cursor-pointer transition-colors ${idx === currentSlide ? "text-black font-bold" : "text-white/50"
                                 }`}
                         >
-                            {name}
+                            {s.name || ""}
                         </span>
                     ))}
                 </div>

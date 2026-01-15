@@ -1,0 +1,94 @@
+{
+    "notFound": {
+        "title": "Marca no encontrada",
+        "description": "La marca que buscas no está disponible todavía.",
+        "cta": "Volver al inicio"
+    },
+    "hero": {
+        "label": {
+            "newCollections": "Nuevas colecciones",
+            "collections": "Colecciones"
+        },
+        "cta": {
+            "exploreProducts": "Explorar productos",
+            "backToBrand": "Volver a la marca"
+        },
+        "imageAlt": "Portada colección"
+    },
+    "sections": {
+        "featured": {
+            "label": "Colecciones destacadas",
+            "title": {
+                "bassari": "ESSENCES DU NIL & LE VOYAGE DES WOLOF",
+                "flamenco": "INDIENNE STRIPES & PALACIO DE LAS DUEÑAS"
+            },
+            "subtitle": "Dentro de cada pestaña tienes la presentación y el carrusel de productos pertenecientes a la colección."
+        },
+        "story": {
+            "title": "Una narrativa que se siente.",
+            "panel": {
+                "kicker": "Experiencia sensorial",
+                "title": "Colecciones con carácter.",
+                "description": "Cada textura está pensada para destacar en proyectos de interiorismo que buscan emoción, lujo y una identidad reconocible.",
+                "cta": "Ver catálogo completo"
+            }
+        },
+        "grid": {
+            "label": "Colecciones",
+            "title": {
+                "new": "Nuevas colecciones",
+                "all": "Explora cada universo creativo"
+            },
+            "ctaAll": "Ver todo",
+            "cardLabel": "Colección",
+            "cardCta": "Descubrir tejidos",
+            "cardImageAlt": "Colección {{coleccion}}",
+            "noImage": "Imagen no disponible"
+        },
+        "cta": {
+            "title": "Diseños para vender experiencias.",
+            "description": "Potencia la venta con colecciones que se sienten exclusivas. Cada línea está pensada para crear atmósferas envolventes y memorables.",
+            "primary": "Empezar ahora",
+            "secondary": "Solicitar asesoría"
+        }
+    },
+    "newCollections": {
+        "bassari": {
+            "essences": {
+                "title": "NUEVA COLECCIÓN: ESSENCES DU NIL",
+                "description": "Tejidos frescos y sofisticados que evocan serenidad y elegancia, inspirados en la luz y el ritmo del Nilo."
+            },
+            "voyage": {
+                "title": "NUEVA COLECCIÓN: LE VOYAGE DES WOLOF",
+                "description": "Una colección que combina tradición y modernidad con texturas auténticas y tonos naturales pensados para espacios con carácter."
+            }
+        },
+        "flamenco": {
+            "indienne": {
+                "title": "NUEVA COLECCIÓN: INDIENNE STRIPES",
+                "description": "Una propuesta vibrante de rayas con inspiración artesanal, ideal para interiores llenos de energía y personalidad."
+            },
+            "palacio": {
+                "title": "NUEVA COLECCIÓN: PALACIO DE LAS DUEÑAS",
+                "description": "Texturas ricas y elegantes que evocan el encanto clásico sevillano con un toque contemporáneo."
+            }
+        }
+    },
+    "brands": {
+        "bassari": {
+            "name": "Bassari",
+            "tagline": "Texturas inspiradas en África para espacios con alma.",
+            "intro": "Cada colección captura el ritmo de la tierra, la calidez de los pigmentos naturales y la autenticidad de la tradición.",
+            "highlight": "Diseños étnicos contemporáneos, tacto envolvente y una paleta que celebra la naturaleza."
+        },
+        "flamenco": {
+            "name": "Flamenco",
+            "tagline": "Elegancia vibrante y carácter mediterráneo.",
+            "intro": "Colecciones que combinan artesanía y sofisticación, con tejidos que elevan cualquier ambiente.",
+            "highlight": "Diseños refinados, colores luminosos y una sensación de lujo contemporáneo."
+        }
+    },
+    "carousel": {
+        "hideCtaMatch": "descubre todas las colecciones"
+    }
+}

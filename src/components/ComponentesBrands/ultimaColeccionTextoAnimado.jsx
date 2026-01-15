@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
 
-function PresentacionColeccion({ nombreColeccion, titulo, imagenFondo, descripcion }) {
+function PresentacionColeccion({ nombreColeccion, titulo, imagenFondo, descripcion, onDiscoverCollections, }) {
     const textRef = useRef([]);
     const tituloRef = useRef(null);
     const botonRef = useRef(null);
@@ -12,6 +12,10 @@ function PresentacionColeccion({ nombreColeccion, titulo, imagenFondo, descripci
     const [imagenVisible, setImagenVisible] = useState(false);
 
     const handleClick = () => {
+        if (onDiscoverCollections) {
+            onDiscoverCollections();
+            return;
+        }
         const target = document.getElementById("colecciones");
         if (target) target.scrollIntoView({ behavior: "smooth" });
     };

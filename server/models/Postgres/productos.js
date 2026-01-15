@@ -392,24 +392,29 @@ export class ProductModel {
   static async searchQuick({ query, prodLimit = 8, colLimit = 6 }) {
     const term = (query || '').trim();
     if (!term) return { products: [], collections: [] };
-    const norm = `%${term}%`;
+    const tokens = term.split(/\s+/).filter(Boolean);
+    const norms = tokens.map(token => `%${token}%`);
 
-    const exclusion = this.getExcludedNamesClause(2);
+    const exclusion = this.getExcludedNamesClause(tokens.length + 1);
+    const limitIndex = tokens.length + exclusion.values.length + 1;
+    const tokenConditions = tokens
+      .map((_, idx) => `(
+        unaccent(upper(p.nombre)) LIKE unaccent(upper($${idx + 1}))
+        OR unaccent(upper(p.tonalidad)) LIKE unaccent(upper($${idx + 1}))
+      )`)
+      .join(' AND ');
     const sqlProducts = `
       SELECT DISTINCT ON (p.nombre)
         p.codprodu, p.nombre, p.coleccion, p.tonalidad
       FROM productos p
-      WHERE (
-        unaccent(upper(p.nombre))   LIKE unaccent(upper($1))
-        OR unaccent(upper(p.tonalidad)) LIKE unaccent(upper($1))
-      )
+       WHERE (${tokenConditions})
       AND p.nombre IS NOT NULL
       AND p.nombre <> ''
       AND ${exclusion.clause}
       ORDER BY p.nombre, p.codprodu
-      LIMIT $${2 + exclusion.values.length}
+      LIMIT $${limitIndex}
     `;
-    const prodParams = [norm, ...exclusion.values, prodLimit];
+    const prodParams = [...norms, ...exclusion.values, prodLimit];
     const { rows: prodRows } = await pool.query(sqlProducts, prodParams);
 
     const products = await Promise.all(
@@ -433,7 +438,7 @@ export class ProductModel {
         AND nombre IS NOT NULL
       LIMIT ${colLimit}
     `;
-    const { rows: colRows } = await pool.query(sqlCollections, [norm]);
+    const { rows: colRows } = await pool.query(sqlCollections, [`%${term}%`]);
     const collections = colRows.map(r => r.coleccion).filter(Boolean).slice(0, colLimit);
 
     return { products, collections };
@@ -442,40 +447,48 @@ export class ProductModel {
   static async searchProducts({ query, limit = 16, offset = 0 }) {
     const term = (query || '').trim();
     if (!term) return { products: [], total: 0 };
-    const norm = `%${term}%`;
+    const tokens = term.split(/\s+/).filter(Boolean);
+    const norms = tokens.map(token => `%${token}%`);
 
-    const exclusion = this.getExcludedNamesClause(3);
+    const exclusion = this.getExcludedNamesClause(tokens.length + 2);
+    const limitIndex = tokens.length + 1;
+    const offsetIndex = tokens.length + exclusion.values.length + 2;
+    const tokenConditions = tokens
+      .map((_, idx) => `(
+        unaccent(upper(p.nombre)) LIKE unaccent(upper($${idx + 1}))
+        OR unaccent(upper(p.tonalidad)) LIKE unaccent(upper($${idx + 1}))
+      )`)
+      .join(' AND ');
     const baseSql = `
       SELECT p.*
       FROM productos p
-      WHERE (
-        unaccent(upper(p.nombre))   LIKE unaccent(upper($1))
-        OR unaccent(upper(p.tonalidad)) LIKE unaccent(upper($1))
-      )
+      WHERE (${tokenConditions})
       AND p.nombre IS NOT NULL
       AND p.nombre <> ''
       AND ${exclusion.clause}
       ORDER BY p.nombre, p.codprodu
-      LIMIT $2
-      OFFSET $${3 + exclusion.values.length}
+      LIMIT $${limitIndex}
+      OFFSET $${offsetIndex}
     `;
-    const params = [norm, limit, ...exclusion.values, offset];
+    const params = [...norms, limit, ...exclusion.values, offset];
 
     const { rows } = await pool.query(baseSql, params);
 
     if (rows.length === 0) {
+      const fallbackExclusion = this.getExcludedNamesClause(3);
+      const fallbackOffsetIndex = 3 + fallbackExclusion.values.length;
       const sqlCol = `
         SELECT p.*
         FROM productos p
         WHERE lower(p.coleccion) = lower($1)
           AND p.nombre IS NOT NULL
           AND p.nombre <> ''
-          AND ${exclusion.clause}
+          AND ${fallbackExclusion.clause}
         ORDER BY p.nombre, p.codprodu
         LIMIT $2
-        OFFSET $${3 + exclusion.values.length}
+        OFFSET $${fallbackOffsetIndex}
       `;
-      const paramsCol = [term, limit, ...exclusion.values, offset];
+      const paramsCol = [term, limit, ...fallbackExclusion.values, offset];
       const { rows: colRows } = await pool.query(sqlCol, paramsCol);
       return { products: colRows, total: colRows.length };
     }

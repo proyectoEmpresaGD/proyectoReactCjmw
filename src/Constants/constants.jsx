@@ -186,7 +186,7 @@ export const translationConfig = {
 
 export const coleccionesPorMarca = {
     BAS: [
-        "KASSUMAY", "TRIBAL", "UNIVERS",
+        "LE VOYAGE DES WOLOF", "ESSENCES DU NIL", "KASSUMAY", "TRIBAL", "UNIVERS",
     ],
     ARE: [
         "TAKUMI", "LIGHTHOUSE", "MADAMA BUTTERFLY", "CRANE", "SOBOKUNA", "COSY", "KANNATURA VOL II", "KANNATURA", "ATMOSPHERE", "JEWEL", "PURITTY", "MONTANA", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA", "LINOTTO",
@@ -214,7 +214,8 @@ export const coleccionesPorMarca = {
         "PARABAN"
     ],
     FLA: [
-
+        "INDIENNE STRIPES",
+        "PALACIO DE LAS DUEÑAS",
         "GRAZALEMA",
         "MARRAKECH",
         "TEDDY",
@@ -230,7 +231,8 @@ export const coleccionesPorMarca = {
         "LUXURY DRAPES",
         "EASTERN MEMORIES",
         "GENESIS",
-        "REVOLTOSO"
+        "REVOLTOSO",
+
 
     ],
     CJM: [
@@ -306,7 +308,7 @@ export const carruselConfig = {
 export const CONTACT_CONSENT_VERSION = '2025-01';
 
 export const CONTACT_BANNER_IMAGE =
-    'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/03_AMBIENTES%20PARA%20PAGINA%20CONTACTS/ARN_COSY_8.jpg';
+    'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/03_AMBIENTES%20PARA%20PAGINA%20CONTACTS/ARN_COSY_8_resultado.webp';
 
 // src/Constants/constants.js
 

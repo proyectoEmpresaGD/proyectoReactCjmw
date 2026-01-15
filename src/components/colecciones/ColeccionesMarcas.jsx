@@ -74,7 +74,6 @@ function ColeccionesMarcas({ marca }) {
         const res = await fetch(url, { signal: ac.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json(); // { marca, collections: { "KANNATURA VOL II": [ ... ], ... } }
-
         // Construimos un diccionario normalizado desde el backend
         const byNormKey = {};
         for (const [nombreColeccion, arrUrls] of Object.entries(data.collections || {})) {

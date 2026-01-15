@@ -1,4 +1,12 @@
 {
-    "BrouchureFlamenco": "El lugar donde el mestizaje de culturas inspira nuestras colecciones. Descúbrelas",
-    "BrouchureRiviera": "Colores vibrantes y fibras naturales para viajar a la época colonial. Descúbrelas"
+    "newCollections": {
+        "indienne": {
+            "title": "NUEVA COLECCIÓN: INDIENNE STRIPES",
+            "description": "Una propuesta vibrante de rayas con inspiración artesanal, ideal para interiores llenos de energía y personalidad."
+        },
+        "palacio": {
+            "title": "NUEVA COLECCIÓN: PALACIO DE LAS DUEÑAS",
+            "description": "Texturas ricas y elegantes que evocan el encanto clásico sevillano con un toque contemporáneo."
+        }
+    }
 }

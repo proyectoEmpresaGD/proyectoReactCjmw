@@ -1,3 +1,13 @@
 {
-    "BrouchureBassari": "Un voyage vers l’endroit le plus reculé du Sénégal inspire ces collections. Découvrez-les."
+    "BrouchureBassari": "Un voyage vers le lieu le plus reculé du Sénégal inspire ces collections. Découvrez-les.",
+    "newCollections": {
+        "voyage": {
+            "title": "NEW COLLECTION LE VOYAGE DES WOLOF",
+            "description": "Une collection qui mêle tradition et modernité avec des textures authentiques et des tons naturels pour des espaces de caractère."
+        },
+        "essences": {
+            "title": "NEW COLLECTION ESSENCES DU NIL",
+            "description": "Des textiles frais et sophistiqués qui évoquent sérénité et élégance, inspirés par la lumière et le rythme du Nil."
+        }
+    }
 }

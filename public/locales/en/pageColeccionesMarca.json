@@ -1,0 +1,94 @@
+{
+    "notFound": {
+        "title": "Brand not found",
+        "description": "The brand you are looking for is not available yet.",
+        "cta": "Back to home"
+    },
+    "hero": {
+        "label": {
+            "newCollections": "New collections",
+            "collections": "Collections"
+        },
+        "cta": {
+            "exploreProducts": "Explore products",
+            "backToBrand": "Back to brand"
+        },
+        "imageAlt": "Collection cover"
+    },
+    "sections": {
+        "featured": {
+            "label": "Featured collections",
+            "title": {
+                "bassari": "ESSENCES DU NIL & LE VOYAGE DES WOLOF",
+                "flamenco": "INDIENNE STRIPES & PALACIO DE LAS DUEÑAS"
+            },
+            "subtitle": "Inside each tab you will find the collection presentation and its product carousel."
+        },
+        "story": {
+            "title": "A narrative you can feel.",
+            "panel": {
+                "kicker": "Sensory experience",
+                "title": "Collections with character.",
+                "description": "Each texture is designed to stand out in interior projects that seek emotion, luxury, and a recognizable identity.",
+                "cta": "View full catalog"
+            }
+        },
+        "grid": {
+            "label": "Collections",
+            "title": {
+                "new": "New collections",
+                "all": "Explore every creative universe"
+            },
+            "ctaAll": "View all",
+            "cardLabel": "Collection",
+            "cardCta": "Discover fabrics",
+            "cardImageAlt": "Collection {{coleccion}}",
+            "noImage": "Image not available"
+        },
+        "cta": {
+            "title": "Designs that sell experiences.",
+            "description": "Boost sales with collections that feel exclusive. Each line is crafted to create immersive, memorable atmospheres.",
+            "primary": "Get started",
+            "secondary": "Request advice"
+        }
+    },
+    "newCollections": {
+        "bassari": {
+            "essences": {
+                "title": "NEW COLLECTION ESSENCES DU NIL",
+                "description": "Fresh, sophisticated textiles that evoke serenity and elegance, inspired by the light and rhythm of the Nile."
+            },
+            "voyage": {
+                "title": "NEW COLLECTION LE VOYAGE DES WOLOF",
+                "description": "A collection that blends tradition and modernity with authentic textures and natural tones for character-rich spaces."
+            }
+        },
+        "flamenco": {
+            "indienne": {
+                "title": "NEW COLLECTION INDIENNE STRIPES",
+                "description": "A vibrant striped proposal with artisanal inspiration, ideal for interiors full of energy and personality."
+            },
+            "palacio": {
+                "title": "NEW COLLECTION PALACIO DE LAS DUEÑAS",
+                "description": "Rich, elegant textures that evoke classic Sevillian charm with a contemporary touch."
+            }
+        }
+    },
+    "brands": {
+        "bassari": {
+            "name": "Bassari",
+            "tagline": "Africa-inspired textures for soulful spaces.",
+            "intro": "Each collection captures the rhythm of the land, the warmth of natural pigments, and the authenticity of tradition.",
+            "highlight": "Contemporary ethnic designs, enveloping tactility, and a palette that celebrates nature."
+        },
+        "flamenco": {
+            "name": "Flamenco",
+            "tagline": "Vibrant elegance and Mediterranean character.",
+            "intro": "Collections that combine craftsmanship and sophistication, with fabrics that elevate any space.",
+            "highlight": "Refined designs, luminous colors, and a sense of contemporary luxury."
+        }
+    },
+    "carousel": {
+        "hideCtaMatch": "discover all collections"
+    }
+}

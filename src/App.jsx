@@ -16,6 +16,8 @@ import GeocodingService from "./components/ComponentesContact/map.jsx"
 import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
 import Contract from "./app/contract/PaginaContract.jsx"
 import MediaPage from './app/media/pageMedia.jsx';
+import ColeccionesMarcaPage from './components/colecciones/pageColeccionesMarca.jsx';
+
 function App() {
   return (
     <>
@@ -36,6 +38,7 @@ function App() {
         <Route path="/map/:direccion" element={<GeocodingService />} />
         <Route path="/Contract" element={<Contract />} />
         <Route path="/media" element={<MediaPage />} />
+        <Route path="/colecciones/:marca" element={<ColeccionesMarcaPage />} />
       </Routes>
     </>
   )

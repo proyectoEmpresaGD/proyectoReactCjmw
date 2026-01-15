@@ -736,12 +736,25 @@ export default function CardProduct() {
     );
 
     // filtrado visible
+    const normalizeSearch = (value) =>
+        (value || '')
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLowerCase()
+            .trim();
+
+    const tokenizeSearch = (value) =>
+        normalizeSearch(value)
+            .split(/\s+/)
+            .filter(Boolean);
+
+    // filtrado visible (por tokens en nombre/tonalidad)
     let displayed = productsWithSaleInfo.filter((p) => {
-        const term = searchInput.trim().toLowerCase();
-        if (!term) return true;
-        const name = (p.nombre || '').toLowerCase();
-        const tone = (p.tonalidad || '').toLowerCase();
-        return name.includes(term) || tone.includes(term);
+        const tokens = tokenizeSearch(searchInput);
+        if (tokens.length === 0) return true;
+        const name = normalizeSearch(p.nombre);
+        const tone = normalizeSearch(p.tonalidad);
+        return tokens.every((token) => name.includes(token) || tone.includes(token));
     });
 
     /* NAVIDAD OFF: filtro “ver solo navidad” */

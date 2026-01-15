@@ -16,7 +16,7 @@ i18n
             "filterPanelNew", "footer", "geocodingService", "header", "instructions", "media", "newCollection",
             "notificationPopup", "pageArena", "pageBassari", "pageFlamenco", "pageHarbour",
             "productModal", "productPage", "sameStyleCarousel", "search", "shareButton",
-            "subMenuCarousel", "works"
+            "subMenuCarousel", "works", "pageColeccionesMarca",
         ],
         defaultNS: 'common',
         backend: {

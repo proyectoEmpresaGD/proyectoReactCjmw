@@ -1,0 +1,94 @@
+{
+    "notFound": {
+        "title": "Marque introuvable",
+        "description": "La marque recherchée n'est pas encore disponible.",
+        "cta": "Retour à l'accueil"
+    },
+    "hero": {
+        "label": {
+            "newCollections": "Nouvelles collections",
+            "collections": "Collections"
+        },
+        "cta": {
+            "exploreProducts": "Explorer les produits",
+            "backToBrand": "Retour à la marque"
+        },
+        "imageAlt": "Couverture de collection"
+    },
+    "sections": {
+        "featured": {
+            "label": "Collections à la une",
+            "title": {
+                "bassari": "ESSENCES DU NIL & LE VOYAGE DES WOLOF",
+                "flamenco": "INDIENNE STRIPES & PALACIO DE LAS DUEÑAS"
+            },
+            "subtitle": "Dans chaque onglet, vous trouverez la présentation de la collection et son carrousel de produits."
+        },
+        "story": {
+            "title": "Un récit qui se ressent.",
+            "panel": {
+                "kicker": "Expérience sensorielle",
+                "title": "Des collections de caractère.",
+                "description": "Chaque texture est pensée pour se démarquer dans des projets d'intérieur qui recherchent émotion, luxe et identité reconnaissable.",
+                "cta": "Voir le catalogue complet"
+            }
+        },
+        "grid": {
+            "label": "Collections",
+            "title": {
+                "new": "Nouvelles collections",
+                "all": "Explorez chaque univers créatif"
+            },
+            "ctaAll": "Voir tout",
+            "cardLabel": "Collection",
+            "cardCta": "Découvrir les tissus",
+            "cardImageAlt": "Collection {{coleccion}}",
+            "noImage": "Image non disponible"
+        },
+        "cta": {
+            "title": "Des créations qui vendent des expériences.",
+            "description": "Boostez les ventes avec des collections exclusives. Chaque ligne est conçue pour créer des atmosphères immersives et mémorables.",
+            "primary": "Commencer",
+            "secondary": "Demander un conseil"
+        }
+    },
+    "newCollections": {
+        "bassari": {
+            "essences": {
+                "title": "NEW COLLECTION ESSENCES DU NIL",
+                "description": "Des textiles frais et sophistiqués qui évoquent sérénité et élégance, inspirés par la lumière et le rythme du Nil."
+            },
+            "voyage": {
+                "title": "NEW COLLECTION LE VOYAGE DES WOLOF",
+                "description": "Une collection qui mêle tradition et modernité avec des textures authentiques et des tons naturels pour des espaces de caractère."
+            }
+        },
+        "flamenco": {
+            "indienne": {
+                "title": "NEW COLLECTION INDIENNE STRIPES",
+                "description": "Une proposition de rayures vibrantes d'inspiration artisanale, idéale pour des intérieurs pleins d'énergie et de personnalité."
+            },
+            "palacio": {
+                "title": "NEW COLLECTION PALACIO DE LAS DUEÑAS",
+                "description": "Des textures riches et élégantes qui évoquent le charme sévillan classique avec une touche contemporaine."
+            }
+        }
+    },
+    "brands": {
+        "bassari": {
+            "name": "Bassari",
+            "tagline": "Des textures inspirées d'Afrique pour des espaces avec une âme.",
+            "intro": "Chaque collection capture le rythme de la terre, la chaleur des pigments naturels et l'authenticité de la tradition.",
+            "highlight": "Des designs ethniques contemporains, un toucher enveloppant et une palette qui célèbre la nature."
+        },
+        "flamenco": {
+            "name": "Flamenco",
+            "tagline": "Élégance vibrante et caractère méditerranéen.",
+            "intro": "Des collections qui allient artisanat et sophistication, avec des tissus qui subliment chaque espace.",
+            "highlight": "Des designs raffinés, des couleurs lumineuses et une sensation de luxe contemporain."
+        }
+    },
+    "carousel": {
+        "hideCtaMatch": "découvrez toutes les collections"
+    }
+}
