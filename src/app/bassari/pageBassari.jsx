@@ -99,7 +99,7 @@ function BassariHome() {
                         titulo={t("newCollections.voyage.title")}
                         imagenFondo={images[0]}
                         descripcion={t("newCollections.voyage.description")}
-                        onDiscoverCollections={() => navigate("/colecciones/BAS")}
+
                     />
                     <CarruselProductosColeccionEspecifica
                         coleccion="LE VOYAGE DES WOLOF"
@@ -124,7 +124,7 @@ function BassariHome() {
                         titulo={t("newCollections.essences.title")}
                         imagenFondo={images[1]}
                         descripcion={t("newCollections.essences.description")}
-                        onDiscoverCollections={() => navigate("/colecciones/BAS")}
+
                     />
                     <CarruselProductosColeccionEspecifica
                         coleccion="ESSENCES DU NIL"
@@ -163,6 +163,7 @@ function BassariHome() {
                 titles={titles}
                 productCodes={CodProduBas}
             /> */}
+
             <section id="colecciones">
                 <ColeccionesMarcas marca={marca} />
             </section>
