@@ -73,14 +73,55 @@ const SPECIAL_ALIASES = {
 
 /* ========================= Imagen: tamaños fallback ========================= */
 const IMAGE_SIZES = ['Buena', 'Mediana', 'Grande', 'Pequena', 'Mini', 'Original'];
+const IMAGE_TYPES = [
+    'PRODUCTO_BUENA',
+    'PRODUCTO_BAJA',
+    'ARTISTICA_BUENA',
+    'ARTISTICA_BAJA',
+    'AMBIENTE',
+    'AMBIENTE_BUENA',
+    'AMBIENTE_BAJA',
+];
+
+const normalizeImageUrl = (value) => {
+    if (!value) return null;
+    const raw = String(value).trim();
+    if (!raw) return null;
+    if (/^(data:|blob:|https?:\/\/)/i.test(raw)) return raw;
+    if (raw.startsWith('//')) return `https:${raw}`;
+    return `https://${raw.replace(/^\/+/, '')}`;
+};
+
+const resolveImageUrl = (record) =>
+    normalizeImageUrl(record?.url || record?.ficadjunto);
 
 async function fetchAnyImage(codprodu) {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    // Nueva ruta: /api/images/product/:codprodu con tipos
+    try {
+        const typesParam = encodeURIComponent(IMAGE_TYPES.join(','));
+        const res = await fetch(`${baseUrl}/api/images/product/${codprodu}?types=${typesParam}`);
+        if (res.ok) {
+            const data = await res.json();
+            const items = Array.isArray(data) ? data : [];
+            for (const item of items) {
+                const url = resolveImageUrl(item);
+                if (url) return url;
+            }
+        }
+    } catch {
+        /* continuar */
+    }
+
+    // Fallback legacy: /api/images/:codprodu/:size
     for (const size of IMAGE_SIZES) {
         try {
-            const r = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${codprodu}/${size}`);
+            const r = await fetch(`${baseUrl}/api/images/${codprodu}/${size}`);
             if (!r.ok) continue;
             const j = await r.json();
-            if (j?.ficadjunto) return `https://${j.ficadjunto}`;
+            const url = resolveImageUrl(j);
+            if (url) return url;
         } catch {
             /* continuar */
         }
