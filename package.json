@@ -14,7 +14,7 @@
     "@algolia/autocomplete-theme-classic": "^1.17.1",
     "@headlessui/react": "^2.1.8",
     "@heroicons/react": "^1.0.6",
-    "@material-tailwind/react": "^2.1.9",
+    "@material-tailwind/react": "^2.1.10",
     "@react-google-maps/api": "^2.19.3",
     "axios": "^1.6.8",
     "clsx": "^2.1.0",
@@ -36,9 +36,9 @@
     "node-fetch": "^3.3.2",
     "pg": "^8.11.5",
     "postgres": "^3.4.4",
-    "react": "^18.3.1",
+    "react": "^19.2.3",
     "react-color": "^2.19.3",
-    "react-dom": "^18.3.1",
+    "react-dom": "^19.2.3",
     "react-easy-swipe": "^0.0.23",
     "react-i18next": "^15.6.0",
     "react-icons": "^5.5.0",
@@ -60,8 +60,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.7",
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
     "eslint": "^8.56.0",
@@ -72,6 +72,12 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.9.2",
     "vite": "^6.3.5"
+  },
+  "overrides": {
+    "@material-tailwind/react": {
+      "react": "19.2.3",
+      "react-dom": "19.2.3"
+    }
   },
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
   "main": "postcss.config.js",
