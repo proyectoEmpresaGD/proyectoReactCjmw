@@ -10,7 +10,7 @@ import { cdnUrl } from "../../Constants/cdn";
 import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carruselColecionesNuevas";
 import PresentacionColeccion from "../../components/ComponentesBrands/ultimaColeccionTextoAnimado";
 import CarruselProductosColeccionEspecifica from "../../components/ComponentesBrands/CarruselProductosColeccionEspecifica";
-import Modal from "../../components/ComponentesProductos/modal";
+import Modal from "../ComponentesProductos/modal";
 
 const normalizeKey = (s) =>
     (s || "")
