@@ -684,7 +684,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                             </div>
                         )}
 
-                        {modalMapaOpen && <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />}
+                        {/* {modalMapaOpen && <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />} */}
                     </div>
 
                     {/* Footer de la modal pegado abajo */}

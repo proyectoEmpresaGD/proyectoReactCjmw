@@ -20,6 +20,32 @@ import { useMarca } from './MarcaContext';
 // Importar constantes desde el archivo de constantes
 import { languageOptions, brandLogos, defaultLogo } from '../Constants/constants';
 
+// Controller interno: decide qué marca aplica por ruta o por query (?brand=XXX)
+const getBrandCodeFromLocation = (location, pathToBrandMap, logosByBrand) => {
+    if (!location) return null;
+
+    // 1) Prioridad: filtro por query param (ej: ?brand=BAS)
+    const params = new URLSearchParams(location.search || '');
+    const brandFromQuery = params.get('brand');
+    if (brandFromQuery && logosByBrand?.[brandFromQuery]) {
+        return brandFromQuery;
+    }
+
+    // 2) Si estamos en una página de marca (por ruta)
+    const brandFromPath = pathToBrandMap?.[location.pathname];
+    if (brandFromPath && logosByBrand?.[brandFromPath]) {
+        return brandFromPath;
+    }
+
+    return null;
+};
+
+const getHeaderLogoSrc = (location, { pathToBrandMap, logosByBrand, fallbackLogo }) => {
+    const brandCode = getBrandCodeFromLocation(location, pathToBrandMap, logosByBrand);
+    return brandCode ? logosByBrand[brandCode] : fallbackLogo;
+};
+
+
 export const Header = ({ closeModal }) => {
     const { t, i18n } = useTranslation('header');
     const navigate = useNavigate();
@@ -65,18 +91,21 @@ export const Header = ({ closeModal }) => {
     };
 
     useEffect(() => {
-        const code = pathToBrand[location.pathname] || null;
-        if (code && marcaActiva !== code) {
-            setMarcaActiva(code);
+        const code = getBrandCodeFromLocation(location, pathToBrand, brandLogos);
+        if (marcaActiva !== code) {
+            setMarcaActiva(code); // code puede ser null (limpia al salir de marca/filtro)
         }
-    }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [location.pathname, location.search]); // eslint-disable-line react-hooks/exhaustive-deps
+
 
     // Logo robusto: prioriza marcaActiva, luego ruta, luego fallback
-    const codeFromPath = pathToBrand[location.pathname];
-    const logoSrc =
-        (marcaActiva && brandLogos[marcaActiva]) ? brandLogos[marcaActiva]
-            : (codeFromPath && brandLogos[codeFromPath]) ? brandLogos[codeFromPath]
-                : brandLogos[location.pathname] || defaultLogo;
+    const logoSrc = getHeaderLogoSrc(location, {
+        pathToBrandMap: pathToBrand,
+        logosByBrand: brandLogos,
+        fallbackLogo: defaultLogo,
+    });
+
+
 
     const closeAllDropdowns = useCallback(() => {
         setShowBrandsDropdown(false);
@@ -208,7 +237,6 @@ export const Header = ({ closeModal }) => {
                         </button>
                         <Link
                             to="/"
-                            onClick={() => setMarcaActiva(null)}
                             className="flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg"
                         >
                             <img key={logoSrc} src={logoSrc} className="h-9 lg:h-10 xl:h-14" alt="Logo" />

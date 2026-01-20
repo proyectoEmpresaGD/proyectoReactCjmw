@@ -1047,8 +1047,8 @@ export default function FilterPanel({
                                                         <div className="relative px-1 sm:px-0">
                                                             {state.canScroll && (
                                                                 <>
-                                                                    <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-10 bg-gradient-to-r from-white/85 to-transparent sm:block" />
-                                                                    <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-10 bg-gradient-to-l from-white/85 to-transparent sm:block" />
+                                                                    <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-10 sm:block" />
+                                                                    <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-10 sm:block" />
                                                                 </>
                                                             )}
                                                             <div
