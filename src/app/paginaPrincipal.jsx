@@ -29,7 +29,7 @@ const imagesMobile = [
     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/BOHEMIAN/HARB_AMB_BOHEMIAN_07%2035X35.jpg",
 
     // Flamenco (Nuevas colecciones - collage móvil)
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/01_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINA%20HOME/FLAMENCO/INDIENNE%20STRIPES/flamenco_newcollections_mobile_1080x1920.webp",
+    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/01_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINA%20HOME/FLAMENCO/INDIENNE%20STRIPES/flamencoNewCollectionlineanegra.png",
 
     // Bassari (Nuevas colecciones - collage móvil)
     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/01_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINA%20HOME/BASSARI/ESSENCES%20DU%20NIL/bassari_mobile_black_divider_clean_1080x1920.png",
