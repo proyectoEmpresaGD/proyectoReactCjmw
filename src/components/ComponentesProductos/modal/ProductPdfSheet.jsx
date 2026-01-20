@@ -69,10 +69,16 @@ const ProductPdfSheet = ({
             const pagePx = measurePagePx();
             if (!pagePx) return;
 
-            const contentPx = el.scrollHeight;
+            const contentPx = el.getBoundingClientRect().height;
 
             // Clamp para evitar explosiones por mediciones raras
-            const pages = Math.min(1.999, Math.max(1, Math.ceil(contentPx / pagePx)));
+            const tolerancePx = 24; // tolerancia para evitar que 1px extra cree 2 páginas
+            const pagesRaw = contentPx <= (pagePx - tolerancePx)
+                ? 1
+                : Math.ceil(contentPx / pagePx);
+
+            const pages = Math.min(1.999, Math.max(1, pagesRaw));
+
 
             const nextMm = pages * 297;
 
