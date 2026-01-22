@@ -38,7 +38,8 @@ const useIsLargeScreen = () => useMediaQuery('(min-width: 1024px)');
 const GALLERY_GROUPS = [
     { target: 'fabricPattern', groupKey: 'sections.estilos' },
     { target: 'fabricType', groupKey: 'sections.tipos' },
-    { target: 'special', groupKey: 'sections.especiales' }, // TELAS ESPECIALES
+    { target: 'especial', groupKey: 'sections.especiales' }, // TELAS ESPECIALES
+
 ];
 
 const BRAND_NAMES = { ARE: 'Arena', HAR: 'Harbour', FLA: 'Flamenco', CJM: 'CJM', BAS: 'Bassari' };
@@ -254,6 +255,8 @@ export default function FilterPanel({
             return acc;
         }, {});
 
+        const specialSection = sectionsByTarget.especial;
+
         const formatFallbackLabel = value => {
             if (!value) return '';
             return value
@@ -305,17 +308,37 @@ export default function FilterPanel({
             addItem('fabricType', key, label === key ? formatFallbackLabel(key) : label);
         });
 
-        usageOptions.forEach(key => {
-            const comparable = toComparableKey(key);
-            if (allowedKeySets.usage?.size && !allowedKeySets.usage.has(comparable)) return;
-            addItem('usage', key, formatFallbackLabel(key));
+        const SPECIAL_USAGE_KEYS = ['IMO', 'FR', 'OUTDOOR'];
+        const SPECIAL_MAINT_KEYS = ['EASYCLEAN'];
+
+        const specialUsageSet = new Set(SPECIAL_USAGE_KEYS.map(toComparableKey));
+        const specialMaintSet = new Set(SPECIAL_MAINT_KEYS.map(toComparableKey));
+
+        usageOptions.forEach((key) => {
+            if (!specialUsageSet.has(toComparableKey(key))) return;
+            // OJO: los items van a la sección "especiales", pero el target del item es "usage"
+            specialSection?.items.push({
+                key,
+                comparableKey: toComparableKey(key),
+                target: 'usage',
+                groupKey: specialSection.groupKey,
+                label: formatFallbackLabel(key),
+                priority: 0,
+            });
         });
 
-        maintenanceOptions.forEach(key => {
-            const comparable = toComparableKey(key);
-            if (allowedKeySets.maintenance?.size && !allowedKeySets.maintenance.has(comparable)) return;
-            addItem('maintenance', key, formatFallbackLabel(key));
+        maintenanceOptions.forEach((key) => {
+            if (!specialMaintSet.has(toComparableKey(key))) return;
+            specialSection?.items.push({
+                key,
+                comparableKey: toComparableKey(key),
+                target: 'maintenance',
+                groupKey: specialSection.groupKey,
+                label: formatFallbackLabel(key),
+                priority: 0,
+            });
         });
+
 
         sections.forEach(section => {
             section.items.sort((a, b) => {
@@ -414,9 +437,11 @@ export default function FilterPanel({
     // Carga catálogo
     useEffect(() => {
         if (!isOpen) return;
+
         (async () => {
             const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filters`);
             if (!res.ok) return;
+
             const data = await res.json();
 
             const COLOR_ORDER = [
@@ -424,7 +449,8 @@ export default function FilterPanel({
                 'VIOLETA', 'MORADO', 'VERDE', 'AZUL', 'MARRON', 'GRIS', 'NEGRO'
             ];
 
-            const localeSort = (list) => list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+            const localeSort = (list) =>
+                list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
             const brandsList = buildFilterList(data.brands, { allow: Object.keys(BRAND_NAMES) });
             setBrands(localeSort(brandsList));
@@ -445,8 +471,9 @@ export default function FilterPanel({
                 const idx = COLOR_ORDER.indexOf(toComparableKey(value));
                 return idx === -1 ? Number.MAX_SAFE_INTEGER : idx;
             };
+
             const colorsList = buildFilterList(data.colors)
-                .filter(color => allowedColorSet.has(toComparableKey(color)))
+                .filter((color) => allowedColorSet.has(toComparableKey(color)))
                 .sort((a, b) => {
                     const diff = orderIndex(a) - orderIndex(b);
                     if (diff !== 0) return diff;
@@ -457,10 +484,51 @@ export default function FilterPanel({
             const usageList = buildFilterList(data.uso || data.usos || data.usage);
             setUsageOptions(localeSort(usageList));
 
-            const maintenanceList = buildFilterList(data.mantenimiento || data.maintenance);
+            // ============================
+            // ✅ MANTENIMIENTO: soportar XML troceado
+            // ============================
+            const maintenanceRaw =
+                data.mantenimiento ||
+                data.mantenimientos ||
+                data.maintenance ||
+                data.maintenances;
+
+            const extractMaintenanceValues = (raw) => {
+                // Caso 1: ya viene como array de strings “normales”
+                if (Array.isArray(raw) && raw.every((x) => typeof x === 'string' && !x.includes('<Valor>'))) {
+                    return raw;
+                }
+
+                // Caso 2: viene como array de trozos XML (tu caso)
+                if (Array.isArray(raw) && raw.some((x) => typeof x === 'string' && x.includes('<Valor>'))) {
+                    const xml = raw.join('');
+                    const out = [];
+                    const re = /<Valor>\s*([^<]+?)\s*</g; // captura texto entre <Valor> ... <
+                    let m;
+                    while ((m = re.exec(xml)) !== null) out.push(m[1]);
+                    return out;
+                }
+
+                // Caso 3: viene como string XML completo
+                if (typeof raw === 'string' && raw.includes('<Valor>')) {
+                    const out = [];
+                    const re = /<Valor>\s*([^<]+?)\s*</g;
+                    let m;
+                    while ((m = re.exec(raw)) !== null) out.push(m[1]);
+                    return out;
+                }
+
+                // Caso 4: null/undefined/otro
+                return [];
+            };
+
+            const maintenanceExtracted = extractMaintenanceValues(maintenanceRaw);
+
+            const maintenanceList = buildFilterList(maintenanceExtracted);
             setMaintenanceOptions(localeSort(maintenanceList));
         })();
     }, [isOpen]);
+
 
     // Lock body scroll
     useEffect(() => {
