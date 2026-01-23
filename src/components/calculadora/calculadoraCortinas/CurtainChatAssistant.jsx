@@ -9,7 +9,7 @@ import {
     calculateMeters as calcMetersUtil,
     getBoltWidthFromEntity,
 } from '../../../utils/curtains';
-
+/**/
 /* ===========================
    Helpers (idénticos a la modal + rescate por API)
    =========================== */
