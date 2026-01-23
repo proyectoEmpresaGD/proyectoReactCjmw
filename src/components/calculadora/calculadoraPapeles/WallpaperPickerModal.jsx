@@ -1,0 +1,240 @@
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { searchWallpapers, getProductColors } from '../../../api/products';
+import { cdnUrl } from '../../../Constants/cdn';
+import { defaultImageUrlModalProductos } from '../../../Constants/constants';
+
+export default function WallpaperPickerModal({ open, onClose, onPicked }) {
+    const [q, setQ] = useState('');
+    const [step, setStep] = useState(0); // 0 = productos, 1 = colores (opcional)
+    const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [colors, setColors] = useState([]);
+    const [loadingColors, setLoadingColors] = useState(false);
+
+    // Reset al abrir
+    useEffect(() => {
+        if (!open) return;
+        setQ('');
+        setStep(0);
+        setItems([]);
+        setSelectedProduct(null);
+        setColors([]);
+        setError('');
+    }, [open]);
+
+    // STEP 0 → buscar PAPEL (type WALLPAPER)
+    useEffect(() => {
+        if (!open || step !== 0) return;
+        let alive = true;
+
+        setError('');
+        setLoading(true);
+
+        const handler = setTimeout(async () => {
+            try {
+                // Puedes ignorar q si tu backend devuelve TODO (lo dejaré por compat)
+                const baseItems = await searchWallpapers({ q, limit: 80 }); // [{id,name,collection,price,imageUrl}]
+                const enriched = await Promise.all(
+                    (baseItems || []).map(async (p) => {
+                        try {
+                            if (p.imageUrl) return p;
+                            const [bRes, lRes] = await Promise.all([
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${p.id}/PRODUCTO_BUENA`).then(r => r.ok ? r.json() : null),
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${p.id}/PRODUCTO_BAJA`).then(r => r.ok ? r.json() : null),
+                            ]);
+                            const rawBuena = bRes?.ficadjunto ? `${bRes.ficadjunto}` : null;
+                            const rawBaja = lRes?.ficadjunto ? `${lRes.ficadjunto}` : null;
+                            const thumb = cdnUrl(rawBuena || rawBaja || defaultImageUrlModalProductos);
+                            return { ...p, imageUrl: thumb };
+                        } catch {
+                            return { ...p, imageUrl: defaultImageUrlModalProductos };
+                        }
+                    })
+                );
+
+                if (!alive) return;
+                setItems(enriched);
+            } catch (e) {
+                if (!alive) return;
+                setItems([]);
+                setError(e.message || 'No se pudieron cargar los papeles');
+            } finally {
+                if (alive) setLoading(false);
+            }
+        }, 300);
+
+        return () => { clearTimeout(handler); alive = false; };
+    }, [open, step, q]);
+
+    // STEP 1 → colores del producto (si aplica)
+    useEffect(() => {
+        if (!open || step !== 1 || !selectedProduct?.id) return;
+        let alive = true;
+
+        (async () => {
+            setError('');
+            setLoadingColors(true);
+            try {
+                const rawColors = await getProductColors(selectedProduct.id); // [{ id, name, imageUrl? }]
+                const enriched = await Promise.all(
+                    (rawColors || []).map(async (c) => {
+                        try {
+                            if (c.imageUrl) return c;
+                            const [bRes, lRes] = await Promise.all([
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${c.id}/PRODUCTO_BUENA`).then(r => r.ok ? r.json() : null),
+                                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${c.id}/PRODUCTO_BAJA`).then(r => r.ok ? r.json() : null),
+                            ]);
+                            const rawBuena = bRes?.ficadjunto ? `${bRes.ficadjunto}` : null;
+                            const rawBaja = lRes?.ficadjunto ? `${lRes.ficadjunto}` : null;
+                            const thumb = cdnUrl(rawBuena || rawBaja || defaultImageUrlModalProductos);
+                            return { ...c, imageUrl: thumb };
+                        } catch {
+                            return { ...c, imageUrl: defaultImageUrlModalProductos };
+                        }
+                    })
+                );
+                if (!alive) return;
+                setColors(enriched);
+            } catch (e) {
+                if (!alive) return;
+                setColors([]);
+                setError(e.message || 'No se pudieron cargar los colores');
+            } finally {
+                if (alive) setLoadingColors(false);
+            }
+        })();
+
+        return () => { alive = false; };
+    }, [open, step, selectedProduct]);
+
+    if (!open) return null;
+
+    const modalUI = (
+        <div className="fixed inset-0 z-[10050]">
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden="true" />
+
+            <div className="absolute left-1/2 top-1/2 w-[92vw] max-w-[36rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b px-4 py-3">
+                    <h4 className="text-sm font-semibold">
+                        {step === 0 ? 'Elige tu papel (WALLPAPER)' : `Colores de: ${selectedProduct?.name}`}
+                    </h4>
+                    <button className="rounded-md px-2 py-1 text-gray-600 hover:bg-gray-100" onClick={onClose} aria-label="Cerrar">
+                        ✕
+                    </button>
+                </div>
+
+                {/* Body */}
+                <div className="p-4">
+                    {step === 0 && (
+                        <>
+                            <input
+                                type="text"
+                                value={q}
+                                onChange={(e) => setQ(e.target.value)}
+                                placeholder="Buscar por nombre…"
+                                className="mb-3 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+                            />
+                            {loading && <div className="text-sm text-gray-500">Cargando…</div>}
+                            {error && <div className="mb-2 rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">{error}</div>}
+
+                            <ul className="max-h-80 overflow-auto divide-y rounded-md border">
+                                {items.length === 0 && !loading && <li className="p-3 text-sm text-gray-500">Sin resultados.</li>}
+                                {items.map((p) => (
+                                    <li key={p.id} className="flex items-center gap-3 p-3 hover:bg-gray-50">
+                                        {p.imageUrl ? (
+                                            <img src={p.imageUrl} alt={p.name} className="h-10 w-10 rounded object-cover" />
+                                        ) : (
+                                            <div className="h-10 w-10 rounded bg-gray-200" />
+                                        )}
+                                        <div className="min-w-0 flex-1">
+                                            <div className="truncate text-sm font-medium">{p.name}</div>
+                                            <div className="text-xs text-gray-500">
+                                                {p.collection ? `${p.collection} · ` : ''}
+                                                {typeof p.price === 'number' ? `${p.price.toFixed(2)} €/rollo` : '—'}
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => { setSelectedProduct(p); setStep(1); }}
+                                            className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                                        >
+                                            Ver colores
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+
+                    {step === 1 && (
+                        <>
+                            {loadingColors && <div className="text-sm text-gray-500">Cargando colores…</div>}
+                            {error && <div className="mb-2 rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">{error}</div>}
+
+                            <div className="grid grid-cols-2 gap-3 max-h-80 overflow-auto pr-1">
+                                {colors.map((c) => (
+                                    <button
+                                        key={c.id}
+                                        onClick={() => {
+                                            onPicked?.({
+                                                id: selectedProduct?.id,
+                                                name: selectedProduct?.name,
+                                                collection: selectedProduct?.collection ?? '',
+                                                price: typeof selectedProduct?.price === 'number' ? Number(selectedProduct.price) : null,
+                                                color: c,
+                                                imageUrl: selectedProduct?.imageUrl || c?.imageUrl || null
+                                            });
+                                            onClose?.();
+                                        }}
+                                        className="flex items-center gap-3 rounded-md border p-2 text-left hover:border-gray-900 hover:bg-gray-50"
+                                    >
+                                        {c.imageUrl ? (
+                                            <img src={c.imageUrl} alt={c.name} className="h-10 w-10 rounded object-cover" />
+                                        ) : (
+                                            <div className="h-10 w-10 rounded border" />
+                                        )}
+                                        <div className="min-w-0">
+                                            <div className="truncate text-sm font-medium">{c.name}</div>
+                                        </div>
+                                    </button>
+                                ))}
+                                {!loadingColors && colors.length === 0 && (
+                                    <div className="col-span-2 text-sm text-gray-500">Este producto no tiene colores configurados.</div>
+                                )}
+                            </div>
+
+                            <div className="mt-3 flex justify-between">
+                                <button onClick={() => setStep(0)} className="rounded-md border px-3 py-1.5 text-xs hover:bg-gray-50">
+                                    Volver a productos
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        onPicked?.({
+                                            id: selectedProduct?.id,
+                                            name: selectedProduct?.name,
+                                            collection: selectedProduct?.collection ?? '',
+                                            price: typeof selectedProduct?.price === 'number' ? Number(selectedProduct.price) : null,
+                                            color: null,
+                                            imageUrl: selectedProduct?.imageUrl || null
+                                        });
+                                        onClose?.();
+                                    }}
+                                    className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                                >
+                                    Elegir sin color
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
+    return createPortal(modalUI, document.body);
+}

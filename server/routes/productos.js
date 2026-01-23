@@ -30,9 +30,20 @@ export const createProductRouter = () => {
     // ==============================
     // 3. BÚSQUEDAS (rutas con nombre)
     // ==============================
-    productsRouter.get('/search', productController.search.bind(productController));                       // clásica
-    productsRouter.get('/search-quick', productController.searchQuick.bind(productController));            // barra rápida
-    productsRouter.get('/search-products', productController.searchProducts.bind(productController));      // CardProduct
+    productsRouter.get('/search', productController.search.bind(productController));
+    productsRouter.get('/search-quick', productController.searchQuick.bind(productController));
+    productsRouter.get('/search-products', productController.searchProducts.bind(productController));
+
+    // 👇 NUEVAS (DEBEN IR ANTES DE /:id)
+    productsRouter.post('/linings/search', (req, res) => productController.searchLinings(req, res));
+    productsRouter.post('/upholstery/search', (req, res) => productController.searchUpholstery(req, res));
+    productsRouter.post('/wallpapers/search', (req, res) => productController.searchWallpapers(req, res));
+
+    // ❗ CORRECCIÓN: apuntar al handler correcto (sin typo) que devuelve `ancho`
+    productsRouter.post('/curtains/search', (req, res) => productController.searchCurtains(req, res));
+
+    productsRouter.get('/:id/colors', (req, res) => productController.getColors(req, res));
+
 
     // ==============================
     // 4. AUTOCOMPLETADOS

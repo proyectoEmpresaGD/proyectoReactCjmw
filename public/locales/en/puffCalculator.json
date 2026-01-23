@@ -1,0 +1,27 @@
+{
+    "chat": {
+        "greeting": "Hi! I'm your assistant to calculate the pouf. Shall we start?",
+        "dims": "Pouf dimensions are 50 cm × 47 cm.",
+        "step1": "1) Choose the pouf type: Half moon, Round or Clover.",
+        "step2": "2) Do you want 1 fabric or 2 fabrics?",
+        "step3.one": "3) Select the fabric.",
+        "step3.two": "3) Select the main fabric and the top fabric.",
+        "summary": "Summary",
+        "selected": "Selected",
+        "mainFabric": "Main fabric",
+        "topFabric": "Top fabric",
+        "units": "units",
+        "pricePerMeter": "€/m",
+        "meters": "m",
+        "downloadPdf": "Download PDF"
+    },
+    "ui": {
+        "type": "Type",
+        "oneFabric": "1 fabric",
+        "twoFabrics": "2 fabrics",
+        "fabric": "Fabric",
+        "total": "Total",
+        "sewing": "Sewing",
+        "currency": "€"
+    }
+}

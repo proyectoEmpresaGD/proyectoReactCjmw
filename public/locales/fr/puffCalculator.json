@@ -1,0 +1,27 @@
+{
+    "chat": {
+        "greeting": "Bonjour ! Je suis votre assistant pour calculer le pouf. On commence ?",
+        "dims": "Les dimensions du pouf sont 50 cm × 47 cm.",
+        "step1": "1) Choisissez le type de pouf : Demi-lune, Rond ou Trèfle.",
+        "step2": "2) Voulez-vous 1 tissu ou 2 tissus ?",
+        "step3.one": "3) Sélectionnez le tissu.",
+        "step3.two": "3) Sélectionnez le tissu principal et le tissu du dessus.",
+        "summary": "Résumé",
+        "selected": "Sélectionné",
+        "mainFabric": "Tissu principal",
+        "topFabric": "Dessus du pouf",
+        "units": "unités",
+        "pricePerMeter": "€/m",
+        "meters": "m",
+        "downloadPdf": "Télécharger le PDF"
+    },
+    "ui": {
+        "type": "Type",
+        "oneFabric": "1 tissu",
+        "twoFabrics": "2 tissus",
+        "fabric": "Tissu",
+        "total": "Total",
+        "sewing": "Confection",
+        "currency": "€"
+    }
+}

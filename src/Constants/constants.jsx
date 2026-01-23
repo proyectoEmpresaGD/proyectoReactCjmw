@@ -23,7 +23,42 @@ export const getInitialCart = () => {
     }
 };
 
-
+// src/Constants/curtains.js
+export const CURTAIN_CONFIG = {
+    fabricBoltWidthCm: 140,           // ancho de la pieza de tela
+    sideMarginCm: 30,                  // margen lateral por lado
+    topHemCm: 10,                     // dobladillo superior
+    bottomHemCm: 10,
+    extraBottonPosadaCm: 5,            // dobladillo inferior
+    extraBottomColganteCm: 10,         // extra si el bajo es "colgante"
+    // Factor de fruncido/onda por tipo de confección
+    fullnessFactorByType: {
+        ondaPerfecta: 2.2,
+        ollaos: 2.0,
+        tablasCocidas: 2.0,
+        dosPinzas: 2.0,
+        tresPinzas: 2.5,
+        fruncido: 2.0,
+    },
+    // Coste de confección por metro (ajústalo a tu tarifa real)
+    makingCostPerMeter: {
+        ondaPerfecta: 9.0,
+        ollaos: 7.5,
+        tablasCocidas: 10.0,
+        dosPinzas: 11.0,
+        tresPinzas: 12.5,
+        fruncido: 8.0,
+    },
+    // Recargo fijo por panel (opcional)
+    makingFixedPerPanel: {
+        ondaPerfecta: 0,
+        ollaos: 0,
+        tablasCocidas: 0,
+        dosPinzas: 0,
+        tresPinzas: 0,
+        fruncido: 0,
+    },
+};
 
 //
 //

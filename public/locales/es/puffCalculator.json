@@ -1,0 +1,27 @@
+{
+    "chat": {
+        "greeting": "¡Hola! Soy tu asistente para calcular puf. ¿Empezamos?",
+        "dims": "Las medidas del puf son 50 cm × 47 cm.",
+        "step1": "1) Elige el tipo de puf: Media luna, Redondo o Trébol.",
+        "step2": "2) ¿Quieres 1 tejido o 2 tejidos?",
+        "step3.one": "3) Selecciona el tejido.",
+        "step3.two": "3) Selecciona el tejido principal y el tejido de la tapa del puf.",
+        "summary": "Resumen",
+        "selected": "Seleccionado",
+        "mainFabric": "Tejido principal",
+        "topFabric": "Tapa del puf",
+        "units": "unidades",
+        "pricePerMeter": "€/m",
+        "meters": "m",
+        "downloadPdf": "Descargar PDF"
+    },
+    "ui": {
+        "type": "Tipo",
+        "oneFabric": "1 tejido",
+        "twoFabrics": "2 tejidos",
+        "fabric": "Tejido",
+        "total": "Total",
+        "sewing": "Confección",
+        "currency": "€"
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "header": {
+        "title": "Sewing quote",
+        "date": "Date",
+        "ref": "Reference"
+    },
+    "sections": {
+        "selectedFabrics": "Selected fabrics",
+        "economicDetail": "Economic details",
+        "summary": "Summary",
+        "footer": "Footer"
+    },
+    "labels": {
+        "company": "Company",
+        "type": "Type",
+        "numFabrics": "Number of fabrics",
+        "oneFabric": "1 fabric",
+        "twoFabrics": "2 fabrics",
+        "sewing": "Sewing",
+        "total": "Total",
+        "width": "Width",
+        "height": "Height",
+        "style": "Style",
+        "lining": "Lining",
+        "units": "Units",
+        "unitPrice": "Unit price",
+        "amount": "Amount",
+        "mainFabric": "Main fabric",
+        "liningFabric": "Lining",
+        "fabric": "Fabric",
+        "puffTop": "Top fabric"
+    },
+    "footer": {
+        "sendTo": "If you agree, please send this quote to",
+        "legal": "Prices do not include taxes or transport."
+    }
+}
