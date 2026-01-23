@@ -57,7 +57,7 @@ export async function searchCurtainFabrics({ q = '' } = {}) {
 
 // === BÚSQUEDA DE PAPELES (type = WALLPAPER) ===
 export async function searchWallpapers({ limit = 80 } = {}) {
-    const API = import.meta.env.VITE_API_BASE || 'http://localhost:1234';
+    const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:1234';
 
     const res = await fetch(`${API}/api/products/wallpapers/search`, {
         method: 'POST',
