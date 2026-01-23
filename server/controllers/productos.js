@@ -18,6 +18,13 @@ const noStore = (res) => {
   res.set('Cache-Control', 'no-store');
 };
 
+// Normaliza números "12,34" → 12.34
+const numberFrom = (v) => {
+  if (v == null) return null;
+  const n = Number(String(v).replace(',', '.').replace(/[^\d.]/g, ''));
+  return Number.isFinite(n) ? n : null;
+};
+
 export class ProductController {
   // ===========================================================================
   // 0) Catálogo básico / listado y CRUD
@@ -28,6 +35,22 @@ export class ProductController {
    * Lista paginada del catálogo base (sin filtros complejos).
    * Acepta: CodFamil, CodSubFamil, limit, page
    */
+
+  constructor() {
+    this.model = ProductModel;
+
+    // Bind como ya haces tú
+    this.searchLinings = this.searchLinings.bind(this);
+    this.getColors = this.getColors.bind(this);
+    this.searchUpholstery = this.searchUpholstery.bind(this);
+
+    // IMPORTANTE: método correcto para cortinas
+    this.searchCurtains = this.searchCurtains.bind(this);
+
+    // (compat) si en algún sitio quedara el typo, lo redirigimos
+    this.searchCurtais = this.searchCurtains.bind(this);
+  }
+
   async getAll(req, res) {
     try {
       const { CodFamil, CodSubFamil, limit, page } = req.query;
@@ -63,6 +86,8 @@ export class ProductController {
     }
   }
 
+
+
   /**
    * POST /api/products
    * Crea un producto (uso interno / administración)
@@ -74,6 +99,99 @@ export class ProductController {
       res.status(201).json(newProduct);
     } catch (error) {
       res.status(400).json({ error: error.message });
+    }
+  }
+
+  // ==============================
+  // 3. BÚSQUEDAS (rutas con nombre)
+  // ==============================
+  // POST /api/products/linings/search
+  async searchLinings(req, res) {
+    try {
+      const { names = [], q = '' } = req.method === 'GET' ? req.query : (req.body || {});
+      const list = Array.isArray(names) ? names.filter(Boolean) : [];
+
+      if (list.length > 0 && String(q).trim() === '') {
+        const items = await ProductModel.getLiningsFeatured({ names: list, limit: 80 });
+        return res.status(200).json({ items });
+      }
+
+      const items = await ProductModel.searchLiningsByNamesAndQuery({
+        names: list,
+        q: String(q || ''),
+        limit: 80
+      });
+
+      return res.status(200).json({ items });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ error: 'DB error' });
+    }
+  }
+
+  // POST /api/products/upholstery/search
+  async searchUpholstery(req, res) {
+    try {
+      const { q = '' } = req.method === 'GET' ? req.query : (req.body || {});
+      const items = await ProductModel.searchUpholsteryByQuery({ q: String(q || ''), limit: 80 });
+      return res.status(200).json({ items });
+    } catch (e) {
+      console.error('searchUpholstery error:', e);
+      return res.status(500).json({ error: 'DB error' });
+    }
+  }
+
+  // ✅ POST /api/products/curtains/search
+  //   usa el modelo correcto y asegura enviar `ancho` al front
+  async searchCurtains(req, res) {
+    try {
+      const { q = '' } = req.method === 'GET' ? req.query : (req.body || {});
+      const rows = await ProductModel.searchCurtainsByQuery({ q: String(q || ''), limit: 80 });
+
+      const items = rows.map(p => ({
+        id: p.id ?? p.codprodu,
+        codprodu: p.codprodu,
+        name: p.name ?? p.nombre,
+        collection: p.collection ?? p.coleccion ?? null,
+        pricePerMeter: p.pricePerMeter ?? numberFrom(p.precioMetro) ?? numberFrom(p.precioMetroRaw),
+        imageUrl: p.imageUrl ?? null,
+        ancho: p.ancho ?? null, // 👈 CLAVE
+      }));
+
+      return res.status(200).json({ items });
+    } catch (e) {
+      console.error('searchCurtains error:', e);
+      return res.status(500).json({ error: 'DB error' });
+    }
+  }
+
+  // GET /api/products/:id/colors
+  async getColors(req, res) {
+    try {
+      const { id } = req.params; // codprodu base
+      const colors = await ProductModel.getColors(id);
+      return res.status(200).json({ colors });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ error: 'DB error' });
+    }
+  }
+
+  async searchWallpapers(req, res) {
+    try {
+      const { limit } = (req.body || {});
+      const safeLimit = Number.isFinite(Number(limit)) && Number(limit) > 0
+        ? Math.min(Number(limit), 200)
+        : 80;
+
+      // 👇 Antes llamabas a ProductModel.searchWallpapersByQuery(...)
+      const items = await ProductModel.searchWallpapersAll({ limit: safeLimit });
+
+      res.set('Cache-Control', 's-maxage=300, stale-while-revalidate');
+      return res.status(200).json({ items });
+    } catch (e) {
+      console.error('searchWallpapers error:', e);
+      return res.status(500).json({ error: 'DB error' });
     }
   }
 

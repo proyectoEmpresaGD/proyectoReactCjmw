@@ -17,6 +17,8 @@ import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
 import Contract from "./app/contract/PaginaContract.jsx"
 import MediaPage from './app/media/pageMedia.jsx';
 import ColeccionesMarcaPage from './components/colecciones/pageColeccionesMarca.jsx';
+import Confeccion from "./components/calculadora/confeccion.jsx"
+
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
         <Route path="/flamencoHome" element={<FlamencoHome />} />
         <Route path="/bassariHome" element={<BassariHome />} />
         <Route path="/BlogHome/:newsId" element={<BlogHome />} />
+        <Route path="/confeccion" element={<Confeccion />} />
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
         <Route path="/map/:direccion" element={<GeocodingService />} />

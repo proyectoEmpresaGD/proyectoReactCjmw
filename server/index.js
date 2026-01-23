@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import pg from 'pg';
 import nodemailer from 'nodemailer';
+import path from 'node:path';
+import { createQuotesRouter } from './routes/quotes.js';
 import 'dotenv/config';
 import fetch from 'node-fetch';
 import { createFtpRouter } from './routes/ftp.js';
@@ -192,6 +194,8 @@ app.use('/api/images', createImagenRouter({ pool }));
 app.use('/api/ftp', createFtpRouter());
 app.use('/api/instagram', createInstagramRouter());
 app.use('/api/collections', createCollectionsRouter());
+app.use('/api/quotes', createQuotesRouter());
+app.use('/files', express.static(path.join(__dirname, 'output')));
 
 /* ================== Contact router + limpieza ================== */
 const contactModel = new ContactRequestModel(pool);

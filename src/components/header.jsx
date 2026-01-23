@@ -319,6 +319,7 @@ export const Header = ({ closeModal }) => {
                         <Link to="/media" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('media')}</Link>
                         <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contact')}</Link>
                         <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contract')}</Link>
+                        {/* <Link to="/confeccion" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('Confección')}</Link> */}
                     </div>
 
                     {/* Icons */}
@@ -476,6 +477,9 @@ export const Header = ({ closeModal }) => {
                         </button>
                         <button onClick={() => handleLinkClick('/contract')} className="block text-gray-800 font-semibold py-2">
                             {t('contract')}
+                        </button>
+                        <button onClick={() => handleLinkClick('/confeccion')} className="block text-gray-800 font-semibold py-2">
+                            {t('confeccion')}
                         </button>
                     </div>
                 </div>

@@ -133,8 +133,15 @@ export class ProductModel {
     }
   }
 
+  // ProductModel.getById
   static async getById({ id, res }) {
-    const cacheKey = `product:${id}`;
+    // Tarifa fija '03' porque en BD está como VARCHAR '01'
+    const TARIFF_CODE = '01';
+    const cacheKey = `product:${id}:tarifa:${TARIFF_CODE}`;
+
+    // (opcional) Desactiva caché mientras depuras:
+    // await res?.cache?.del?.(cacheKey);
+
     if (res?.cache) {
       const cached = await res.cache.get(cacheKey);
       if (cached) {
@@ -143,17 +150,27 @@ export class ProductModel {
       }
     }
 
-    const { rows } = await pool.query(
-      'SELECT * FROM productos WHERE "codprodu" = $1;',
-      [id]
-    );
+    const sql = `
+      SELECT
+        p.*,
+        tp."pvp" AS "precioMetro"   -- <- leer pvp tal cual (varchar)
+      FROM productos p
+      LEFT JOIN tarprodu tp
+        ON tp."codprodu" = p."codprodu"
+       AND tp."codtarifa" = $2 
+      WHERE p."codprodu" = $1
+      LIMIT 1;
+    `;
 
-    if (rows.length > 0) {
-      if (res?.cache) await res.cache.set(cacheKey, rows[0]);
-      res?.set?.('Cache-Control', 'public, max-age=3600');
-      return rows[0];
-    }
-    return null;
+    const { rows } = await pool.query(sql, [id, TARIFF_CODE]);
+    if (!rows.length) return null;
+
+    const product = rows[0];
+
+    if (res?.cache) await res.cache.set(cacheKey, product);
+    res?.set?.('Cache-Control', 'public, max-age=3600');
+
+    return product;
   }
 
   static async getByCodFamil(codfamil) {
@@ -176,7 +193,7 @@ export class ProductModel {
   static async getByType({ type, limit = 16, offset = 0 }) {
     let query =
       'SELECT DISTINCT ON ("nombre") * ' +
-      "FROM productos WHERE \"nombre\" IS NOT NULL AND \"nombre\" <> ''";
+      'FROM productos WHERE "nombre" IS NOT NULL AND "nombre" <> \'\'';
     const params = [];
     let index = 1;
 
@@ -791,6 +808,389 @@ export class ProductModel {
       await res.cache.flushAll(); // invalidar caché si aplica
     }
     return rows[0];
+  }
+
+  static defaultLinings = ['HUSKY', 'AGATA', 'DUNE'];
+
+  /**
+   * Busca “forros” dentro de productos aplicando:
+   * - Lista blanca de nombres (names[])
+   * - Texto (q) sobre nombre
+   * - Exclusiones (excludedNames)
+   * Devuelve una fila por nombre (DISTINCT ON) con precio/m (tarifa '03') e imagen baja.
+   */
+  static async searchLiningsByNamesAndQuery({ names = [], q = '', limit = 80 }) {
+    const term = `%${String(q || '').trim()}%`;
+    const exclusion = this.getExcludedNamesClause(1);
+    let where = `"nombre" IS NOT NULL AND "nombre" <> '' AND ${exclusion.clause}`;
+    const params = [...exclusion.values];
+    let i = exclusion.values.length + 1;
+
+    if (q && q.trim()) { where += ` AND unaccent(upper("nombre")) LIKE unaccent(upper($${i++}))`; params.push(term); }
+    if (Array.isArray(names) && names.length > 0) { where += ` AND "nombre" = ANY($${i++})`; params.push(names); }
+
+    const sql = `
+      SELECT DISTINCT ON (p."nombre")
+        p."codprodu",
+        p."nombre",
+        p."coleccion",
+        tp."pvp" AS "precioMetroRaw",
+        p."ancho",
+        p."tipo",
+        p."estilo"
+      FROM productos p
+      LEFT JOIN tarprodu tp
+        ON tp."codprodu" = p."codprodu"
+       AND tp."codtarifa" = '01'
+      WHERE ${where}
+      ORDER BY p."nombre", p."codprodu"
+      LIMIT $${i}
+    `;
+    params.push(limit);
+
+    const { rows } = await pool.query(sql, params);
+    const items = await Promise.all(rows.map(async (p) => {
+      const withImg = await this.attachImages(p, ['PRODUCTO_BAJA']);
+      const num = Number(String(p.precioMetroRaw ?? '').replace(',', '.'));
+      return {
+        id: withImg.codprodu,
+        codprodu: withImg.codprodu,
+        name: withImg.nombre,
+        collection: withImg.coleccion,
+        ancho: p.ancho ?? null,               // <-- mantenemos ancho en linings (ya lo tenías)
+        pricePerMeter: Number.isFinite(num) ? num : null,
+        imageUrl: withImg.imageBaja || null
+      };
+    }));
+    return items;
+  }
+
+  // Recupera TODOS los productos WALLPAPER (sin filtro de búsqueda),
+  static async searchWallpapersAll({ limit = 80 } = {}) {
+    const sql = `
+    SELECT DISTINCT ON (p."nombre")
+      p."codprodu",
+      p."nombre",
+      p."coleccion",
+      tp."pvp" AS "precioMetroRaw",
+      p."ancho",
+      p."tipo",
+      p."estilo"
+    FROM productos p
+    LEFT JOIN tarprodu tp
+      ON tp."codprodu" = p."codprodu"
+     AND tp."codtarifa" = '01'
+    WHERE
+      p."tipo" = 'WALLPAPER'
+      AND p."nombre" IS NOT NULL
+      AND p."nombre" <> ''
+    ORDER BY p."nombre", p."codprodu"
+    LIMIT $1
+  `;
+
+    // 👇 importante: usar el pool importado, no this.pool
+    const { rows } = await pool.query(sql, [limit]);
+
+    const items = await Promise.all(rows.map(async (p) => {
+      const withImg = await this.attachImages(p, ['PRODUCTO_BAJA']);
+      return {
+        id: p.codprodu,
+        codprodu: p.codprodu,
+        name: p.nombre,
+        collection: p.coleccion,
+        imageUrl: withImg.imageBaja || null,
+        // normaliza a número (por si viene con coma)
+        price: p.precioMetroRaw != null ? Number(String(p.precioMetroRaw).replace(',', '.')) : null,
+        width: p.ancho ?? null,
+        type: p.tipo ?? null,
+        style: p.estilo ?? null
+      };
+    }));
+
+    return items;
+  }
+
+
+  static async getColorVariantsByProductId(productId) {
+    const { rows: baseRows } = await pool.query(
+      `SELECT "codprodu","nombre" FROM products WHERE "codprodu" = $1 LIMIT 1`,
+      [productId]
+    );
+    if (baseRows.length === 0) return [];
+    const base = baseRows[0];
+
+    const { rows } = await pool.query(
+      `SELECT p."codprodu", p."nombre", p."tonalidad", p."colorprincipal"
+       FROM productos p
+       WHERE p."nombre" = $1
+       ORDER BY p."tonalidad" NULLS LAST, p."codprodu"`,
+      [base.nombre]
+    );
+
+    const variants = await Promise.all(rows.map(async (p) => {
+      const withImg = await this.attachImages(p, ['PRODUCTO_BAJA']);
+      return {
+        id: withImg.codprodu,
+        name: withImg.tonalidad || withImg.colorprincipal || 'Color',
+        hex: null,
+        imageUrl: withImg.imageBaja || null
+      };
+    }));
+    return variants;
+  }
+
+  /**
+   * Busca TEJIDOS DE TAPICERÍA.
+   * - Filtra por TAPICERÍA tanto en mantenimiento (XML->texto) como en uso (texto)
+   * - Permite q (texto) sobre nombre
+   * - Devuelve 1 fila por nombre (DISTINCT ON) con pvp de tarifa '03' e imagen Baja
+   */
+  static async searchUpholsteryByQuery({ q = '', limit = 80 }) {
+    const term = `%${String(q || '').trim()}%`;
+
+    // exclusiones por nombre
+    const exclusion = this.getExcludedNamesClause(1);
+    let where = `
+      p."nombre" IS NOT NULL
+      AND p."nombre" <> ''
+      AND ${exclusion.clause}
+      AND (
+        CAST(p."mantenimiento" AS text) ILIKE '%TAPICERIA%'
+        OR p."uso" ILIKE '%TAPICERIA%'
+      )
+    `;
+    const params = [...exclusion.values];
+    let i = exclusion.values.length + 1;
+
+    if (q && q.trim()) {
+      where += ` AND unaccent(upper(p."nombre")) LIKE unaccent(upper($${i++}))`;
+      params.push(term);
+    }
+
+    const sql = `
+      SELECT DISTINCT ON (p."nombre")
+        p."codprodu",
+        p."nombre",
+        p."coleccion",
+        tp."pvp" AS "precioMetroRaw"
+      FROM productos p
+      LEFT JOIN tarprodu tp
+        ON tp."codprodu" = p."codprodu"
+       AND tp."codtarifa" = '01'
+      WHERE ${where}
+      ORDER BY p."nombre", p."codprodu"
+      LIMIT $${i}
+    `;
+    params.push(limit);
+
+    const { rows } = await pool.query(sql, params);
+
+    const items = await Promise.all(rows.map(async (p) => {
+      const withImg = await this.attachImages(p, ['PRODUCTO_BAJA']);
+      const num = Number(String(p.precioMetroRaw ?? '').replace(',', '.'));
+      return {
+        id: withImg.codprodu,
+        codprodu: withImg.codprodu,
+        name: withImg.nombre,
+        collection: withImg.coleccion,
+        pricePerMeter: Number.isFinite(num) ? num : null,
+        imageUrl: withImg.imageBaja || null
+      };
+    }));
+
+    return items;
+  }
+
+  /**
+   * Busca TEJIDOS DE CORTINA.
+   * IMPORTANTE: devolvemos también `ancho` para que el frontend pueda calcular caídas con el ancho real.
+   */
+  static async searchCurtainsByQuery({ q = '', limit = 80 }) {
+    const term = `%${String(q || '').trim()}%`;
+
+    // exclusiones por nombre
+    const exclusion = this.getExcludedNamesClause(1);
+    let where = `
+      p."nombre" IS NOT NULL
+      AND p."nombre" <> ''
+      AND ${exclusion.clause}
+      AND (
+        CAST(p."mantenimiento" AS text) ILIKE '%CORTINA%'
+        OR p."uso" ILIKE '%CORTINA%'
+      )
+    `;
+    const params = [...exclusion.values];
+    let i = exclusion.values.length + 1;
+
+    if (q && q.trim()) {
+      where += ` AND unaccent(upper(p."nombre")) LIKE unaccent(upper($${i++}))`;
+      params.push(term);
+    }
+
+    const sql = `
+    SELECT DISTINCT ON (p."nombre")
+      p."codprodu",
+      p."nombre",
+      p."coleccion",
+      p."ancho",
+      tp."pvp" AS "precioMetroRaw"
+    FROM productos p
+    LEFT JOIN tarprodu tp
+      ON tp."codprodu" = p."codprodu"
+     AND tp."codtarifa" = '01'
+    WHERE ${where}
+    ORDER BY p."nombre", p."codprodu"
+    LIMIT $${i}
+  `;
+    params.push(limit);
+
+    const { rows } = await pool.query(sql, params);
+
+    const items = await Promise.all(rows.map(async (p) => {
+      const withImg = await this.attachImages(p, ['PRODUCTO_BAJA']);
+      const num = Number(String(p.precioMetroRaw ?? '').replace(',', '.'));
+      return {
+        id: withImg.codprodu,
+        codprodu: withImg.codprodu,
+        name: withImg.nombre,
+        collection: withImg.coleccion,
+        // ← DEVOLVEMOS ancho al front (antes faltaba)
+        ancho: p.ancho ?? null,
+        pricePerMeter: Number.isFinite(num) ? num : null,
+        imageUrl: withImg.imageBaja || null
+      };
+    }));
+
+    return items;
+  }
+
+  static async findProducts({ type, q = '' }) {
+    // EJEMPLO pseudo SQL/ORM: filtrar por type y por texto en nombre/colección/código
+    const text = String(q).trim();
+    const params = [];
+    let sql = `SELECT * FROM products WHERE type = ?`;
+    params.push(type);
+
+    if (text) {
+      sql += ` AND (UPPER(name) LIKE UPPER(?) OR UPPER(collection) LIKE UPPER(?) OR UPPER(codprodu) LIKE UPPER(?))`;
+      const like = `%${text}%`;
+      params.push(like, like, like);
+    }
+
+    sql += ` ORDER BY name ASC LIMIT 100`;
+    const rows = await db.query(sql, params);
+    return rows;
+  }
+
+  // models/Postgres/productos.js
+  static async getLiningsFeatured({ names = [], limit = 80 }) {
+    if (!Array.isArray(names) || names.length === 0) return [];
+
+    // Normaliza nombres recibidos
+    const list = names.map(n => String(n).trim()).filter(Boolean);
+    if (list.length === 0) return [];
+
+    const sql = `
+      SELECT DISTINCT ON (p."nombre")
+        p."codprodu" AS id,
+        p."nombre"   AS name,
+        p."ancho",
+        tp."pvp"     AS "pricePerMeter",
+        (
+          SELECT i.ficadjunto
+          FROM imagenesftpproductos i
+          WHERE i.codprodu = p.codprodu
+            AND i.codclaarchivo = 'PRODUCTO_BAJA'
+          LIMIT 1
+        )            AS "imageUrl"
+      FROM productos p
+      LEFT JOIN tarprodu tp
+        ON tp."codprodu" = p."codprodu"
+       AND tp."codtarifa" = '01'
+      WHERE p."nombre" = ANY($1)
+        AND p."nombre" IS NOT NULL
+        AND p."nombre" <> ''
+      ORDER BY
+        p."nombre",
+        p."codprodu"
+      LIMIT $2
+    `;
+
+    const { rows } = await pool.query(sql, [list, limit]);
+
+    // Opcional: reordenar en Node por el orden del array original (por si el DISTINCT altera el orden)
+    const order = new Map(list.map((n, i) => [n.toUpperCase(), i]));
+    rows.sort((a, b) => {
+      const ia = order.get(String(a.name || '').toUpperCase()) ?? 1e9;
+      const ib = order.get(String(b.name || '').toUpperCase()) ?? 1e9;
+      return ia - ib;
+    });
+
+    return rows;
+  }
+
+  static async searchByNamesAndQuery({ names = [], q = '' }) {
+    const like = `%${String(q).toLowerCase()}%`;
+    if (names.length > 0) {
+      const { rows } = await db.query(
+        `SELECT id, name, price_per_meter AS "pricePerMeter", image_url AS "imageUrl"
+           FROM products
+          WHERE LOWER(name) LIKE $1
+            AND name = ANY($2)
+          ORDER BY name ASC
+          LIMIT 80`,
+        [like, names]
+      );
+      return rows;
+    } else {
+      const { rows } = await db.query(
+        `SELECT id, name, price_per_meter AS "pricePerMeter", image_url AS "imageUrl"
+           FROM products
+          WHERE LOWER(name) LIKE $1
+          ORDER BY name ASC
+          LIMIT 80`,
+        [like]
+      );
+      return rows;
+    }
+  }
+
+  /**
+   * Colores/variantes para un producto.
+   * Devuelve: [{ id, name, hex, imageUrl }]
+   */
+  static async getColors(productId) {
+    // 1) nombre base desde codprodu
+    const base = await pool.query(
+      `SELECT "nombre" FROM productos WHERE "codprodu" = $1 LIMIT 1`,
+      [productId]
+    );
+    if (base.rows.length === 0) return [];
+
+    const nombre = base.rows[0].nombre;
+
+    // 2) todas las variantes con ese nombre (tonalidad/colorprincipal)
+    const { rows } = await pool.query(
+      `SELECT
+         p."codprodu" AS id,
+         COALESCE(NULLIF(TRIM(p."tonalidad"), ''), NULLIF(TRIM(p."colorprincipal"), ''), 'Color') AS name,
+         (
+           SELECT i.ficadjunto
+           FROM imagenesftpproductos i
+           WHERE i.codprodu = p.codprodu
+             AND i.codclaarchivo = 'PRODUCTO_BAJA'
+           LIMIT 1
+         ) AS "imageUrl"
+       FROM productos p
+       WHERE p."nombre" = $1
+       ORDER BY
+         (p."tonalidad" IS NULL OR TRIM(p."tonalidad") = '') ASC,
+         p."tonalidad" NULLS LAST,
+         p."codprodu" ASC`,
+      [nombre]
+    );
+
+    return rows.map(r => ({ id: r.id, name: r.name, hex: null, imageUrl: r.imageUrl || null }));
   }
 
   static async update({ id, input, res }) {

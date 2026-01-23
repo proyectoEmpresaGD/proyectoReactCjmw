@@ -1,0 +1,37 @@
+{
+    "header": {
+        "title": "Devis de confection",
+        "date": "Date",
+        "ref": "Référence"
+    },
+    "sections": {
+        "selectedFabrics": "Tissus sélectionnés",
+        "economicDetail": "Détail économique",
+        "summary": "Résumé",
+        "footer": "Pied de page"
+    },
+    "labels": {
+        "company": "Entreprise",
+        "type": "Type",
+        "numFabrics": "Nombre de tissus",
+        "oneFabric": "1 tissu",
+        "twoFabrics": "2 tissus",
+        "sewing": "Confection",
+        "total": "Total",
+        "width": "Largeur",
+        "height": "Hauteur",
+        "style": "Style",
+        "lining": "Doublure",
+        "units": "Unités",
+        "unitPrice": "Prix unitaire",
+        "amount": "Montant",
+        "mainFabric": "Tissu principal",
+        "liningFabric": "Doublure",
+        "fabric": "Tissu",
+        "puffTop": "Dessus (deuxième tissu)"
+    },
+    "footer": {
+        "sendTo": "Si vous êtes d'accord, veuillez envoyer ce devis à",
+        "legal": "Les prix n'incluent pas les taxes ni le transport."
+    }
+}

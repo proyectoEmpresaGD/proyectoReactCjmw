@@ -1,0 +1,37 @@
+{
+    "header": {
+        "title": "Presupuesto de confección",
+        "date": "Fecha",
+        "ref": "Referencia"
+    },
+    "sections": {
+        "selectedFabrics": "Tejidos seleccionados",
+        "economicDetail": "Detalle económico",
+        "summary": "Resumen",
+        "footer": "Pie de página"
+    },
+    "labels": {
+        "company": "Empresa",
+        "type": "Tipo",
+        "numFabrics": "Nº tejidos",
+        "oneFabric": "1 tejido",
+        "twoFabrics": "2 tejidos",
+        "sewing": "Confección",
+        "total": "Total",
+        "width": "Ancho",
+        "height": "Alto",
+        "style": "Estilo",
+        "lining": "Forro",
+        "units": "Unidades",
+        "unitPrice": "Precio unitario",
+        "amount": "Importe",
+        "mainFabric": "Tejido principal",
+        "liningFabric": "Forro",
+        "fabric": "Tejido",
+        "puffTop": "Tapa (segundo tejido)"
+    },
+    "footer": {
+        "sendTo": "Si está conforme, envíe este presupuesto a",
+        "legal": "Los precios no incluyen impuestos ni transporte."
+    }
+}
