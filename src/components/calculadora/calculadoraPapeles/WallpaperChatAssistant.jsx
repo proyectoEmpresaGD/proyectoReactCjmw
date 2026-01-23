@@ -1,5 +1,7 @@
+// src/components/calculadora/WallpaperChatAssistant.jsx
 import { useEffect, useMemo, useRef, useState } from 'react';
 import WallpaperPickerModal from './WallpaperPickerModal';
+import { generateWallpaperQuotePDF } from '../../../utils/quotePdf';
 
 // Reglas del cálculo de rollos (tu definición)
 function ceil(n) { return Math.ceil(Number(n)); }
@@ -9,7 +11,7 @@ function toNumber(v) {
     return Number.isFinite(n) ? n : NaN;
 }
 
-const TOTAL_STEPS = 4;          // 0 papel, 1 ancho, 2 alto, 3 resumen
+const TOTAL_STEPS = 4; // 0 papel, 1 ancho, 2 alto, 3 resumen
 const W_MIN_CM = 30;
 const H_MIN_CM = 30;
 
@@ -42,13 +44,14 @@ export default function WallpaperChatAssistant({
 
     useEffect(() => { if (open) scrollRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, step, open]);
 
-    // Mensajes por paso (igual patrón que estores)
+    // Mensajes por paso
     useEffect(() => {
         if (!open) return;
         if (step === 0) pushBot('Elige el papel (catálogo de WALLPAPER).');
         if (step === 1) pushBot(`Indica el ANCHO de la pared en cm (mínimo ${W_MIN_CM} cm).`);
         if (step === 2) pushBot(`Ahora el ALTO de la pared en cm (mínimo ${H_MIN_CM} cm).`);
         if (step === 3) pushBot('Listo. Te muestro el resumen.');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [step, open]);
 
     useEffect(() => {
@@ -66,22 +69,22 @@ export default function WallpaperChatAssistant({
     const calc = useMemo(() => {
         if (!paper || !Number.isFinite(anchoM) || !Number.isFinite(altoM) || anchoM <= 0 || altoM <= 0) return null;
 
-        const rollo = isColony ? 10 : 5.50;           // metros
-        const step1Raw = rollo / altoM;               // unidades
-        const step1 = floor(step1Raw);                // redondeo a la baja
+        const rollo = isColony ? 10 : 5.50;   // metros
+        const step1Raw = rollo / altoM;       // unidades
+        const step1 = floor(step1Raw);        // redondeo a la baja
         if (step1 < 1) return { error: 'El alto de la pared supera la longitud útil del rollo. (step1 = 0)' };
 
-        const factor = isColony ? 0.50 : 0.90;        // metros “útiles” por tramo
-        const resultado2 = step1 * factor;            // metros efectivos por tramo
+        const factor = isColony ? 0.50 : 0.90; // metros “útiles” por tramo
+        const resultado2 = step1 * factor;     // metros efectivos por tramo
         if (resultado2 <= 0) return { error: 'Resultado intermedio inválido. Revisa las medidas.' };
 
-        const rollos = ceil(anchoM / resultado2);     // redondeo al alza
+        const rollos = ceil(anchoM / resultado2); // redondeo al alza
         return { rollo, step1Raw, step1, factor, resultado2, rollos };
     }, [paper, anchoM, altoM, isColony]);
 
     const totalPrice = useMemo(() => {
         if (!calc || calc.error) return null;
-        const price = Number(paper?.price) || 0; // PVP por rollo (tp.pvp)
+        const price = Number(paper?.price) || 0; // PVP por rollo
         return price > 0 ? (calc.rollos * price) : null;
     }, [calc, paper]);
 
@@ -131,12 +134,9 @@ export default function WallpaperChatAssistant({
                     <div className="font-semibold">{Number(widthCm)} × {Number(heightCm)} cm</div>
                 </div>
 
-
                 <div className="rounded-lg border bg-white/60 backdrop-blur px-3 py-2">
                     <div className="text-gray-500">Rollos necesarios</div>
-                    <div className="font-semibold">
-                        {calc?.error ? '—' : (calc?.rollos ?? '—')}
-                    </div>
+                    <div className="font-semibold">{calc?.error ? '—' : (calc?.rollos ?? '—')}</div>
                 </div>
 
                 <div className="rounded-lg border bg-white/60 backdrop-blur px-3 py-2">
@@ -159,6 +159,8 @@ export default function WallpaperChatAssistant({
 
     if (!open) return null;
 
+    const canDownloadPdf = !!paper && !!calc && !calc?.error;
+
     return (
         <div className="fixed inset-0 z-50">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={closeAndReset} aria-hidden="true" />
@@ -167,7 +169,7 @@ export default function WallpaperChatAssistant({
                 aria-modal="true"
                 className="absolute left-1/2 top-1/2 w-[92vw] max-w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/20 bg-white/90 shadow-2xl backdrop-blur"
             >
-                {/* Header (igual estilo estores) */}
+                {/* Header */}
                 <div className="flex items-center justify-between gap-3 rounded-t-2xl bg-gradient-to-r from-gray-900 to-gray-700 px-5 py-4 text-white">
                     <div>
                         <h3 className="text-base font-semibold leading-tight">Asistente de papeles</h3>
@@ -296,9 +298,41 @@ export default function WallpaperChatAssistant({
                             </form>
                         )}
 
-                        {/* Paso 3: Resumen */}
+                        {/* Paso 3: Resumen + acciones */}
                         {step === 3 && (
                             <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 disabled:opacity-50"
+                                    disabled={!canDownloadPdf}
+                                    onClick={async () => {
+                                        if (!paper || !calc || calc.error) return;
+
+                                        await generateWallpaperQuotePDF({
+                                            paper,
+                                            widthCm: Number(widthCm),
+                                            heightCm: Number(heightCm),
+                                            isColony,
+
+                                            rollLengthM: calc.rollo,
+                                            step1Raw: calc.step1Raw,
+                                            step1: calc.step1,
+                                            factor: calc.factor,
+                                            usablePerStripM: calc.resultado2,
+                                            rolls: calc.rollos,
+
+                                            pricePerRoll: Number(paper.price) || 0,
+                                            total: totalPrice != null ? Number(totalPrice) : 0,
+                                            currency: '€'
+                                        });
+
+
+                                        closeAndReset();
+                                        onFinished?.();
+                                    }}
+                                >
+                                    Descargar presupuesto (PDF)
+                                </button>
+
                                 <button
                                     className="rounded-xl border px-4 py-2 text-sm hover:bg-gray-50"
                                     onClick={() => setStep(0)}
@@ -311,7 +345,7 @@ export default function WallpaperChatAssistant({
                 </div>
             </div>
 
-            {/* Modal PAPEL (similar a la de cortinas) */}
+            {/* Modal PAPEL */}
             <WallpaperPickerModal
                 open={showModal}
                 onClose={() => { setShowModal(false); }}

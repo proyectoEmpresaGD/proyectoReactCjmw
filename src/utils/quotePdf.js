@@ -25,9 +25,15 @@ const today = () => {
 
 /* ====================== FIRMA / REGISTRO ====================== */
 // Llama al backend, firma y devuelve el PDF directamente (sin guardarlo en servidor)
+// Llama al backend, firma y devuelve el PDF directamente (sin guardarlo en servidor)
 export async function registerAndSignOnServer({ file, pdfBytes, ref, total, email, upload = false }) {
   const base = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
-  const url = `${base}/api/quotes/register-sign`;
+
+  // Preferimos la ruta oficial, y dejamos alias por compatibilidad
+  const urls = [
+    `${base}/api/quotes/register-and-sign`,
+    `${base}/api/quotes/register-sign`,
+  ];
 
   // Construir el File si llega arrayBuffer/pdfBytes
   let fileToSend = file;
@@ -42,21 +48,38 @@ export async function registerAndSignOnServer({ file, pdfBytes, ref, total, emai
     throw new Error('No hay PDF para firmar (ni file ni pdfBytes).');
   }
 
-  const fd = new FormData();
-  fd.append('file', fileToSend, fileToSend.name || `${ref}.pdf`);
-  fd.append('ref', ref);
-  if (total != null) fd.append('total', String(total));
-  if (email) fd.append('email', email);
-  fd.append('upload', upload ? 'true' : 'false');
+  // Ojo: FormData hay que recrearlo por cada fetch (algunos runtimes consumen el body)
+  const buildFormData = () => {
+    const fd = new FormData();
+    fd.append('file', fileToSend, fileToSend.name || `${ref}.pdf`);
+    fd.append('ref', ref);
+    if (total != null) fd.append('total', String(total));
+    if (email) fd.append('email', email);
+    fd.append('upload', upload ? 'true' : 'false');
+    return fd;
+  };
 
-  const res = await fetch(url, { method: 'POST', body: fd });
-  if (!res.ok) {
+  let lastMsg = '';
+
+  for (const url of urls) {
+    const res = await fetch(url, { method: 'POST', body: buildFormData() });
+
+    if (res.ok) {
+      const blob = await res.blob();
+      return new File([blob], `${ref}.pdf`, { type: 'application/pdf' });
+    }
+
+    // Si es 404 probamos la otra ruta
+    if (res.status === 404) {
+      lastMsg = await res.text().catch(() => '');
+      continue;
+    }
+
     const msg = await res.text().catch(() => '');
     throw new Error(`Error firmando: ${res.status} ${msg}`);
   }
 
-  const blob = await res.blob();
-  return new File([blob], `${ref}.pdf`, { type: 'application/pdf' });
+  throw new Error(`Error firmando: 404 ${lastMsg || ''}`.trim());
 }
 
 function apiBase() {
@@ -536,6 +559,151 @@ export async function generateCurtainQuotePDF(input) {
     email: input?.clienteEmail || ''  // opcional
   });
 }
+
+/* ====================== PAPELES (WALLPAPER) ====================== */
+/**
+ * Genera el PDF de PAPEL PINTADO usando la misma infraestructura (proxy, i18n, firma).
+ * input:
+ *  - paper: { id, name, collection, price, ... }
+ *  - widthCm, heightCm
+ *  - calc info: rollLengthM, step1Raw, step1, factor, usablePerStripM, rolls
+ *  - pricePerRoll, total
+ *  - currency
+ *  - assets: { logoDataUrl? }
+ */
+export async function generateWallpaperQuotePDF(input) {
+  const {
+    paper,
+    widthCm = 0,
+    heightCm = 0,
+    isColony = false,
+
+    rollLengthM = 0,
+    step1Raw = 0,
+    step1 = 0,
+    factor = 0,
+    usablePerStripM = 0,
+    rolls = 0,
+
+    pricePerRoll = 0,
+    total = 0,
+    currency = '€',
+    assets = {}
+  } = input || {};
+
+  const logoDataUrl = await ensureDataURL({ dataUrl: assets.logoDataUrl, url: COMPANY.logoUrl });
+
+  // Intentar imagen del papel si existe (por compatibilidad con distintos shape)
+  const paperUrlGuess = pickFirst([
+    paper?.imageUrl,
+    getObjectImageUrl(paper),
+  ]);
+  const paperImg = await ensureDataURL({ dataUrl: paper?.imageDataUrl, url: paperUrlGuess });
+
+  const left = [
+    kv(tPdf('labels.width'), `${widthCm || '-'} cm`),
+    kv(tPdf('labels.height'), `${heightCm || '-'} cm`),
+    kv(tPdf('wallpaper.rollType', { defaultValue: 'Tipo de rollo' }), isColony ? 'COLONY (10 m)' : 'Estándar (5,5 m)'),
+  ].join('');
+
+  const right = [
+    kv(tPdf('wallpaper.rollsNeeded', { defaultValue: 'Rollos necesarios' }), `<strong>${Number(rolls || 0)}</strong>`),
+    kv(tPdf('wallpaper.pricePerRoll', { defaultValue: 'Precio/rollo' }), money(pricePerRoll, currency)),
+    kv(`${tPdf('labels.total')} (${currency})`, `<strong>${money(total, currency)}</strong>`),
+  ].join('');
+
+  const summary = twoColSummary({ leftHTML: left, rightHTML: right });
+
+  const selected = (() => {
+    const title = safe(paper?.name || paper?.nombre || tPdf('wallpaper.wallpaper', { defaultValue: 'Papel pintado' }));
+    const subtitleParts = [];
+    if (paper?.collection) subtitleParts.push(`${tPdf('wallpaper.collection', { defaultValue: 'Colección' })}: ${safe(paper.collection)}`);
+    if (Number.isFinite(Number(pricePerRoll)) && Number(pricePerRoll) > 0) subtitleParts.push(`${tPdf('wallpaper.pricePerRoll', { defaultValue: 'Precio/rollo' })}: ${money(pricePerRoll, currency)}`);
+
+    return `${sectionTitle(tPdf('sections.selectedFabrics', { defaultValue: 'Producto seleccionado' }))}${`<div style="display:grid;grid-template-columns:1fr;gap:12px;">` +
+      card(`
+        <div style="display:flex; gap:12px; align-items:center;">
+          ${paperImg
+          ? `<img src="${paperImg}" style="height:56px;width:56px;border-radius:8px;object-fit:cover;border:1px solid #e2e8f0;" />`
+          : `<div style="height:56px;width:56px;border-radius:8px;background:#f1f5f9;border:1px solid #e2e8f0;"></div>`
+        }
+          <div>
+            <div style="font-weight:600;">${title}</div>
+            ${subtitleParts.length ? `<div style="font-size:12px;color:#64748b;">${subtitleParts.join(' · ')}</div>` : ''}
+          </div>
+        </div>
+      `) +
+      `</div>`
+      }`;
+  })();
+
+  const rows = [
+    {
+      concept: tPdf('wallpaper.wallpaper', { defaultValue: 'Papel' }),
+      detail: `${safe(paper?.name || paper?.nombre || '—')}${paper?.collection ? ` · ${safe(paper.collection)}` : ''}`,
+      amount: ''
+    },
+    {
+      concept: tPdf('wallpaper.wallSize', { defaultValue: 'Medidas pared' }),
+      detail: `${Number(widthCm) || 0} × ${Number(heightCm) || 0} cm`,
+      amount: ''
+    },
+    {
+      concept: tPdf('wallpaper.rollLength', { defaultValue: 'Longitud rollo' }),
+      detail: `${fmt2(rollLengthM)} m`,
+      amount: ''
+    },
+    {
+      concept: tPdf('wallpaper.step1', { defaultValue: 'Tramos por rollo (floor)' }),
+      detail: `${fmt2(step1Raw)} → ${Number(step1)}`,
+      amount: ''
+    },
+    {
+      concept: tPdf('wallpaper.factor', { defaultValue: 'Factor útil' }),
+      detail: `${fmt2(factor)} m`,
+      amount: ''
+    },
+    {
+      concept: tPdf('wallpaper.usable', { defaultValue: 'Ancho útil por tramo' }),
+      detail: `${fmt2(usablePerStripM)} m`,
+      amount: ''
+    },
+    {
+      concept: tPdf('wallpaper.rollsNeeded', { defaultValue: 'Rollos necesarios' }),
+      detail: `${Number(rolls)}`,
+      amount: ''
+    },
+    {
+      concept: tPdf('wallpaper.cost', { defaultValue: 'Coste' }),
+      detail: `${Number(rolls)} × ${fmt2(pricePerRoll)} ${currency}`,
+      amount: money(Number(rolls) * Number(pricePerRoll), currency)
+    },
+    {
+      concept: '<strong>TOTAL</strong>',
+      detail: '',
+      amount: `<strong>${money(total, currency)}</strong>`
+    }
+  ];
+
+  const body = `
+    ${summary}
+    ${selected}
+    ${sectionTitle(tPdf('sections.economicDetail'))}
+    ${table(rows)}
+  `;
+
+  const ref = buildRef('PRES');
+  await buildAndDownloadPDF({
+    title: tPdf('header.wallpaperTitle', { defaultValue: 'Presupuesto · Papel pintado' }),
+    body,
+    filename: `Presupuesto_PAPELES_${Date.now()}.pdf`,
+    logoDataUrl,
+    ref,
+    total: Number(total) || 0,
+    email: input?.clienteEmail || ''
+  });
+}
+
 
 /* ====================== ESTORES (actualizado) ====================== */
 /**
