@@ -1,5 +1,5 @@
 // src/api/products.js
-const API = import.meta.env.VITE_API_BASE || 'http://localhost:1234';
+const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:1234';
 
 export async function searchLinings({ names = [], q = '' } = {}) {
     const res = await fetch(`${API}/api/products/linings/search`, {
