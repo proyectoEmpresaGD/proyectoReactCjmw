@@ -76,45 +76,6 @@ function pemToP12Buffer({ keyPem, certPem, password = '' }) {
     return Buffer.from(der, 'binary');
 }
 
-// === SUBIDA A VERCEL BLOB (opcional) ===
-async function uploadToBlob(filename, bytes, contentType = 'application/pdf') {
-    const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
-
-    // Normaliza bytes (puede venir como Uint8Array desde pdf-lib / signpdf)
-    const bodyBytes = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
-
-    if (!token) {
-        // DEV: guarda local y devuelve URL estática del backend
-        const safeName = filename.replace(/[^a-zA-Z0-9._/-]/g, '_');
-        const outDir = path.join(__dirname, '..', 'output');
-        const fullPath = path.join(outDir, safeName);
-
-        fs.mkdirSync(path.dirname(fullPath), { recursive: true });
-        fs.writeFileSync(fullPath, bodyBytes);
-
-        return `${API_PUBLIC}/files/${safeName}`;
-    }
-
-    const res = await fetch('https://api.vercel.com/v2/blob/upload', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/octet-stream',
-            'x-vercel-filename': filename,
-            'x-vercel-content-type': contentType,
-            authorization: `Bearer ${token}`,
-        },
-        body: bodyBytes,
-    });
-
-    if (!res.ok) {
-        const errText = await res.text().catch(() => '');
-        throw new Error(`Blob upload failed: ${res.status} ${errText}`);
-    }
-
-    const data = await res.json();
-    return data.url; // pública
-}
-
 // === FIRMA PDF ===
 async function signPdfBuffer(pdfBuffer) {
     const pdfDoc = await PDFDocument.load(pdfBuffer);
@@ -161,36 +122,28 @@ export class QuotesController {
         try {
             const file = req.file || (req.files && req.files.file);
             const { ref, total, email } = req.body || {};
-
-            if (!ref) return res.status(400).json({ error: 'Missing ref' });
-
-            const inputPdfBuffer = getUploadedPdfBuffer(file);
-            if (!inputPdfBuffer) return res.status(400).json({ error: 'Missing file (PDF)' });
+            if (!file || !ref) return res.status(400).json({ error: 'Missing file/ref' });
 
             // 1) Firmar
-            const signed = await signPdfBuffer(inputPdfBuffer);
+            const signed = await signPdfBuffer(file.buffer);
 
             // 2) Hash metadata
             const sha256 = sha256Hex(signed);
 
-            // 3) Guardar/subir SIEMPRE el PDF firmado y obtener su URL pública
+            // 3) Guardar metadatos (sin guardar el PDF en servidor)
             const filename = `${ref}.pdf`;
-            const blobUrl = await uploadToBlob(`quotes/${filename}`, signed, 'application/pdf');
-
-            // 4) Persistir metadatos
             await QuotesModel.upsertMetadata({
                 ref,
                 sha256,
                 size: signed.byteLength,
                 mime: 'application/pdf',
-                blobUrl,
+                blobUrl: null, // <- clave: no almacenamos el fichero
                 total: total ?? null,
-                email: email ?? null,
+                email: email ?? null
             });
 
-            // 5) Responder PDF como attachment
+            // 4) Responder PDF como attachment
             const verifyUrl = `${process.env.PUBLIC_BASE_URL || ''}/verify/${encodeURIComponent(ref)}`;
-
             res.setHeader('content-type', 'application/pdf');
             res.setHeader('content-disposition', `attachment; filename="${filename}"`);
             res.setHeader('x-ref', ref);
