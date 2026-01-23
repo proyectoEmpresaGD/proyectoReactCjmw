@@ -7,16 +7,20 @@ import { cdnUrl } from '../../../Constants/cdn';
 import { useTranslation } from 'react-i18next';
 import {
     calculateMeters as calcMetersUtil,
-    parseBoltWidthCm,
     getBoltWidthFromEntity,
 } from '../../../utils/curtains';
 
 /* ===========================
    Helpers (idénticos a la modal + rescate por API)
    =========================== */
-const logoHttp = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/logo_cjm_blanco.png';
-const logoDataUrl = await toBase64Modal(logoHttp);
-console.log('Logo base64', logoDataUrl.slice(0, 100)); // debería empezar por data:image/png;base64,
+
+// NO top-level await: Vercel/Vite (esbuild) no lo permite en el target configurado.
+const LOGO_HTTP =
+    'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/logo_cjm_blanco.png';
+
+// Cache del logo para no descargarlo cada vez que el usuario pulsa el botón.
+let logoDataUrlCache = '';
+let logoDataUrlInflight = null;
 
 // Igual que en modal.jsx (con validación: solo image/*)
 async function toBase64Modal(url) {
@@ -43,7 +47,25 @@ async function toBase64Modal(url) {
 }
 
 function withCdn(url) {
-    try { return url ? cdnUrl(url) : ''; } catch { return url || ''; }
+    try {
+        return url ? cdnUrl(url) : '';
+    } catch {
+        return url || '';
+    }
+}
+
+async function getLogoDataUrl() {
+    if (logoDataUrlCache) return logoDataUrlCache;
+    if (logoDataUrlInflight) return logoDataUrlInflight;
+
+    logoDataUrlInflight = (async () => {
+        const resolved = await toBase64Modal(withCdn(LOGO_HTTP));
+        logoDataUrlCache = resolved || '';
+        logoDataUrlInflight = null;
+        return logoDataUrlCache;
+    })();
+
+    return logoDataUrlInflight;
 }
 
 // Si no hay imágenes en el objeto, haz lo mismo que la modal: consulta al backend por Buena/Baja
@@ -52,8 +74,8 @@ async function getImageUrlByApi(codprodu) {
     const base = (import.meta?.env?.VITE_API_BASE_URL || '').replace(/\/+$/, '');
     try {
         const [bRes, lRes] = await Promise.all([
-            fetch(`${base}/api/images/${codprodu}/Buena`).then(r => r.ok ? r.json() : null),
-            fetch(`${base}/api/images/${codprodu}/Baja`).then(r => r.ok ? r.json() : null),
+            fetch(`${base}/api/images/${codprodu}/Buena`).then((r) => (r.ok ? r.json() : null)),
+            fetch(`${base}/api/images/${codprodu}/Baja`).then((r) => (r.ok ? r.json() : null)),
         ]);
         const rawB = bRes?.ficadjunto ? `${bRes.ficadjunto}` : '';
         const rawL = lRes?.ficadjunto ? `${lRes.ficadjunto}` : '';
@@ -86,7 +108,7 @@ async function firstImageBase64({ product, color }) {
 
     // 3) Si nada anterior existe, intenta por API usando codprodu (como hace la modal cuando no tiene URLs)
     const byApiUrl =
-        (!candidates.length && (product?.codprodu || color?.codprodu))
+        !candidates.length && (product?.codprodu || color?.codprodu)
             ? await getImageUrlByApi(product?.codprodu || color?.codprodu)
             : '';
     if (byApiUrl) candidates.push(byApiUrl);
@@ -97,7 +119,9 @@ async function firstImageBase64({ product, color }) {
         try {
             const b64 = await toBase64Modal(url);
             if (b64) return b64;
-        } catch { /* siguiente */ }
+        } catch {
+            // siguiente
+        }
     }
     return '';
 }
@@ -106,11 +130,14 @@ async function firstImageBase64({ product, color }) {
    Cálculos
    =========================== */
 
-const H_MIN = 100, H_MAX = 280;
-const W_MIN = 100, W_MAX = 400;
+const H_MIN = 100,
+    H_MAX = 280;
+const W_MIN = 100,
+    W_MAX = 400;
 
-function round2(n) { return Math.round((Number(n) + Number.EPSILON) * 100) / 100; }
-function round1(n) { return Math.round((Number(n) + Number.EPSILON) * 10) / 10; }
+function round2(n) {
+    return Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+}
 
 // Calcula metros/caídas usando el motor compartido (utils/curtains.js)
 function calculateMeters({ heightCm, widthCm, fabricBoltWidthCm, makingType = 'tablasCocidas', bottom = 'aRas' }) {
@@ -119,12 +146,14 @@ function calculateMeters({ heightCm, widthCm, fabricBoltWidthCm, makingType = 't
         widthCm,
         fabricBoltWidthCm, // puede venir null/undefined → utils usa fallback interno
         makingType,
-        bottom
+        bottom,
     });
 }
 
 function calculateCurtain({
-    heightCm, widthCm, fabricBoltWidthCm,
+    heightCm,
+    widthCm,
+    fabricBoltWidthCm,
     panels = 'simple',
     makingType = 'tablasCocidas',
     bottom = 'aRas',
@@ -154,7 +183,7 @@ function calculateCurtain({
         fabricCost,
         makingCost,
         makingPerM,
-        subtotal
+        subtotal,
     };
 }
 
@@ -181,7 +210,7 @@ function Choice({ active, onClick, label }) {
 
 export default function CurtainChatAssistant({
     pricePerMeter = 0,
-    fabricBoltWidthCm = 140,    // fallback global del proyecto
+    fabricBoltWidthCm = 140, // fallback global del proyecto
     currency = '€',
     onConfirm,
     defaultHeightCm = 200,
@@ -233,21 +262,22 @@ export default function CurtainChatAssistant({
         if (Number.isFinite(cmFromColor) && cmFromColor > 0) {
             setBoltWidthCm(cmFromColor);
         }
-    }, [selectedMainFabricProduct, selectedMainFabricColor, fabricBoltWidthCm]);
+    }, [selectedMainFabricProduct, selectedMainFabricColor, fabricBoltWidthCm]); // boltWidthCm no se incluye para evitar bucles
 
     // RESULTADO: usa el ancho detectado si existe; si no, cae al prop/fallback (para poder calcular algo)
     const result = useMemo(
-        () => calculateCurtain({
-            heightCm,
-            widthCm,
-            fabricBoltWidthCm: Number(boltWidthCm ?? fabricBoltWidthCm) || undefined,
-            panels,
-            makingType,
-            bottom,
-            lining,
-            pricePerMeter: ppm,
-            includeMaking,
-        }),
+        () =>
+            calculateCurtain({
+                heightCm,
+                widthCm,
+                fabricBoltWidthCm: Number(boltWidthCm ?? fabricBoltWidthCm) || undefined,
+                panels,
+                makingType,
+                bottom,
+                lining,
+                pricePerMeter: ppm,
+                includeMaking,
+            }),
         [heightCm, widthCm, boltWidthCm, fabricBoltWidthCm, panels, makingType, bottom, lining, ppm, includeMaking]
     );
 
@@ -278,14 +308,11 @@ export default function CurtainChatAssistant({
         return round2(liningMeters * Number(selectedLiningProduct.pricePerMeter));
     }, [lining, liningMeters, selectedLiningProduct?.pricePerMeter]);
 
-    const finalTotal = useMemo(
-        () => round2((result?.subtotal || 0) + liningFabricCost),
-        [result?.subtotal, liningFabricCost]
-    );
+    const finalTotal = useMemo(() => round2((result?.subtotal || 0) + liningFabricCost), [result?.subtotal, liningFabricCost]);
 
     // chat
     const [messages, setMessages] = useState([
-        { role: 'bot', text: t('chat.greeting', { defaultValue: '¡Hola! Soy tu asistente para calcular cortinas. ¿Empezamos?' }) }
+        { role: 'bot', text: t('chat.greeting', { defaultValue: '¡Hola! Soy tu asistente para calcular cortinas. ¿Empezamos?' }) },
     ]);
     const pushBot = (text) => setMessages((m) => [...m, { role: 'bot', text }]);
     const pushUser = (text) => setMessages((m) => [...m, { role: 'user', text }]);
@@ -294,7 +321,9 @@ export default function CurtainChatAssistant({
     const heightInputRef = useRef(null);
     const widthInputRef = useRef(null);
 
-    useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, step, open]);
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, step, open]);
 
     useEffect(() => {
         if (!open) return;
@@ -394,7 +423,9 @@ export default function CurtainChatAssistant({
                         <div className="font-semibold">
                             {liningMeters} m × {Number(selectedLiningProduct.pricePerMeter).toFixed(2)} €/m = {liningFabricCost.toLocaleString()} {currency}
                             <span className="ml-1 text-xs text-gray-500">
-                                ({selectedLiningProduct.name}{selectedLiningColor ? ` – ${selectedLiningColor.name}` : ''}{liningBoltWidthCm ? ` · ${t('ui.boltWidthShort', { defaultValue: 'ancho' })} ${liningBoltWidthCm} cm` : ''})
+                                ({selectedLiningProduct.name}
+                                {selectedLiningColor ? ` – ${selectedLiningColor.name}` : ''}
+                                {liningBoltWidthCm ? ` · ${t('ui.boltWidthShort', { defaultValue: 'ancho' })} ${liningBoltWidthCm} cm` : ''})
                             </span>
                         </div>
                     ) : (
@@ -414,12 +445,7 @@ export default function CurtainChatAssistant({
 
     if (!open) return null;
 
-    // Valor mostrado en el header:
-    // - Si no hay tela elegida: "—" (no mostramos 140 por defecto).
-    // - Si hay tela o color: mostramos el ancho usado realmente en el cálculo (result.boltWidthUsedCm).
-    const headerBoltText = (selectedMainFabricProduct || selectedMainFabricColor)
-        ? (Number(result?.boltWidthUsedCm) ? `${result.boltWidthUsedCm} cm` : '—')
-        : '—';
+    const headerBoltText = selectedMainFabricProduct || selectedMainFabricColor ? (Number(result?.boltWidthUsedCm) ? `${result.boltWidthUsedCm} cm` : '—') : '—';
 
     return (
         <div className="fixed inset-0 z-50">
@@ -443,7 +469,9 @@ export default function CurtainChatAssistant({
                         onClick={closeAndReset}
                         aria-label={t('ui.closeAssistantAria', { defaultValue: 'Cerrar asistente' })}
                         title={t('ui.close', { defaultValue: 'Cerrar' })}
-                    >✕</button>
+                    >
+                        ✕
+                    </button>
                 </div>
 
                 {/* Progreso */}
@@ -464,8 +492,16 @@ export default function CurtainChatAssistant({
                 {/* Chat + controles */}
                 <div className="mt-3 flex h-[460px] flex-col px-5 pb-5">
                     <div className="flex-1 space-y-3 overflow-auto rounded-xl border bg-gradient-to-b from-white to-gray-50 p-3">
-                        {messages.map((m, i) => (<Bubble key={i} role={m.role}>{m.text}</Bubble>))}
-                        {step === 8 && (<Bubble role="bot"><Summary /></Bubble>)}
+                        {messages.map((m, i) => (
+                            <Bubble key={i} role={m.role}>
+                                {m.text}
+                            </Bubble>
+                        ))}
+                        {step === 8 && (
+                            <Bubble role="bot">
+                                <Summary />
+                            </Bubble>
+                        )}
                         <div ref={scrollRef} />
                     </div>
 
@@ -476,14 +512,19 @@ export default function CurtainChatAssistant({
                                 className="flex gap-2"
                                 onSubmit={(e) => {
                                     e.preventDefault();
-                                    const v = Number(heightCm); if (!v) return;
+                                    const v = Number(heightCm);
+                                    if (!v) return;
                                     const clamped = Math.min(Math.max(v, H_MIN), H_MAX);
                                     if (clamped !== v) {
                                         setHeightCm(clamped);
-                                        pushBot(t('messages.heightClamped', {
-                                            defaultValue: `He ajustado la altura a ${clamped} cm (permitido: ${H_MIN}-${H_MAX}).`,
-                                            value: clamped, H_MIN, H_MAX
-                                        }));
+                                        pushBot(
+                                            t('messages.heightClamped', {
+                                                defaultValue: `He ajustado la altura a ${clamped} cm (permitido: ${H_MIN}-${H_MAX}).`,
+                                                value: clamped,
+                                                H_MIN,
+                                                H_MAX,
+                                            })
+                                        );
                                     }
                                     pushUser(`${clamped} cm`);
                                     setStep(1);
@@ -512,14 +553,19 @@ export default function CurtainChatAssistant({
                                 className="flex gap-2"
                                 onSubmit={(e) => {
                                     e.preventDefault();
-                                    const v = Number(widthCm); if (!v) return;
+                                    const v = Number(widthCm);
+                                    if (!v) return;
                                     const clamped = Math.min(Math.max(v, W_MIN), W_MAX);
                                     if (clamped !== v) {
                                         setWidthCm(clamped);
-                                        pushBot(t('messages.widthClamped', {
-                                            defaultValue: `He ajustado el ancho a ${clamped} cm (permitido: ${W_MIN}-${W_MAX}).`,
-                                            value: clamped, W_MIN, W_MAX
-                                        }));
+                                        pushBot(
+                                            t('messages.widthClamped', {
+                                                defaultValue: `He ajustado el ancho a ${clamped} cm (permitido: ${W_MIN}-${W_MAX}).`,
+                                                value: clamped,
+                                                W_MIN,
+                                                W_MAX,
+                                            })
+                                        );
                                     }
                                     pushUser(`${clamped} cm`);
                                     setStep(2);
@@ -554,7 +600,8 @@ export default function CurtainChatAssistant({
                                 </button>
                                 {selectedMainFabricProduct && (
                                     <div className="text-sm text-gray-700">
-                                        {selectedMainFabricProduct.name}{selectedMainFabricColor ? ` – ${selectedMainFabricColor.name}` : ''}
+                                        {selectedMainFabricProduct.name}
+                                        {selectedMainFabricColor ? ` – ${selectedMainFabricColor.name}` : ''}
                                     </div>
                                 )}
                             </div>
@@ -565,12 +612,20 @@ export default function CurtainChatAssistant({
                             <div className="flex gap-2">
                                 <Choice
                                     active={panels === 'simple'}
-                                    onClick={() => { setPanels('simple'); pushUser(t('ui.simpleInfo', { defaultValue: 'SIMPLE (informativo)' })); setStep(4); }}
+                                    onClick={() => {
+                                        setPanels('simple');
+                                        pushUser(t('ui.simpleInfo', { defaultValue: 'SIMPLE (informativo)' }));
+                                        setStep(4);
+                                    }}
                                     label={t('ui.simple', { defaultValue: 'Simple' })}
                                 />
                                 <Choice
                                     active={panels === 'doble'}
-                                    onClick={() => { setPanels('doble'); pushUser(t('ui.doubleInfo', { defaultValue: 'DOBLE (informativo)' })); setStep(4); }}
+                                    onClick={() => {
+                                        setPanels('doble');
+                                        pushUser(t('ui.doubleInfo', { defaultValue: 'DOBLE (informativo)' }));
+                                        setStep(4);
+                                    }}
                                     label={t('ui.double', { defaultValue: 'Doble' })}
                                 />
                             </div>
@@ -581,12 +636,25 @@ export default function CurtainChatAssistant({
                             <div className="flex gap-2">
                                 <Choice
                                     active={lining === 'forrada'}
-                                    onClick={() => { setLining('forrada'); setShowLiningModal(true); }}
-                                    label={selectedLiningProduct?.name ? `${t('ui.lined', { defaultValue: 'Forrada' })}: ${selectedLiningProduct.name}` : t('ui.linedWithCatalog', { defaultValue: 'Forrada (+catálogo)' })}
+                                    onClick={() => {
+                                        setLining('forrada');
+                                        setShowLiningModal(true);
+                                    }}
+                                    label={
+                                        selectedLiningProduct?.name
+                                            ? `${t('ui.lined', { defaultValue: 'Forrada' })}: ${selectedLiningProduct.name}`
+                                            : t('ui.linedWithCatalog', { defaultValue: 'Forrada (+catálogo)' })
+                                    }
                                 />
                                 <Choice
                                     active={lining === 'sin forrar'}
-                                    onClick={() => { setLining('sin forrar'); setSelectedLiningProduct(null); setSelectedLiningColor(null); pushUser(t('ui.unlined', { defaultValue: 'Sin forrar' })); setStep(5); }}
+                                    onClick={() => {
+                                        setLining('sin forrar');
+                                        setSelectedLiningProduct(null);
+                                        setSelectedLiningColor(null);
+                                        pushUser(t('ui.unlined', { defaultValue: 'Sin forrar' }));
+                                        setStep(5);
+                                    }}
                                     label={t('ui.unlined', { defaultValue: 'Sin forrar' })}
                                 />
                             </div>
@@ -603,7 +671,16 @@ export default function CurtainChatAssistant({
                                     ['tresPinzas', t('types.tresPinzas', { defaultValue: 'Tres pinzas' })],
                                     ['fruncido', t('types.fruncido', { defaultValue: 'Fruncido' })],
                                 ].map(([key, label]) => (
-                                    <Choice key={key} active={makingType === key} onClick={() => { setMakingType(key); pushUser(label); setStep(6); }} label={label} />
+                                    <Choice
+                                        key={key}
+                                        active={makingType === key}
+                                        onClick={() => {
+                                            setMakingType(key);
+                                            pushUser(label);
+                                            setStep(6);
+                                        }}
+                                        label={label}
+                                    />
                                 ))}
                             </div>
                         )}
@@ -613,17 +690,29 @@ export default function CurtainChatAssistant({
                             <div className="flex gap-2">
                                 <Choice
                                     active={bottom === 'aRas'}
-                                    onClick={() => { setBottom('aRas'); pushUser(t('ui.bottomFlush', { defaultValue: 'Bajo a ras' })); setStep(7); }}
+                                    onClick={() => {
+                                        setBottom('aRas');
+                                        pushUser(t('ui.bottomFlush', { defaultValue: 'Bajo a ras' }));
+                                        setStep(7);
+                                    }}
                                     label={t('ui.bottomFlushShort', { defaultValue: 'A ras' })}
                                 />
                                 <Choice
                                     active={bottom === 'colgante'}
-                                    onClick={() => { setBottom('colgante'); pushUser(t('ui.bottomHanging', { defaultValue: 'Bajo colgante' })); setStep(7); }}
+                                    onClick={() => {
+                                        setBottom('colgante');
+                                        pushUser(t('ui.bottomHanging', { defaultValue: 'Bajo colgante' }));
+                                        setStep(7);
+                                    }}
                                     label={t('ui.bottomHangingShort', { defaultValue: 'Colgante' })}
                                 />
                                 <Choice
                                     active={bottom === 'posada'}
-                                    onClick={() => { setBottom('posada'); pushUser(t('ui.bottomResting', { defaultValue: 'Bajo posada' })); setStep(7); }}
+                                    onClick={() => {
+                                        setBottom('posada');
+                                        pushUser(t('ui.bottomResting', { defaultValue: 'Bajo posada' }));
+                                        setStep(7);
+                                    }}
                                     label={t('ui.bottomRestingShort', { defaultValue: 'Posada' })}
                                 />
                             </div>
@@ -634,12 +723,20 @@ export default function CurtainChatAssistant({
                             <div className="flex gap-2">
                                 <Choice
                                     active={includeMaking}
-                                    onClick={() => { setIncludeMaking(true); pushUser(t('ui.includeMakingYes', { defaultValue: 'Sí, con confección' })); setStep(8); }}
+                                    onClick={() => {
+                                        setIncludeMaking(true);
+                                        pushUser(t('ui.includeMakingYes', { defaultValue: 'Sí, con confección' }));
+                                        setStep(8);
+                                    }}
                                     label={t('ui.includeMakingYes', { defaultValue: 'Sí, con confección' })}
                                 />
                                 <Choice
                                     active={!includeMaking}
-                                    onClick={() => { setIncludeMaking(false); pushUser(t('ui.includeMakingNo', { defaultValue: 'No, sin confección' })); setStep(8); }}
+                                    onClick={() => {
+                                        setIncludeMaking(false);
+                                        pushUser(t('ui.includeMakingNo', { defaultValue: 'No, sin confección' }));
+                                        setStep(8);
+                                    }}
                                     label={t('ui.includeMakingNo', { defaultValue: 'No, sin confección' })}
                                 />
                             </div>
@@ -651,23 +748,23 @@ export default function CurtainChatAssistant({
                                 <button
                                     className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90"
                                     onClick={async () => {
-                                        // === Logo (exacto a modal) ===
-                                        const logoHttp = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/logo_cjm_blanco.png';
-                                        const logoDataUrl = await toBase64Modal(withCdn(logoHttp));
+                                        // === Logo (sin top-level await, con cache) ===
+                                        const logoDataUrl = await getLogoDataUrl();
 
                                         // === Principal: intenta como la modal (candidatos + API por codprodu) ===
                                         const mainImageDataUrl = await firstImageBase64({
                                             product: selectedMainFabricProduct,
-                                            color: selectedMainFabricColor
+                                            color: selectedMainFabricColor,
                                         });
 
                                         // === Forro (si procede) ===
-                                        const liningImageDataUrl = lining === 'forrada'
-                                            ? await firstImageBase64({
-                                                product: selectedLiningProduct,
-                                                color: selectedLiningColor
-                                            })
-                                            : '';
+                                        const liningImageDataUrl =
+                                            lining === 'forrada'
+                                                ? await firstImageBase64({
+                                                    product: selectedLiningProduct,
+                                                    color: selectedLiningColor,
+                                                })
+                                                : '';
 
                                         await generateCurtainQuotePDF({
                                             meters: result.metersFabric,
@@ -710,8 +807,13 @@ export default function CurtainChatAssistant({
                                                 includeMaking,
                                             },
                                             currency, // ← usa la moneda del prop
-                                            assets: { /* opcional: logoDataUrl si ya lo resolviste en base64 */ }
+                                            assets: {
+                                                logoDataUrl,
+                                                mainImageDataUrl,
+                                                liningImageDataUrl,
+                                            },
                                         });
+
                                         closeAndReset();
                                         onFinished?.();
                                     }}
@@ -730,11 +832,13 @@ export default function CurtainChatAssistant({
             {/* Modal TELA PRINCIPAL */}
             <CurtainFabricPickerModal
                 open={showMainFabricModal}
-                onClose={() => { setShowMainFabricModal(false); }}
+                onClose={() => {
+                    setShowMainFabricModal(false);
+                }}
                 onPicked={({ product, color, pricePerMeter }) => {
                     const finalProduct = {
                         ...product,
-                        pricePerMeter: typeof pricePerMeter === 'number' ? pricePerMeter : product?.pricePerMeter ?? null
+                        pricePerMeter: typeof pricePerMeter === 'number' ? pricePerMeter : product?.pricePerMeter ?? null,
                     };
                     setSelectedMainFabricProduct(finalProduct);
                     setSelectedMainFabricColor(color || null);
@@ -758,12 +862,14 @@ export default function CurtainChatAssistant({
             {/* Modal FORRO */}
             <LiningPickerModal
                 open={showLiningModal}
-                onClose={() => { setShowLiningModal(false); }}
+                onClose={() => {
+                    setShowLiningModal(false);
+                }}
                 nameCandidates={liningNameCandidates}
                 onPicked={({ product, color, pricePerMeter }) => {
                     const finalProduct = {
                         ...product,
-                        pricePerMeter: typeof pricePerMeter === 'number' ? pricePerMeter : product?.pricePerMeter ?? null
+                        pricePerMeter: typeof pricePerMeter === 'number' ? pricePerMeter : product?.pricePerMeter ?? null,
                     };
                     setSelectedLiningProduct(finalProduct);
                     setSelectedLiningColor(color || null);
