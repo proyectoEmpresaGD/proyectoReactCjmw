@@ -478,9 +478,9 @@ export const Header = ({ closeModal }) => {
                         <button onClick={() => handleLinkClick('/contract')} className="block text-gray-800 font-semibold py-2">
                             {t('contract')}
                         </button>
-                        <button onClick={() => handleLinkClick('/confeccion')} className="block text-gray-800 font-semibold py-2">
+                        {/* <button onClick={() => handleLinkClick('/confeccion')} className="block text-gray-800 font-semibold py-2">
                             {t('confeccion')}
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </header>
