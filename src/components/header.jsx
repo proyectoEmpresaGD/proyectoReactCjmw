@@ -501,7 +501,7 @@ export const Header = ({ closeModal }) => {
                 </div>
 
                 {/* Mobile menu */}
-                <div className={`lg:hidden fixed top-0 left-0 w-full h-full bg-white z-50 transition-all ${showMenu ? "block" : "hidden"}`}>
+                <div className={`lg:hidden fixed top-0 left-0 w-full h-[100vh] bg-white z-50 transition-all ${showMenu ? "block" : "hidden"}`}>
                     <div className="bg-white shadow-lg py-4 px-6 h-full overflow-auto">
                         <div className="flex justify-between mb-4">
                             <Link to="/" className="font-semibold text-gray-800 hover:bg-gray-300 py-2 px-4 rounded-lg">
