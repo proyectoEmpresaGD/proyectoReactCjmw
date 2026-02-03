@@ -1,4 +1,4 @@
-import { RiInstagramLine, RiFacebookLine, RiTwitterXFill } from "react-icons/ri";
+import { Instagram, Facebook, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     LOGO_URL,
@@ -61,21 +61,21 @@ const Footer = () => {
                             className="bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
                             aria-label="Instagram"
                         >
-                            <RiInstagramLine size={18} className="text-white" />
+                            <Instagram size={18} className="text-white" />
                         </a>
                         <a
                             href={SOCIAL_MEDIA_LINKS.facebook}
                             className="bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
                             aria-label="Facebook"
                         >
-                            <RiFacebookLine size={18} className="text-white" />
+                            <Facebook size={18} className="text-white" />
                         </a>
                         <a
                             href={SOCIAL_MEDIA_LINKS.twitter}
                             className="bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
                             aria-label="Twitter"
                         >
-                            <RiTwitterXFill size={18} className="text-white" />
+                            <Twitter size={18} className="text-white" />
                         </a>
                     </nav>
                 </div>

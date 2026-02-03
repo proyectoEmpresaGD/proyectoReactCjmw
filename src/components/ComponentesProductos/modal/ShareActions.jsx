@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Share2 } from 'lucide-react';
-import { FaFacebook, FaWhatsapp, FaLinkedin, FaTwitter, FaEnvelope } from 'react-icons/fa';
-import { SiGmail } from 'react-icons/si';
+import {
+    Facebook,
+    Linkedin,
+    Twitter,
+    Mail,
+    MessageCircle,
+} from "lucide-react";
 import useFixedPopover from './hooks/useFixedPopover';
 
 const isMobileDevice = () =>
@@ -61,12 +66,12 @@ const ShareActions = ({ t, shareTitle, shareText, shareUrl, onCloseModal }) => {
     }, [showShare]);
 
     const items = [
-        { name: 'Facebook', color: '#1877F2', icon: FaFacebook },
-        { name: 'Twitter', color: '#000000', icon: FaTwitter },
-        { name: 'WhatsApp', color: '#25D366', icon: FaWhatsapp },
-        { name: 'LinkedIn', color: '#0A66C2', icon: FaLinkedin },
-        { name: 'Gmail', color: '#EA4335', icon: SiGmail },
-        { name: 'Email', color: '#334155', icon: FaEnvelope },
+        { name: 'Facebook', color: '#1877F2', icon: Facebook },
+        { name: 'Twitter', color: '#000000', icon: Twitter },
+        { name: 'WhatsApp', color: '#25D366', icon: MessageCircle },
+        { name: 'LinkedIn', color: '#0A66C2', icon: Linkedin },
+        { name: 'Gmail', color: '#EA4335', icon: Mail },
+        { name: 'Email', color: '#334155', icon: Mail },
     ];
 
     return (

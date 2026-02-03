@@ -156,7 +156,7 @@ const OrderModal = ({ onClose, onSubmit }) => {
 };
 
 // Componente del carrito de compras
-const ShoppingCart = ({ onClose }) => {
+const ShoppingCartPanel = ({ onClose }) => {
     const { t } = useTranslation('cart'); // ← aquí namespace 'cart'
     const { cartItems, addToCart, removeFromCart, clearCart } = useCart();
     const [showCart, setShowCart] = useState(false);
@@ -190,7 +190,7 @@ const ShoppingCart = ({ onClose }) => {
 
     return (
         <div
-            className={`fixed top-0 right-0 z-50 w-full max-w-md h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${showCart ? 'translate-x-0' : 'translate-x-full'
+            className={`fixed top-0 right-0 z-50 w-full max-w-md h-[100vh] bg-white shadow-lg transition-transform duration-300 ease-in-out flex flex-col ${showCart ? "translate-x-0" : "translate-x-full"
                 }`}
         >
             {/* Header del carrito */}
@@ -204,9 +204,9 @@ const ShoppingCart = ({ onClose }) => {
             </div>
 
             {/* Items */}
-            <div className="overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-4 bg-white">
                 {cartItems.map(item => (
-                    <div key={item.id} className="flex items-center justify-between mb-4">
+                    <div key={item.id} className="flex items-center justify-between mb-4 bg-white">
                         <div className="flex items-center">
                             <img src={item.image} alt={item.name} className="h-16 w-16 rounded-full object-cover mr-4" />
                             <div>
@@ -249,7 +249,7 @@ const ShoppingCart = ({ onClose }) => {
             </div>
 
             {/* Total y botón */}
-            <div className="p-4 border-t border-gray-200">
+            <div className="mt-auto p-4 border-t border-gray-200 bg-white">
                 <div className="flex justify-between items-center">
                     <span className="text-base text-gray-600">{t('totalLabel')}</span>
                     <span className="text-lg font-semibold">€{totalPrice}</span>
@@ -271,4 +271,4 @@ const ShoppingCart = ({ onClose }) => {
     );
 };
 
-export default ShoppingCart;
+export default ShoppingCartPanel;

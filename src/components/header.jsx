@@ -1,32 +1,31 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
-    RiMenu3Fill,
-    RiSearchLine,
-    RiShoppingCartFill,
-    RiUserFill,
-    RiArrowDropDownLine,
-    RiArrowDropUpLine,
-} from 'react-icons/ri';
-import { FaSlidersH } from 'react-icons/fa';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import ShoppingCart from './shoppingCart';
-import { useCart } from './CartContext';
-import ScrollToTop from './ScrollToTop';
-import 'tailwindcss/tailwind.css';
-import SearchBar from './SearchBar';
-import { useMarca } from './MarcaContext';
+    Menu,
+    Search,
+    ShoppingCart as ShoppingCartIcon,
+    User,
+    ChevronDown,
+    ChevronUp,
+    SlidersHorizontal,
+} from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import ShoppingCartPanel from './shoppingCart';
+import { useCart } from "./CartContext";
+import "tailwindcss/tailwind.css";
+import SearchBar from "./SearchBar";
+import { useMarca } from "./MarcaContext";
 
 // Importar constantes desde el archivo de constantes
-import { languageOptions, brandLogos, defaultLogo } from '../Constants/constants';
+import { languageOptions, brandLogos, defaultLogo } from "../Constants/constants";
 
 // Controller interno: decide qué marca aplica por ruta o por query (?brand=XXX)
 const getBrandCodeFromLocation = (location, pathToBrandMap, logosByBrand) => {
     if (!location) return null;
 
     // 1) Prioridad: filtro por query param (ej: ?brand=BAS)
-    const params = new URLSearchParams(location.search || '');
-    const brandFromQuery = params.get('brand');
+    const params = new URLSearchParams(location.search || "");
+    const brandFromQuery = params.get("brand");
     if (brandFromQuery && logosByBrand?.[brandFromQuery]) {
         return brandFromQuery;
     }
@@ -45,13 +44,14 @@ const getHeaderLogoSrc = (location, { pathToBrandMap, logosByBrand, fallbackLogo
     return brandCode ? logosByBrand[brandCode] : fallbackLogo;
 };
 
-
 export const Header = ({ closeModal }) => {
-    const { t, i18n } = useTranslation('header');
+    const { t, i18n } = useTranslation("header");
     const navigate = useNavigate();
     const location = useLocation();
     const { itemCount } = useCart();
     const { marcaActiva, setMarcaActiva } = useMarca();
+    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+    const lastScrollY = useRef(0);
 
     // Dropdown states
     const [showCart, setShowCart] = useState(false);
@@ -65,10 +65,10 @@ export const Header = ({ closeModal }) => {
 
     // Selected language
     const [selectedLanguage, setSelectedLanguage] = useState(
-        languageOptions.find(opt => opt.value === i18n.language) || languageOptions[0]
+        languageOptions.find((opt) => opt.value === i18n.language) || languageOptions[0]
     );
     useEffect(() => {
-        const found = languageOptions.find(opt => opt.value === i18n.language);
+        const found = languageOptions.find((opt) => opt.value === i18n.language);
         if (found) setSelectedLanguage(found);
     }, [i18n.language]);
 
@@ -83,11 +83,11 @@ export const Header = ({ closeModal }) => {
 
     // --- mapa ruta -> código de marca y sincronización estado/ruta ---
     const pathToBrand = {
-        '/arenaHome': 'ARE',
-        '/harbourHome': 'HAR',
-        '/bassariHome': 'BAS',
-        '/cjmHome': 'CJM',
-        '/flamencoHome': 'FLA',
+        "/arenaHome": "ARE",
+        "/harbourHome": "HAR",
+        "/bassariHome": "BAS",
+        "/cjmHome": "CJM",
+        "/flamencoHome": "FLA",
     };
 
     useEffect(() => {
@@ -97,7 +97,6 @@ export const Header = ({ closeModal }) => {
         }
     }, [location.pathname, location.search]); // eslint-disable-line react-hooks/exhaustive-deps
 
-
     // Logo robusto: prioriza marcaActiva, luego ruta, luego fallback
     const logoSrc = getHeaderLogoSrc(location, {
         pathToBrandMap: pathToBrand,
@@ -105,7 +104,91 @@ export const Header = ({ closeModal }) => {
         fallbackLogo: defaultLogo,
     });
 
+    useEffect(() => {
+        const onAppScroll = (e) => {
+            // Solo desktop
+            if (window.innerWidth < 1024) return;
 
+            const currentY = Number(e?.detail?.y ?? 0);
+            const scrollingDown = currentY > lastScrollY.current;
+
+            const hasBlockingUI =
+                showSearchBar ||
+                showUserDropdown ||
+                showBrandsDropdown ||
+                showProductsDropdown ||
+                showLanguageDropdown ||
+                showCart ||
+                showMenu;
+
+            if (hasBlockingUI) {
+                setIsHeaderVisible(true);
+                lastScrollY.current = currentY;
+                return;
+            }
+
+            if (scrollingDown && currentY > 80) setIsHeaderVisible(false);
+            else setIsHeaderVisible(true);
+
+            lastScrollY.current = currentY;
+        };
+
+        window.addEventListener("app:scroll", onAppScroll);
+        return () => window.removeEventListener("app:scroll", onAppScroll);
+    }, [
+        showSearchBar,
+        showUserDropdown,
+        showBrandsDropdown,
+        showProductsDropdown,
+        showLanguageDropdown,
+        showCart,
+        showMenu,
+    ]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            // Solo desktop
+            if (window.innerWidth < 1024) return;
+
+            const currentScrollY = window.scrollY;
+            const scrollingDown = currentScrollY > lastScrollY.current;
+
+            const hasBlockingUI =
+                showSearchBar ||
+                showUserDropdown ||
+                showBrandsDropdown ||
+                showProductsDropdown ||
+                showLanguageDropdown ||
+                showCart ||
+                showMenu;
+
+            // Si hay overlays abiertos, no ocultar
+            if (hasBlockingUI) {
+                setIsHeaderVisible(true);
+                lastScrollY.current = currentScrollY;
+                return;
+            }
+
+            if (scrollingDown && currentScrollY > 80) {
+                setIsHeaderVisible(false);
+            } else {
+                setIsHeaderVisible(true);
+            }
+
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [
+        showSearchBar,
+        showUserDropdown,
+        showBrandsDropdown,
+        showProductsDropdown,
+        showLanguageDropdown,
+        showCart,
+        showMenu,
+    ]);
 
     const closeAllDropdowns = useCallback(() => {
         setShowBrandsDropdown(false);
@@ -113,13 +196,14 @@ export const Header = ({ closeModal }) => {
         setShowUserDropdown(false);
         setShowLanguageDropdown(false);
     }, []);
+
     const closeSearchAndCart = useCallback(() => {
         setShowSearchBar(false);
         setShowCart(false);
     }, []);
 
     useEffect(() => {
-        const handleClickOutside = event => {
+        const handleClickOutside = (event) => {
             if (
                 !searchRef.current?.contains(event.target) &&
                 !cartRef.current?.contains(event.target) &&
@@ -131,33 +215,45 @@ export const Header = ({ closeModal }) => {
             ) {
                 closeAllDropdowns();
             }
-            if (
-                !searchRef.current?.contains(event.target) &&
-                !cartRef.current?.contains(event.target)
-            ) {
+            if (!searchRef.current?.contains(event.target) && !cartRef.current?.contains(event.target)) {
                 closeSearchAndCart();
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [closeAllDropdowns, closeSearchAndCart]);
 
-    const toggleDropdown = dropdown => {
+    const toggleDropdown = (dropdown) => {
         closeAllDropdowns();
         switch (dropdown) {
-            case 'menu': setShowMenu(!showMenu); break;
-            case 'brands': setShowBrandsDropdown(!showBrandsDropdown); break;
-            case 'products': setShowProductsDropdown(!showProductsDropdown); break;
-            case 'user': setShowUserDropdown(!showUserDropdown); break;
-            case 'language': setShowLanguageDropdown(!showLanguageDropdown); break;
-            case 'search': setShowSearchBar(!showSearchBar); break;
-            case 'cart': setShowCart(!showCart); break;
-            default: break;
+            case "menu":
+                setShowMenu(!showMenu);
+                break;
+            case "brands":
+                setShowBrandsDropdown(!showBrandsDropdown);
+                break;
+            case "products":
+                setShowProductsDropdown(!showProductsDropdown);
+                break;
+            case "user":
+                setShowUserDropdown(!showUserDropdown);
+                break;
+            case "language":
+                setShowLanguageDropdown(!showLanguageDropdown);
+                break;
+            case "search":
+                setShowSearchBar(!showSearchBar);
+                break;
+            case "cart":
+                setShowCart(!showCart);
+                break;
+            default:
+                break;
         }
     };
 
-    const handleLinkClick = path => {
-        if (typeof window.closeModalGlobal === 'function') {
+    const handleLinkClick = (path) => {
+        if (typeof window.closeModalGlobal === "function") {
             window.closeModalGlobal();
         }
         setTimeout(() => navigate(path), 100);
@@ -167,18 +263,18 @@ export const Header = ({ closeModal }) => {
 
     // NUEVO: abrir filtros (mobile → SubMenuCarousel, desktop → FilterPanel)
     const hasActiveFilters = useMemo(() => {
-        if (!location.pathname.startsWith('/products')) return false;
+        if (!location.pathname.startsWith("/products")) return false;
         const params = new URLSearchParams(location.search);
         const filterKeys = [
-            'brand',
-            'color',
-            'collection',
-            'fabricType',
-            'fabricPattern',
-            'martindale',
-            'martindaleRange',
-            'uso',
-            'mantenimiento',
+            "brand",
+            "color",
+            "collection",
+            "fabricType",
+            "fabricPattern",
+            "martindale",
+            "martindaleRange",
+            "uso",
+            "mantenimiento",
         ];
         return filterKeys.some((key) => params.getAll(key).length > 0);
     }, [location.pathname, location.search]);
@@ -188,18 +284,18 @@ export const Header = ({ closeModal }) => {
         closeSearchAndCart();
         setShowMenu(false);
 
-        if (location.pathname.startsWith('/products')) {
+        if (location.pathname.startsWith("/products")) {
             // Ya estamos en products: disparamos evento global
-            window.dispatchEvent(new CustomEvent('openProductFilters'));
+            window.dispatchEvent(new CustomEvent("openProductFilters"));
             return;
         }
 
         // No estamos en products:
         // Navegamos a /products y marcamos en el state que hay que abrir filtros
-        navigate('/products', { state: { openFilters: true } });
+        navigate("/products", { state: { openFilters: true } });
     }, [closeAllDropdowns, closeSearchAndCart, location.pathname, navigate]);
 
-    const changeLanguage = opt => {
+    const changeLanguage = (opt) => {
         i18n.changeLanguage(opt.value);
         setSelectedLanguage(opt);
         setShowLanguageDropdown(false);
@@ -207,33 +303,36 @@ export const Header = ({ closeModal }) => {
 
     return (
         <>
-            <ScrollToTop />
-
             <header
-                className={`fixed top-0 left-0 w-full z-40 bg-white opacity-80 hover:opacity-100 transition-all duration-500 ${isHovered ||
-                    showSearchBar ||
-                    showUserDropdown ||
-                    showBrandsDropdown ||
-                    showProductsDropdown ||
-                    showLanguageDropdown ||
-                    showCart ||
-                    showMenu
-                    ? 'shadow-md'
-                    : 'bg-transparent'
-                    }`}
+                className={`fixed top-0 left-0 w-full z-40
+                    bg-white opacity-80 hover:opacity-100
+                    transition-transform duration-500 ease-in-out
+                    ${isHeaderVisible ? "translate-y-0" : "-translate-y-full"}
+                    ${isHovered ||
+                        showSearchBar ||
+                        showUserDropdown ||
+                        showBrandsDropdown ||
+                        showProductsDropdown ||
+                        showLanguageDropdown ||
+                        showCart ||
+                        showMenu
+                        ? "shadow-md"
+                        : "bg-transparent"
+                    }
+                    `}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <div className="container mx-auto flex items-center justify-between py-2 px-4 lg:px-8">
-
                     {/* Mobile menu & logo */}
                     <div className="flex items-center">
                         <button
                             className="text-gray-800 lg:hidden focus:outline-none"
-                            onClick={() => toggleDropdown('menu')}
+                            onClick={() => toggleDropdown("menu")}
                             ref={menuRef}
+                            type="button"
                         >
-                            {showMenu ? <RiArrowDropUpLine size={24} /> : <RiMenu3Fill size={24} />}
+                            {showMenu ? <ChevronUp className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>
                         <Link
                             to="/"
@@ -245,34 +344,30 @@ export const Header = ({ closeModal }) => {
 
                     {/* Desktop nav */}
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
-                        <Link
-                            to="/"
-                            className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg"
-                        >
-                            {t('home')}
+                        <Link to="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
+                            {t("home")}
                         </Link>
 
                         {/* Brands */}
                         <div className="relative" ref={brandsRef}>
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
-                                onClick={() => toggleDropdown('brands')}
+                                onClick={() => toggleDropdown("brands")}
+                                type="button"
                             >
-                                {t('brands')}
-                                {showBrandsDropdown
-                                    ? <RiArrowDropUpLine size={16} className="ml-2" />
-                                    : <RiArrowDropDownLine size={16} className="ml-2" />
-                                }
+                                {t("brands")}
+                                {showBrandsDropdown ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
                             </button>
                             {showBrandsDropdown && (
                                 <div className="absolute top-full left-0 w-full mt-1 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 z-50 flex flex-col">
-                                    {['arenaHome', 'harbourHome', 'cjmHome', 'flamencoHome', 'bassariHome'].map(key => (
+                                    {["arenaHome", "harbourHome", "cjmHome", "flamencoHome", "bassariHome"].map((key) => (
                                         <button
                                             key={key}
                                             onMouseDown={() => handleLinkClick(`/${key}`)}
                                             className="px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md text-left"
+                                            type="button"
                                         >
-                                            {t(key.replace('Home', '').toLowerCase())}
+                                            {t(key.replace("Home", "").toLowerCase())}
                                         </button>
                                     ))}
                                 </div>
@@ -283,78 +378,80 @@ export const Header = ({ closeModal }) => {
                         <div className="relative" ref={productsRef}>
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
-                                onClick={() => toggleDropdown('products')}
+                                onClick={() => toggleDropdown("products")}
+                                type="button"
                             >
-                                {t('products')}
-                                {showProductsDropdown
-                                    ? <RiArrowDropUpLine size={16} className="ml-2" />
-                                    : <RiArrowDropDownLine size={16} className="ml-2" />
-                                }
+                                {t("products")}
+                                {showProductsDropdown ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
                             </button>
                             {showProductsDropdown && (
                                 <div className="absolute top-full left-0 mt-1 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 w-40 z-50 flex flex-col">
-                                    <button
-                                        onMouseDown={() => handleLinkClick('/products')}
-                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
-                                    >
-                                        {t('allProducts')}
+                                    <button onMouseDown={() => handleLinkClick("/products")} className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md" type="button">
+                                        {t("allProducts")}
                                     </button>
                                     <button
-                                        onMouseDown={() => handleLinkClick('/products?type=papel')}
+                                        onMouseDown={() => handleLinkClick("/products?type=papel")}
                                         className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
+                                        type="button"
                                     >
-                                        {t('paper')}
+                                        {t("paper")}
                                     </button>
                                     <button
-                                        onMouseDown={() => handleLinkClick('/products?type=tela')}
+                                        onMouseDown={() => handleLinkClick("/products?type=tela")}
                                         className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
+                                        type="button"
                                     >
-                                        {t('fabric')}
+                                        {t("fabric")}
                                     </button>
                                 </div>
                             )}
                         </div>
 
-                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('about')}</Link>
-                        <Link to="/media" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('media')}</Link>
-                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contact')}</Link>
-                        <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('contract')}</Link>
+                        <Link to="/about" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
+                            {t("about")}
+                        </Link>
+                        <Link to="/media" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
+                            {t("media")}
+                        </Link>
+                        <Link to="/contact" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
+                            {t("contact")}
+                        </Link>
+                        <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
+                            {t("contract")}
+                        </Link>
                         {/* <Link to="/confeccion" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('Confección')}</Link> */}
                     </div>
 
                     {/* Icons */}
                     <div className="flex items-center space-x-4">
-                        {/* Filters (icono, SIN texto tipo “Encuentra el tejido…”) */}
                         <div className="relative">
                             <button
                                 type="button"
                                 onClick={openFilters}
                                 className="text-gray-800 focus:outline-none relative"
-                                aria-label={t('openFilters', 'Abrir filtros')}
+                                aria-label={t("openFilters", "Abrir filtros")}
                             >
-                                <FaSlidersH size={20} />
-                                {hasActiveFilters && (
-                                    <span className="absolute top-0 right-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#26659E]" />
-                                )}
+                                <SlidersHorizontal className="h-5 w-5" />
+                                {hasActiveFilters && <span className="absolute top-0 right-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#26659E]" />}
                             </button>
                         </div>
 
                         {/* User */}
                         <div className="relative" ref={userRef}>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('user')}>
-                                <RiUserFill size={24} />
+                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown("user")} type="button">
+                                <User className="h-6 w-6" />
                             </button>
                             {showUserDropdown && (
                                 <div className="absolute top-full right-0 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 w-40 z-50">
-                                    <p className="px-4 py-2 text-gray-500">{t('userFeature')}</p>
+                                    <p className="px-4 py-2 text-gray-500">{t("userFeature")}</p>
                                 </div>
                             )}
                         </div>
 
                         {/* Search */}
                         <div className="relative" ref={searchRef}>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('search')}>
-                                <RiSearchLine size={24} />
+                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown("search")} type="button">
+                                <Search className="h-6 w-6" />
                             </button>
                             {showSearchBar && (
                                 <div className="absolute top-full right-0 mt-2 w-72 bg-white shadow-lg rounded-lg z-50 p-4">
@@ -365,12 +462,12 @@ export const Header = ({ closeModal }) => {
 
                         {/* Cart */}
                         <div className="relative cart" ref={cartRef}>
-                            <button className="text-gray-800 focus:outline-none relative" onClick={() => toggleDropdown('cart')}>
-                                <RiShoppingCartFill size={24} />
+                            <button className="text-gray-800 focus:outline-none relative" onClick={() => toggleDropdown("cart")} type="button">
+                                <ShoppingCartIcon className="h-6 w-6" />
                                 {itemCount > 0 && (
                                     <span
                                         className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1"
-                                        style={{ transform: 'translate(50%,-50%)', fontSize: '0.75rem' }}
+                                        style={{ transform: "translate(50%,-50%)", fontSize: "0.75rem" }}
                                     >
                                         {itemCount}
                                     </span>
@@ -378,7 +475,7 @@ export const Header = ({ closeModal }) => {
                             </button>
                             {showCart && (
                                 <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg p-4 z-50">
-                                    <ShoppingCart onClose={() => setShowCart(false)} />
+                                    <ShoppingCartPanel onClose={() => setShowCart(false)} />
                                 </div>
                             )}
                         </div>
@@ -387,11 +484,12 @@ export const Header = ({ closeModal }) => {
                         <div className="relative" ref={languageRef}>
                             {showLanguageDropdown && (
                                 <div className="absolute top-full right-0 mt-2 bg-slate-100 shadow-lg rounded-md py-2 w-32 z-50">
-                                    {languageOptions.map(opt => (
+                                    {languageOptions.map((opt) => (
                                         <button
                                             key={opt.value}
                                             className="block w-full text-left px-4 py-2 hover:bg-gray-200"
                                             onClick={() => changeLanguage(opt)}
+                                            type="button"
                                         >
                                             {opt.label}
                                         </button>
@@ -403,56 +501,69 @@ export const Header = ({ closeModal }) => {
                 </div>
 
                 {/* Mobile menu */}
-                <div className={`lg:hidden fixed top-0 left-0 w-full h-full bg-white z-50 transition-all ${showMenu ? 'block' : 'hidden'}`}>
+                <div className={`lg:hidden fixed top-0 left-0 w-full h-full bg-white z-50 transition-all ${showMenu ? "block" : "hidden"}`}>
                     <div className="bg-white shadow-lg py-4 px-6 h-full overflow-auto">
                         <div className="flex justify-between mb-4">
                             <Link to="/" className="font-semibold text-gray-800 hover:bg-gray-300 py-2 px-4 rounded-lg">
                                 <img src={logoSrc} className="h-10" alt="Logo Empresa" />
                             </Link>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown('menu')}>
-                                <RiArrowDropUpLine size={24} />
+                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown("menu")} type="button">
+                                <ChevronUp className="h-6 w-6" />
                             </button>
                         </div>
+
                         <div className="border-b-2 py-2">
                             <button
                                 className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
-                                onClick={() => toggleDropdown('brands')}
+                                onClick={() => toggleDropdown("brands")}
+                                type="button"
                             >
-                                {t('brands')}
-                                {showBrandsDropdown ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
+                                {t("brands")}
+                                {showBrandsDropdown ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                             </button>
                             {showBrandsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    {['arenaHome', 'harbourHome', 'cjmHome', 'flamencoHome', 'bassariHome'].map(key => (
+                                    {["arenaHome", "harbourHome", "cjmHome", "flamencoHome", "bassariHome"].map((key) => (
                                         <button
                                             key={key}
                                             onMouseDown={() => handleLinkClick(`/${key}`)}
                                             className="block py-1 text-gray-700 hover:text-gray-900"
+                                            type="button"
                                         >
-                                            {t(key.replace('Home', '').toLowerCase())}
+                                            {t(key.replace("Home", "").toLowerCase())}
                                         </button>
                                     ))}
                                 </div>
                             )}
                         </div>
+
                         <div className="border-b-2 py-2">
                             <button
                                 className="flex justify-between items-center w-full text-gray-800 font-semibold text-left"
-                                onClick={() => toggleDropdown('products')}
+                                onClick={() => toggleDropdown("products")}
+                                type="button"
                             >
-                                {t('products')}
-                                {showProductsDropdown ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
+                                {t("products")}
+                                {showProductsDropdown ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                             </button>
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <button onMouseDown={() => handleLinkClick('/products')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        {t('allProducts')}
+                                    <button onMouseDown={() => handleLinkClick("/products")} className="block py-1 text-gray-700 hover:text-gray-900" type="button">
+                                        {t("allProducts")}
                                     </button>
-                                    <button onMouseDown={() => handleLinkClick('/products?type=papel')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        {t('paper')}
+                                    <button
+                                        onMouseDown={() => handleLinkClick("/products?type=papel")}
+                                        className="block py-1 text-gray-700 hover:text-gray-900"
+                                        type="button"
+                                    >
+                                        {t("paper")}
                                     </button>
-                                    <button onMouseDown={() => handleLinkClick('/products?type=tela')} className="block py-1 text-gray-700 hover:text-gray-900">
-                                        {t('fabric')}
+                                    <button
+                                        onMouseDown={() => handleLinkClick("/products?type=tela")}
+                                        className="block py-1 text-gray-700 hover:text-gray-900"
+                                        type="button"
+                                    >
+                                        {t("fabric")}
                                     </button>
                                 </div>
                             )}
@@ -462,21 +573,22 @@ export const Header = ({ closeModal }) => {
                         <button
                             onClick={openFilters}
                             className="mt-6 w-full rounded-lg bg-[#26659E] py-3 text-center text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-[#26659E]/60"
+                            type="button"
                         >
-                            {t('filtersButtonLabel', 'Filtros')}
+                            {t("filtersButtonLabel", "Filtros")}
                         </button>
 
-                        <button onClick={() => handleLinkClick('/about')} className="block text-gray-800 font-semibold py-2">
-                            {t('about')}
+                        <button onClick={() => handleLinkClick("/about")} className="block text-gray-800 font-semibold py-2" type="button">
+                            {t("about")}
                         </button>
-                        <button onClick={() => handleLinkClick('/media')} className="block text-gray-800 font-semibold py-2">
-                            {t('media')}
+                        <button onClick={() => handleLinkClick("/media")} className="block text-gray-800 font-semibold py-2" type="button">
+                            {t("media")}
                         </button>
-                        <button onClick={() => handleLinkClick('/contact')} className="block text-gray-800 font-semibold py-2">
-                            {t('contact')}
+                        <button onClick={() => handleLinkClick("/contact")} className="block text-gray-800 font-semibold py-2" type="button">
+                            {t("contact")}
                         </button>
-                        <button onClick={() => handleLinkClick('/contract')} className="block text-gray-800 font-semibold py-2">
-                            {t('contract')}
+                        <button onClick={() => handleLinkClick("/contract")} className="block text-gray-800 font-semibold py-2" type="button">
+                            {t("contract")}
                         </button>
                         {/* <button onClick={() => handleLinkClick('/confeccion')} className="block text-gray-800 font-semibold py-2">
                             {t('confeccion')}

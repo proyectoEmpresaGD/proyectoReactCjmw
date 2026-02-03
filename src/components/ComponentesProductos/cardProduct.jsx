@@ -9,17 +9,20 @@ import CryptoJS from 'crypto-js';
 import { useTranslation } from 'react-i18next';
 import { cdnUrl } from '../../Constants/cdn';
 import { secretKey, itemsPerPage, defaultImageUrl, apiUrl } from '../../Constants/constants';
-import { FaSortAlphaDown, FaSortAlphaUp, FaThLarge, FaThList } from 'react-icons/fa';
 import {
-    FiCompass,
-    FiFilter,
-    FiGrid,
-    FiLayers,
-    FiSearch,
-    FiTag,
-    FiTool,
-    FiType,
-} from 'react-icons/fi';
+    Compass,
+    Filter,
+    Layers,
+    Search,
+    Tag,
+    Wrench,
+    Type,
+    LayoutGrid,
+    List,
+    ArrowDownAZ,
+    ArrowUpAZ,
+} from "lucide-react";
+
 
 const LazyImage = ({ src, alt, className }) => {
     const [visible, setVisible] = useState(false);
@@ -1074,48 +1077,50 @@ export default function CardProduct() {
     const contextIconFor = useCallback((name) => {
         switch (name) {
             case 'search':
-                return <FiSearch className="h-6 w-6" aria-hidden="true" />;
+                return <Search className="h-6 w-6" aria-hidden="true" />;
             case 'brand':
-                return <FiTag className="h-6 w-6" aria-hidden="true" />;
+                return <Tag className="h-6 w-6" aria-hidden="true" />;
             case 'collection':
-                return <FiLayers className="h-6 w-6" aria-hidden="true" />;
+                return <Layers className="h-6 w-6" aria-hidden="true" />;
             case 'fabricType':
-                return <FiType className="h-6 w-6" aria-hidden="true" />;
+                return <Type className="h-6 w-6" aria-hidden="true" />;
             case 'fabricPattern':
-                return <FiGrid className="h-6 w-6" aria-hidden="true" />;
+                return <LayoutGrid className="h-6 w-6" aria-hidden="true" />;
             case 'usage':
-                return <FiCompass className="h-6 w-6" aria-hidden="true" />;
+                return <Compass className="h-6 w-6" aria-hidden="true" />;
             case 'maintenance':
-                return <FiTool className="h-6 w-6" aria-hidden="true" />;
+                return <Wrench className="h-6 w-6" aria-hidden="true" />;
             case 'type':
             case 'filtered':
-                return <FiFilter className="h-6 w-6" aria-hidden="true" />;
+                return <Filter className="h-6 w-6" aria-hidden="true" />;
             default:
-                return <FiLayers className="h-6 w-6" aria-hidden="true" />;
+                return <Layers className="h-6 w-6" aria-hidden="true" />;
         }
     }, []);
+
 
     const tokenIconFor = useCallback((key) => {
         switch (key) {
             case 'brand':
-                return <FiTag className="h-4 w-4" aria-hidden="true" />;
+                return <Tag className="h-4 w-4" aria-hidden="true" />;
             case 'collection':
-                return <FiLayers className="h-4 w-4" aria-hidden="true" />;
+                return <Layers className="h-4 w-4" aria-hidden="true" />;
             case 'fabricType':
-                return <FiType className="h-4 w-4" aria-hidden="true" />;
+                return <Type className="h-4 w-4" aria-hidden="true" />;
             case 'fabricPattern':
-                return <FiGrid className="h-4 w-4" aria-hidden="true" />;
+                return <LayoutGrid className="h-4 w-4" aria-hidden="true" />;
             case 'uso':
-                return <FiCompass className="h-4 w-4" aria-hidden="true" />;
+                return <Compass className="h-4 w-4" aria-hidden="true" />;
             case 'mantenimiento':
-                return <FiTool className="h-4 w-4" aria-hidden="true" />;
+                return <Wrench className="h-4 w-4" aria-hidden="true" />;
             case 'search':
-                return <FiSearch className="h-4 w-4" aria-hidden="true" />;
+                return <Search className="h-4 w-4" aria-hidden="true" />;
             case 'type':
             default:
-                return <FiFilter className="h-4 w-4" aria-hidden="true" />;
+                return <Filter className="h-4 w-4" aria-hidden="true" />;
         }
     }, []);
+
 
     const isListView = viewMode === 'grid2';
 
@@ -1473,7 +1478,7 @@ export default function CardProduct() {
                                     : 'hover:bg-white hover:text-[#26659E]'
                                     }`}
                             >
-                                <FaSortAlphaDown aria-hidden="true" />
+                                <ArrowDownAZ aria-hidden="true" />
                                 <span className="hidden sm:inline">
                                     {t('sortAsc', 'A → Z')}
                                 </span>
@@ -1487,7 +1492,7 @@ export default function CardProduct() {
                                     : 'hover:bg-white hover:text-[#26659E]'
                                     }`}
                             >
-                                <FaSortAlphaUp aria-hidden="true" />
+                                <ArrowUpAZ aria-hidden="true" />
                                 <span className="hidden sm:inline">
                                     {t('sortDesc', 'Z → A')}
                                 </span>
@@ -1506,7 +1511,7 @@ export default function CardProduct() {
                                     : 'hover:bg-white hover:text-[#26659E]'
                                     }`}
                             >
-                                <FaThLarge aria-hidden="true" />
+                                <LayoutGrid aria-hidden="true" />
                                 <span className="hidden sm:inline">
                                     {t('gridView', 'Cuadrícula')}
                                 </span>
@@ -1520,7 +1525,7 @@ export default function CardProduct() {
                                     : 'hover:bg-white hover:text-[#26659E]'
                                     }`}
                             >
-                                <FaThList aria-hidden="true" />
+                                <List aria-hidden="true" />
                                 <span className="hidden sm:inline">
                                     {t('listView', 'Listado')}
                                 </span>

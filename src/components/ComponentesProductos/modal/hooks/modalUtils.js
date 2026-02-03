@@ -1,6 +1,5 @@
 import CryptoJS from 'crypto-js';
-import { v4 as uuidv4 } from 'uuid';
-import html2pdf from 'html2pdf.js';
+import { v4 as uuidv4 } from 'uuid';;
 import { useEffect, useState } from 'react';
 
 export function useFixedPopover(anchorRef, isOpen, preferredOffset = { x: 0, y: 10 }, minPad = 8, estWidth = 260) {
@@ -79,7 +78,7 @@ export function shareUrlFor({ name, url, text }) {
 
 export async function generateProductPdf({ etiquetaEl, filename }) {
     if (!etiquetaEl) return;
-
+    const { default: html2pdf } = await import('html2pdf.js');
     const opts = {
         margin: 0,
         filename,

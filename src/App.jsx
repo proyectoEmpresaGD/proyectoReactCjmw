@@ -1,24 +1,25 @@
-import './App.css'
+import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import Home from "./app/paginaPrincipal.jsx"
-import About from "./app/about/about.jsx"
-import Contacto from "./app/contact/contactanos.jsx"
-import HarbourHome from './app/harbour/pageHarbour.jsx'
-import ArenaHome from "./app/arena/pageArena.jsx"
-import CjmHome from "./app/cjm/pageCjm.jsx"
-import BassariHome from "./app/bassari/pageBassari.jsx"
-import FlamencoHome from './app/flamenco/pageFlamenco.jsx'
-import BlogHome from './app/blog/pageBlog.jsx'
-import ScrollToTop from './components/ScrollToTop.jsx'
-import Products from "./app/products/products.jsx"
-import Usages from './app/usages/page.jsx'
-import GeocodingService from "./components/ComponentesContact/map.jsx"
-import CookieConsent from './components/ComponenetesCookies/CookieConsent.jsx';
-import Contract from "./app/contract/PaginaContract.jsx"
-import MediaPage from './app/media/pageMedia.jsx';
-import ColeccionesMarcaPage from './components/colecciones/pageColeccionesMarca.jsx';
-import Confeccion from "./components/calculadora/confeccion.jsx"
 
+import Home from "./app/paginaPrincipal.jsx";
+import About from "./app/about/about.jsx";
+import Contacto from "./app/contact/contactanos.jsx";
+import HarbourHome from "./app/harbour/pageHarbour.jsx";
+import ArenaHome from "./app/arena/pageArena.jsx";
+import CjmHome from "./app/cjm/pageCjm.jsx";
+import BassariHome from "./app/bassari/pageBassari.jsx";
+import FlamencoHome from "./app/flamenco/pageFlamenco.jsx";
+import BlogHome from "./app/blog/pageBlog.jsx";
+import Products from "./app/products/products.jsx";
+import Usages from "./app/usages/page.jsx";
+import GeocodingService from "./components/ComponentesContact/map.jsx";
+import Contract from "./app/contract/PaginaContract.jsx";
+import MediaPage from "./app/media/pageMedia.jsx";
+import ColeccionesMarcaPage from "./components/colecciones/pageColeccionesMarca.jsx";
+import Confeccion from "./components/calculadora/confeccion.jsx";
+
+import ScrollToTop from "./components/ScrollToTop.jsx";
+import CookieConsent from "./components/ComponenetesCookies/CookieConsent.jsx";
 
 function App() {
   return (
@@ -44,7 +45,7 @@ function App() {
         <Route path="/colecciones/:marca" element={<ColeccionesMarcaPage />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

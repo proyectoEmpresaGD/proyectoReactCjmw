@@ -3,9 +3,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMarca } from '../../components/MarcaContext';
 import {
-    FaTimes, FaSearch, FaTrashAlt, FaChevronDown, FaChevronUp,
-    FaSpinner, FaChevronRight, FaChevronLeft, FaListUl, FaCheck, FaMagic,
-} from 'react-icons/fa';
+    X,
+    Search,
+    Trash2,
+    ChevronDown,
+    ChevronUp,
+    Loader2,
+    ChevronRight,
+    ChevronLeft,
+    List,
+    Check,
+    Sparkles,
+} from "lucide-react";
+
 import { cdnUrl } from '../../Constants/cdn';
 import { CATEGORY_CONFIG, fetchCategoryPreview } from '../../components/filters/categoryConfig';
 
@@ -889,7 +899,7 @@ export default function FilterPanel({
     // UI helpers
     const renderSearchInput = (placeholder, value, onChange) => (
         <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
                 type="text"
                 placeholder={placeholder}
@@ -944,14 +954,14 @@ export default function FilterPanel({
                         <img src={cdnUrl(imageUrl)} alt={label} className="h-full w-full object-cover" />
                     ) : (
                         <div className="flex h-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-[#0f172a]/10 via-white to-[#60a5fa]/15 px-4 text-center">
-                            {isLoading ? <FaSpinner className="animate-spin text-xl text-[#1F4F8D]/70" /> : <span className="text-xs font-medium text-slate-500">{t('categoryCard.empty')}</span>}
+                            {isLoading ? <Loader2 className="animate-spin text-xl text-[#1F4F8D]/70" /> : <span className="text-xs font-medium text-slate-500">{t('categoryCard.empty')}</span>}
                         </div>
                     )}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/10 to-slate-900/60" />
                     {isSelected && (
                         <>
                             <span className="pointer-events-none absolute right-3 top-3 sm:right-4 sm:top-4 inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white text-[#1E3A8A] shadow-lg shadow-slate-900/25">
-                                <FaCheck />
+                                <Check />
                             </span>
                             <span className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-[28px] border-4 border-[#1E3A8A]/70" />
                         </>
@@ -1034,7 +1044,7 @@ export default function FilterPanel({
                                 <div className="min-w-0">
                                     <div className="flex items-center gap-2">
                                         <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 ring-1 ring-blue-100 px-2 py-0.5 text-[11px] font-semibold">
-                                            <FaMagic className="opacity-80" /> {t('hero.badge', 'Filtro inteligente')}
+                                            <Sparkles className="opacity-80" /> {t('hero.badge', 'Filtro inteligente')}
                                         </span>
                                         <span className="hidden sm:inline-block text-[11px] text-slate-500">{t('hero.tagline', 'Tu panel creativo a pantalla completa')}</span>
                                     </div>
@@ -1045,11 +1055,11 @@ export default function FilterPanel({
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button onClick={clearAll} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/90 px-3 py-2 text-[12px] sm:text-[13px] font-semibold text-slate-600 shadow-sm hover:-translate-y-0.5 transition">
-                                        <FaTrashAlt className="text-xs" />
+                                        <Trash2 className="text-xs" />
                                         {t('clearAll')}
                                     </button>
                                     <button onClick={close} aria-label={t('aria.closePanel')} className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg shadow-slate-900/30 hover:scale-105 transition">
-                                        <FaTimes />
+                                        <X />
                                     </button>
                                 </div>
                             </div>
@@ -1061,7 +1071,7 @@ export default function FilterPanel({
                                         <span key={chip.id} className="group inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-[12px] text-slate-700 ring-1 ring-white/70 shadow-sm">
                                             {chip.label}
                                             <button onClick={chip.onRemove} aria-label={`Quitar ${chip.label}`} className="text-slate-400 hover:text-slate-700">
-                                                <FaTimes className="text-[10px]" />
+                                                <X className="text-[10px]" />
                                             </button>
                                         </span>
                                     ))}
@@ -1108,7 +1118,7 @@ export default function FilterPanel({
                                                         <div className="flex items-center justify-between">
                                                             <p className="text-[12px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.35em] text-slate-500">{section.label}</p>
                                                             <span className="hidden items-center gap-1 text-[11px] text-slate-400 sm:flex">
-                                                                <FaChevronRight className="text-[10px]" />
+                                                                <ChevronRight className="text-[10px]" />
                                                                 {t('categoryGallery.scrollHint')}
                                                             </span>
                                                         </div>
@@ -1132,14 +1142,14 @@ export default function FilterPanel({
                                                                     <div className="pointer-events-auto -ml-6">
                                                                         {state.showLeft && (
                                                                             <button type="button" onClick={() => scrollGallery(section.groupKey, -1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-md ring-1 ring-white/70 transition hover:bg-white" aria-label={t('categoryGallery.navPrev')}>
-                                                                                <FaChevronLeft />
+                                                                                <ChevronLeft />
                                                                             </button>
                                                                         )}
                                                                     </div>
                                                                     <div className="pointer-events-auto -mr-6">
                                                                         {state.showRight && (
                                                                             <button type="button" onClick={() => scrollGallery(section.groupKey, 1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-md ring-1 ring-white/70 transition hover:bg-white" aria-label={t('categoryGallery.navNext')}>
-                                                                                <FaChevronRight />
+                                                                                <ChevronRight />
                                                                             </button>
                                                                         )}
                                                                     </div>
@@ -1182,7 +1192,7 @@ export default function FilterPanel({
                                                                         </div>
                                                                         {active && (
                                                                             <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-blue-600 text-white shadow">
-                                                                                <FaCheck />
+                                                                                <Check />
                                                                             </span>
                                                                         )}
                                                                     </div>
@@ -1215,7 +1225,7 @@ export default function FilterPanel({
                                 {quickNavItems.length > 0 && (
                                     <div className="mb-4 hidden sm:block">
                                         <div className="mb-2 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-500">
-                                            <FaListUl className="text-slate-400" />
+                                            <List className="text-slate-400" />
                                             {t('quicknav.title')}
                                         </div>
                                         <div className="flex flex-wrap gap-2">
@@ -1256,11 +1266,11 @@ export default function FilterPanel({
                                                 <div key={section.key} ref={(node) => registerFilterSection(section.key, node)} className="scroll-mt-28 rounded-[24px] sm:rounded-[28px] border border-white/70 bg-gradient-to-b from-white/90 to-slate-50/80 shadow-sm shadow-slate-900/10 backdrop-blur-md">
                                                     <button onClick={() => setOpenSections((prev) => ({ ...prev, [section.key]: !prev[section.key] }))} className="flex w-full items-center justify-between px-4 sm:px-5 py-3 sm:py-4">
                                                         <span className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] sm:tracking-[0.25em] text-slate-600">
-                                                            <FaListUl className="text-blue-500/70" />
+                                                            <List className="text-blue-500/70" />
                                                             {section.label}
                                                             {collectionsSel.length > 0 && (<span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700">{collectionsSel.length}</span>)}
                                                         </span>
-                                                        {openSections[section.key] ? <FaChevronUp className="text-slate-500" /> : <FaChevronDown className="text-slate-500" />}
+                                                        {openSections[section.key] ? <ChevronUp className="text-slate-500" /> : <ChevronDown className="text-slate-500" />}
                                                     </button>
 
                                                     {openSections[section.key] && (
@@ -1318,11 +1328,11 @@ export default function FilterPanel({
                                             <div key={section.key} ref={(node) => registerFilterSection(section.key, node)} className="scroll-mt-28 rounded-[24px] sm:rounded-[28px] border border-white/70 bg-gradient-to-b from-white/90 to-slate-50/80 shadow-sm shadow-slate-900/10 backdrop-blur-md">
                                                 <button onClick={() => setOpenSections((prev) => ({ ...prev, [section.key]: !prev[section.key] }))} className="flex w-full items-center justify-between px-4 sm:px-5 py-3 sm:py-4">
                                                     <span className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] sm:tracking-[0.25em] text-slate-600">
-                                                        <FaListUl className="text-blue-500/70" />
+                                                        <List className="text-blue-500/70" />
                                                         {section.label}
                                                         {section.sel.length > 0 && (<span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700">{section.sel.length}</span>)}
                                                     </span>
-                                                    {openSections[section.key] ? <FaChevronUp className="text-slate-500" /> : <FaChevronDown className="text-slate-500" />}
+                                                    {openSections[section.key] ? <ChevronUp className="text-slate-500" /> : <ChevronDown className="text-slate-500" />}
                                                 </button>
 
                                                 {openSections[section.key] && (
@@ -1355,7 +1365,7 @@ export default function FilterPanel({
                                     <div className="scroll-mt-28 rounded-[24px] sm:rounded-[28px] border border-white/70 bg-gradient-to-b from-white/90 to-slate-50/80 shadow-sm shadow-slate-900/10 backdrop-blur-md" ref={(node) => registerFilterSection('martindale', node)}>
                                         <button onClick={() => setOpenSections((p) => ({ ...p, martindale: !p.martindale }))} className="flex w-full items-center justify-between px-4 sm:px-5 py-3 sm:py-4">
                                             <span className="text-sm font-semibold uppercase tracking-[0.18em] sm:tracking-[0.25em] text-slate-600">{t('categories.martindale')}</span>
-                                            {openSections.martindale ? <FaChevronUp className="text-slate-500" /> : <FaChevronDown className="text-slate-500" />}
+                                            {openSections.martindale ? <ChevronUp className="text-slate-500" /> : <ChevronDown className="text-slate-500" />}
                                         </button>
 
                                         {openSections.martindale && (

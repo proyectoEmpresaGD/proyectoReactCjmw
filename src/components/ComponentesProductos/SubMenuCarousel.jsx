@@ -1,7 +1,7 @@
 // src/app/products/SubMenuCarousel.jsx
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaTimes } from 'react-icons/fa';
+import { X } from "lucide-react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cdnUrl } from '../../Constants/cdn';
 import { fetchCategoryPreview, groupCategories } from '../filters/categoryConfig';
@@ -266,7 +266,7 @@ export default function SubMenuCarousel({ onFilterClick, type = 'tela', activeCa
                         onClick={() => setOpen(false)}
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 text-white font-semibold shadow-md shadow-slate-500/40 hover:bg-slate-800 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-700"
                     >
-                        <FaTimes />
+                        <X />
                         <span className="text-sm">
                             {t('closeButton', 'Cerrar filtros')}
                         </span>

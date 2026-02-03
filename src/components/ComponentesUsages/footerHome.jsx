@@ -1,4 +1,4 @@
-import { RiInstagramLine, RiFacebookLine, RiTwitterXFill } from "react-icons/ri";
+import { Instagram, Facebook, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { socialIcons, qrCodeSrc, empresaLinks, politicasLinks, LOGO_URL, contactText, copyrightText } from "../../Constants/constants";
@@ -37,13 +37,13 @@ const FooterHome = () => {
                     <p className="font-semibold mt-2">Síguenos en</p>
                     <div className="flex space-x-4 mt-4 text-3xl">
                         <a href={socialIcons[0].href} className="hover:text-primary hover:scale-110 transition-all">
-                            <RiInstagramLine />
+                            <Instagram />
                         </a>
                         <a href={socialIcons[1].href} className="hover:text-primary hover:scale-110 transition-all">
-                            <RiFacebookLine />
+                            <Facebook />
                         </a>
                         <a href={socialIcons[2].href} className="hover:text-primary hover:scale-110 transition-all">
-                            <RiTwitterXFill />
+                            <Twitter />
                         </a>
                     </div>
                 </div>

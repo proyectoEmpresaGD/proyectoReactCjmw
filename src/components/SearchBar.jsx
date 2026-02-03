@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
-import { RiSearchLine, RiCloseLine } from 'react-icons/ri';
+import { Search, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { defaultImageUrl } from '../Constants/constants';
 
@@ -287,7 +287,7 @@ const SearchBar = ({ closeSearchBar }) => {
     return (
         <div className="relative w-full max-w-md" ref={wrapperRef}>
             <div className="flex items-center bg-gray-50 border border-gray-300 rounded-full px-4 py-2 shadow-sm">
-                <RiSearchLine className="text-gray-500 mr-2" size={20} />
+                <Search className="text-gray-500 mr-2" size={20} />
                 <input
                     ref={inputRef}
                     type="text"
@@ -305,7 +305,7 @@ const SearchBar = ({ closeSearchBar }) => {
                 />
                 {query && (
                     <button onClick={() => setQuery('')} className="focus:outline-none" aria-label={t('clear')}>
-                        <RiCloseLine className="text-gray-500" size={20} />
+                        <X className="text-gray-500" size={20} />
                     </button>
                 )}
             </div>

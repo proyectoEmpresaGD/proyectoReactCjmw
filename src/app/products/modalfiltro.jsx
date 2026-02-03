@@ -1,6 +1,6 @@
 // src/components/FilterPanel.jsx
 import { useState, useEffect } from 'react';
-import { FaChevronRight, FaTimes } from 'react-icons/fa';
+import { ChevronRight, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
 const BRAND_NAMES = { ARE: 'Arena', HAR: 'Harbour', FLA: 'Flamenco', CJM: 'CJM', BAS: 'Bassari' };
@@ -131,7 +131,7 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                 onClick={() => setIsOpen(o => !o)}
                 className="p-3 bg-black bg-opacity-60 text-white rounded-full shadow-lg hover:bg-opacity-80 transition"
             >
-                <FaChevronRight className={`text-2xl transform transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronRight className={`text-2xl transform transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
         </div>
 
@@ -142,7 +142,7 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
                 <header className="flex items-center justify-between p-4 border-b">
                     <h2 className="text-xl font-semibold">{t('filters')}</h2>
                     <button onClick={() => setIsOpen(false)}>
-                        <FaTimes className="w-5 h-5 text-gray-600" />
+                        <X className="w-5 h-5 text-gray-600" />
                     </button>
                 </header>
 

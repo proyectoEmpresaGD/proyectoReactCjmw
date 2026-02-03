@@ -3,6 +3,8 @@ import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+const DEFAULT_NAMESPACES = ['common', 'header', 'footer', 'cookieConsent'];
+
 i18n
     .use(HttpBackend)
     .use(LanguageDetector)
@@ -10,23 +12,12 @@ i18n
     .init({
         fallbackLng: 'en',
         supportedLngs: ['es', 'en', 'fr'],
-        ns: [
-            "about", "blog", "buttonFiltro", "cardProduct", "cart", "clients", "coleccionesMarcas",
-            "collectionCarousel", "common", "contacts", "contract", "cookieConsent", "filterPanel",
-            "filterPanelNew", "footer", "geocodingService", "header", "instructions", "media", "newCollection",
-            "notificationPopup", "pageArena", "pageBassari", "pageFlamenco", "pageHarbour",
-            "productModal", "productPage", "sameStyleCarousel", "search", "shareButton",
-            "subMenuCarousel", "works", "pageColeccionesMarca", "puffCalculator", "curtainChat", "quotePdf"
-        ],
         defaultNS: 'common',
-        backend: {
-            loadPath: '/locales/{{lng}}/{{ns}}.json'
-        },
-        detection: {
-            order: ['navigator'],
-            caches: []
-        },
-        interpolation: { escapeValue: false }
+        ns: DEFAULT_NAMESPACES,
+        backend: { loadPath: '/locales/{{lng}}/{{ns}}.json' },
+        detection: { order: ['navigator'], caches: [] },
+        interpolation: { escapeValue: false },
+        react: { useSuspense: true },
     });
 
 export default i18n;

@@ -11,7 +11,7 @@ function toNumber(v) {
     return Number.isFinite(n) ? n : NaN;
 }
 
-const TOTAL_STEPS = 4; // 0 papel, 1 ancho, 2 alto, 3 resumen
+const TOTAL_STEPS = 4;
 const W_MIN_CM = 30;
 const H_MIN_CM = 30;
 

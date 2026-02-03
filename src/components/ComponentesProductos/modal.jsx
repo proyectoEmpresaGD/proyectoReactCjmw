@@ -1,16 +1,12 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-
-import ModalMapa from "./modalMapa";
 import Footer from "../../components/footer";
 import Filtro from '../../app/products/buttonFiltro';
 import CarruselMismoEstilo from "./CarruselEstiloProducto";
 import CarruselColeccion from "./CarruselProductosColeccion";
-
 import { CartProvider, useCart } from "../CartContext";
 import { useMarca } from '../MarcaContext';
-
 import {
     defaultImageUrlModalProductos,
     mantenimientoImages,
@@ -21,8 +17,14 @@ import {
 
 // Share icons
 import { Share2 } from 'lucide-react';
-import { FaFacebook, FaWhatsapp, FaLinkedin, FaTwitter, FaEnvelope } from 'react-icons/fa';
-import { SiGmail } from 'react-icons/si';
+import {
+    Facebook,
+    Linkedin,
+    Twitter,
+    Mail,
+    MessageCircle,
+} from "lucide-react";
+
 
 // NUEVOS COMPONENTES
 import ProductImageViewer from './modal/ProductImageViewer';
@@ -383,7 +385,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
             <div className="flex flex-col gap-3">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-                        {selectedProduct?.nombre || t('noProductName')}
+                        {selectedProduct?.codprodu || t('noProductName')}
                     </h1>
                     {selectedProduct?.tonalidad && (
                         <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] text-gray-500">
@@ -455,12 +457,12 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                 className="z-50 flex max-w-[90vw] flex-wrap items-center gap-2 rounded-xl bg-white p-2 sm:p-3 shadow-lg border border-gray-100"
                                             >
                                                 {[
-                                                    { name: 'Facebook', color: '#1877F2', icon: FaFacebook },
-                                                    { name: 'Twitter', color: '#000000', icon: FaTwitter },
-                                                    { name: 'WhatsApp', color: '#25D366', icon: FaWhatsapp },
-                                                    { name: 'LinkedIn', color: '#0A66C2', icon: FaLinkedin },
-                                                    { name: 'Gmail', color: '#EA4335', icon: SiGmail },
-                                                    { name: 'Email', color: '#334155', icon: FaEnvelope },
+                                                    { name: 'Facebook', color: '#1877F2', icon: Facebook },
+                                                    { name: 'Twitter', color: '#000000', icon: Twitter },
+                                                    { name: 'WhatsApp', color: '#25D366', icon: MessageCircle },
+                                                    { name: 'LinkedIn', color: '#0A66C2', icon: Linkedin },
+                                                    { name: 'Gmail', color: '#EA4335', icon: Mail },
+                                                    { name: 'Email', color: '#334155', icon: Mail },
                                                 ].map((s, i) => (
                                                     <a
                                                         key={i}
