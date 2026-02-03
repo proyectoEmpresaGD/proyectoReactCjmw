@@ -59,7 +59,7 @@ export default function Confeccion() {
                                 {
                                     key: 'wallpaper',
                                     title: 'Calcular rollos de papel pintado',
-                                    bgUrl: 'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/GOTLAND/DSC00156%20RIVIERA.jpg',
+                                    bgUrl: 'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/CJM%20AMBIENTE/COLONY%20WALLPAPER/Amb%20Colony%2002Miniatura.jpg',
                                     iconUrl: '',
                                     disabled: false
                                 },

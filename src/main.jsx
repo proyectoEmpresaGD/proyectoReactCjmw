@@ -7,11 +7,9 @@ import App from './App.jsx';
 import { MarcaProvider } from './components/MarcaContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Suspense fallback={<div>Cargando…</div>}>
-    <HashRouter>
-      <MarcaProvider>
-        <App />
-      </MarcaProvider>
-    </HashRouter>
-  </Suspense >
+  <HashRouter>
+    <MarcaProvider>
+      <App />
+    </MarcaProvider>
+  </HashRouter>
 );

@@ -1,10 +1,9 @@
 // src/app/products/buttonFiltro.jsx
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FaSlidersH } from 'react-icons/fa';
+import { SlidersHorizontal } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import FilterPanel from './FilterPanel';
-
 const EMPTY_FILTERS = {
     brand: [],
     color: [],
@@ -194,7 +193,7 @@ export default function FiltroButton({ clearFiltersCallback }) {
                     className="flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#26659E] transition"
                     aria-label={t('openButton', 'Abrir filtros')}
                 >
-                    <FaSlidersH className="w-5 h-5 text-gray-700" />
+                    <SlidersHorizontal className="w-5 h-5 text-gray-700" />
                     {hasAnyFilter && (
                         <span className="absolute top-1 right-1 w-2 h-2 bg-[#26659E] rounded-full" />
                     )}

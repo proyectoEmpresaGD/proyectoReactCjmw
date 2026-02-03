@@ -2,7 +2,7 @@
 // Presupuesto cortinas/puf con imágenes embebidas (Base64) y resumen en 2 columnas.
 // Usa siempre el proxy existente en /api/proxy (ya configurado en tu backend).
 
-import html2pdf from 'html2pdf.js';
+// html2pdf se carga on-demand (reduce bundle inicial)
 import i18n from '../i18n'; // <--- añadido para i18n en PDF
 const tPdf = (k, opts) => i18n.t(k, { ns: 'quotePdf', ...opts });
 
@@ -891,7 +891,7 @@ async function buildAndDownloadPDF({ title, body, filename, logoDataUrl, ref, to
   `;
 
   document.body.appendChild(wrapper);
-
+  const { default: html2pdf } = await import('html2pdf.js');
   const opts = {
     margin: 0,
     filename,

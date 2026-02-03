@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Header } from "../../components/header";
 import Footer from "../../components/footer";
 import Carrusel from "../../components/ComponentesHome/carrusel";
-import NewCollection from "../../components/ComponentesBrands/cardNewCollection";
 import { CartProvider } from "../../components/CartContext";
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas";
 import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carruselColecionesNuevas";
@@ -49,14 +48,14 @@ function BassariHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/BASSARI/BASSARI%20TRIBAL%20DANDE%20ARGILE%20(COJ%C3%8DN%20PEQUE%C3%91O)_27_1.webp",
     ];
 
-    const imagesNewCollections = [
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20BEDICK%20VERT%20(CORTINA)_4_11zon_9_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE_11zon_11zon_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20KARABANE%20ARGILE(1).jpg",
-    ];
+    // const imagesNewCollections = [
+    //     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20BEDICK%20VERT%20(CORTINA)_4_11zon_9_11zon.webp",
+    //     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE_11zon_11zon_11zon.webp",
+    //     "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20KARABANE%20ARGILE(1).jpg",
+    // ];
 
-    const titles = ["BEDICK", "ASTEROIDE", "KARABANE"];
-    const CodProduBas = ["BAS00058", "BAS00241", "BAS00128"];
+    // const titles = ["BEDICK", "ASTEROIDE", "KARABANE"];
+    // const CodProduBas = ["BAS00058", "BAS00241", "BAS00128"];
 
     // const brochures = [
     //     {
@@ -99,7 +98,7 @@ function BassariHome() {
                         titulo={t("newCollections.voyage.title")}
                         imagenFondo={images[0]}
                         descripcion={t("newCollections.voyage.description")}
-
+                    // onDiscoverCollections={() => navigate("/colecciones/BAS")}
                     />
                     <CarruselProductosColeccionEspecifica
                         coleccion="LE VOYAGE DES WOLOF"
@@ -124,7 +123,7 @@ function BassariHome() {
                         titulo={t("newCollections.essences.title")}
                         imagenFondo={images[1]}
                         descripcion={t("newCollections.essences.description")}
-
+                    // onDiscoverCollections={() => navigate("/colecciones/BAS")}
                     />
                     <CarruselProductosColeccionEspecifica
                         coleccion="ESSENCES DU NIL"
@@ -173,3 +172,5 @@ function BassariHome() {
 }
 
 export default BassariHome;
+
+

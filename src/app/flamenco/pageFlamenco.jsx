@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Header } from "../../components/header";
 import Footer from "../../components/footer";
 import Carrusel from "../../components/ComponentesHome/carrusel";
-import NewCollection from "../../components/ComponentesBrands/cardNewCollection";
 import { CartProvider } from "../../components/CartContext";
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas";
 import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carruselColecionesNuevas";
@@ -117,6 +116,7 @@ function FlamencoHome() {
                         className="h-20 md:h-32 xl:h-40"
                         src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png"
                         alt="Logo Flamenco"
+
                     />
                 </div>
 
@@ -137,3 +137,5 @@ function FlamencoHome() {
 }
 
 export default FlamencoHome;
+
+
