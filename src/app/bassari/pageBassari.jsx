@@ -67,7 +67,7 @@ function BassariHome() {
     //         description: t('BrouchureBassari'),
     //     },
     // ];
-
+    //Prueba
     const videoDesktop =
         "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/BASS_PORTADAS_REELS-06.mp4";
     const videoMobile =
