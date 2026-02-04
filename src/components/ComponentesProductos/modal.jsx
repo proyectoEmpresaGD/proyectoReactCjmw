@@ -385,7 +385,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
             <div className="flex flex-col gap-3">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-                        {selectedProduct?.codprodu || t('noProductName')}
+                        {selectedProduct?.nombre || t('noProductName')}
                     </h1>
                     {selectedProduct?.tonalidad && (
                         <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] text-gray-500">
