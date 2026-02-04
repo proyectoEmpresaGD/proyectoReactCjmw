@@ -50,8 +50,6 @@ export const Header = ({ closeModal }) => {
     const location = useLocation();
     const { itemCount } = useCart();
     const { marcaActiva, setMarcaActiva } = useMarca();
-    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-    const lastScrollY = useRef(0);
 
     // Dropdown states
     const [showCart, setShowCart] = useState(false);
@@ -103,92 +101,6 @@ export const Header = ({ closeModal }) => {
         logosByBrand: brandLogos,
         fallbackLogo: defaultLogo,
     });
-
-    useEffect(() => {
-        const onAppScroll = (e) => {
-            // Solo desktop
-            if (window.innerWidth < 1024) return;
-
-            const currentY = Number(e?.detail?.y ?? 0);
-            const scrollingDown = currentY > lastScrollY.current;
-
-            const hasBlockingUI =
-                showSearchBar ||
-                showUserDropdown ||
-                showBrandsDropdown ||
-                showProductsDropdown ||
-                showLanguageDropdown ||
-                showCart ||
-                showMenu;
-
-            if (hasBlockingUI) {
-                setIsHeaderVisible(true);
-                lastScrollY.current = currentY;
-                return;
-            }
-
-            if (scrollingDown && currentY > 80) setIsHeaderVisible(false);
-            else setIsHeaderVisible(true);
-
-            lastScrollY.current = currentY;
-        };
-
-        window.addEventListener("app:scroll", onAppScroll);
-        return () => window.removeEventListener("app:scroll", onAppScroll);
-    }, [
-        showSearchBar,
-        showUserDropdown,
-        showBrandsDropdown,
-        showProductsDropdown,
-        showLanguageDropdown,
-        showCart,
-        showMenu,
-    ]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            // Solo desktop
-            if (window.innerWidth < 1024) return;
-
-            const currentScrollY = window.scrollY;
-            const scrollingDown = currentScrollY > lastScrollY.current;
-
-            const hasBlockingUI =
-                showSearchBar ||
-                showUserDropdown ||
-                showBrandsDropdown ||
-                showProductsDropdown ||
-                showLanguageDropdown ||
-                showCart ||
-                showMenu;
-
-            // Si hay overlays abiertos, no ocultar
-            if (hasBlockingUI) {
-                setIsHeaderVisible(true);
-                lastScrollY.current = currentScrollY;
-                return;
-            }
-
-            if (scrollingDown && currentScrollY > 80) {
-                setIsHeaderVisible(false);
-            } else {
-                setIsHeaderVisible(true);
-            }
-
-            lastScrollY.current = currentScrollY;
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [
-        showSearchBar,
-        showUserDropdown,
-        showBrandsDropdown,
-        showProductsDropdown,
-        showLanguageDropdown,
-        showCart,
-        showMenu,
-    ]);
 
     const closeAllDropdowns = useCallback(() => {
         setShowBrandsDropdown(false);
@@ -307,7 +219,7 @@ export const Header = ({ closeModal }) => {
                 className={`fixed top-0 left-0 w-full z-40
                     bg-white opacity-80 hover:opacity-100
                     transition-transform duration-500 ease-in-out
-                    ${isHeaderVisible ? "translate-y-0" : "-translate-y-full"}
+                    translate-y-0
                     ${isHovered ||
                         showSearchBar ||
                         showUserDropdown ||

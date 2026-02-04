@@ -211,7 +211,7 @@ const CarruselHome = ({
                 p-4
                 ${isMobile
                                     ? isBassariOrFlamenco
-                                        ? "top-1/2 -translate-y-1/2"
+                                        ? "bottom-[0] -translate-y-1/2"
                                         : "bottom-[15%]"
                                     : "bottom-[5%]"
                                 }

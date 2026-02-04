@@ -39,6 +39,12 @@ function BassariHome() {
     const marca = "BAS";
 
     const images = [
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_ANCESTRAL3.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASSA_ESSENCESDUNIL_YUBA4.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_LEVOYAGEDESWOLOFS%20LA%20CROIX.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_YUBA1.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASSARI%20LE%20VOYAGE%20DES%20WOLOF%20ZOSER%202.jpg",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/CJM_BASSARI_2026-1-2_DETALLE%20ESSENCES%20DU%20NIL.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/07_IMAGENES%20PAGINA%20COLECCIONES%20NUEVAS%20/BASSARI/LE%20VOYAGE%20DES%20WOLOF%20/BASS_LIBRO_LEVOYAGEDESWOLOFS_34X34%2B3MM_SANGRE_resultado%20(1)_resultado.webp",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/07_IMAGENES%20PAGINA%20COLECCIONES%20NUEVAS%20/BASSARI/ESSENCES%20DU%20NIL/BASS_LIBRO_ESSENCES_DU_NIL_44X44%2B3MM_SANGRE_resultado_resultado.webp",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/BASSARI/BASSARI%20KASSUMAY%20IWOL%20ARGILE%20(COLCHA)%20WOLOF%20SAVANE%20(CORTINA)%20LOMPOUL%20ARGILE%20(COJINES%20TRASEROS)%20KAOLACK%20ARGILE(COJINES%20DELANTEROS)_35_11zon_13_11zon.webp",
@@ -68,18 +74,18 @@ function BassariHome() {
     //     },
     // ];
     //Prueba2
-    const videoDesktop =
-        "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/BASS_PORTADAS_REELS-06.mp4";
-    const videoMobile =
-        "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/MOVIL/BASS_POST_11.mp4";
+    // const videoDesktop =
+    //     "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/BASS_PORTADAS_REELS-06.mp4";
+    // const videoMobile =
+    //     "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/MOVIL/BASS_POST_11.mp4";
 
-    const [videoIntro, setVideoIntro] = useState(videoDesktop);
+    // const [videoIntro, setVideoIntro] = useState(videoDesktop);
 
-    useEffect(() => {
-        if (typeof window !== "undefined" && window.innerWidth <= 768) {
-            setVideoIntro(videoMobile);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (typeof window !== "undefined" && window.innerWidth <= 768) {
+    //         setVideoIntro(videoMobile);
+    //     }
+    // }, []);
 
     const slides = [
         {
@@ -137,7 +143,8 @@ function BassariHome() {
     return (
         <CartProvider>
             <Header />
-            <Carrusel images={shuffleArray([...images])} videoSrc={videoIntro} />
+            {/* Esto aqui para que funcione videoSrc={videoIntro} */}
+            <Carrusel images={shuffleArray([...images])} />
             {/* <NotificationPopup brochures={brochures} /> */}
             <div className="flex items-center justify-center h-full mt-[2%]">
                 <img
