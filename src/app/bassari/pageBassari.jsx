@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Header } from "../../components/header";
 import Footer from "../../components/footer";
 import Carrusel from "../../components/ComponentesHome/carrusel";
@@ -10,6 +10,10 @@ import PresentacionColeccion from "../../components/ComponentesBrands/ultimaCole
 import Modal from "../../components/ComponentesProductos/modal";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { imagenesColecciones } from "../../Constants/constants";
+import { coleccionConfigByName } from "../../Constants/constants";
+
+const normalizeColeccionName = (name) => String(name || "").trim().toUpperCase();
 
 function BassariHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -28,15 +32,68 @@ function BassariHome() {
         setModalAbierta(true);
     };
 
-    function shuffleArray(array) {
+    const shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
-    }
+    };
 
     const marca = "BAS";
+
+    const buildColeccionUrl = (coleccion, params = {}) => {
+        const sp = new URLSearchParams();
+
+        if (params.introTop) sp.set("introTop", params.introTop);
+        if (params.introBottom) sp.set("introBottom", params.introBottom);
+        if (params.introBrouchure) sp.set("introBrouchure", params.introBrouchure);
+        if (params.brochureImage) sp.set("brochureImage", params.brochureImage);
+        if (params.brochurePdf) sp.set("brochurePdf", params.brochurePdf);
+        if (params.heroImage) sp.set("heroImage", params.heroImage);
+
+        if (Array.isArray(params.images) && params.images.length > 0) {
+            sp.set("images", JSON.stringify(params.images));
+        }
+
+        const qs = sp.toString();
+        return `/coleccion/${encodeURIComponent(coleccion)}${qs ? `?${qs}` : ""}`;
+    };
+
+    // =========================
+    // Builder único de params (state->query)
+    // =========================
+    const buildColeccionParams = useCallback(
+        (collectionName) => {
+            const key = normalizeColeccionName(collectionName);
+            const cfg = coleccionConfigByName[key];
+            if (!cfg) return null;
+
+            const imgs = imagenesColecciones?.[cfg.imagesKey] || [];
+            const heroImage = imgs?.[cfg.heroIndex] || null;
+            const brochureImage = imgs?.[cfg.brochureImageIndex] || null;
+
+            return {
+                introTop: t(cfg.introTopKey),
+                introBottom: t(cfg.introBottomKey),
+                introBrouchure: t(cfg.introBrouchureKey),
+                heroImage,
+                images: imgs,
+                brochureImage,
+                brochurePdf: cfg.brochurePdf,
+            };
+        },
+        [t]
+    );
+
+    const goToColeccion = useCallback(
+        (collectionName) => {
+            navigate(`/coleccion/${encodeURIComponent(collectionName)}`);
+        },
+        [navigate]
+    );
+
+
 
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_ANCESTRAL3.jpg",
@@ -54,98 +111,69 @@ function BassariHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/BASSARI/BASSARI%20TRIBAL%20DANDE%20ARGILE%20(COJ%C3%8DN%20PEQUE%C3%91O)_27_1.webp",
     ];
 
-    // const imagesNewCollections = [
-    //     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20BEDICK%20VERT%20(CORTINA)_4_11zon_9_11zon.webp",
-    //     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE_11zon_11zon_11zon.webp",
-    //     "https://bassari.eu/ImagenesTelasCjmw/Carruseles/BASSARI/KASSUMAY/baja%20calidad/BASSARI%20KASSUMAY%20KARABANE%20ARGILE(1).jpg",
-    // ];
+    // Helpers para obtener imagen de fondo de la colección (sin repetir)
+    const getColeccionCover = useCallback((collectionName) => {
+        const key = normalizeColeccionName(collectionName);
+        const cfg = coleccionConfigByName[key];
+        if (!cfg) return null;
+        const imgs = imagenesColecciones?.[cfg.imagesKey] || [];
+        return imgs?.[cfg.heroIndex] || null;
+    }, []);
 
-    // const titles = ["BEDICK", "ASTEROIDE", "KARABANE"];
-    // const CodProduBas = ["BAS00058", "BAS00241", "BAS00128"];
-
-    // const brochures = [
-    //     {
-    //         imageUrl:
-    //             "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA_BRO_BASSARI.jpg",
-    //         pdfUrl:
-    //             "https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf",
-    //         title: "AFRICAN SOUL",
-    //         description: t('BrouchureBassari'),
-    //     },
-    // ];
-    //Prueba2
-    // const videoDesktop =
-    //     "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/BASS_PORTADAS_REELS-06.mp4";
-    // const videoMobile =
-    //     "https://bassari.eu/VIDEOS%20CARRUSEL%20MARCAS/BASSARI/MOVIL/BASS_POST_11.mp4";
-
-    // const [videoIntro, setVideoIntro] = useState(videoDesktop);
-
-    // useEffect(() => {
-    //     if (typeof window !== "undefined" && window.innerWidth <= 768) {
-    //         setVideoIntro(videoMobile);
-    //     }
-    // }, []);
-
-    const slides = [
-        {
-            name: "LE VOYAGE DES WOLOF",
-            render: () => (
-                <div
-                    onMouseEnter={() =>
-                        window.dispatchEvent(new CustomEvent("carousel-pause"))
-                    }
-                    onMouseLeave={() =>
-                        window.dispatchEvent(new CustomEvent("carousel-resume"))
-                    }
-                    className="grid grid-cols-1 gap-6"
-                >
-                    <PresentacionColeccion
-                        titulo={t("newCollections.voyage.title")}
-                        imagenFondo={images[0]}
-                        descripcion={t("newCollections.voyage.description")}
-                    // onDiscoverCollections={() => navigate("/colecciones/BAS")}
-                    />
-                    <CarruselProductosColeccionEspecifica
-                        coleccion="LE VOYAGE DES WOLOF"
-                        onProductClick={handleProductClick}
-                    />
-                </div>
-            ),
-        },
-        {
-            name: "ESSENCES DU NIL",
-            render: () => (
-                <div
-                    onMouseEnter={() =>
-                        window.dispatchEvent(new CustomEvent("carousel-pause"))
-                    }
-                    onMouseLeave={() =>
-                        window.dispatchEvent(new CustomEvent("carousel-resume"))
-                    }
-                    className="grid grid-cols-1 gap-6"
-                >
-                    <PresentacionColeccion
-                        titulo={t("newCollections.essences.title")}
-                        imagenFondo={images[1]}
-                        descripcion={t("newCollections.essences.description")}
-                    // onDiscoverCollections={() => navigate("/colecciones/BAS")}
-                    />
-                    <CarruselProductosColeccionEspecifica
-                        coleccion="ESSENCES DU NIL"
-                        onProductClick={handleProductClick}
-                    />
-                </div>
-            ),
-        },
-    ];
+    const slides = useMemo(
+        () => [
+            {
+                name: "LE VOYAGE DES WOLOF",
+                render: () => (
+                    <div
+                        onMouseEnter={() => window.dispatchEvent(new CustomEvent("carousel-pause"))}
+                        onMouseLeave={() => window.dispatchEvent(new CustomEvent("carousel-resume"))}
+                        className="grid grid-cols-1 gap-6"
+                    >
+                        <PresentacionColeccion
+                            titulo={t("newCollections.voyage.title")}
+                            imagenFondo={getColeccionCover("LE VOYAGE DES WOLOF")}
+                            descripcion={t("newCollections.voyage.description")}
+                            onDiscoverCollections={() => goToColeccion("LE VOYAGE DES WOLOF")}
+                        />
+                        <CarruselProductosColeccionEspecifica
+                            coleccion="LE VOYAGE DES WOLOF"
+                            onProductClick={handleProductClick}
+                        />
+                    </div>
+                ),
+            },
+            {
+                name: "ESSENCES DU NIL",
+                render: () => (
+                    <div
+                        onMouseEnter={() => window.dispatchEvent(new CustomEvent("carousel-pause"))}
+                        onMouseLeave={() => window.dispatchEvent(new CustomEvent("carousel-resume"))}
+                        className="grid grid-cols-1 gap-6"
+                    >
+                        <PresentacionColeccion
+                            titulo={t("newCollections.essences.title")}
+                            imagenFondo={getColeccionCover("ESSENCES DU NIL")}
+                            descripcion={t("newCollections.essences.description")}
+                            onDiscoverCollections={() => goToColeccion("ESSENCES DU NIL")}
+                        />
+                        <CarruselProductosColeccionEspecifica
+                            coleccion="ESSENCES DU NIL"
+                            onProductClick={handleProductClick}
+                        />
+                    </div>
+                ),
+            },
+        ],
+        [t, getColeccionCover, goToColeccion]
+    );
 
     return (
         <CartProvider>
             <Header />
-            {/* Esto aqui para que funcione videoSrc={videoIntro} */}
+
             <Carrusel images={shuffleArray([...images])} />
-            {/* <NotificationPopup brochures={brochures} /> */}
+
             <div className="flex items-center justify-center h-full mt-[2%]">
                 <img
                     src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png"
@@ -157,27 +185,16 @@ function BassariHome() {
             <CarruselColeccionesNuevas slides={slides} durationMs={15000} />
 
             {productoSeleccionado && (
-                <Modal
-                    isOpen={modalAbierta}
-                    close={handleCloseModal}
-                    product={productoSeleccionado}
-                />
+                <Modal isOpen={modalAbierta} close={handleCloseModal} product={productoSeleccionado} />
             )}
-
-            {/* <NewCollection
-                images={imagesNewCollections}
-                titles={titles}
-                productCodes={CodProduBas}
-            /> */}
 
             <section id="colecciones">
                 <ColeccionesMarcas marca={marca} />
             </section>
+
             <Footer />
         </CartProvider>
     );
 }
 
 export default BassariHome;
-
-

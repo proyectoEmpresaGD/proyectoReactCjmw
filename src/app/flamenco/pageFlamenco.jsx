@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { Header } from "../../components/header";
 import Footer from "../../components/footer";
 import Carrusel from "../../components/ComponentesHome/carrusel";
@@ -10,6 +10,9 @@ import PresentacionColeccion from "../../components/ComponentesBrands/ultimaCole
 import Modal from "../../components/ComponentesProductos/modal";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { imagenesColecciones } from "../../Constants/constants";
+import { buildColeccionParams, getColeccionCover } from "../../Constants/coleccionesHelpers";
+import { coleccionConfigByName } from "../../Constants/constants";
 
 function FlamencoHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -28,15 +31,41 @@ function FlamencoHome() {
         setModalAbierta(true);
     };
 
-    function shuffleArray(array) {
+    const shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
-    }
+    };
 
     const marca = "FLA";
+
+    const buildColeccionUrl = (coleccion, params = {}) => {
+        const sp = new URLSearchParams();
+
+        if (params.introTop) sp.set("introTop", params.introTop);
+        if (params.introBottom) sp.set("introBottom", params.introBottom);
+        if (params.introBrouchure) sp.set("introBrouchure", params.introBrouchure);
+
+        if (params.brochureImage) sp.set("brochureImage", params.brochureImage);
+        if (params.brochurePdf) sp.set("brochurePdf", params.brochurePdf);
+        if (params.heroImage) sp.set("heroImage", params.heroImage);
+
+        if (Array.isArray(params.images) && params.images.length > 0) {
+            sp.set("images", JSON.stringify(params.images));
+        }
+
+        const qs = sp.toString();
+        return `/coleccion/${encodeURIComponent(coleccion)}${qs ? `?${qs}` : ""}`;
+    };
+
+    const goToColeccion = useCallback(
+        (collectionName) => {
+            navigate(`/coleccion/${encodeURIComponent(collectionName)}`);
+        },
+        [navigate]
+    );
 
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_SALON%20DE%20LA%20GITANA%20MUSTARD_1.jpg",
@@ -54,91 +83,90 @@ function FlamencoHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/02_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINAS%20DE%20LAS%20MARCAS%20/FLAMENCO/FLA_MARRAKECH_KUTUBIA%20APRICOT.jpg",
     ];
 
-    const imagesNewCollections = [
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/FLAMENCO%20AMBIENTE/RIVIERA/RIVIERA.jpeg",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/FLAMENCO%20AMBIENTE/TEDDY/DSC09692%20MINIATURA.jpg",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/FLAMENCO%20AMBIENTE/SISAL/Cover%20Front.jpg",
-    ];
+    const slides = useMemo(
+        () => [
+            {
+                name: "INDIENNE STRIPES",
+                render: () => (
+                    <div
+                        onMouseEnter={() => window.dispatchEvent(new CustomEvent("carousel-pause"))}
+                        onMouseLeave={() => window.dispatchEvent(new CustomEvent("carousel-resume"))}
+                        className="grid grid-cols-1 gap-6"
+                    >
+                        <PresentacionColeccion
+                            titulo={t("newCollections.indienne.title")}
+                            imagenFondo={getColeccionCover({
+                                collectionName: "INDIENNE STRIPES",
+                                imagenesColecciones,
+                                configByName: coleccionConfigByName,
+                            })}
+                            descripcion={t("newCollections.indienne.description")}
+                            onDiscoverCollections={() => goToColeccion("INDIENNE STRIPES")}
+                        />
 
-    const titles = ["GUANAHANI", "TEDDY", "SISAL"];
-    const CodProduFla = ["FLA001206", "FLA001365", "FLA001088"];
+                        <CarruselProductosColeccionEspecifica
+                            coleccion="INDIENNE STRIPES"
+                            onProductClick={handleProductClick}
+                        />
+                    </div>
+                ),
+            },
+            {
+                name: "PALACIO DE LAS DUEÑAS",
+                render: () => (
+                    <div
+                        onMouseEnter={() => window.dispatchEvent(new CustomEvent("carousel-pause"))}
+                        onMouseLeave={() => window.dispatchEvent(new CustomEvent("carousel-resume"))}
+                        className="grid grid-cols-1 gap-6"
+                    >
+                        <PresentacionColeccion
+                            titulo={t("newCollections.palacio.title")}
+                            imagenFondo={getColeccionCover({
+                                collectionName: "PALACIO DE LAS DUEÑAS",
+                                imagenesColecciones,
+                                configByName: coleccionConfigByName,
+                            })}
+                            descripcion={t("newCollections.palacio.description")}
+                            onDiscoverCollections={() => goToColeccion("PALACIO DE LAS DUEÑAS")}
+                        />
 
-    const slides = [
-        {
-            name: "INDIENNE STRIPES",
-            render: () => (
-                <div
-                    onMouseEnter={() => window.dispatchEvent(new CustomEvent("carousel-pause"))}
-                    onMouseLeave={() => window.dispatchEvent(new CustomEvent("carousel-resume"))}
-                    className="grid grid-cols-1 gap-6"
-                >
-                    <PresentacionColeccion
-                        titulo={t("newCollections.indienne.title")}
-                        imagenFondo={images[0]}
-                        descripcion={t("newCollections.indienne.description")}
-                    />
-                    <CarruselProductosColeccionEspecifica
-                        coleccion="INDIENNE STRIPES"
-                        onProductClick={handleProductClick}
-                    />
-                </div>
-            ),
-        },
-        {
-            name: "PALACIO DE LAS DUEÑAS",
-            render: () => (
-                <div
-                    onMouseEnter={() => window.dispatchEvent(new CustomEvent("carousel-pause"))}
-                    onMouseLeave={() => window.dispatchEvent(new CustomEvent("carousel-resume"))}
-                    className="grid grid-cols-1 gap-6"
-                >
-                    <PresentacionColeccion
-                        titulo={t("newCollections.palacio.title")}
-                        imagenFondo={images[1]}
-                        descripcion={t("newCollections.palacio.description")}
-
-                    />
-                    <CarruselProductosColeccionEspecifica
-                        coleccion="PALACIO DE LAS DUEÑAS"
-                        onProductClick={handleProductClick}
-                    />
-                </div>
-            ),
-        },
-    ];
+                        <CarruselProductosColeccionEspecifica
+                            coleccion="PALACIO DE LAS DUEÑAS"
+                            onProductClick={handleProductClick}
+                        />
+                    </div>
+                ),
+            },
+        ],
+        [goToColeccion, t, handleProductClick]
+    );
 
     return (
-        <>
-            <CartProvider>
-                <Header />
-                <Carrusel images={shuffleArray([...images])} />
-                {/* <NotificationPopup brochures={brochures} /> */}
+        <CartProvider>
+            <Header />
+            <Carrusel images={shuffleArray([...images])} />
 
-                <div className="flex items-center justify-center h-full pt-3">
-                    <img
-                        className="h-20 md:h-32 xl:h-40"
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png"
-                        alt="Logo Flamenco"
+            <div className="flex items-center justify-center h-full pt-3">
+                <img
+                    className="h-20 md:h-32 xl:h-40"
+                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png"
+                    alt="Logo Flamenco"
+                />
+            </div>
 
-                    />
-                </div>
+            <CarruselColeccionesNuevas slides={slides} durationMs={15000} />
 
-                <CarruselColeccionesNuevas slides={slides} durationMs={15000} />
+            {productoSeleccionado && (
+                <Modal isOpen={modalAbierta} close={handleCloseModal} product={productoSeleccionado} />
+            )}
 
-                {productoSeleccionado && (
-                    <Modal isOpen={modalAbierta} close={handleCloseModal} product={productoSeleccionado} />
-                )}
+            <section id="colecciones">
+                <ColeccionesMarcas marca={marca} />
+            </section>
 
-                {/* <NewCollection images={imagesNewCollections} titles={titles} productCodes={CodProduFla} /> */}
-                <section id="colecciones">
-                    <ColeccionesMarcas marca={marca} />
-                </section>
-                <Footer />
-            </CartProvider>
-        </>
+            <Footer />
+        </CartProvider>
     );
 }
 
 export default FlamencoHome;
-
-

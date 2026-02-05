@@ -1,0 +1,44 @@
+{
+    "home": {
+        "hero": {
+            "kicker": "New season",
+            "title": "New collections",
+            "collectionAlt": "{{brand}} {{collection}}",
+            "imageAlt": "Homepage hero image",
+            "ctaBrands": "View brands",
+            "ctaCatalog": "Explore catalog"
+        },
+        "spotlight": {
+            "label": "New collections",
+            "labelShort": "New",
+            "ctaAll": "View all"
+        },
+        "brandLogos": {
+            "label": "Brands",
+            "alt": "{{brand}} logo"
+        },
+        "carousel": {
+            "start": "Start"
+        }
+    },
+    "Colecciones": {
+        "leVoyageDesWolof": {
+            "introTop": "Voyage Wolof is a journey into the heart of Africa, inspired by the culture, everyday life and traditions of the Wolof tribe. The collection focuses on coexistence between communities, indigenous children and the transmission of values that define their collective identity.",
+            "introBottom": "Terracotta tones, stripes and tribal symbolism create a powerful and authentic visual narrative. The prints evoke African nature, animals and traditional clothing, reinterpreted through a contemporary vision.",
+            "introBrouchure": "Voyage Wolof is a collection that celebrates cultural diversity, travel as a life experience and the beauty of an identity deeply rooted in the land."
+        },
+        "essencesDuNil": {
+            "introTop": "Essence Du Nil is born from inspiration drawn from the Nile as a symbol of origin, life and spirituality. The collection explores the deepest essence of African culture, its roots and its close relationship with nature.",
+            "introBottom": "Earthy colours, warm palettes and organic prints blend with references to traditional clothing and ancestral symbolism. Each garment conveys balance, authenticity and respect for cultural heritage.",
+            "introBrouchure": "Essence Du Nil is a tribute to origins, a collection that transforms cultural heritage into contemporary fashion without losing its soul."
+        },
+        "indienne": {
+            "introTop": "Indiane Stripes is inspired by antiquity, art and the beauty of ruins. The collection is presented in a ruined church in Tarragona, a space filled with symbolism where the passage of time and spirituality merge into a single visual narrative.",
+            "introBottom": "Clean silhouettes and simpler fabrics define a sober and contemporary line, while the stripes add rhythm and structure, evoking ancestral aesthetic codes. The collection conveys calm, balance and a quiet elegance, connecting the classical with a modern vision of flamenco fashion."
+        },
+        "palacioDeDueñas": {
+            "introTop": "Palacio de Dueñas represents the most artistic and stately side of the brand. Inspired by the cultural richness of antiquity, classical art and the majesty of historic palaces, this collection reinterprets the past through a contemporary lens.",
+            "introBottom": "Fabrics take centre stage through elaborate prints, rich textures and an aesthetic that evokes aristocratic and ceremonial worlds. Each design seems drawn from another era, adapted to the present without losing its essence."
+        }
+    }
+}

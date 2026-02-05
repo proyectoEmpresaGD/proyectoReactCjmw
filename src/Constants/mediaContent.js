@@ -58,6 +58,14 @@ export const brochureCollections = [
                 pdfUrl: 'https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BROCHURE_BASS_EDICION_INTERGIF_25_OK.pdf',
                 descriptionKey: 'BrouchureBassari',
             },
+            {
+                id: 'bassari-african-soul',
+                title: 'AFRICAN SOUL',
+                coverImage:
+                    'https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/PORTADA%20COLECCIONES%20ESSENCES%20DU%20NIL%20Y%20LE%20VOYAGE%20DES%20WOLOF.png',
+                pdfUrl: 'https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/BASS_BROUCHURE_ENERO2026.pdf',
+                descriptionKey: 'BrouchureBassari',
+            },
         ],
     },
     {

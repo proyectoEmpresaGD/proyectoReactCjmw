@@ -1,0 +1,44 @@
+{
+    "home": {
+        "hero": {
+            "kicker": "Nueva temporada",
+            "title": "Nuevas colecciones",
+            "imageAlt": "Imagen principal de la home",
+            "collectionAlt": "{{brand}} {{collection}}",
+            "ctaBrands": "Ver marcas",
+            "ctaCatalog": "Explorar catálogo"
+        },
+        "spotlight": {
+            "label": "Nuevas colecciones",
+            "labelShort": "Nuevas",
+            "ctaAll": "Ver todo"
+        },
+        "brandLogos": {
+            "label": "Marcas",
+            "alt": "Logo de {{brand}}"
+        },
+        "carousel": {
+            "start": "Inicio"
+        }
+    },
+    "Colecciones": {
+        "leVoyageDesWolof": {
+            "introTop": "Voyage Wolof es un viaje al corazón de África, inspirado en la cultura, la vida cotidiana y las tradiciones de la tribu Wolof. La colección pone el foco en la convivencia entre comunidades, en los niños indígenas y en la transmisión de valores que define su identidad colectiva.",
+            "introBottom": "Los tonos terracota, las rayas y la simbología tribal construyen una narrativa visual potente y auténtica. Los estampados evocan la naturaleza africana, los animales y la vestimenta tradicional, reinterpretados desde una visión contemporánea.",
+            "introBrouchure": "Voyage Wolof es una colección que celebra la diversidad cultural, el viaje como experiencia vital y la belleza de una identidad arraigada a la tierra."
+        },
+        "essencesDuNil": {
+            "introTop": "Essence Du Nil nace de la inspiración en el Nilo como símbolo de origen, vida y espiritualidad. La colección explora la esencia más profunda de la cultura africana, sus raíces y su estrecha relación con la naturaleza.",
+            "introBottom": "Los colores tierra, las gamas cálidas y los estampados orgánicos se mezclan con referencias a la vestimenta tradicional y a la simbología ancestral. Cada prenda transmite equilibrio, autenticidad y respeto por el legado cultural.",
+            "introBrouchure": "Essence Du Nil es un tributo a los orígenes, una colección que transforma la herencia cultural en moda contemporánea sin perder su alma"
+        },
+        "indienne": {
+            "introTop": "Indiane Stripes surge de la inspiración en la antigüedad, el arte y la belleza de las ruinas. La colección se presenta en una iglesia en ruinas de Tarragona, un espacio cargado de simbolismo donde el paso del tiempo y la espiritualidad se funden en un mismo relato visual.",
+            "introBottom": "Las siluetas depuradas y los tejidos más sencillos marcan una línea sobria y contemporánea, mientras que las rayas aportan ritmo y estructura, evocando códigos estéticos ancestrales. La colección transmite calma, equilibrio y una elegancia silenciosa, conectando lo clásico con una visión actual de la moda flamenca."
+        },
+        "palacioDeDueñas": {
+            "introTop": "Palacio de Dueñas representa la vertiente más artística y señorial de la marca. Inspirada en la riqueza cultural de la antigüedad, en el arte clásico y en la majestuosidad de los palacios históricos, esta colección reinterpreta el pasado desde una mirada contemporánea.",
+            "introBottom": "Los tejidos cobran protagonismo a través de estampados elaborados, texturas ricas y una estética que evoca lo aristocrático y lo ceremonial. Cada diseño parece extraído de otra época, adaptado al presente sin perder su esencia."
+        }
+    }
+}

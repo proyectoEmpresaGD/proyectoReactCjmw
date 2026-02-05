@@ -17,7 +17,7 @@ import Contract from "./app/contract/PaginaContract.jsx";
 import MediaPage from "./app/media/pageMedia.jsx";
 import ColeccionesMarcaPage from "./components/colecciones/pageColeccionesMarca.jsx";
 import Confeccion from "./components/calculadora/confeccion.jsx";
-
+import ColeccionPage from "./components/colecciones/pageColeccion.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import CookieConsent from "./components/ComponenetesCookies/CookieConsent.jsx";
 
@@ -42,7 +42,9 @@ function App() {
         <Route path="/map/:direccion" element={<GeocodingService />} />
         <Route path="/Contract" element={<Contract />} />
         <Route path="/media" element={<MediaPage />} />
+        <Route path="/coleccion/:coleccion" element={<ColeccionPage />} />
         <Route path="/colecciones/:marca" element={<ColeccionesMarcaPage />} />
+
       </Routes>
     </>
   );
