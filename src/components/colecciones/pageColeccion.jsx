@@ -61,7 +61,16 @@ function readFromSearch(search) {
         brochureImage: get("brochureImage"),
         brochurePdf: get("brochurePdf"),
         heroImage: get("heroImage"),
-        images,
+        images: imagesRaw
+            ? (() => {
+                try {
+                    const parsed = JSON.parse(imagesRaw);
+                    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+                } catch {
+                    return [];
+                }
+            })()
+            : null,
     };
 }
 
