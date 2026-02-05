@@ -416,13 +416,14 @@ const CarruselHome = ({
                                                                 <button
                                                                     key={`${item.brand}-${item.collection}-ticker`}
                                                                     type="button"
-                                                                    onClick={() => goToColeccion({ collection: item.collection })}
+                                                                    onClick={() => goToColeccion(item.collection)}
                                                                     className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white border border-white/20 transition hover:bg-white/20 active:scale-[0.99]"
                                                                 >
                                                                     <span className="opacity-80">{shortBrand}</span>
                                                                     <span className="opacity-50">·</span>
                                                                     <span className="max-w-[42vw] truncate">{item.collection}</span>
                                                                 </button>
+
                                                             );
                                                         })}
                                                     </div>
@@ -502,7 +503,7 @@ const CarruselHome = ({
                                 alt={s.name || ""}
                                 onClick={() => safeNavigate(s.route)}
                                 draggable={false}
-                                className={`cursor-pointer mx-auto h-auto ${isMobile ? (esCJM ? "w-[160px]" : "w-[200px]") : esCJM ? "w-[250px]" : "w-[400px]"
+                                className={`cursor-pointer mx-auto h-auto ${isMobile ? (esCJM ? "w-[160px]" : "w-[200px]") : esCJM ? "w-[150px]" : "w-[400px]"
                                     }`}
                             />
                         </div>
