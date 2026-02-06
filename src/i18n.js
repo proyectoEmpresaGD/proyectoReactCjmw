@@ -10,9 +10,17 @@ i18n
     .init({
         fallbackLng: 'en',
         supportedLngs: ['es', 'en', 'fr'],
+
+        // Si el navegador detecta 'fr-FR' o 'en-US', cargamos solo 'fr' / 'en'
+        load: 'languageOnly',
+        nonExplicitSupportedLngs: true,
+
         defaultNS: 'common',
         backend: { loadPath: '/locales/{{lng}}/{{ns}}.json' },
-        detection: { order: ['navigator'], caches: [] },
+        detection: {
+            order: ['localStorage', 'navigator'],
+            caches: ['localStorage'],
+        },
         interpolation: { escapeValue: false },
         react: { useSuspense: true },
     });
