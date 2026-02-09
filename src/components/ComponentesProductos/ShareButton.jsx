@@ -32,7 +32,7 @@ const ShareButton = ({ selectedProduct }) => {
                 title={t('shareTitle')}
             >
                 <img
-                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/linked_services_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                    src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/linked_services_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                     alt={t('shareIconAlt')}
                     className="w-8 h-6"
                 />

@@ -27,7 +27,7 @@ const isSpanishCountry = (country) => {
 ============================================================================ */
 const ORDER_EMAIL_WIDTH = 640;
 
-const LOGO_URL = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png'; // <- logo solicitado
+const LOGO_URL = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png'; // <- logo solicitado
 const DIVIDER = '#E4E8F1';
 const TEXT_MAIN = '#0B1526';
 const TEXT_MUTED = '#4F566B';
@@ -88,19 +88,19 @@ function brandsStrip640() {
       <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" valign="middle" style="padding:4px 8px;">
-            <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="CJM" width="60" style="display:block;border:0;height:auto;">
+            <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="CJM" width="60" style="display:block;border:0;height:auto;">
           </td>
           <td align="center" valign="middle" style="padding:4px 8px;">
-            <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png" alt="Arena" width="68" style="display:block;border:0;height:auto;">
+            <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png" alt="Arena" width="68" style="display:block;border:0;height:auto;">
           </td>
           <td align="center" valign="middle" style="padding:4px 8px;">
-            <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png" alt="Flamenco" width="68" style="display:block;border:0;height:auto;">
+            <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png" alt="Flamenco" width="68" style="display:block;border:0;height:auto;">
           </td>
           <td align="center" valign="middle" style="padding:4px 8px;">
-            <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png" alt="Harbour" width="68" style="display:block;border:0;height:auto;">
+            <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png" alt="Harbour" width="68" style="display:block;border:0;height:auto;">
           </td>
           <td align="center" valign="middle" style="padding:4px 8px;">
-            <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="Bassari" width="60" style="display:block;border:0;height:auto;">
+            <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="Bassari" width="60" style="display:block;border:0;height:auto;">
           </td>
         </tr>
       </table>

@@ -102,7 +102,7 @@ const OrderModal = ({ onClose, onSubmit }) => {
                         </select>
                         <div className="flex items-center mt-2 text-sm text-gray-600">
                             <img
-                                src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/local_shipping_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                                src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/local_shipping_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                                 alt=""
                                 className="w-5 h-5 mr-2 inline-block"
                             />

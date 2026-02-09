@@ -19,7 +19,7 @@ const ProductTechSheet = ({
                     type="button"
                 >
                     <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/archivo.png"
+                        src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/archivo.png"
                         alt={t('downloadPdfAlt')}
                         className="h-5 w-5 sm:h-6 sm:w-6"
                     />

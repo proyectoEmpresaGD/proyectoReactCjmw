@@ -67,7 +67,7 @@ export const CURTAIN_CONFIG = {
 
 
 // Constantes de URLs para logos
-export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/ESCUDOS/CJMlogo.png";
+export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/ESCUDOS/ESCUDO%20FAMILIAR/CJMlogo.png";
 
 // Redes Sociales
 export const SOCIAL_MEDIA_LINKS = {
@@ -193,20 +193,20 @@ export const languageOptions = [
 
 // Logos de las marcas
 export const brandLogos = {
-    '/arenaHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoArena.png',
-    '/harbourHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoHarbour.png',
-    '/cjmHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png',
-    '/flamencoHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoFlamenco.png',
-    '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png',
-    HAR: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoHarbour.png",
-    ARE: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoArena.png",
-    CJM: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM-sintexto.png",
-    FLA: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoFlamenco.png",
-    BAS: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png",
+    '/arenaHome': 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png',
+    '/harbourHome': 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png',
+    '/cjmHome': 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png',
+    '/flamencoHome': 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png',
+    '/bassariHome': 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png',
+    HAR: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png",
+    ARE: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png",
+    CJM: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png",
+    FLA: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png",
+    BAS: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png",
 };
 
 // Logo predeterminado
-export const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png';
+export const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png';
 
 // Íconos de redes sociales
 export const socialMediaIcons = [
@@ -515,25 +515,25 @@ export const textosCarrusel = [
 export const clientLogos = [
     {
         link: "/arenaHome",
-        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/Iconos/logoArena.png",
+        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png",
         imgAlt: "Client Logo Arena",
         imgSize: "w-48 h-48",
     },
     {
         link: "/cjmHome",
-        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/Iconos/logoCJM.png",
+        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png",
         imgAlt: "Client Logo CJM",
         imgSize: "w-20 h-20",
     },
     {
         link: "/flamencoHome",
-        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/Iconos/logoFlamenco.png",
+        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png",
         imgAlt: "Client Logo Flamenco",
         imgSize: "w-48 h-48",
     },
     {
         link: "/harbourHome",
-        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/Iconos/logoHarbour.png",
+        imgSrc: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png",
         imgAlt: "Client Logo Harbour",
         imgSize: "w-48 h-48",
     }
@@ -592,7 +592,7 @@ export const blogPosts = [
 
 export const secretKey = 'R2tyY1|YO.Bp!bK£BCl7l*?ZC1dT+q~6cAT-4|nx2z`0l3}78U';
 export const itemsPerPage = 16;
-export const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
+export const defaultImageUrl = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/ProductoNoEncontrado.webp';
 export const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 //
@@ -601,46 +601,45 @@ export const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 //src\components\ComponentesProductos\modal.jsx
 
-export const defaultImageUrlModalProductos = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
+export const defaultImageUrlModalProductos = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/ProductoNoEncontrado.webp';
 export const mantenimientoImages = {
-    "LAVAR A 30º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',
-    "LAVAR A 30º DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/02-Lavar-a-30%C2%BA-delicado.jpg',
-    "LAVAR A 30º MUY DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/03-Lavar-a-30%C2%BA-muy-delicado.jpg',
-    "LAVAR A 40º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
+    "LAVAR A 30º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%2030%C2%BA.jpg',
+    "LAVAR A 30º DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/02-Lavar-a-30%C2%BA-delicado.jpg',
+    "LAVAR A 30º MUY DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/03-Lavar-a-30%C2%BA-muy-delicado.jpg',
+    "LAVAR A 40º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%2040%C2%BA.jpg',
     "LAVAR A 90º": '',
-    "NO LAVAR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",
-    "PLANCHAR A 120º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',
-    "PLANCHAR A 160º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',
-    "PLANCHAR A 210º": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',
-    "NO PLANCHAR": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20planchar.jpg',
-    "LAVAR A MANO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',
-    "NO USAR LEJIA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lejia.jpg',
-    "LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20en%20seco.jpg',
-    "NO LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar%20en%20seco.jpg',
-    "NO USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20usar%20secadora.jpg',
+    "NO LAVAR": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lavar.jpg",
+    "PLANCHAR A 120º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20120%C2%BA.jpg',
+    "PLANCHAR A 160º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20160%C2%BA.jpg',
+    "PLANCHAR A 210º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20210%C2%BA.jpg',
+    "NO PLANCHAR": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20planchar.jpg',
+    "LAVAR A MANO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%20mano.jpg',
+    "NO USAR LEJIA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lejia.jpg',
+    "LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20en%20seco.jpg',
+    "NO LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lavar%20en%20seco.jpg',
+    "NO USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20usar%20secadora.jpg',
     "USAR LEJIA": '',
-    "EASYCLEAN": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',
-    "USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Usar%20secadora.jpg',
-    "SECADO VERTICAL": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Secado%20vertical.jpg',
-
+    "EASYCLEAN": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/EASY%20CLEAN.jpg',
+    "USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Usar%20secadora.jpg',
+    "SECADO VERTICAL": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Secado%20vertical.jpg',
 };
 
 export const usoImages = {
-    "TAPICERIA DECORATIVA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria%20decorativa.jpg',
-    "TAPICERIA": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria.jpg',
-    'CORTINAS': 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Cortinas.jpg',
-    "ESTORES": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Estores.jpg',
-    "COLCHAS": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Colchas.jpg',
-    "ALFOMBRAS": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Alfombras.jpg',
-    "FR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg",
-    "OUTDOOR": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg",
-    "IMO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg",
-    "CASADO LIBRE": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/CASADO%20LIBRE.jpg",
-    "RESISTENCIA MODERADA SOL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/RESISTENCIA%20MODERADA%20AL%20SOL.jpg",
-    "SEPARABLE EN SECO": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/SEPARABLE%20EN%20SECO.jpg",
-    "ADHESIVO SOBRE EL PAPEL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg",
-    "100% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20CON%20PSD/ICONOS%20TRANPARENCIA/Opaco.jpg',
-    "90% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20CON%20PSD/ICONOS%20TRANPARENCIA/Semi-opaco.jpg'
+    "TAPICERIA DECORATIVA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Tapiceria%20decorativa.jpg',
+    "TAPICERIA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Tapiceria.jpg',
+    'CORTINAS': 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Cortinas.jpg',
+    "ESTORES": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Estores.jpg',
+    "COLCHAS": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Colchas.jpg',
+    "ALFOMBRAS": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Alfombras.jpg',
+    "FR": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/FR.jpg",
+    "OUTDOOR": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/OUTDOOR.jpg",
+    "IMO": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/IMO.jpg",
+    "CASADO LIBRE": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/CASADO%20LIBRE.jpg",
+    "RESISTENCIA MODERADA SOL": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/RESISTENCIA%20MODERADA%20AL%20SOL.jpg",
+    "SEPARABLE EN SECO": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/SEPARABLE%20EN%20SECO.jpg",
+    "ADHESIVO SOBRE EL PAPEL": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg",
+    "100% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Opaco.jpg',
+    "90% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Semi-opaco.jpg'
 };
 
 export const marcasMap = {
@@ -652,9 +651,9 @@ export const marcasMap = {
 };
 
 export const direccionLogos = {
-    "NON-DIRECTIONAL": "https://bassari.eu/ImagenesTelasCjmw/Iconos/DIRECCIONES-TELAS/NON-DIRECTIONAL.png",
-    "NON-RAILROADED": "https://bassari.eu/ImagenesTelasCjmw/Iconos/DIRECCIONES-TELAS/NON-RAILROADED.png",
-    "RAILROADED": "https://bassari.eu/ImagenesTelasCjmw/Iconos/DIRECCIONES-TELAS/RAILROADED.png",
+    "NON-DIRECTIONAL": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/03_ICONOS_DIRECCIONES/NON-DIRECTIONAL.png",
+    "NON-RAILROADED": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/03_ICONOS_DIRECCIONES/NON-RAILROADED.png",
+    "RAILROADED": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/03_ICONOS_DIRECCIONES/RAILROADED.png",
 }
 
 //
@@ -1275,7 +1274,7 @@ export const socialIcons = [
 ];
 
 // Imagen de QR
-export const qrCodeSrc = "https://bassari.eu/ImagenesTelasCjmw/Iconos/qr-code.svg";
+export const qrCodeSrc = "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/qr-code.svg";
 
 // Enlaces de la sección Empresa
 export const empresaLinks = [
@@ -1303,7 +1302,7 @@ export const politicasLinks = [
 ];
 
 // Enlaces adicionales
-export const logoSrc = "https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJMlogo.png";
+export const logoSrc = "https://bassari.eu/ImagenesTelasCjmw/Logos/CJMlogo.png";
 export const contactText = "Contáctanos";
 export const copyrightText = "© CJM WORLDWIDE S.L. 2025 - Todos los Derechos Reservados";
 
@@ -1316,7 +1315,7 @@ export const copyrightText = "© CJM WORLDWIDE S.L. 2025 - Todos los Derechos Re
 export const careInstructions = [
     {
         id: 1,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2030%C2%BA.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%2030%C2%BA.jpg',
         title: "Lavar a 30º",
         details: [
             "Apto para lavar a 30° en lavadora.",
@@ -1326,7 +1325,7 @@ export const careInstructions = [
     },
     {
         id: 2,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%2040%C2%BA.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%2040%C2%BA.jpg',
         title: "Lavar a 40º",
         details: [
             "Apto para lavar a 40° en lavadora.",
@@ -1336,7 +1335,7 @@ export const careInstructions = [
     },
     {
         id: 3,
-        iconPath: "https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar.jpg",
+        iconPath: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lavar.jpg",
         title: "No lavable a máquina",
         details: [
             "Si se indica, recomendamos limpiar la tela a mano o en seco siguiendo las instrucciones especificadas en cada caso.",
@@ -1345,25 +1344,25 @@ export const careInstructions = [
     },
     {
         id: 4,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20120%C2%BA.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20120%C2%BA.jpg',
         title: "Planchar a 120°",
         details: ["Se recomienda planchar la tela siempre por el reverso hasta 120 grados."],
     },
     {
         id: 5,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20160%C2%BA.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20160%C2%BA.jpg',
         title: "Planchar a 160°",
         details: ["Se recomienda planchar la tela siempre por el reverso hasta 160 grados."],
     },
     {
         id: 6,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Planchar%20a%20210%C2%BA.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20210%C2%BA.jpg',
         title: "Planchar a 210°",
         details: ["Se recomienda planchar la tela siempre por el reverso hasta 210 grados."],
     },
     {
         id: 7,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20planchar.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20planchar.jpg',
         title: "No planchar",
         details: [
             "Se usan fibras especiales para hacer la tela indicada.",
@@ -1372,7 +1371,7 @@ export const careInstructions = [
     },
     {
         id: 8,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20a%20mano.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%20mano.jpg',
         title: "Lavar a mano",
         details: [
             "Apto para lavar a mano en agua tibia.",
@@ -1383,7 +1382,7 @@ export const careInstructions = [
     },
     {
         id: 9,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lejia.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lejia.jpg',
         title: "No usar blanqueador",
         details: [
             "Ninguna de nuestras telas puede ser tratada con blanqueador.",
@@ -1392,7 +1391,7 @@ export const careInstructions = [
     },
     {
         id: 10,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Lavar%20en%20seco.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20en%20seco.jpg',
         title: "Limpieza en seco",
         details: [
             "Apto para ser limpiado en seco sin usar percloroetileno.",
@@ -1401,7 +1400,7 @@ export const careInstructions = [
     },
     {
         id: 11,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20lavar%20en%20seco.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lavar%20en%20seco.jpg',
         title: "No lavar en seco",
         details: [
             "Apto para ser limpiado en seco sin usar percloroetileno.",
@@ -1410,7 +1409,7 @@ export const careInstructions = [
     },
     {
         id: 12,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/No%20usar%20secadora.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20usar%20secadora.jpg',
         title: "No usar secadora",
         details: [
             "Después de lavar las telas en la lavadora, se recomienda dejarlas colgadas en un tendedero para secar.",
@@ -1419,7 +1418,7 @@ export const careInstructions = [
     },
     {
         id: 13,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/EASY%20CLEAN.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/EASY%20CLEAN.jpg',
         title: "EASY CLEAN",
         details: [
             "Las telas con tecnología EASY CLEAN permiten una limpieza fácil y rápida de manchas.",
@@ -1428,7 +1427,7 @@ export const careInstructions = [
     },
     {
         id: 14,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Usar%20secadora.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Usar%20secadora.jpg',
         title: "Usar secadora",
         details: [
             "Apto para usar en secadora.",
@@ -1437,7 +1436,7 @@ export const careInstructions = [
     },
     {
         id: 15,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Mantenimientos/Secado%20vertical.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Secado%20vertical.jpg',
         title: "Secado vertical",
         details: [
             "Apto para secado en posición vertical.",
@@ -1450,7 +1449,7 @@ export const careInstructions = [
 export const usageInstructions = [
     {
         id: 1,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria%20decorativa.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Tapiceria%20decorativa.jpg',
         title: "Tapicería decorativa",
         details: [
             "Adecuado para tapicería decorativa.",
@@ -1460,7 +1459,7 @@ export const usageInstructions = [
     },
     {
         id: 2,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Tapiceria.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Tapiceria.jpg',
         title: "Tapicería",
         details: [
             "Adecuado para tapicería.",
@@ -1470,7 +1469,7 @@ export const usageInstructions = [
     },
     {
         id: 3,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Cortinas.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Cortinas.jpg',
         title: "Cortinas",
         details: [
             "Adecuado para cortinas.",
@@ -1481,7 +1480,7 @@ export const usageInstructions = [
     },
     {
         id: 4,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Estores.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Estores.jpg',
         title: "Estores",
         details: [
             "Adecuado para estores.",
@@ -1491,7 +1490,7 @@ export const usageInstructions = [
     },
     {
         id: 5,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/Colchas.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Colchas.jpg',
         title: "Colchas",
         details: [
             "Adecuado para colchas.",
@@ -1501,7 +1500,7 @@ export const usageInstructions = [
     },
     {
         id: 6,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/FR.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/FR.jpg',
         title: "FR (Resistente al fuego)",
         details: [
             "Resistentes al fuego.",
@@ -1511,7 +1510,7 @@ export const usageInstructions = [
     },
     {
         id: 7,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/IMO.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/IMO.jpg',
         title: "IMO (Uso marítimo)",
         details: [
             "Adecuado para uso marítimo.",
@@ -1521,7 +1520,7 @@ export const usageInstructions = [
     },
     {
         id: 8,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/OUTDOOR.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/OUTDOOR.jpg',
         title: "Outdoor (Uso exterior)",
         details: [
             "Adecuado para el exterior.",
@@ -1531,7 +1530,7 @@ export const usageInstructions = [
     },
     {
         id: 9,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg',
         title: "Adhesivo sobre el papel",
         details: [
             "El papel tapiz debe colgarse aplicando esta pasta directamente en la parte posterior del papel y dejandolo tiempo para que penetre en el papel antes de aplicarlo en la pared.",
@@ -1540,7 +1539,7 @@ export const usageInstructions = [
     },
     {
         id: 10,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/CASADO%20LIBRE.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/CASADO%20LIBRE.jpg',
         title: "Casado libre",
         details: [
             "Este tipo de papel tapiz no necesita alineación. Simplemente cuelgue el papel tapiz de la forma que desee y el patrón se alineará, lo que significa que, como resultado, se desperciará menos papel tapiz",
@@ -1548,7 +1547,7 @@ export const usageInstructions = [
     },
     {
         id: 11,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/RESISTENCIA%20MODERADA%20AL%20SOL.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/RESISTENCIA%20MODERADA%20AL%20SOL.jpg',
         title: "Resistencia al sol moderada",
         details: [
             "Evite colgar papeles pintados con solidez a la luz moderada/satisfactoria en zonas expuestas a una cantidad significativa de luz solar, ya que se desvanecerán más rapidamente",
@@ -1556,7 +1555,7 @@ export const usageInstructions = [
     },
     {
         id: 12,
-        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/Iconos/Usos/SEPARABLE%20EN%20SECO.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/SEPARABLE%20EN%20SECO.jpg',
         title: "Separable en seco",
         details: [
             "El papel tapiz despegable solo permite que la capa superior del papel tapoz se desprenda de la pared, lo que significa que el papel posterior queda atrás cuando se despega. Este papel también se puede quiter cuando el papel tapiz esté seco",

@@ -107,8 +107,8 @@ hr{border:none;border-top:1px solid #eee;margin:16px 0}
   <div class="container">
     <div class="card">
       <div class="header">
-        <a href="https://www.cjmw.eu/#/"><img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJMlogo.png" alt="CJMW" /></a>
-        <a href="https://www.cjmw.eu/#/"><img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJM_group.png" alt="CJMW Group" style="height:36px" /></a>
+        <a href="https://www.cjmw.eu/#/"><img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/ESCUDOS/ESCUDO%20FAMILIAR/CJMlogo.png" alt="CJMW" /></a>
+        <a href="https://www.cjmw.eu/#/"><img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png" alt="CJMW Group" style="height:36px" /></a>
       </div>
       <div class="content">
         <h1>${greet}</h1>
@@ -118,11 +118,11 @@ hr{border:none;border-top:1px solid #eee;margin:16px 0}
         <p class="small">${footer}</p>
       </div>
       <div class="brand-logos">
-        <a href="https://www.cjmw.eu/#/cjmHome"><img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="CJM" height="36"/></a>
-        <a href="https://www.cjmw.eu/#/arenaHome"><img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png" alt="Arena" height="40"/></a>
-        <a href="https://www.cjmw.eu/#/flamencoHome"><img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png" alt="Flamenco" height="40"/></a>
-        <a href="https://www.cjmw.eu/#/harbourHome"><img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png" alt="Harbour" height="40"/></a>
-        <a href="https://www.cjmw.eu/#/bassariHome"><img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="Bassari" height="36"/></a>
+        <a href="https://www.cjmw.eu/#/cjmHome"><img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="CJM" height="36"/></a>
+        <a href="https://www.cjmw.eu/#/arenaHome"><img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png" alt="Arena" height="40"/></a>
+        <a href="https://www.cjmw.eu/#/flamencoHome"><img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png" alt="Flamenco" height="40"/></a>
+        <a href="https://www.cjmw.eu/#/harbourHome"><img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png" alt="Harbour" height="40"/></a>
+        <a href="https://www.cjmw.eu/#/bassariHome"><img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="Bassari" height="36"/></a>
       </div>
     </div>
   </div>
@@ -329,12 +329,12 @@ app.post("/api/order", async (req, res) => {
           <tr>
             <td align="left" style="width: 100px;">
               <a href="https://www.cjmw.eu/#/" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJMlogo.png" alt="CJMW Logo" width="80" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/ESCUDOS/ESCUDO%20FAMILIAR/CJMlogo.png" alt="CJMW Logo" width="80" style="display: block;">
               </a>
             </td>
             <td align="right" style="width: 120px;">
               <a href="https://www.cjmw.eu/#/" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png" alt="CJMW Group" width="120" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png" alt="CJMW Group" width="120" style="display: block;">
               </a>
             </td>
           </tr>
@@ -373,12 +373,12 @@ app.post("/api/order", async (req, res) => {
           <tr>
             <td align="left" style="width: 100px;">
               <a href="https://www.cjmw.eu/#/" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/CJMlogo.png" alt="CJMW Logo" width="80" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/ESCUDOS/ESCUDO%20FAMILIAR/CJMlogo.png" alt="CJMW Logo" width="80" style="display: block;">
               </a>
             </td>
             <td align="right" style="width: 120px;">
               <a href="https://www.cjmw.eu/#/" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/logoCJM_group.png" alt="CJMW Group" width="120" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png" alt="CJMW Group" width="120" style="display: block;">
               </a>
             </td>
           </tr>
@@ -400,27 +400,27 @@ app.post("/api/order", async (req, res) => {
           <tr>
             <td align="center">
               <a href="https://www.cjmw.eu/#/cjmHome" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="Marca 1" width="50" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png" alt="Marca 1" width="50" style="display: block;">
               </a>
             </td>
             <td align="center">
               <a href="https://www.cjmw.eu/#/arenaHome" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoArena.png" alt="Marca 2" width="100" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png" alt="Marca 2" width="100" style="display: block;">
               </a>
             </td>
             <td align="center">
               <a href="https://www.cjmw.eu/#/flamencoHome" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoFlamenco.png" alt="Marca 3" width="100" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png" alt="Marca 3" width="100" style="display: block;">
               </a>
             </td>
             <td align="center">
               <a href="https://www.cjmw.eu/#/harbourHome" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/logoHarbour.png" alt="Marca 4" width="100" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png" alt="Marca 4" width="100" style="display: block;">
               </a>
             </td>
             <td align="center">
               <a href="https://www.cjmw.eu/#/bassariHome" target="_blank">
-                <img src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="Marca 5" width="80" style="display: block;">
+                <img src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png" alt="Marca 5" width="80" style="display: block;">
               </a>
             </td>
           </tr>

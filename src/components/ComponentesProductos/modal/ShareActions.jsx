@@ -116,7 +116,7 @@ const ShareActions = ({ t, shareTitle, shareText, shareUrl, onCloseModal }) => {
                 type="button"
             >
                 <img
-                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                    src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                     alt={t('closeAlt')}
                     className="h-5 w-5 sm:h-6 sm:w-6"
                 />

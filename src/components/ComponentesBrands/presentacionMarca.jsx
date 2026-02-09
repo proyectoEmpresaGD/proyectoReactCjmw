@@ -44,7 +44,7 @@ function PresentacionMarca({ nombreColeccion, titulo, imagenFondo, descripcion }
                 >
                     <h3 className="mb-2">
                         <img
-                            src="https://bassari.eu/ImagenesTelasCjmw/Iconos/logoArena.png"
+                            src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png"
                             className="w-[50%]"
                             alt=""
                         />

@@ -387,7 +387,7 @@ export class ProductModel {
     const { rows } = await pool.query(baseSql, params);
     const filteredRows = rows.filter(r => r.sim >= 0.3 || rows[0]);
 
-    const defaultImg = 'https://bassari.eu/ImagenesTelasCjmw/Iconos/ProductoNoEncontrado.webp';
+    const defaultImg = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/ProductoNoEncontrado.webp';
     const productsWithImages = await Promise.all(
       filteredRows.map(async (product) => {
         try {

@@ -45,7 +45,7 @@ const ProductImageViewer = ({
                     type="button"
                 >
                     <img
-                        src="https://bassari.eu/ImagenesTelasCjmw/Iconos/ICONOS%20WEB/ICONO%20AMPLIAR.png"
+                        src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/ICONO%20AMPLIAR.png"
                         alt={t('zoomAlt')}
                         className="h-5 w-5"
                     />

@@ -487,7 +487,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                             type="button"
                                         >
                                             <img
-                                                src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                                                src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/04_ICONOS_USADOS_EN_DIFERENTES_SITIOS/undo_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                                                 alt={t('closeAlt')}
                                                 className="h-5 w-5 sm:h-6 sm:w-6"
                                             />
@@ -567,7 +567,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                 >
                                                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/50 border border-neutral-200">
                                                         <img
-                                                            src="https://bassari.eu/ImagenesTelasCjmw/Iconos/QUALITY/fabric.png"
+                                                            src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/04_QUALITY/fabric.png"
                                                             alt={t('sampleAlt')}
                                                             className="h-7 w-7 object-contain"
                                                         />
@@ -665,7 +665,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         {addedToCart && (
                             <div className="fixed bottom-10 right-4 sm:right-10 z-50 flex items-center space-x-3 sm:space-x-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-4 sm:px-6 py-3 text-white shadow-2xl">
                                 <img
-                                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/POP%20UP/Check.svg"
+                                    src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/03_POP%20UP/Check.svg"
                                     alt={t('successAlt')}
                                     className="h-6 w-6 sm:h-8 sm:w-8"
                                 />

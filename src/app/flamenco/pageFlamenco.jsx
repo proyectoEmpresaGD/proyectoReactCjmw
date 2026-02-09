@@ -149,7 +149,7 @@ function FlamencoHome() {
             <div className="flex items-center justify-center h-full pt-3">
                 <img
                     className="h-20 md:h-32 xl:h-40"
-                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/Flamenco%20gris%20transparente%20NEGRO.png"
+                    src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png"
                     alt="Logo Flamenco"
                 />
             </div>

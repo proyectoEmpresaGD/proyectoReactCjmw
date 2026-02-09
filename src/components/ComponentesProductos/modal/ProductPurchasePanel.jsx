@@ -39,7 +39,7 @@ const ProductPurchasePanel = ({
                 >
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/50 border border-neutral-200">
                         <img
-                            src="https://bassari.eu/ImagenesTelasCjmw/Iconos/QUALITY/fabric.png"
+                            src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/04_QUALITY/fabric.png"
                             alt={t('sampleAlt')}
                             className="h-7 w-7 object-contain"
                         />

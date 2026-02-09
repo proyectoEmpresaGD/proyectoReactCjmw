@@ -176,7 +176,7 @@ function BassariHome() {
 
             <div className="flex items-center justify-center h-full mt-[2%]">
                 <img
-                    src="https://bassari.eu/ImagenesTelasCjmw/Iconos/Logos/LOGO%20BASSARI%20negro.png"
+                    src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png"
                     alt=""
                     className="lg:w-[20%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full"
                 />
