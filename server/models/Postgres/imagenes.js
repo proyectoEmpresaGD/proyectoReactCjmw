@@ -16,7 +16,7 @@ function asIsUrl(value) {
 
 async function fetchImageRecord({ codprodu, codclaarchivo }) {
     const { rows } = await pool.query(
-        'SELECT * FROM imagenesftpproductos WHERE codprodu=$1 AND codclaarchivo=$2;',
+        'SELECT * FROM imagenesproductoswebp WHERE codprodu=$1 AND codclaarchivo=$2;',
         [codprodu, codclaarchivo]
     );
     return rows[0] ?? null;
@@ -41,7 +41,7 @@ export class ImagenModel {
             }
         }
 
-        let query = 'SELECT * FROM imagenesftpproductos';
+        let query = 'SELECT * FROM imagenesproductoswebp';
         const params = [];
 
         if (empresa) {
@@ -111,7 +111,7 @@ export class ImagenModel {
         }
 
         const params = [codprodu];
-        let query = 'SELECT * FROM imagenesftpproductos WHERE codprodu=$1';
+        let query = 'SELECT * FROM imagenesproductoswebp WHERE codprodu=$1';
 
         if (normalizedTypes?.length) {
             query += ' AND codclaarchivo = ANY($2)';
@@ -162,7 +162,7 @@ export class ImagenModel {
 
         try {
             const { rows } = await pool.query(
-                `INSERT INTO imagenesftpproductos ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc")
+                `INSERT INTO imagenesproductoswebp ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc")
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
          RETURNING *;`,
                 [
@@ -201,7 +201,7 @@ export class ImagenModel {
 
         try {
             const { rows } = await pool.query(
-                `UPDATE imagenesftpproductos
+                `UPDATE imagenesproductoswebp
          SET ${fields}
          WHERE "codprodu" = $1 AND "codclaarchivo" = $2
          RETURNING *;`,
@@ -224,7 +224,7 @@ export class ImagenModel {
     static async delete({ codprodu, codclaarchivo, res }) {
         try {
             const { rows } = await pool.query(
-                'DELETE FROM imagenesftpproductos WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;',
+                'DELETE FROM imagenesproductoswebp WHERE "codprodu" = $1 AND "codclaarchivo" = $2 RETURNING *;',
                 [codprodu, codclaarchivo]
             );
 

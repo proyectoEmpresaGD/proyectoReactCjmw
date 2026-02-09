@@ -240,7 +240,7 @@ export class ProductModel {
         AND p.nombre <> ''
         AND ${exclusion.clause}
         AND EXISTS (
-          SELECT 1 FROM imagenesftpproductos i
+          SELECT 1 FROM imagenesproductoswebp i
            WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'PRODUCTO_BUENA'
         )
     `;
@@ -281,7 +281,7 @@ export class ProductModel {
         AND p.coleccion <> $3
         AND ${exclusion.clause}
         AND EXISTS (
-          SELECT 1 FROM imagenesftpproductos i
+          SELECT 1 FROM imagenesproductoswebp i
            WHERE i.codprodu = p.codprodu AND i.codclaarchivo = 'PRODUCTO_BAJA'
         )
       LIMIT $4
@@ -1098,7 +1098,7 @@ export class ProductModel {
         tp."pvp"     AS "pricePerMeter",
         (
           SELECT i.ficadjunto
-          FROM imagenesftpproductos i
+          FROM imagenesproductoswebp i
           WHERE i.codprodu = p.codprodu
             AND i.codclaarchivo = 'PRODUCTO_BAJA'
           LIMIT 1
@@ -1176,7 +1176,7 @@ export class ProductModel {
          COALESCE(NULLIF(TRIM(p."tonalidad"), ''), NULLIF(TRIM(p."colorprincipal"), ''), 'Color') AS name,
          (
            SELECT i.ficadjunto
-           FROM imagenesftpproductos i
+           FROM imagenesproductoswebp i
            WHERE i.codprodu = p.codprodu
              AND i.codclaarchivo = 'PRODUCTO_BAJA'
            LIMIT 1
