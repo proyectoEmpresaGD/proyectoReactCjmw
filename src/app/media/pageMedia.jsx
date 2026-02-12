@@ -49,7 +49,7 @@ const MediaPage = () => {
                             <div className="relative mx-auto max-w-sm sm:max-w-md lg:mx-0 lg:max-w-none">
                                 <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-br from-black/10 via-white to-white blur-3xl" />
                                 <img
-                                    src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/ARENA%20AMBIENTE/KANNATURA%20VOL%20II/AR_AMBIENTE_RAFIAS_YUKI.jpg"
+                                    src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/KANNATURA%20VOL%20II/AR_AMBIENTE_RAFIAS_YUKI.webp"
                                     alt={t('hero.imageAlt')}
                                     className="relative z-10 h-full w-full rounded-[2.5rem] object-cover shadow-2xl"
                                 />

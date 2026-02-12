@@ -1,6 +1,15 @@
 import { ImagenModel } from '../models/Postgres/imagenes.js';
 import { validateImagen, validatePartialImagen } from '../schemas/imagenes.js';
 
+function parseTypesParam(typesParam) {
+    return typeof typesParam === 'string' && typesParam.trim().length
+        ? typesParam
+            .split(',')
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : null;
+}
+
 export class ImagenController {
     // Obtener todas las imágenes
     async getAll(req, res) {
@@ -18,6 +27,24 @@ export class ImagenController {
             res.json(images);
         } catch (error) {
             res.status(500).json({ error: error.message });
+        }
+    }
+
+    // NUEVO: Por nombre
+    async getByNombre(req, res) {
+        try {
+            const { nombre } = req.params;
+            const types = parseTypesParam(req.query.types);
+
+            const images = await ImagenModel.getByNombre({ nombre, types, res });
+
+            if (res?.cache) {
+                res.set('Cache-Control', 'public, max-age=3600');
+            }
+
+            return res.json(images);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
         }
     }
 

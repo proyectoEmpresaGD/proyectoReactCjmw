@@ -38,7 +38,7 @@ const CTA_TEXT = '#FFFFFF';
 
 // Imagen hero (>=640px ancho real) — cojines / rafias
 const HERO_IMG =
-  'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/ARENA%20AMBIENTE/KANNATURA%20VOL%20II/AR_AMBIENTE_RAFIAS_YUKI.jpg ';
+  'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/KANNATURA%20VOL%20II/AR_AMBIENTE_RAFIAS_YUKI.jpg ';
 
 /* ============================================================================
    Bloques “seguros” para Outlook clásico (tablas + inline styles)
@@ -331,7 +331,7 @@ const thankYouTemplate = (locale = 'es', { name }) => {
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ${DIVIDER};">
               <tr>
                 <td style="padding:14px;">
-                  <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01894%20CARIBBEAN%20PARTY%20ICE%20CREAM%20INDIGO_TEJIDO%20LISO(1).jpg "
+                  <img src="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01894%20CARIBBEAN%20PARTY%20ICE%20CREAM%20INDIGO_TEJIDO%20LISO(1).jpg "
                        alt="Harbour" width="292" style="display:block;width:292px;height:auto;border:0;">
                   <div style="font-weight:700;margin:10px 0 6px 0;color:${TEXT_MAIN};">Harbour</div>
                   <p style="margin:0;color:${TEXT_MUTED};font-size:13px;">

@@ -15,6 +15,12 @@ export const createImagenRouter = () => {
         '/product/:codprodu',
         imagenController.getByCodprodu.bind(imagenController)
     );
+    // NUEVA: Obtener todas las imágenes por nombre de producto (filtrable por types)
+    // Ej: /api/images/product-name/COSY?types=AMBIENTE_BAJA_1,AMBIENTE_BUENA_1
+    imagenRouter.get(
+        '/product-name/:nombre',
+        imagenController.getByNombre.bind(imagenController)
+    );
 
     // Rutas para operaciones específicas de una imagen
     imagenRouter.get('/:codprodu/:codclaarchivo', imagenController.getByCodproduAndCodclaarchivo.bind(imagenController));

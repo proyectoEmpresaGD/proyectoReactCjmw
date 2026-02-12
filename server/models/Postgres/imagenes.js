@@ -136,6 +136,48 @@ export class ImagenModel {
         }
     }
 
+    static async getByNombre({ nombre, types, res }) {
+        const normalizedName = String(nombre ?? '').trim();
+        const normalizedTypes = Array.isArray(types) ? types.filter(Boolean) : null;
+        const typesKey = normalizedTypes?.length ? normalizedTypes.join(',') : 'all';
+        const cacheKey = `imagesByName:${normalizedName}:${typesKey}`;
+
+        if (!normalizedName.length) return [];
+
+        if (res?.cache) {
+            const cached = await res.cache.get(cacheKey);
+            if (cached) {
+                res.set('Cache-Control', 'public, max-age=3600');
+                return cached;
+            }
+        }
+
+        const params = [normalizedName];
+        let query = 'SELECT * FROM imagenesproductoswebp WHERE nombre=$1';
+
+        if (normalizedTypes?.length) {
+            query += ' AND codclaarchivo = ANY($2)';
+            params.push(normalizedTypes);
+        }
+
+        query += ' ORDER BY codclaarchivo, linea NULLS LAST, descripcion NULLS LAST;';
+
+        try {
+            const { rows } = await pool.query(query, params);
+            const result = rows.map(withUrl);
+
+            if (res?.cache) {
+                await res.cache.set(cacheKey, result);
+                res.set('Cache-Control', 'public, max-age=3600');
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Error fetching images by nombre:', error);
+            // Si el campo en tu tabla no se llama "nombre", este error te lo confirmará.
+            throw new Error('Error fetching images by nombre');
+        }
+    }
 
     // Obtener una imagen por código de producto y clasificación de archivo
     static async getByCodproduAndCodclaarchivo({ codprodu, codclaarchivo, res }) {
@@ -162,8 +204,8 @@ export class ImagenModel {
 
         try {
             const { rows } = await pool.query(
-                `INSERT INTO imagenesproductoswebp ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc")
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                `INSERT INTO imagenesproductoswebp ("empresa", "ejercicio", "codprodu", "linea", "descripcion", "codclaarchivo", "ficadjunto", "tipdocasociado", "fecalta", "ultfeccompra", "ultfecventa", "ultfecactprc", "nombre")
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
          RETURNING *;`,
                 [
                     empresa,
@@ -178,6 +220,7 @@ export class ImagenModel {
                     ultfeccompra,
                     ultfecventa,
                     ultfecactprc,
+                    nombre,
                 ]
             );
 
