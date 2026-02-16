@@ -274,7 +274,7 @@ const CarruselHome = ({
 
                             {/* Overlay logo (igual que ahora) */}
                             {textImg && (
-                                <div className="absolute left-1/2 -translate-x-1/2 bottom-[0%] -translate-y-1/2 text-center w-[86%] sm:w-[80%] lg:w-[35%] p-4">
+                                <div className="absolute left-1/2 -translate-x-1/2 bottom-[28%] md:bottom-0 -translate-y-1/2 text-center w-[86%] sm:w-[80%] lg:w-[35%] p-4">
                                     <img
                                         src={textImg}
                                         alt={s.name || ""}
