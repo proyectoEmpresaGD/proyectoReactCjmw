@@ -298,19 +298,20 @@ export const Header = ({ closeModal }) => {
                             </button>
                             {showProductsDropdown && (
                                 <div className="absolute top-full left-0 mt-1 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 w-40 z-50 flex flex-col">
-                                    <button onMouseDown={() => handleLinkClick("/products")} className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md" type="button">
+                                    <button onMouseDown={() => handleLinkClick("/products")} className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md text-left"
+                                        type="button">
                                         {t("allProducts")}
                                     </button>
                                     <button
                                         onMouseDown={() => handleLinkClick("/products?type=papel")}
-                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
+                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md text-left"
                                         type="button"
                                     >
                                         {t("paper")}
                                     </button>
                                     <button
                                         onMouseDown={() => handleLinkClick("/products?type=tela")}
-                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md"
+                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md text-left"
                                         type="button"
                                     >
                                         {t("fabric")}
