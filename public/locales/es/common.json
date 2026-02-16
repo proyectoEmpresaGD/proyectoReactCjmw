@@ -19,6 +19,9 @@
         },
         "carousel": {
             "start": "Inicio"
+        },
+        "buttonExplore": {
+            "text": "Descubre más"
         }
     },
     "Colecciones": {

@@ -861,6 +861,24 @@ export default function CardProduct() {
         // setShowOnlyHoliday(false);
     };
 
+    //Constantes para cambiar el nombre de las marcas que aparecen al filtrar
+    const BRAND_CODE_LABEL_MAP = {
+        ARE: 'ARENA',
+        BAS: 'BASSARI',
+        FLA: 'FLAMENCO',
+        CJM: 'CJM',
+        HAR: 'HARBOUR',
+    };
+
+    const formatBrandValue = (value) => {
+        const code = String(value || '').trim().toUpperCase();
+        if (!code) return value;
+
+        const label = BRAND_CODE_LABEL_MAP[code];
+        return label ? `${label}` : value;
+    };
+
+
     const contextSummary = useMemo(() => {
         const trimmedSearch = (searchQuery || '').trim();
         if (trimmedSearch) {
@@ -881,12 +899,14 @@ export default function CardProduct() {
 
         const [brandValue] = getArray('brand');
         if (brandValue) {
+            const formattedBrand = formatBrandValue(brandValue);
+
             return {
                 badge: t('summary.badge.brand', 'Marca seleccionada'),
                 title: translateSummaryTitle(
                     'summary.title.brand',
-                    { value: brandValue },
-                    () => `${filterLabelMap.brand}: ${brandValue}`
+                    { value: formattedBrand },
+                    () => `${filterLabelMap.brand}: ${formattedBrand}`
                 ),
                 description: t(
                     'summary.description.brand',
@@ -895,6 +915,7 @@ export default function CardProduct() {
                 icon: 'brand',
             };
         }
+
 
         const [collectionValue] = getArray('collection');
         if (collectionValue) {
@@ -1048,6 +1069,8 @@ export default function CardProduct() {
         return tokens;
     }, [chipEntries, filterLabelMap]);
 
+
+
     const detailFilterGroups = useMemo(() => {
         const grouped = new Map();
         chipEntries.forEach(({ key, value }) => {
@@ -1071,8 +1094,15 @@ export default function CardProduct() {
         if (key === 'search') {
             return `“${value}”`;
         }
+
+        if (key === 'brand') {
+            return formatBrandValue(value);
+        }
+
         return value;
     }, []);
+
+
 
     const contextIconFor = useCallback((name) => {
         switch (name) {
@@ -1221,7 +1251,7 @@ export default function CardProduct() {
                 />
 
                 {/* Resumen contextual (compacto cuando no hay filtros) */}
-                {hasContextDetails ? (
+                {hasContextDetails && (
                     <div className="rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm backdrop-blur lg:p-10">
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -1254,8 +1284,9 @@ export default function CardProduct() {
                                     )}
                                 </div>
                             </div>
-
-                            <div className="space-y-6">
+                            {/*!!!!!IMPORTANTE ESTO ESTA COMENTADO PARA QUITAR LA PARTE EN LA QUE APARECEN LOS FILTROS ACTIVOS Y FILTROS
+                            DETALLADOS DESCOMENTAR EN CASO DE QUE SE QUIERA QUE VUELVAN A APARECER SIMPLEMENTE*/}
+                            {/* <div className="space-y-6">
                                 <div>
                                     <div className="flex items-center justify-between gap-2">
                                         <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
@@ -1263,13 +1294,11 @@ export default function CardProduct() {
                                         </span>
                                         {contextTokens.length > 0 && (
                                             <span className="text-xs text-slate-400">
-                                                {t(
-                                                    'summary.tokenHelper',
-                                                    'Pulsa una etiqueta para quitarla.'
-                                                )}
+                                                {t('summary.tokenHelper', 'Pulsa una etiqueta para quitarla.')}
                                             </span>
                                         )}
                                     </div>
+
                                     {contextTokens.length > 0 ? (
                                         <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                             {contextTokens.map((token) => (
@@ -1287,39 +1316,28 @@ export default function CardProduct() {
                                                             </p>
                                                             <p className="text-sm font-semibold text-slate-700">
                                                                 {token.values.length === 1
-                                                                    ? formatTokenValue(
-                                                                        token.key,
-                                                                        token.values[0]
-                                                                    )
-                                                                    : t(
-                                                                        'summary.multipleValues',
-                                                                        {
-                                                                            count: token.values.length,
-                                                                            defaultValue:
-                                                                                '{{count}} valores seleccionados',
-                                                                        }
-                                                                    )}
+                                                                    ? formatTokenValue(token.key, token.values[0])
+                                                                    : t('summary.multipleValues', {
+                                                                        count: token.values.length,
+                                                                        defaultValue:
+                                                                            '{{count}} valores seleccionados',
+                                                                    })}
                                                             </p>
                                                         </div>
                                                     </div>
+
                                                     <div className="mt-3 flex flex-wrap gap-1.5">
                                                         {token.values.map((value) => (
                                                             <button
                                                                 key={`${token.key}-${value}`}
                                                                 type="button"
                                                                 onClick={() =>
-                                                                    handleRemoveFilter(
-                                                                        token.key,
-                                                                        value
-                                                                    )
+                                                                    handleRemoveFilter(token.key, value)
                                                                 }
                                                                 className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-[#26659E] hover:text-white"
                                                             >
                                                                 <span>
-                                                                    {formatTokenValue(
-                                                                        token.key,
-                                                                        value
-                                                                    )}
+                                                                    {formatTokenValue(token.key, value)}
                                                                 </span>
                                                                 <span
                                                                     aria-hidden="true"
@@ -1357,6 +1375,7 @@ export default function CardProduct() {
                                             </span>
                                         )}
                                     </div>
+
                                     {detailFilterGroups.length > 0 ? (
                                         <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                             {detailFilterGroups.map((group) => (
@@ -1373,10 +1392,7 @@ export default function CardProduct() {
                                                                 key={`${group.key}-${value}`}
                                                                 type="button"
                                                                 onClick={() =>
-                                                                    handleRemoveFilter(
-                                                                        group.key,
-                                                                        value
-                                                                    )
+                                                                    handleRemoveFilter(group.key, value)
                                                                 }
                                                                 className="group inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600 transition hover:border-[#26659E] hover:bg-white hover:text-[#26659E]"
                                                             >
@@ -1402,26 +1418,7 @@ export default function CardProduct() {
                                         </p>
                                     )}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="rounded-3xl border border-slate-200 bg-white/95 px-4 py-4 shadow-sm backdrop-blur lg:px-6 lg:py-5">
-                        <div className="flex items-start gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#26659E]/10 text-[#26659E]">
-                                {contextIconFor(contextSummary.icon)}
-                            </div>
-                            <div className="space-y-1">
-                                <span className="inline-flex text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-slate-500">
-                                    {contextSummary.badge}
-                                </span>
-                                <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">
-                                    {contextSummary.title}
-                                </h1>
-                                <p className="text-xs text-slate-500 sm:text-sm">
-                                    {contextSummary.description}
-                                </p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 )}
