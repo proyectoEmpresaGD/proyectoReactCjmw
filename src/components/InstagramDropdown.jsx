@@ -6,24 +6,26 @@ const isMobile = () =>
     /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 function openInstagram({ username, webUrl }) {
-    // Desktop: web directamente
+    if (!username || !webUrl) return;
+
+    // 1) Universal link que abre la app en el perfil (si está instalada)
+    const appPreferredUrl = `https://www.instagram.com/_u/${encodeURIComponent(username)}/`;
+
+    // Desktop: web directo
     if (!isMobile()) {
         window.open(webUrl, "_blank", "noopener,noreferrer");
         return;
     }
 
-    // Mobile: intenta abrir app -> fallback a web
-    const appUrl = `instagram://user?username=${encodeURIComponent(username)}`;
+    // Mobile: intenta abrir app (universal link)
+    window.location.href = appPreferredUrl;
 
-    // Intento 1: navegación directa (mejor para deep links)
-    window.location.href = appUrl;
-
-    // Si no abre la app, en ~700ms abrimos web
-    // Si la app se abre, el navegador se "pausa" y normalmente no ejecuta el fallback.
+    // 2) Fallback: si no abre app, abre web normal del perfil
     setTimeout(() => {
         window.location.href = webUrl;
-    }, 700);
+    }, 800);
 }
+
 
 export default function InstagramDropdown({ items = [], buttonClassName = "" }) {
     const [open, setOpen] = useState(false);
