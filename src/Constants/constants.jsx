@@ -74,7 +74,29 @@ export const SOCIAL_MEDIA_LINKS = {
     instagram: "https://www.instagram.com/cjmwfabrics/",
     facebook: "https://www.facebook.com/cjmwfabrics/",
     twitter: "#",
+    linkedin: "https://www.linkedin.com/search/results/all/?keywords=cjmgroup&origin=GLOBAL_SEARCH_HEADER",
 };
+
+export const BRAND_INSTAGRAM_LINKS = [
+    {
+        key: "bassari",
+        href: "https://www.instagram.com/bassarifabrics/",
+        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png",
+        alt: "Bassari",
+    },
+    {
+        key: "flamenco",
+        href: "https://www.instagram.com/flamencofabrics/",
+        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png",
+        alt: "Flamenco",
+    },
+    {
+        key: "arena",
+        href: "https://www.instagram.com/arenafabrics/",
+        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png",
+        alt: "Arena",
+    },
+];
 
 // Links para PDF de políticas y términos
 export const PDF_LINKS = {

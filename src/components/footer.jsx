@@ -1,13 +1,15 @@
-import { Instagram, Facebook, Twitter } from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     LOGO_URL,
     SOCIAL_MEDIA_LINKS,
     PDF_LINKS,
-    NAVIGATION_LINKS
+    NAVIGATION_LINKS,
+    BRAND_INSTAGRAM_LINKS
 } from "../Constants/constants";
 import { useMarca } from './MarcaContext';
 import { useTranslation } from 'react-i18next';
+import InstagramDropdown from "../components/InstagramDropdown";
 
 const Footer = () => {
     const { setMarcaActiva } = useMarca();
@@ -56,27 +58,20 @@ const Footer = () => {
                         </Link>
                     </div>
                     <nav className="flex items-center justify-center gap-4">
+                        <InstagramDropdown
+                            items={BRAND_INSTAGRAM_LINKS}
+                            buttonClassName="bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
+                        />
                         <a
-                            href={SOCIAL_MEDIA_LINKS.instagram}
+                            href={SOCIAL_MEDIA_LINKS.linkedin}
                             className="bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
-                            aria-label="Instagram"
+                            aria-label="LinkedIn"
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
-                            <Instagram size={18} className="text-white" />
+                            <Linkedin size={18} className="text-white" />
                         </a>
-                        <a
-                            href={SOCIAL_MEDIA_LINKS.facebook}
-                            className="bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
-                            aria-label="Facebook"
-                        >
-                            <Facebook size={18} className="text-white" />
-                        </a>
-                        <a
-                            href={SOCIAL_MEDIA_LINKS.twitter}
-                            className="bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
-                            aria-label="Twitter"
-                        >
-                            <Twitter size={18} className="text-white" />
-                        </a>
+
                     </nav>
                 </div>
             </div>
