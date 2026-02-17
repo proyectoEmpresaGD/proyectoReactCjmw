@@ -81,11 +81,13 @@ export const BRAND_INSTAGRAM_LINKS = [
     {
         key: "bassari",
         href: "https://www.instagram.com/bassarifabrics/",
+        username: "bassarifabrics",
         img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png",
         alt: "Bassari",
     },
     {
         key: "flamenco",
+        username: "flamencofabrics",
         href: "https://www.instagram.com/flamencofabrics/",
         img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png",
         alt: "Flamenco",
@@ -93,6 +95,7 @@ export const BRAND_INSTAGRAM_LINKS = [
     {
         key: "arena",
         href: "https://www.instagram.com/arenafabrics/",
+        username: "arenafabrics",
         img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png",
         alt: "Arena",
     },
