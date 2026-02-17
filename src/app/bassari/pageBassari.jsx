@@ -12,6 +12,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { imagenesColecciones } from "../../Constants/constants";
 import { coleccionConfigByName } from "../../Constants/constants";
+import InstagramFeed from "../../components/ComponentesBrands/instagramPost";
+
 
 const normalizeColeccionName = (name) => String(name || "").trim().toUpperCase();
 
@@ -191,6 +193,7 @@ function BassariHome() {
             <section id="colecciones">
                 <ColeccionesMarcas marca={marca} />
             </section>
+            {/* <InstagramFeed brand="bassari" className="mt-10" /> */}
 
             <Footer />
         </CartProvider>

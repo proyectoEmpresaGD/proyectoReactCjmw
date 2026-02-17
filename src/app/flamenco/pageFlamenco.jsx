@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { imagenesColecciones } from "../../Constants/constants";
 import { buildColeccionParams, getColeccionCover } from "../../Constants/coleccionesHelpers";
 import { coleccionConfigByName } from "../../Constants/constants";
+import InstagramFeed from "../../components/ComponentesBrands/instagramPost";
 
 function FlamencoHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -163,7 +164,7 @@ function FlamencoHome() {
             <section id="colecciones">
                 <ColeccionesMarcas marca={marca} />
             </section>
-
+            {/* <InstagramFeed brand="flamenco" className="mt-10" /> */}
             <Footer />
         </CartProvider>
     );

@@ -318,7 +318,7 @@ const CarruselHome = ({
                                         <button
                                             type="button"
                                             onClick={() => goToBrandProducts(s.name)}
-                                            className="px-5 py-3 rounded-full border border-white/70 text-white hover:bg-white/10 transition"
+                                            className="px-4 py-2 rounded-full border border-white/70 text-white hover:bg-white/10 transition"
                                         >
                                             {t("home.buttonExplore.text")}
                                         </button>
