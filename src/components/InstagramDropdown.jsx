@@ -1,31 +1,58 @@
 import { useEffect, useRef, useState } from "react";
 import { Instagram } from "lucide-react";
 
-const isMobile = () =>
-    typeof window !== "undefined" &&
-    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const ua = () => (typeof navigator !== "undefined" ? navigator.userAgent : "");
+const isAndroid = () => /Android/i.test(ua());
+const isIOS = () => /iPhone|iPad|iPod/i.test(ua());
+const isMobile = () => isAndroid() || isIOS();
 
 function openInstagram({ username, webUrl }) {
     if (!username || !webUrl) return;
 
-    // 1) Universal link que abre la app en el perfil (si está instalada)
-    const appPreferredUrl = `https://www.instagram.com/_u/${encodeURIComponent(username)}/`;
+    const cleanUsername = String(username).replace(/^@/, "").trim();
+    if (!cleanUsername) return;
 
-    // Desktop: web directo
+    const encodedUsername = encodeURIComponent(cleanUsername);
+    const webProfileUrl = `https://www.instagram.com/${encodedUsername}/`;
+
+    // Desktop: web directo (tu comportamiento actual)
     if (!isMobile()) {
         window.open(webUrl, "_blank", "noopener,noreferrer");
         return;
     }
 
-    // Mobile: intenta abrir app (universal link)
-    window.location.href = appPreferredUrl;
+    // Android: Intent link (lo más fiable para forzar la app)
+    if (isAndroid()) {
+        const intentUrl =
+            `intent://www.instagram.com/${encodedUsername}/` +
+            `#Intent;package=com.instagram.android;scheme=https;end`;
 
-    // 2) Fallback: si no abre app, abre web normal del perfil
-    setTimeout(() => {
-        window.location.href = webUrl;
-    }, 800);
+        window.location.href = intentUrl;
+
+        // Fallback a web si no abre la app
+        setTimeout(() => {
+            window.location.href = webProfileUrl;
+        }, 900);
+
+        return;
+    }
+
+    // iOS: scheme (mejor esfuerzo; Instagram puede abrir en buscar/home según versión)
+    if (isIOS()) {
+        const schemeUrl = `instagram://user?username=${encodedUsername}`;
+        window.location.href = schemeUrl;
+
+        // Fallback a web si no abre la app
+        setTimeout(() => {
+            window.location.href = webProfileUrl;
+        }, 900);
+
+        return;
+    }
+
+    // Fallback genérico
+    window.location.href = webProfileUrl;
 }
-
 
 export default function InstagramDropdown({ items = [], buttonClassName = "" }) {
     const [open, setOpen] = useState(false);
