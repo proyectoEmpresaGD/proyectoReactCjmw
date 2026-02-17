@@ -1,57 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Instagram } from "lucide-react";
 
-const ua = () => (typeof navigator !== "undefined" ? navigator.userAgent : "");
-const isAndroid = () => /Android/i.test(ua());
-const isIOS = () => /iPhone|iPad|iPod/i.test(ua());
-const isMobile = () => isAndroid() || isIOS();
-
-function openInstagram({ username, webUrl }) {
-    if (!username || !webUrl) return;
-
-    const cleanUsername = String(username).replace(/^@/, "").trim();
-    if (!cleanUsername) return;
-
-    const encodedUsername = encodeURIComponent(cleanUsername);
-    const webProfileUrl = `https://www.instagram.com/${encodedUsername}/`;
-
-    // Desktop: web directo (tu comportamiento actual)
-    if (!isMobile()) {
+function openInstagramWeb({ username, webUrl }) {
+    // Si ya tienes href bien, úsala. Si no, construimos desde username.
+    if (webUrl) {
         window.open(webUrl, "_blank", "noopener,noreferrer");
         return;
     }
 
-    // Android: Intent link (lo más fiable para forzar la app)
-    if (isAndroid()) {
-        const intentUrl =
-            `intent://www.instagram.com/${encodedUsername}/` +
-            `#Intent;package=com.instagram.android;scheme=https;end`;
+    const cleanUsername = String(username || "").replace(/^@/, "").trim();
+    if (!cleanUsername) return;
 
-        window.location.href = intentUrl;
-
-        // Fallback a web si no abre la app
-        setTimeout(() => {
-            window.location.href = webProfileUrl;
-        }, 900);
-
-        return;
-    }
-
-    // iOS: scheme (mejor esfuerzo; Instagram puede abrir en buscar/home según versión)
-    if (isIOS()) {
-        const schemeUrl = `instagram://user?username=${encodedUsername}`;
-        window.location.href = schemeUrl;
-
-        // Fallback a web si no abre la app
-        setTimeout(() => {
-            window.location.href = webProfileUrl;
-        }, 900);
-
-        return;
-    }
-
-    // Fallback genérico
-    window.location.href = webProfileUrl;
+    const profileUrl = `https://www.instagram.com/${encodeURIComponent(cleanUsername)}/`;
+    window.open(profileUrl, "_blank", "noopener,noreferrer");
 }
 
 export default function InstagramDropdown({ items = [], buttonClassName = "" }) {
@@ -128,7 +89,7 @@ export default function InstagramDropdown({ items = [], buttonClassName = "" }) 
                             className="flex items-center justify-center rounded-lg hover:bg-black/5"
                             title={item.alt}
                             onClick={() => {
-                                openInstagram({ username: item.username, webUrl: item.href });
+                                openInstagramWeb({ username: item.username, webUrl: item.href });
                                 setOpen(false);
                             }}
                         >
