@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import InnerImageZoom from 'react-inner-image-zoom';
@@ -29,37 +29,103 @@ const ProductImageViewer = ({
 }) => {
     const slides = useMemo(() => (galleryImages || []).map((src) => ({ src })), [galleryImages]);
 
-    const safeSelectedImage =
+    const requestedImage =
         typeof selectedImage === 'string' && selectedImage.trim()
             ? selectedImage
             : null;
-
-    {
-        safeSelectedImage && (
-            <Zoom>
-                <InnerImageZoom
-                    src={safeSelectedImage}
-                    zoomSrc={safeSelectedImage}
-                    alt={alt}
-                    className="!block !w-full !h-auto !object-cover"
-                    style={{
-                        display: 'block',
-                        width: '100%',
-                        height: 'auto',
-                        borderRadius: '1.5rem',
-                    }}
-                />
-            </Zoom>
-        )
-    }
 
     const visiblePairs = Array.isArray(artisticPairs)
         ? artisticPairs.filter((p) => typeof p?.thumb === 'string' && p.thumb.trim())
         : [];
 
+    const imageContainerRef = useRef(null);
+
+    // La imagen que realmente se renderiza (se mantiene la anterior hasta que cargue la nueva)
+    const [displayImage, setDisplayImage] = useState(requestedImage);
+
+    const [imageAspectRatio, setImageAspectRatio] = useState(null); // height / width
+    const [containerHeight, setContainerHeight] = useState(null);
+
+    // Sincroniza el estado inicial (por si entra null -> url o cambios rápidos)
+    useEffect(() => {
+        if (requestedImage && !displayImage) {
+            setDisplayImage(requestedImage);
+        }
+        if (!requestedImage) {
+            setDisplayImage(null);
+            setImageAspectRatio(null);
+            setContainerHeight(null);
+        }
+    }, [requestedImage, displayImage]);
+
+    // Precarga la imagen solicitada; solo cuando está cargada:
+    // 1) calcula ratio, 2) actualiza altura, 3) hace swap de displayImage
+    useEffect(() => {
+        if (!requestedImage) return;
+
+        // Si es la misma que ya está mostrada, no recargues
+        if (requestedImage === displayImage && imageAspectRatio) return;
+
+        let cancelled = false;
+
+        const img = new Image();
+        img.src = requestedImage;
+
+        img.onload = () => {
+            if (cancelled) return;
+
+            if (img.naturalWidth && img.naturalHeight) {
+                setImageAspectRatio(img.naturalHeight / img.naturalWidth);
+            }
+
+            // Swap solo cuando ya cargó (evita flash blanco)
+            setDisplayImage(requestedImage);
+        };
+
+        img.onerror = () => {
+            if (cancelled) return;
+            // Si falla la carga, intentamos mostrar igualmente para no quedarnos en blanco
+            setDisplayImage(requestedImage);
+        };
+
+        return () => {
+            cancelled = true;
+            img.onload = null;
+            img.onerror = null;
+        };
+    }, [requestedImage, displayImage, imageAspectRatio]);
+
+    // Calcula altura del contenedor en base al ratio y al ancho real del contenedor
+    useEffect(() => {
+        if (!imageContainerRef.current || !imageAspectRatio) return;
+
+        const el = imageContainerRef.current;
+
+        const updateHeight = () => {
+            const width = el.getBoundingClientRect().width;
+            if (!width) return;
+            setContainerHeight(Math.round(width * imageAspectRatio));
+        };
+
+        updateHeight();
+
+        const ro = new ResizeObserver(() => updateHeight());
+        ro.observe(el);
+
+        return () => ro.disconnect();
+    }, [imageAspectRatio]);
+
     return (
         <div className="lg:w-7/12 w-full max-w-[100%] mx-auto lg:mx-0">
-            <div className="relative rounded-3xl bg-transparent shadow-2xl border-0 p-0 overflow-hidden" style={{ width: '100%' }}>
+            <div
+                ref={imageContainerRef}
+                className="relative rounded-3xl bg-transparent shadow-2xl border-0 p-0 overflow-hidden"
+                style={{
+                    width: '100%',
+                    height: containerHeight ? `${containerHeight}px` : 'auto',
+                    transition: 'height 300ms ease-out',
+                }}
+            >
                 <button
                     onClick={() => setIsViewerOpen(true)}
                     className="absolute left-3 top-3 sm:left-4 sm:top-4 z-10 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow-md transition hover:scale-110"
@@ -73,14 +139,22 @@ const ProductImageViewer = ({
                     />
                 </button>
 
-                {safeSelectedImage ? (
+                {displayImage ? (
                     <Zoom>
                         <InnerImageZoom
-                            src={safeSelectedImage}
-                            zoomSrc={safeSelectedImage}
+                            src={displayImage}
+                            zoomSrc={displayImage}
                             alt={alt}
-                            className="!block !w-full !h-auto !object-cover"
-                            style={{ display: 'block', width: '100%', height: 'auto', borderRadius: '1.5rem' }}
+                            className={[
+                                '!block !w-full !object-cover',
+                                containerHeight ? '!h-full' : '!h-auto',
+                            ].join(' ')}
+                            style={{
+                                display: 'block',
+                                width: '100%',
+                                height: containerHeight ? '100%' : 'auto',
+                                borderRadius: '1.5rem',
+                            }}
                         />
                     </Zoom>
                 ) : null}
