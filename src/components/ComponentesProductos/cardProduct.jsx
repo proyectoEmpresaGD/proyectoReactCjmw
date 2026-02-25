@@ -501,15 +501,16 @@ export default function CardProduct() {
             const shouldNormalizeToFirstPageOnReload =
                 pageNum > 1 &&
                 pageNum === initialPageRef.current &&
-                !userHasScrolledRef.current;
+                !infiniteLoadTriggeredRef.current &&
+                !didNormalizeOnReloadRef.current;
 
             if (shouldNormalizeToFirstPageOnReload) {
-                // Caso 1: catálogo completo (sin filtros) -> siempre volver a página 1 al recargar
-                // Caso 2: con filtros -> solo si la página actual no devuelve resultados
                 const shouldGoFirstPage =
                     !hasActiveFilters || (hasActiveFilters && wi.length === 0);
 
                 if (shouldGoFirstPage) {
+                    didNormalizeOnReloadRef.current = true;
+
                     const u = new URLSearchParams(getQueryString());
                     u.set('page', '1');
                     navigate(`/products?${u.toString()}`, { replace: true });
