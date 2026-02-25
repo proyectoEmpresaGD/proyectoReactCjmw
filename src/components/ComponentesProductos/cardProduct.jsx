@@ -304,11 +304,7 @@ export default function CardProduct() {
     // const [showOnlyHoliday, setShowOnlyHoliday] = useState(isHolidayParam);
 
     // sync page from URL (hash-safe)
-    useEffect(() => {
-        const p = parseInt(params.get('page') || '1', 10);
-        if (p !== page) setPage(p);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getQueryString]);
+
 
     useEffect(() => {
         if (initialPageRef.current != null) return;
@@ -624,6 +620,7 @@ export default function CardProduct() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getQueryString, fetchByIdParam, fetchById, fetchProducts, buildAppliedFilters, params]);
 
+
     // filtros desde <Filtro> (acepta total opcional)
     const handleFilteredProducts = (prods, selFilters, total) => {
         try {
@@ -895,6 +892,17 @@ export default function CardProduct() {
         },
         [t]
     );
+
+    useEffect(() => {
+        const p = parseInt(params.get('page') || '1', 10);
+
+        // Si la URL dice page=1 pero tú ya estás en page>1 por infinite scroll,
+        // NO vuelvas a forzar page=1 (si no, te quedas clavado).
+        if (p === 1 && page > 1) return;
+
+        if (p !== page) setPage(p);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [queryKey]);
 
     const chipEntries = useMemo(() => {
         const entries = [];
