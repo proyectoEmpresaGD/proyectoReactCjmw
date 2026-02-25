@@ -23,7 +23,6 @@ import {
     ArrowUpAZ,
 } from "lucide-react";
 
-
 const LazyImage = ({ src, alt, className }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef(null);
@@ -86,7 +85,7 @@ const formatPrice = (value, currencyHint) => {
                     currency: trimmed.toUpperCase(),
                 }).format(value);
             } catch {
-                // fallback
+                //
             }
         }
         if (trimmed.length > 0 && trimmed.length <= 2) {
@@ -108,7 +107,7 @@ const formatPrice = (value, currencyHint) => {
    NAVIDAD: Prefijos y descuento por defecto (DESACTIVADO)
    ────────────────────────────────────────────────────────────────────────────── */
 // const STATIC_SALE_PREFIXES = ['ADELFAS', 'GENESIS'];
-// const HOLIDAY_DEFAULT_DISCOUNT = 30; // 30%
+// const HOLIDAY_DEFAULT_DISCOUNT = 30;
 
 const resolveSaleInfo = (product = {}) => {
     const normalizedName = (product.nombre || '')
@@ -117,7 +116,6 @@ const resolveSaleInfo = (product = {}) => {
         .replace(/\p{Diacritic}/gu, '')
         .toUpperCase();
 
-    /* NAVIDAD OFF: detección por prefijo desactivada */
     // const nameIsStaticSale = STATIC_SALE_PREFIXES.some((prefix) =>
     //     normalizedName.startsWith(prefix)
     // );
@@ -182,7 +180,6 @@ const resolveSaleInfo = (product = {}) => {
         }
     }
 
-    /* NAVIDAD OFF: si es estático y sin descuento, antes forzábamos 30% */
     // if (nameIsStaticSale && derivedDiscount == null) {
     //     derivedDiscount = HOLIDAY_DEFAULT_DISCOUNT;
     // }
@@ -207,7 +204,6 @@ const resolveSaleInfo = (product = {}) => {
             : null;
 
     const isOnSale =
-        /* NAVIDAD OFF: quitamos el OR con nameIsStaticSale */
         // nameIsStaticSale ||
         saleFlags.some(asBoolean) ||
         Boolean(derivedDiscount) ||
@@ -215,7 +211,6 @@ const resolveSaleInfo = (product = {}) => {
 
     return {
         isOnSale,
-        /* NAVIDAD OFF: esta marca queda siempre false */
         isLiquidation: false,
         discount: Number.isFinite(derivedDiscount) ? derivedDiscount : null,
         salePrice,
@@ -233,6 +228,7 @@ const CONTEXT_TOKEN_KEYS = [
     'mantenimiento',
     'type',
 ];
+
 const TOKEN_ORDER = [
     'search',
     'brand',
@@ -246,38 +242,39 @@ const TOKEN_ORDER = [
 
 export default function CardProduct() {
     const { t } = useTranslation('cardProduct');
-    const { addToCart } = useCart(); // si lo usas en el modal
+    const { addToCart } = useCart();
     const location = useLocation();
     const navigate = useNavigate();
-    const params = new URLSearchParams(location.search);
-
+    const nextPageRequestRef = useRef(null);
     const containerRef = useRef(null);
     const sentinelRef = useRef(null);
     const observerRef = useRef(null);
     const controllerRef = useRef(null);
+    const initialPageRef = useRef(null);
+    const userHasScrolledRef = useRef(false);
 
-    // Hash params
-    const getHashParams = () => {
-        const hash = window.location.hash;
-        const i = hash.indexOf('?');
-        if (i === -1) return new URLSearchParams();
-        return new URLSearchParams(hash.slice(i + 1));
-    };
-    const hashParams = getHashParams();
+    const getQueryString = useCallback(() => {
+        if (location.search && location.search !== '?') return location.search;
 
-    // URL params
+        const hash = location.hash || window.location.hash || '';
+        const qIndex = hash.indexOf('?');
+        return qIndex >= 0 ? hash.slice(qIndex) : '';
+    }, [location.search, location.hash]);
+
+    const params = useMemo(() => new URLSearchParams(getQueryString()), [getQueryString]);
+
+    // URL params (ya unificados: search o hash)
     const searchQuery = params.get('search');
     const pidEnc = params.get('pid');
     const productId = params.get('productId');
     const fabricPattern = params.get('fabricPattern');
-    const uso = params.get('uso') || hashParams.get('uso');
-    const brand = params.get('brand') || hashParams.get('brand');
-    const fabricType = params.get('fabricType') || hashParams.get('fabricType');
+    const uso = params.get('uso');
+    const brand = params.get('brand');
+    const fabricType = params.get('fabricType');
     const collection = params.get('collection');
     const typeParam = params.get('type');
     const mantenimiento = params.get('mantenimiento');
 
-    /* NAVIDAD OFF: parámetro de URL desactivado */
     // const isHolidayParam = params.get('holiday') === '1';
 
     const decryptedPid = pidEnc
@@ -302,17 +299,31 @@ export default function CardProduct() {
     const [sortOrder, setSortOrder] = useState('alpha-asc');
     const [viewMode, setViewMode] = useState('grid4');
 
-    /* NAVIDAD OFF: estado y sync eliminados */
     // const [showOnlyHoliday, setShowOnlyHoliday] = useState(isHolidayParam);
 
-    // sync page from URL
+    // sync page from URL (hash-safe)
     useEffect(() => {
         const p = parseInt(params.get('page') || '1', 10);
         if (p !== page) setPage(p);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.search]);
+    }, [getQueryString]);
 
-    /* NAVIDAD OFF: sync del flag */
+    // Guarda la página inicial SOLO al entrar (para que loadMore no la cambie)
+    useEffect(() => {
+        const u = new URLSearchParams(getQueryString());
+        initialPageRef.current = parseInt(u.get('page') || '1', 10);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Marca si el usuario ha hecho scroll (para no auto-cargar sin interacción)
+    useEffect(() => {
+        const onScroll = () => {
+            userHasScrolledRef.current = true;
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
     // useEffect(() => {
     //     setShowOnlyHoliday(isHolidayParam);
     // }, [isHolidayParam]);
@@ -325,7 +336,7 @@ export default function CardProduct() {
         setActiveCategory(uso || fabricType || fabricPattern || mantenimiento || null);
     }, [uso, fabricType, fabricPattern, mantenimiento]);
 
-    const getArray = (key) => {
+    const getArray = useCallback((key) => {
         const seen = new Set();
         const values = params
             .getAll(key)
@@ -341,9 +352,9 @@ export default function CardProduct() {
                 return true;
             });
         return values;
-    };
+    }, [params]);
 
-    const buildAppliedFilters = () => {
+    const buildAppliedFilters = useCallback(() => {
         const ap = {};
         const brands = getArray('brand');
         const colors = getArray('color');
@@ -370,10 +381,9 @@ export default function CardProduct() {
         if (typeParam === 'papel') ap.fabricType = ['WALLPAPER', 'PAPEL PINTADO'];
 
         return ap;
-    };
+    }, [getArray, searchQuery, typeParam]);
 
-    // imágenes (para rutas normales)
-    const loadLowRes = async (prod) => {
+    const loadLowRes = useCallback(async (prod) => {
         try {
             const low = await fetch(
                 `${apiUrl}/api/images/${prod.codprodu}/PRODUCTO_BAJA`
@@ -385,9 +395,9 @@ export default function CardProduct() {
         } catch {
             return { ...prod, imageBaja: defaultImageUrl };
         }
-    };
+    }, []);
 
-    const preloadHighResInto = async (prod) => {
+    const preloadHighResInto = useCallback(async (prod) => {
         try {
             const hi = await fetch(
                 `${apiUrl}/api/images/${prod.codprodu}/PRODUCTO_BUENA`
@@ -400,16 +410,11 @@ export default function CardProduct() {
                 );
             }
         } catch {
-            // silent
+            //
         }
-    };
+    }, []);
 
-    /* ──────────────────────────────────────────────────────────────────────────
-       NAVIDAD: fetch de productos especiales (DESACTIVADO)
-       ────────────────────────────────────────────────────────────────────────── */
-    // const fetchHolidayProducts = useCallback(async (pageNum = 1) => { ... }, []);
-
-    // fetch normal de productos
+    // fetch normal de productos (sin función duplicada dentro)
     const fetchProducts = useCallback(async (pageNum = 1, appliedFilters = {}) => {
         controllerRef.current?.abort();
         const controller = new AbortController();
@@ -422,7 +427,6 @@ export default function CardProduct() {
             let data;
             let list;
 
-            // Search
             if (appliedFilters.search && String(appliedFilters.search).trim()) {
                 const u = new URL(`${apiUrl}/api/products/search-products`);
                 u.searchParams.set('query', String(appliedFilters.search).trim());
@@ -475,17 +479,32 @@ export default function CardProduct() {
 
             const wi = await Promise.all((list || []).map(loadLowRes));
 
-            if (pageNum === 1 && wi.length === 0) {
-                setProducts([]);
-                setTotalProducts(0);
-                setHasMore(false);
-                try {
-                    observerRef.current?.disconnect();
-                    observerRef.current = null;
-                } catch {
-                    //
+            const hasActiveFilters =
+                (appliedFilters.search && String(appliedFilters.search).trim()) ||
+                (Object.keys(appliedFilters).length > 0 &&
+                    Object.entries(appliedFilters).some(
+                        ([k, v]) =>
+                            k !== 'search' &&
+                            (Array.isArray(v) ? v.length > 0 : Boolean(v))
+                    ));
+
+            const shouldNormalizeToFirstPageOnReload =
+                pageNum > 1 &&
+                pageNum === initialPageRef.current &&
+                !userHasScrolledRef.current;
+
+            if (shouldNormalizeToFirstPageOnReload) {
+                // Caso 1: catálogo completo (sin filtros) -> siempre volver a página 1 al recargar
+                // Caso 2: con filtros -> solo si la página actual no devuelve resultados
+                const shouldGoFirstPage =
+                    !hasActiveFilters || (hasActiveFilters && wi.length === 0);
+
+                if (shouldGoFirstPage) {
+                    const u = new URLSearchParams(getQueryString());
+                    u.set('page', '1');
+                    navigate(`/products?${u.toString()}`, { replace: true });
+                    return;
                 }
-                return;
             }
 
             setProducts((prev) => (pageNum > 1 ? [...prev, ...wi] : wi));
@@ -507,7 +526,9 @@ export default function CardProduct() {
                     typeof hasNextFromApi === 'boolean'
                         ? hasNextFromApi
                         : pageNum * itemsPerPage < totalFromApi;
+
                 setHasMore(computedHasMore);
+
                 if (!computedHasMore) {
                     try {
                         observerRef.current?.disconnect();
@@ -522,6 +543,7 @@ export default function CardProduct() {
                 const fallbackTotal =
                     (pageNum - 1) * itemsPerPage + wi.length + (maybeMore ? 1 : 0);
                 setTotalProducts(fallbackTotal);
+
                 if (!maybeMore) {
                     try {
                         observerRef.current?.disconnect();
@@ -543,7 +565,7 @@ export default function CardProduct() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [getQueryString, loadLowRes, navigate]);
 
     // fetch por id (modal)
     const fetchById = useCallback(async (id) => {
@@ -568,9 +590,9 @@ export default function CardProduct() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [loadLowRes, preloadHighResInto]);
 
-    // efecto principal según URL
+    // efecto principal según URL (hash-safe)
     useEffect(() => {
         try {
             observerRef.current?.disconnect();
@@ -583,20 +605,13 @@ export default function CardProduct() {
             fetchById(fetchByIdParam);
         } else {
             const p = parseInt(params.get('page') || '1', 10);
-
-            /* NAVIDAD OFF: siempre tiramos del fetch normal */
-            // if (isHolidayParam) {
-            //     fetchHolidayProducts(p);
-            // } else {
-            //     const ap = buildAppliedFilters();
-            //     fetchProducts(p, ap);
-            // }
             const ap = buildAppliedFilters();
             fetchProducts(p, ap);
         }
+
         return () => controllerRef.current?.abort();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.search, fetchByIdParam /* , isHolidayParam */]);
+    }, [getQueryString, fetchByIdParam, fetchById, fetchProducts, buildAppliedFilters, params]);
 
     // filtros desde <Filtro> (acepta total opcional)
     const handleFilteredProducts = (prods, selFilters, total) => {
@@ -612,9 +627,6 @@ export default function CardProduct() {
         setProducts(safe);
         setFilters(selFilters);
         setPage(1);
-
-        /* NAVIDAD OFF: no forzamos estado del holiday */
-        // setShowOnlyHoliday(false);
 
         if (normalizedTotal === 0) {
             setTotalProducts(0);
@@ -650,10 +662,13 @@ export default function CardProduct() {
     // buscador con debounce
     const debouncedNavigateSearch = useRef(
         debounce((val) => {
-            const u = new URLSearchParams();
+            const u = new URLSearchParams(getQueryString());
+            u.delete('search');
+
             if (val && val.trim().length >= 3) {
                 u.set('search', val.trim());
             }
+
             u.set('page', '1');
             navigate(`/products?${u.toString()}`);
         }, 400)
@@ -670,24 +685,39 @@ export default function CardProduct() {
             e.preventDefault();
             debouncedNavigateSearch.cancel();
             const val = (searchInput || '').trim();
-            const u = new URLSearchParams();
+            const u = new URLSearchParams(getQueryString());
+            u.delete('search');
+
             if (val && val.length >= 3) {
                 u.set('search', val);
             }
+
             u.set('page', '1');
             navigate(`/products?${u.toString()}`);
         }
     };
 
-    // cargar más
+    // cargar más (hash-safe)
     const loadMore = () => {
         if (loading || !hasMore) return;
-        const nxt = page + 1;
+
+        const current = parseInt(new URLSearchParams(getQueryString()).get('page') || '1', 10);
+        const nxt = current + 1;
+
+        // Evita pedir la misma página varias veces si el observer dispara repetido
+        if (nextPageRequestRef.current === nxt) return;
+        nextPageRequestRef.current = nxt;
+
         setPage(nxt);
-        const u = new URLSearchParams(location.search);
-        u.set('page', nxt.toString());
+
+        const u = new URLSearchParams(getQueryString());
+        u.set('page', String(nxt));
         navigate(`/products?${u.toString()}`);
     };
+
+    useEffect(() => {
+        nextPageRequestRef.current = null;
+    }, [page]);
 
     // observer: solo si realmente hay más
     useEffect(() => {
@@ -704,7 +734,9 @@ export default function CardProduct() {
 
         const obs = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting && !loading && hasMore) loadMore();
+                if (entries[0].isIntersecting && !loading && hasMore) {
+                    loadMore();
+                }
             },
             { root: null, rootMargin: '600px', threshold: 0 }
         );
@@ -721,14 +753,13 @@ export default function CardProduct() {
             }
             observerRef.current = null;
         };
-    }, [hasMore, loading, page, location.search]);
+    }, [hasMore, loading, page, getQueryString]);
 
     // dedup
     const uniqueProducts = products.filter(
         (p, i, arr) => arr.findIndex((x) => x.codprodu === p.codprodu) === i
     );
 
-    // ✅ info de oferta (sin lógica de navidad)
     const productsWithSaleInfo = useMemo(
         () =>
             uniqueProducts.map((p) => ({
@@ -738,7 +769,6 @@ export default function CardProduct() {
         [uniqueProducts]
     );
 
-    // filtrado visible
     const normalizeSearch = (value) =>
         (value || '')
             .normalize('NFD')
@@ -751,7 +781,6 @@ export default function CardProduct() {
             .split(/\s+/)
             .filter(Boolean);
 
-    // filtrado visible (por tokens en nombre/tonalidad)
     let displayed = productsWithSaleInfo.filter((p) => {
         const tokens = tokenizeSearch(searchInput);
         if (tokens.length === 0) return true;
@@ -759,11 +788,6 @@ export default function CardProduct() {
         const tone = normalizeSearch(p.tonalidad);
         return tokens.every((token) => name.includes(token) || tone.includes(token));
     });
-
-    /* NAVIDAD OFF: filtro “ver solo navidad” */
-    // if (showOnlyHoliday) {
-    //     displayed = displayed.filter((p) => p._saleInfo.isLiquidation);
-    // }
 
     displayed.sort((a, b) => {
         if (sortOrder === 'alpha-asc') return (a.nombre || '').localeCompare(b.nombre || '');
@@ -810,7 +834,7 @@ export default function CardProduct() {
 
     const chipEntries = useMemo(() => {
         const entries = [];
-        const currentParams = new URLSearchParams(location.search);
+        const currentParams = new URLSearchParams(getQueryString());
 
         const pushEntries = (key, values) => {
             values.forEach((value) => {
@@ -837,10 +861,10 @@ export default function CardProduct() {
         if (typeValue) entries.push({ key: 'type', value: typeValue });
 
         return entries;
-    }, [location.search]);
+    }, [getQueryString]);
 
     const handleRemoveFilter = (key, value) => {
-        const updated = new URLSearchParams(location.search);
+        const updated = new URLSearchParams(getQueryString());
         if (key === 'search') {
             updated.delete('search');
         } else {
@@ -856,12 +880,8 @@ export default function CardProduct() {
         const cleared = new URLSearchParams();
         cleared.set('page', '1');
         navigate(`/products?${cleared.toString()}`);
-
-        /* NAVIDAD OFF */
-        // setShowOnlyHoliday(false);
     };
 
-    //Constantes para cambiar el nombre de las marcas que aparecen al filtrar
     const BRAND_CODE_LABEL_MAP = {
         ARE: 'ARENA',
         BAS: 'BASSARI',
@@ -877,7 +897,6 @@ export default function CardProduct() {
         const label = BRAND_CODE_LABEL_MAP[code];
         return label ? `${label}` : value;
     };
-
 
     const contextSummary = useMemo(() => {
         const trimmedSearch = (searchQuery || '').trim();
@@ -915,7 +934,6 @@ export default function CardProduct() {
                 icon: 'brand',
             };
         }
-
 
         const [collectionValue] = getArray('collection');
         if (collectionValue) {
@@ -1058,18 +1076,19 @@ export default function CardProduct() {
             if (!grouped.has(key)) grouped.set(key, new Set());
             grouped.get(key).add(trimmed);
         });
+
         const tokens = Array.from(grouped.entries()).map(([key, valuesSet]) => ({
             key,
             label: filterLabelMap[key] || key,
             values: Array.from(valuesSet),
         }));
+
         tokens.sort(
             (a, b) => TOKEN_ORDER.indexOf(a.key) - TOKEN_ORDER.indexOf(b.key)
         );
+
         return tokens;
     }, [chipEntries, filterLabelMap]);
-
-
 
     const detailFilterGroups = useMemo(() => {
         const grouped = new Map();
@@ -1094,15 +1113,11 @@ export default function CardProduct() {
         if (key === 'search') {
             return `“${value}”`;
         }
-
         if (key === 'brand') {
             return formatBrandValue(value);
         }
-
         return value;
     }, []);
-
-
 
     const contextIconFor = useCallback((name) => {
         switch (name) {
@@ -1128,7 +1143,6 @@ export default function CardProduct() {
         }
     }, []);
 
-
     const tokenIconFor = useCallback((key) => {
         switch (key) {
             case 'brand':
@@ -1151,10 +1165,8 @@ export default function CardProduct() {
         }
     }, []);
 
-
     const isListView = viewMode === 'grid2';
 
-    // 🔧 Ajuste de grid para que en móvil se vean 2 columnas y en desktop se mantenga la rejilla densa
     const gridClassName = isListView
         ? 'grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
         : 'grid grid-cols-2 auto-rows-fr gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6';
@@ -1165,7 +1177,6 @@ export default function CardProduct() {
         ? `${baseCardContainerClass} md:flex-row`
         : baseCardContainerClass;
 
-    // 🔧 Ajuste de aspect ratio para que en pantallas medianas/grandes las tarjetas sean más cuadradas
     const cardImageWrapperClass = isListView
         ? 'relative w-full overflow-hidden aspect-[4/3] focus:outline-none md:w-60 md:flex-shrink-0 md:aspect-[3/4]'
         : 'relative w-full overflow-hidden aspect-[3/4] md:aspect-square lg:aspect-[4/3] focus:outline-none';
@@ -1180,10 +1191,6 @@ export default function CardProduct() {
         ? 'flex flex-wrap items-center gap-2 text-xs font-semibold text-rose-600 sm:text-sm'
         : 'flex flex-wrap items-center gap-1.5 text-[0.7rem] font-semibold text-rose-600';
 
-    /* NAVIDAD OFF: resumen y botón de banner */
-    // const holidaySummary = useMemo(() => { ... }, [productsWithSaleInfo]);
-    // const handleToggleHolidayFilter = () => { ... };
-
     const hasContextDetails =
         chipEntries.length > 0 ||
         !!(searchQuery || '').trim() ||
@@ -1192,10 +1199,8 @@ export default function CardProduct() {
     return (
         <div className="relative px-4 pb-16 pt-10 lg:px-10" ref={containerRef}>
             <div className="relative mx-auto max-w-7xl space-y-6">
-                {/* Filtros globales */}
                 <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
 
-                {/* Submenú categorías */}
                 <SubMenuCarousel
                     onFilterClick={(sel) => {
                         try {
@@ -1208,10 +1213,6 @@ export default function CardProduct() {
                         setFilters({});
                         setPage(1);
 
-                        /* NAVIDAD OFF */
-                        // setShowOnlyHoliday(false);
-
-                        // reconstruye la query desde cero
                         const u = new URLSearchParams();
                         u.set('page', '1');
 
@@ -1226,20 +1227,19 @@ export default function CardProduct() {
                                 : sel;
 
                         switch (groupKey) {
-                            case 'types': // TIPOS → fabricType
+                            case 'types':
                                 u.set('fabricType', key);
                                 break;
-                            case 'patterns': // DIBUJOS → fabricPattern
+                            case 'patterns':
                                 u.set('fabricPattern', key);
                                 break;
-                            case 'usage': // USO → uso
+                            case 'usage':
                                 u.set('uso', key);
                                 break;
-                            case 'maintenance': // MANTENIMIENTO → mantenimiento
+                            case 'maintenance':
                                 u.set('mantenimiento', key);
                                 break;
                             default:
-                                // fallback conservador
                                 u.set('fabricPattern', key);
                                 break;
                         }
@@ -1250,7 +1250,6 @@ export default function CardProduct() {
                     activeCategory={activeCategory}
                 />
 
-                {/* Resumen contextual (compacto cuando no hay filtros) */}
                 {hasContextDetails && (
                     <div className="rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm backdrop-blur lg:p-10">
                         <div className="flex flex-col gap-6">
@@ -1284,146 +1283,12 @@ export default function CardProduct() {
                                     )}
                                 </div>
                             </div>
-                            {/*!!!!!IMPORTANTE ESTO ESTA COMENTADO PARA QUITAR LA PARTE EN LA QUE APARECEN LOS FILTROS ACTIVOS Y FILTROS
-                            DETALLADOS DESCOMENTAR EN CASO DE QUE SE QUIERA QUE VUELVAN A APARECER SIMPLEMENTE*/}
-                            {/* <div className="space-y-6">
-                                <div>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-                                            {t('summary.tokensTitle', 'Tu selección principal')}
-                                        </span>
-                                        {contextTokens.length > 0 && (
-                                            <span className="text-xs text-slate-400">
-                                                {t('summary.tokenHelper', 'Pulsa una etiqueta para quitarla.')}
-                                            </span>
-                                        )}
-                                    </div>
 
-                                    {contextTokens.length > 0 ? (
-                                        <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                                            {contextTokens.map((token) => (
-                                                <div
-                                                    key={token.key}
-                                                    className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm transition hover:border-[#26659E]/70 hover:shadow-md"
-                                                >
-                                                    <div className="flex items-start gap-3">
-                                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#26659E] shadow-sm">
-                                                            {tokenIconFor(token.key)}
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
-                                                                {token.label}
-                                                            </p>
-                                                            <p className="text-sm font-semibold text-slate-700">
-                                                                {token.values.length === 1
-                                                                    ? formatTokenValue(token.key, token.values[0])
-                                                                    : t('summary.multipleValues', {
-                                                                        count: token.values.length,
-                                                                        defaultValue:
-                                                                            '{{count}} valores seleccionados',
-                                                                    })}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mt-3 flex flex-wrap gap-1.5">
-                                                        {token.values.map((value) => (
-                                                            <button
-                                                                key={`${token.key}-${value}`}
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleRemoveFilter(token.key, value)
-                                                                }
-                                                                className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-[#26659E] hover:text-white"
-                                                            >
-                                                                <span>
-                                                                    {formatTokenValue(token.key, value)}
-                                                                </span>
-                                                                <span
-                                                                    aria-hidden="true"
-                                                                    className="text-base leading-none"
-                                                                >
-                                                                    ×
-                                                                </span>
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="mt-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-500">
-                                            {t(
-                                                'summary.tokensEmpty',
-                                                'Aún no eliges filtros principales.'
-                                            )}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-                                            {t('summary.detailsTitle', 'Filtros detallados')}
-                                        </span>
-                                        {detailFilterGroups.length > 0 && (
-                                            <span className="text-xs text-slate-400">
-                                                {t(
-                                                    'summary.detailsHelper',
-                                                    'Pulsa una etiqueta para quitarla.'
-                                                )}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {detailFilterGroups.length > 0 ? (
-                                        <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                                            {detailFilterGroups.map((group) => (
-                                                <div
-                                                    key={group.key}
-                                                    className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm"
-                                                >
-                                                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
-                                                        {group.label}
-                                                    </p>
-                                                    <div className="mt-2 flex flex-wrap gap-1.5">
-                                                        {group.values.map((value) => (
-                                                            <button
-                                                                key={`${group.key}-${value}`}
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleRemoveFilter(group.key, value)
-                                                                }
-                                                                className="group inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600 transition hover:border-[#26659E] hover:bg-white hover:text-[#26659E]"
-                                                            >
-                                                                <span>{value}</span>
-                                                                <span
-                                                                    aria-hidden="true"
-                                                                    className="text-base leading-none"
-                                                                >
-                                                                    ×
-                                                                </span>
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="mt-3 rounded-2xl border border-dashed border-slate-200 bg-white/80 p-4 text-sm text-slate-500">
-                                            {t(
-                                                'summary.detailsEmpty',
-                                                'No hay filtros adicionales aplicados.'
-                                            )}
-                                        </p>
-                                    )}
-                                </div>
-                            </div> */}
+                            {/* Bloque de chips comentado en tu original */}
                         </div>
                     </div>
                 )}
 
-                {/* search + sort + view */}
                 <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
                     <div className="relative w-full md:max-w-md">
                         <input
@@ -1453,10 +1318,7 @@ export default function CardProduct() {
                         </svg>
                         {searchInput && searchInput.length < 3 && (
                             <div className="absolute left-3 top-full mt-1 text-xs text-slate-400">
-                                {t(
-                                    'minChars',
-                                    'Escribe al menos 3 caracteres para buscar'
-                                )}
+                                {t('minChars', 'Escribe al menos 3 caracteres para buscar')}
                             </div>
                         )}
                     </div>
@@ -1495,6 +1357,7 @@ export default function CardProduct() {
                                 </span>
                             </button>
                         </div>
+
                         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-sm text-slate-600">
                             <span className="hidden pl-1 font-medium text-slate-700 sm:inline">
                                 {t('viewMode', 'Vista')}:
@@ -1531,16 +1394,9 @@ export default function CardProduct() {
                     </div>
                 </div>
 
-                {/* NAVIDAD OFF: banner de “Especial Navidad” */}
-                {/* {holidaySummary.count > 0 && (
-                    <button ...> ... </button>
-                )} */}
-
-                {/* grid */}
                 <div className={gridClassName}>
                     {displayed.map((p, i) => {
                         const saleInfo = p._saleInfo;
-                        /* NAVIDAD OFF */
                         const isChristmas = false;
 
                         return (
@@ -1566,8 +1422,6 @@ export default function CardProduct() {
                                                 : 'bg-rose-600'
                                                 }`}
                                         >
-                                            {/* NAVIDAD OFF */}
-                                            {/* {isChristmas ? t('sale.christmasBadge','Especial Navidad') : ... } */}
                                             {saleInfo.discount != null
                                                 ? t('sale.discountBadge', {
                                                     discount: saleInfo.discount,
@@ -1581,12 +1435,14 @@ export default function CardProduct() {
                                         {t('touchToView', 'Toca para ver')}
                                     </div>
                                 </button>
+
                                 <div className={cardBodyClass}>
                                     {p.coleccion && (
                                         <span className="text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-[#26659E]/80">
                                             {p.coleccion}
                                         </span>
                                     )}
+
                                     <h3
                                         className="text-base font-semibold text-slate-900 leading-tight md:text-lg"
                                         style={{
@@ -1598,14 +1454,14 @@ export default function CardProduct() {
                                     >
                                         {p.nombre}
                                     </h3>
+
                                     <div className="flex flex-wrap items-center gap-2 text-[0.7rem] text-slate-500 sm:text-xs">
                                         {p.tonalidad && (
                                             <span className={metaPillClass}>
                                                 <span
                                                     className="h-2 w-2 rounded-full border border-slate-200"
                                                     style={{
-                                                        backgroundColor:
-                                                            p.hexcolor || '#f1f5f9',
+                                                        backgroundColor: p.hexcolor || '#f1f5f9',
                                                     }}
                                                 />
                                                 {p.tonalidad}
@@ -1620,14 +1476,14 @@ export default function CardProduct() {
                                             </span>
                                         )}
                                     </div>
+
                                     {saleInfo.isOnSale && (
                                         <div className={saleStackClass}>
                                             {saleInfo.salePrice && (
                                                 <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-1 text-rose-600">
                                                     {t('sale.priceLabel', {
                                                         price: saleInfo.salePrice,
-                                                        defaultValue:
-                                                            saleInfo.salePrice,
+                                                        defaultValue: saleInfo.salePrice,
                                                     })}
                                                 </span>
                                             )}
@@ -1635,8 +1491,7 @@ export default function CardProduct() {
                                                 <span className="text-slate-400 line-through">
                                                     {t('sale.originalLabel', {
                                                         price: saleInfo.originalPrice,
-                                                        defaultValue:
-                                                            saleInfo.originalPrice,
+                                                        defaultValue: saleInfo.originalPrice,
                                                     })}
                                                 </span>
                                             )}
@@ -1648,10 +1503,8 @@ export default function CardProduct() {
                     })}
                 </div>
 
-                {/* sentinel solo si hay más */}
                 {hasMore && <div ref={sentinelRef} />}
 
-                {/* loaders & mensajes */}
                 {!loading && displayed.length === 0 && !error && (
                     <div className="mt-8 text-center text-gray-500">
                         {t('noProductsFound')}
@@ -1661,7 +1514,6 @@ export default function CardProduct() {
                     <div className="mt-8 text-center text-red-500">{error}</div>
                 )}
 
-                {/* modal */}
                 {selectedProduct && (
                     <Modal
                         isOpen={modalOpen}
