@@ -762,6 +762,16 @@ export default function CardProduct() {
 
     useEffect(() => {
         if (fetchByIdParam) return;
+        if (page <= 1) return; // page 1 lo carga el efecto de queryKey
+
+        const ap = buildAppliedFilters();
+        fetchProducts(page, ap);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, fetchByIdParam]);
+
+    useEffect(() => {
+        if (fetchByIdParam) return;
 
         const ap = buildAppliedFilters();
         fetchProducts(page, ap);
