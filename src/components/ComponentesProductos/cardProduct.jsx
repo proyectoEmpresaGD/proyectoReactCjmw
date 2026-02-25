@@ -616,7 +616,8 @@ export default function CardProduct() {
             fetchById(fetchByIdParam);
         } else {
             const p = parseInt(params.get('page') || '1', 10);
-            if (p !== page) setPage(p);
+            const ap = buildAppliedFilters();
+            fetchProducts(p, ap);
         }
 
         return () => controllerRef.current?.abort();
@@ -669,6 +670,12 @@ export default function CardProduct() {
         }
     };
 
+    const queryKey = useMemo(() => {
+        const u = new URLSearchParams(getQueryString());
+        u.delete('page'); // clave: cambios de filtros sí, cambios de página no
+        return u.toString();
+    }, [getQueryString]);
+
     // buscador con debounce
     const debouncedNavigateSearch = useRef(
         debounce((val) => {
@@ -711,16 +718,48 @@ export default function CardProduct() {
     const loadMore = () => {
         if (loading || !hasMore) return;
 
-        const nxt = page + 1;
+        const current = parseInt(new URLSearchParams(getQueryString()).get('page') || '1', 10);
+        const nxt = current + 1;
 
         if (nextPageRequestRef.current === nxt) return;
         nextPageRequestRef.current = nxt;
 
-        infiniteLoadTriggeredRef.current = true;
+        infiniteLoadTriggeredRef.current = true; // 👈 clave
 
-        // Solo estado interno (no tocamos la URL)
         setPage(nxt);
+
+        const u = new URLSearchParams(getQueryString());
+        u.set('page', String(nxt));
+        navigate(`/products?${u.toString()}`);
     };
+
+    useEffect(() => {
+        if (fetchByIdParam) return;
+
+        // Reset de estado al cambiar filtros
+        setProducts([]);
+        setHasMore(false);
+        setTotalProducts(0);
+
+        nextPageRequestRef.current = null;
+        infiniteLoadTriggeredRef.current = false;
+        didNormalizeOnReloadRef.current = false;
+
+        try {
+            observerRef.current?.disconnect();
+            observerRef.current = null;
+        } catch {
+            //
+        }
+
+        setPage(1);
+
+        const ap = buildAppliedFilters();
+        fetchProducts(1, ap);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [queryKey, fetchByIdParam]);
+
     useEffect(() => {
         if (fetchByIdParam) return;
 
