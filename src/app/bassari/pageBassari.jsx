@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { imagenesColecciones } from "../../Constants/constants";
 import { coleccionConfigByName } from "../../Constants/constants";
 import InstagramFeed from "../../components/ComponentesBrands/instagramPost";
-
+import usePageMeta from "../../utils/usePageMeta";
 
 const normalizeColeccionName = (name) => String(name || "").trim().toUpperCase();
 
@@ -61,6 +61,12 @@ function BassariHome() {
         const qs = sp.toString();
         return `/coleccion/${encodeURIComponent(coleccion)}${qs ? `?${qs}` : ""}`;
     };
+
+    usePageMeta({
+        title: "Bassari | CJM Group",
+        description:
+            "Bassari presenta tejidos para cortinas y tapicería que combinan estilo, textura y calidad. Linos, jacquards y chenillas en diseños clásicos y contemporáneos para transformar cada espacio.",
+    });
 
     // =========================
     // Builder único de params (state->query)

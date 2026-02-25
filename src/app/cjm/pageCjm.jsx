@@ -4,6 +4,7 @@ import Carrusel from "../../components/ComponentesHome/carrusel"
 import NewCollection from "../../components/ComponentesBrands/cardNewCollection"
 import { CartProvider } from '../../components/CartContext';
 import ColeccionesMarcas from "../../components/colecciones/ColeccionesMarcas"
+import usePageMeta from "../../utils/usePageMeta";
 
 function CjmHome() {
 
@@ -14,6 +15,12 @@ function CjmHome() {
         }
         return array;
     }
+
+    usePageMeta({
+        title: "CJM | CJM Group",
+        description:
+            "CJM presenta papeles decorativos con acabados premium y gran resistencia. Descubre también sus tejidos para cortinas y tapicería que aportan estilo y personalidad a cada espacio.",
+    });
 
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/Carruseles/CJMW/TOKIO%20Y%20SHIBULLA.jpg",

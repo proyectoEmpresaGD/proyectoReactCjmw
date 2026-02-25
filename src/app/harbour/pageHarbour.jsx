@@ -9,6 +9,8 @@ import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carrus
 import CarruselProductosColeccionEspecifica from "../../components/ComponentesBrands/CarruselProductosColeccionEspecifica";
 import PresentacionColeccion from "../../components/ComponentesBrands/ultimaColeccionTextoAnimado";
 import Modal from "../../components/ComponentesProductos/modal";
+import usePageMeta from "../../utils/usePageMeta";
+
 function HarbourHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     const [modalAbierta, setModalAbierta] = useState(false);
@@ -20,7 +22,11 @@ function HarbourHome() {
         return array;
     }
 
-
+    usePageMeta({
+        title: "Harbour | CJM Group",
+        description:
+            "Harbour presenta tejidos para cortinas y tapicería que combinan diseño y calidad. Linos, jacquards y chenillas en estilos clásicos y contemporáneos para aportar elegancia y carácter a cada espacio.",
+    });
 
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/HARBOUR/HARB_AMB_BOHEMIAN_01CARROUSEL.jpg",

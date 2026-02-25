@@ -14,6 +14,7 @@ import { imagenesColecciones } from "../../Constants/constants";
 import { buildColeccionParams, getColeccionCover } from "../../Constants/coleccionesHelpers";
 import { coleccionConfigByName } from "../../Constants/constants";
 import InstagramFeed from "../../components/ComponentesBrands/instagramPost";
+import usePageMeta from "../../utils/usePageMeta";
 
 function FlamencoHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -83,6 +84,12 @@ function FlamencoHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/02_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINAS%20DE%20LAS%20MARCAS%20/FLAMENCO/FLA_MARRAKECH_COMPOTELAS.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/02_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINAS%20DE%20LAS%20MARCAS%20/FLAMENCO/FLA_MARRAKECH_KUTUBIA%20APRICOT.jpg",
     ];
+
+    usePageMeta({
+        title: "Flamenco | CJM Group",
+        description:
+            "Flamenco presenta tejidos para cortinas y tapicería que combinan estilo y calidad. Linos, jacquards y chenillas en diseños clásicos y contemporáneos para realzar cada estancia.",
+    });
 
     const slides = useMemo(
         () => [

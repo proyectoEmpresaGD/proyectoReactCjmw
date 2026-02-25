@@ -341,10 +341,42 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
         selectedProduct?.ancho || t('notAvailable')
     );
 
+    const martindaleNumberOrDefault = (martindale) => {
+        const n = Number(String(martindale ?? '').replace(/[^\d.]/g, ''));
+        if (!Number.isFinite(n) || n <= 0) return 10000; // vacíos o no válidos => 10000
+        return n;
+    };
+
+    const martindaleUsageKey = (martindale) => {
+        const n = martindaleNumberOrDefault(martindale);
+
+        if (n <= 10000) return 'martindaleUsage.decorative';
+        if (n <= 15000) return 'martindaleUsage.lightDomestic';
+        if (n <= 25000) return 'martindaleUsage.generalDomestic';
+        if (n <= 40000) return 'martindaleUsage.intensiveDomestic';
+        if (n <= 50000) return 'martindaleUsage.intensiveCommercial';
+        return 'martindaleUsage.highResistanceContract';
+    };
+
+
     const detailItems = useMemo(() => ([
         { key: 'type', label: t('type'), value: selectedProduct?.tipo || t('notAvailable') },
         { key: 'style', label: t('style'), value: selectedProduct?.estilo || t('notAvailable') },
-        { key: 'martindale', label: t('martindale'), value: selectedProduct?.martindale || t('notAvailable') },
+        {
+            key: 'martindale',
+            label: t('martindale'),
+            value: (() => {
+                const m = martindaleNumberOrDefault(selectedProduct?.martindale);
+                return (
+                    <div className="space-y-1">
+                        <div className="font-medium">{m} CYCLES</div>
+                        <div className="text-xs text-gray-500">
+                            {t(martindaleUsageKey(m))}
+                        </div>
+                    </div>
+                );
+            })()
+        },
         { key: 'rapportH', label: t('rapportH'), value: formatCmValue(selectedProduct?.repminhor) },
         { key: 'rapportV', label: t('rapportV'), value: formatCmValue(selectedProduct?.repminver) },
         { key: 'composition', label: t('composition'), value: selectedProduct?.composicion || t('notAvailable') },

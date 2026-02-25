@@ -15,6 +15,14 @@
         "oneColor": "1 couleur disponible",
         "manyColors": "couleurs disponibles"
     },
+    "martindaleUsage": {
+        "decorative": "Usage décoratif (rideaux)",
+        "lightDomestic": "Usage domestique léger",
+        "generalDomestic": "Usage domestique général",
+        "intensiveDomestic": "Usage domestique intensif",
+        "intensiveCommercial": "Usage commercial intensif",
+        "highResistanceContract": "Haute résistance / Contract"
+    },
     "techSheet": "FICHE TECHNIQUE",
     "downloadPdf": "Télécharger PDF",
     "downloadPdfAlt": "Télécharger la fiche technique PDF",
@@ -28,7 +36,8 @@
     "composition": "Composition",
     "weight": "Poids",
     "width": "Largeur",
-    "notAvailable": "N/D",
+    "notAvailable": "N/A",
+    "martindaleMinimo": "10000 cycles",
     "successAlt": "Succès",
     "addedSuccess": "Ajouté avec succès",
     "iconTitle": "Signification de l'icône",

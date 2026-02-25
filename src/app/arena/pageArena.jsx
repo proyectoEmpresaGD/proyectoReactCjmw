@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import CarruselProductosColeccionEspecifica from "../../components/ComponentesBrands/CarruselProductosColeccionEspecifica";
 import Modal from "../../components/ComponentesProductos/modal";
 import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carruselColecionesNuevas"
+import usePageMeta from "../../utils/usePageMeta";
 
 function ArenaHome() {
     const { t } = useTranslation('pageArena');
@@ -22,6 +23,12 @@ function ArenaHome() {
         }
         return array;
     }
+
+    usePageMeta({
+        title: "Arena | CJM Group",
+        description:
+            "Arena fusiona elegancia y naturaleza en tejidos para cortinas y tapicería. Diseños contemporáneos inspirados en paisajes orgánicos que aportan sofisticación y armonía a cada espacio.",
+    });
 
     const marca = 'ARE';
 

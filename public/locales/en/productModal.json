@@ -15,6 +15,14 @@
         "oneColor": "1 color available",
         "manyColors": "colors available"
     },
+    "martindaleUsage": {
+        "decorative": "Uso decorativo (cortinas)",
+        "lightDomestic": "Uso doméstico ligero",
+        "generalDomestic": "Uso doméstico general",
+        "intensiveDomestic": "Uso doméstico intensivo",
+        "intensiveCommercial": "Uso comercial intensivo",
+        "highResistanceContract": "Uso alta resistencia / Contract"
+    },
     "techSheet": "TECHNICAL SHEET",
     "downloadPdf": "Download PDF",
     "downloadPdfAlt": "Download technical sheet PDF",
@@ -29,6 +37,7 @@
     "weight": "Weight",
     "width": "Width",
     "notAvailable": "N/A",
+    "martindaleMinimo": "10000 cycles",
     "successAlt": "Success",
     "addedSuccess": "Added successfully",
     "iconTitle": "Icon meaning",
