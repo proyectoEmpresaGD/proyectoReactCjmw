@@ -252,6 +252,8 @@ export default function CardProduct() {
     const controllerRef = useRef(null);
     const initialPageRef = useRef(null);
     const userHasScrolledRef = useRef(false);
+    const infiniteLoadTriggeredRef = useRef(false);
+    const didNormalizeOnReloadRef = useRef(false);
 
     const getQueryString = useCallback(() => {
         if (location.search && location.search !== '?') return location.search;
@@ -305,6 +307,14 @@ export default function CardProduct() {
     useEffect(() => {
         const p = parseInt(params.get('page') || '1', 10);
         if (p !== page) setPage(p);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getQueryString]);
+
+    useEffect(() => {
+        if (initialPageRef.current != null) return;
+
+        const u = new URLSearchParams(getQueryString());
+        initialPageRef.current = parseInt(u.get('page') || '1', 10);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getQueryString]);
 
@@ -704,9 +714,10 @@ export default function CardProduct() {
         const current = parseInt(new URLSearchParams(getQueryString()).get('page') || '1', 10);
         const nxt = current + 1;
 
-        // Evita pedir la misma página varias veces si el observer dispara repetido
         if (nextPageRequestRef.current === nxt) return;
         nextPageRequestRef.current = nxt;
+
+        infiniteLoadTriggeredRef.current = true; // 👈 clave
 
         setPage(nxt);
 
