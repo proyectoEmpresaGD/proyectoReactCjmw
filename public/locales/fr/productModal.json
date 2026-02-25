@@ -16,12 +16,12 @@
         "manyColors": "couleurs disponibles"
     },
     "martindaleUsage": {
-        "decorative": "Usage décoratif (rideaux)",
-        "lightDomestic": "Usage domestique léger",
-        "generalDomestic": "Usage domestique général",
-        "intensiveDomestic": "Usage domestique intensif",
-        "intensiveCommercial": "Usage commercial intensif",
-        "highResistanceContract": "Haute résistance / Contract"
+        "decorative": "Usage décoratif (coussins décoratifs)",
+        "lightDomestic": "Usage domestique léger (ameublement décoratif)",
+        "generalDomestic": "Usage domestique général (ameublement d’usage courant)",
+        "intensiveDomestic": "Usage domestique intensif (faible usage commercial)",
+        "intensiveCommercial": "Usage commercial intensif (usage modéré dans les espaces publics)",
+        "highResistanceContract": "Usage haute résistance / Contract (hôtels et restaurants)"
     },
     "techSheet": "FICHE TECHNIQUE",
     "downloadPdf": "Télécharger PDF",

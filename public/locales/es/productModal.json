@@ -16,12 +16,12 @@
         "manyColors": "colores disponibles"
     },
     "martindaleUsage": {
-        "decorative": "Uso decorativo (cortinas)",
-        "lightDomestic": "Uso doméstico ligero",
-        "generalDomestic": "Uso doméstico general",
-        "intensiveDomestic": "Uso doméstico intensivo",
-        "intensiveCommercial": "Uso comercial intensivo",
-        "highResistanceContract": "Uso alta resistencia / Contract"
+        "decorative": "Decorative use (decorative cushions)",
+        "lightDomestic": "Light domestic use (decorative upholstery)",
+        "generalDomestic": "General domestic use (regular upholstery)",
+        "intensiveDomestic": "Intensive domestic use (low commercial use)",
+        "intensiveCommercial": "Intensive commercial use (moderate use in public areas)",
+        "highResistanceContract": "High-resistance use / Contract (hotels and restaurants)"
     },
     "techSheet": "FICHA TÉCNICA",
     "downloadPdf": "Descargar PDF",
