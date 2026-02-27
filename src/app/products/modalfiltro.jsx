@@ -4,7 +4,7 @@ import { ChevronRight, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
 const BRAND_NAMES = { ARE: 'Arena', HAR: 'Harbour', FLA: 'Flamenco', CJM: 'CJM', BAS: 'Bassari' };
-const TIPOS_INVALIDOS = ["JAQUARD", "TEJIDO ", "VISILLO FR", "TERCIOPELO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
+const TIPOS_INVALIDOS = ["JAQUARD", "CUADROS", "RAYAS", "TEJIDO ", "VISILLO FR", "TERCIOPELO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
 const DIBUJOS_INVALIDOS = ["TELAS CON FLORES", "WALLCOVERING", "TERCIOPELO FR", "BLACKOUT", "RAFIA", "KILM", "RAYA", "IKAT ", "WALLPAPER", "FLORES", "ANIMAL", "LISOS", "ESTAMPADO", "GEOMETRICA", "ESPIGAS", "VISILLO", "TEJIDO", "TERCIOPELO", "PANA"];
 const COLEC_INVALIDAS = ["MARRAKECH", "MARRAKESH"];
 const ALLOWED_COLORS = ['GRIS', 'NEGRO', 'VERDE', 'BEIGE', 'BLANCO', 'MARRON', 'AZUL', 'AMARILLO', 'NARANJA', 'ROJO', 'MORADO', 'VIOLETA', 'ROSA'];
@@ -64,16 +64,34 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
 
             // Filtrado general
             const valid = (arr, validOpt = [], invalidOpt = []) => {
-                const hasT = s => /[áéíóúÁÉÍÓÚ]/.test(s);
+                const normalizeKey = (value) => String(value ?? '')
+                    .trim()
+                    .normalize('NFD')
+                    .replace(/\p{Diacritic}/gu, '')
+                    .toUpperCase();
+
+                const hasAccent = (s) => /[áéíóúÁÉÍÓÚ]/.test(s);
+                const validSet = validOpt.length ? new Set(validOpt.map(normalizeKey)) : null;
+                const invalidSet = invalidOpt.length ? new Set(invalidOpt.map(normalizeKey)) : null;
+
                 return [...new Set(
-                    arr.filter(item =>
-                        item &&
-                        (!validOpt.length || validOpt.includes(item)) &&
-                        (!invalidOpt.length || !invalidOpt.includes(item)) &&
-                        item === item.toUpperCase() &&
-                        !hasT(item) &&
-                        !item.includes(';')
-                    )
+                    (arr || []).filter((item) => {
+                        if (!item) return false;
+                        if (typeof item !== 'string') return false;
+                        if (item.includes(';')) return false;
+                        if (hasAccent(item)) return false;
+                        if (item !== item.toUpperCase()) return false;
+
+                        const key = normalizeKey(item);
+
+                        // Excluir "CUADROS" aunque venga con sufijos/prefijos (p.ej. "CUADROS - ...")
+                        if (key.includes('CUADROS')) return false;
+                        if (key.includes('RAYAS')) return false;
+
+                        if (invalidSet && invalidSet.has(key)) return false;
+                        if (validSet && !validSet.has(key)) return false;
+                        return true;
+                    })
                 )];
             };
 

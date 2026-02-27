@@ -23,7 +23,6 @@ export const CATEGORY_CONFIG = [
     /* ============ TIPOS (fabricType) ============ */
     { key: 'ALGODON', labelKey: 'categories.algodon', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'BLACKOUT', labelKey: 'categories.blackout', groupKey: 'sections.tipos', target: 'fabricType' },
-    { key: 'CUADROS', labelKey: 'categories.cuadros', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'DIMOUT', labelKey: 'categories.dimout', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'DRALON ACRYLIC', labelKey: 'categories.dralonAcrylic', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'ESTAMPADO', labelKey: 'categories.estampado', groupKey: 'sections.tipos', target: 'fabricType' },
@@ -38,7 +37,6 @@ export const CATEGORY_CONFIG = [
     { key: 'POLIPIEL', labelKey: 'categories.polipiel', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'POLIPROPILENO', labelKey: 'categories.polipropileno', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'POLYOLEFIN', labelKey: 'categories.polyolefin', groupKey: 'sections.tipos', target: 'fabricType' },
-    { key: 'RAYAS', labelKey: 'categories.rayas', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'TERCIOPELO', labelKey: 'categories.terciopelo', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'VISILLO', labelKey: 'categories.visillo', groupKey: 'sections.tipos', target: 'fabricType' },
     { key: 'WALLPAPER', labelKey: 'categories.wallpaper', groupKey: 'sections.tipos', target: 'fabricType', onlyIfNotTela: true },

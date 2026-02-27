@@ -424,6 +424,11 @@ export default function FilterPanel({
         checkScroll(key);
     }, [checkScroll]);
 
+    const containsComparable = (value, needle) => {
+        const hay = toComparableKey(value);
+        return hay.includes(toComparableKey(needle));
+    };
+
     // Resize → recalcular overflow
     useEffect(() => {
         const onResize = () => Object.keys(galleryRailRefs.current || {}).forEach((k) => checkScroll(k));
@@ -468,7 +473,12 @@ export default function FilterPanel({
             const collectionsList = buildFilterList(data.collections, { deny: COLEC_INVALIDAS });
             setCollections(localeSort(collectionsList));
 
-            const fabricTypesList = buildFilterList(data.fabricTypes, { deny: TIPOS_INVALIDOS });
+            const fabricTypesList = buildFilterList(data.fabricTypes, { deny: TIPOS_INVALIDOS })
+                // A veces llega con sufijos/prefijos (p.ej. "CUADROS - ..."), lo excluimos por coincidencia parcial
+                .filter((tipo) =>
+                    !containsComparable(tipo, 'CUADROS') &&
+                    !containsComparable(tipo, 'RAYAS')
+                );
             setFabricTypes(localeSort(fabricTypesList));
 
             const patternsList = buildFilterList(data.fabricPatterns, { deny: DIBUJOS_INVALIDOS });
