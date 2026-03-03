@@ -84,6 +84,26 @@ export class ProductModel {
   }
 
 
+  static async getByCodes({ codes }) {
+    const TARIFF_CODE = '01';
+
+    const sql = `
+    SELECT
+      p.*,
+      tp."pvp" AS "precioMetro"
+    FROM productos p
+    LEFT JOIN tarprodu tp
+      ON tp."codprodu" = p."codprodu"
+     AND tp."codtarifa" = $2
+    WHERE p."codprodu" = ANY($1::text[])
+    ORDER BY array_position($1::text[], p."codprodu");
+  `;
+
+    const { rows } = await pool.query(sql, [codes, TARIFF_CODE]);
+    return rows;
+  }
+
+
   // ---------------------------------------------------------------------------
   // 1) LECTURAS BÁSICAS / LISTADOS
   // ---------------------------------------------------------------------------

@@ -1,7 +1,8 @@
 // src/app/products/FilterPanel.jsx
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMarca } from '../../components/MarcaContext';
+import { useMarca } from '../MarcaContext';
+import { buildProductsSearchFromFilters, EMPTY_FILTERS } from "./filterUrl";
 import {
     X,
     Search,
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 
 import { cdnUrl } from '../../Constants/cdn';
-import { CATEGORY_CONFIG, fetchCategoryPreview } from '../../components/filters/categoryConfig';
+import { CATEGORY_CONFIG, fetchCategoryPreview } from '../filters/categoryConfig';
 
 /* ==============================
    Hook de media query (desktop-only)
@@ -460,12 +461,39 @@ export default function FilterPanel({
             const data = await res.json();
 
             const COLOR_ORDER = [
-                'BLANCO', 'BEIGE', 'AMARILLO', 'NARANJA', 'ROSA', 'ROJO',
-                'VIOLETA', 'MORADO', 'VERDE', 'AZUL', 'MARRON', 'GRIS', 'NEGRO'
+                "BLANCO", "BEIGE", "AMARILLO", "NARANJA", "ROSA", "ROJO",
+                "VIOLETA", "MORADO", "VERDE", "AZUL", "MARRON", "GRIS", "NEGRO",
             ];
 
             const localeSort = (list) =>
-                list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+                list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+
+            // Normaliza para comparaciones robustas
+            const normalizeComparable = (value) => toComparableKey(value);
+
+            const MISPLACED_STYLE_KEYS = new Set(["RAYAS", "CUADROS"].map(normalizeComparable));
+
+            const removeMisplacedFromTypes = (list) =>
+                (list || []).filter((tipo) => {
+                    const key = normalizeComparable(tipo);
+                    // elimina exactos
+                    if (MISPLACED_STYLE_KEYS.has(key)) return false;
+                    // elimina si vienen con sufijos/prefijos (p.ej. "CUADROS - ...", "RAYAS FINAS", etc.)
+                    if (containsComparable(tipo, "CUADROS")) return false;
+                    if (containsComparable(tipo, "RAYAS")) return false;
+                    return true;
+                });
+
+            const ensureMisplacedInPatterns = (list) => {
+                const current = Array.isArray(list) ? list : [];
+                const set = new Set(current.map(normalizeComparable));
+                const out = [...current];
+
+                if (!set.has(normalizeComparable("RAYAS"))) out.push("RAYAS");
+                if (!set.has(normalizeComparable("CUADROS"))) out.push("CUADROS");
+
+                return out;
+            };
 
             const brandsList = buildFilterList(data.brands, { allow: Object.keys(BRAND_NAMES) });
             setBrands(localeSort(brandsList));
@@ -473,15 +501,16 @@ export default function FilterPanel({
             const collectionsList = buildFilterList(data.collections, { deny: COLEC_INVALIDAS });
             setCollections(localeSort(collectionsList));
 
-            const fabricTypesList = buildFilterList(data.fabricTypes, { deny: TIPOS_INVALIDOS })
-                // A veces llega con sufijos/prefijos (p.ej. "CUADROS - ..."), lo excluimos por coincidencia parcial
-                .filter((tipo) =>
-                    !containsComparable(tipo, 'CUADROS') &&
-                    !containsComparable(tipo, 'RAYAS')
-                );
+            // TIPOS: quitamos RAYAS/CUADROS porque pertenecen a ESTILOS en tu caso
+            const fabricTypesList = removeMisplacedFromTypes(
+                buildFilterList(data.fabricTypes, { deny: TIPOS_INVALIDOS })
+            );
             setFabricTypes(localeSort(fabricTypesList));
 
-            const patternsList = buildFilterList(data.fabricPatterns, { deny: DIBUJOS_INVALIDOS });
+            // ESTILOS/DIBUJO: aseguramos que existan RAYAS/CUADROS aquí
+            const patternsList = ensureMisplacedInPatterns(
+                buildFilterList(data.fabricPatterns, { deny: DIBUJOS_INVALIDOS })
+            );
             setFabricPatterns(localeSort(patternsList));
 
             setMartindale(uniqueNumberList(data.martindaleValues).sort((a, b) => b - a));
@@ -497,7 +526,7 @@ export default function FilterPanel({
                 .sort((a, b) => {
                     const diff = orderIndex(a) - orderIndex(b);
                     if (diff !== 0) return diff;
-                    return a.localeCompare(b, undefined, { sensitivity: 'base' });
+                    return a.localeCompare(b, undefined, { sensitivity: "base" });
                 });
             setColors(colorsList);
 
@@ -515,22 +544,22 @@ export default function FilterPanel({
 
             const extractMaintenanceValues = (raw) => {
                 // Caso 1: ya viene como array de strings “normales”
-                if (Array.isArray(raw) && raw.every((x) => typeof x === 'string' && !x.includes('<Valor>'))) {
+                if (Array.isArray(raw) && raw.every((x) => typeof x === "string" && !x.includes("<Valor>"))) {
                     return raw;
                 }
 
-                // Caso 2: viene como array de trozos XML (tu caso)
-                if (Array.isArray(raw) && raw.some((x) => typeof x === 'string' && x.includes('<Valor>'))) {
-                    const xml = raw.join('');
+                // Caso 2: viene como array de trozos XML
+                if (Array.isArray(raw) && raw.some((x) => typeof x === "string" && x.includes("<Valor>"))) {
+                    const xml = raw.join("");
                     const out = [];
-                    const re = /<Valor>\s*([^<]+?)\s*</g; // captura texto entre <Valor> ... <
+                    const re = /<Valor>\s*([^<]+?)\s*</g;
                     let m;
                     while ((m = re.exec(xml)) !== null) out.push(m[1]);
                     return out;
                 }
 
                 // Caso 3: viene como string XML completo
-                if (typeof raw === 'string' && raw.includes('<Valor>')) {
+                if (typeof raw === "string" && raw.includes("<Valor>")) {
                     const out = [];
                     const re = /<Valor>\s*([^<]+?)\s*</g;
                     let m;
@@ -543,12 +572,10 @@ export default function FilterPanel({
             };
 
             const maintenanceExtracted = extractMaintenanceValues(maintenanceRaw);
-
             const maintenanceList = buildFilterList(maintenanceExtracted);
             setMaintenanceOptions(localeSort(maintenanceList));
         })();
     }, [isOpen]);
-
 
     // Lock body scroll
     useEffect(() => {

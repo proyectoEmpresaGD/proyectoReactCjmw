@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { SlidersHorizontal } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import FilterPanel from './FilterPanel';
+import { buildProductsSearchFromFilters } from "./filterUrl";
+import { useMemo } from 'react';
 const EMPTY_FILTERS = {
     brand: [],
     color: [],
@@ -89,7 +91,9 @@ export default function FiltroButton({ clearFiltersCallback }) {
 
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [filters, setFilters] = useState(EMPTY_FILTERS);
-
+    const hasAnyFilter = useMemo(() => (
+        Object.values(filters || {}).some((v) => Array.isArray(v) ? v.length : false)
+    ), [filters]);
     useEffect(() => {
         const urlFilters = parseSearchFilters(location.search);
         setFilters({
@@ -149,40 +153,16 @@ export default function FiltroButton({ clearFiltersCallback }) {
             martindaleRanges: selectedFilters.martindaleRanges || [],
         });
 
-        const qs = new URLSearchParams();
-        qs.set('page', '1');
-
-        if (selectedFilters.brand?.length)
-            selectedFilters.brand.forEach((v) => qs.append('brand', v));
-        if (selectedFilters.color?.length)
-            selectedFilters.color.forEach((v) => qs.append('color', v));
-        if (selectedFilters.collection?.length)
-            selectedFilters.collection.forEach((v) => qs.append('collection', v));
-        if (selectedFilters.fabricType?.length)
-            selectedFilters.fabricType.forEach((v) => qs.append('fabricType', v));
-        if (selectedFilters.fabricPattern?.length)
-            selectedFilters.fabricPattern.forEach((v) => qs.append('fabricPattern', v));
-        if (selectedFilters.martindale?.length)
-            selectedFilters.martindale.forEach((v) => qs.append('martindale', v));
-        if (selectedFilters.martindaleRanges?.length)
-            selectedFilters.martindaleRanges.forEach((v) => qs.append('martindaleRange', v));
-        if (selectedFilters.uso?.length)
-            selectedFilters.uso.forEach((v) => qs.append('uso', v));
-        if (selectedFilters.mantenimiento?.length)
-            selectedFilters.mantenimiento.forEach((v) => qs.append('mantenimiento', v));
-
-        // Navega y fuerza recarga en CardProduct con scroll infinito
+        const search = buildProductsSearchFromFilters(selectedFilters);
+        const qs = new URLSearchParams(search);
+        qs.set("type", productType);
         navigate(`/products?${qs.toString()}`);
 
         setIsPanelOpen(false);
-        try {
-            window.scrollTo({ top: 0, behavior: 'auto' });
-        } catch { }
+        try { window.scrollTo({ top: 0, behavior: "auto" }); } catch { }
     };
 
-    const hasAnyFilter = Object.values(filters).some(
-        (arr) => Array.isArray(arr) && arr.length > 0
-    );
+
 
     return (
         <>

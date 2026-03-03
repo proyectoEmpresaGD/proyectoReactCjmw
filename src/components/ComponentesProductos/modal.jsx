@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import Footer from "../../components/footer";
-import Filtro from '../../app/products/buttonFiltro';
+import Filtro from '../filters/buttonFiltro';
 import CarruselMismoEstilo from "./CarruselEstiloProducto";
 import CarruselColeccion from "./CarruselProductosColeccion";
 import { CartProvider, useCart } from "../CartContext";
@@ -14,8 +14,6 @@ import {
     marcasMap,
     direccionLogos
 } from '../../Constants/constants';
-
-// Share icons
 import { Share2 } from 'lucide-react';
 import {
     Facebook,
@@ -24,14 +22,9 @@ import {
     Mail,
     MessageCircle,
 } from "lucide-react";
-
-
-// NUEVOS COMPONENTES
 import ProductImageViewer from './modal/ProductImageViewer';
 import ProductTechSheet from './modal/ProductTechSheet';
 import ProductPdfSheet from './modal/ProductPdfSheet';
-
-// NUEVOS HOOKS/UTILS
 import { useProductAssets } from './modal/hooks/useProductAssets';
 import { useProductMedia } from './modal/hooks/useProductMedia';
 import { useRelatedProducts } from './modal/hooks/useRelatedProducts';

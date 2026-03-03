@@ -74,6 +74,13 @@ export const coleccionConfigByName = {
         brochureImageIndex: 0,
         heroIndex: 0,
     },
+    "BOHEMIAN": {
+        textKey: "bohemian",
+        imagesKey: "imagesHarBohemian",
+        brochurePdf: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
+        brochureImageIndex: 0, // índice dentro del array imagesHarBohemian
+        heroIndex: 0,          // índice dentro del array imagesHarBohemian
+    },
 };
 
 // Construye params listos para buildColeccionUrl

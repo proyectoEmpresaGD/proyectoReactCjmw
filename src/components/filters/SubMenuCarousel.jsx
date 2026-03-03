@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { X } from "lucide-react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cdnUrl } from '../../Constants/cdn';
-import { fetchCategoryPreview, groupCategories } from '../filters/categoryConfig';
+import { fetchCategoryPreview, groupCategories } from './categoryConfig';
 
 /* ==============================
    Hook de media query (mobile-only)
@@ -65,9 +65,15 @@ const MAINT_KEYS = new Set(['EASYCLEAN', 'EASY CLEAN', 'EASY-CLEAN']);
 /** Dada una key y un groupKey original, decide el groupKey correcto */
 const inferGroupKey = (key, originalGroupKey) => {
     const k = norm(key);
+
+    // ✅ Override: aunque alguien lo meta en TYPE_KEYS por error,
+    // Rayas/Cuadros deben ir siempre a "estilos" (fabricPattern).
+    if (k === 'RAYAS' || k === 'CUADROS') return 'patterns';
+
     if (TYPE_KEYS.has(k)) return 'types';
     if (USAGE_KEYS.has(k)) return 'usage';
     if (MAINT_KEYS.has(k)) return 'maintenance';
+
     return originalGroupKey || 'patterns';
 };
 

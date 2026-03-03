@@ -47,7 +47,7 @@ const Footer = () => {
         <footer className=" bg-white text-gray-900 p-6 xl:p-12">
             <div className="w-full border-b border-gray-500 pb-6">
                 <div className="flex flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-between">
-                    <div className="hidden lg:block w-[120px]" />
+                    <div className="hidden lg:block w-[80px]" />
                     <div className="flex justify-center mb-4 lg:mb-0">
                         <Link to="/" onClick={() => setMarcaActiva(null)} className="flex items-center">
                             <img

@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { ChevronRight, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from "react-router-dom";
+import { buildProductsSearchFromFilters, EMPTY_FILTERS } from "./filterUrl";
 
 const BRAND_NAMES = { ARE: 'Arena', HAR: 'Harbour', FLA: 'Flamenco', CJM: 'CJM', BAS: 'Bassari' };
 const TIPOS_INVALIDOS = ["JAQUARD", "CUADROS", "RAYAS", "TEJIDO ", "VISILLO FR", "TERCIOPELO", "RAYA", "BUCLE", "PANA", "TEJIDO", "FALSO LISO", "PAPEL PARED", "TERCIOPELO FR", "FLORES", "ESTAMAPADO", "ESPIGA", "RAYAS"];
@@ -27,6 +29,7 @@ const COLOR_MAP = {
 
 
 export default function FilterPanel({ setFilteredProducts, page, clearFiltersCallback }) {
+    const navigate = useNavigate();
     const { t } = useTranslation('filterPanel');
     const [isOpen, setIsOpen] = useState(false);
 
@@ -57,66 +60,119 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
         (async () => {
             const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/filters`);
             if (!res.ok) return;
+
             const data = await res.json();
 
-            // Orden visual de colores
-            const COLOR_ORDER = [/* ... */];
+            const COLOR_ORDER = [
+                'BLANCO', 'BEIGE', 'AMARILLO', 'NARANJA', 'ROSA', 'ROJO',
+                'VIOLETA', 'MORADO', 'VERDE', 'AZUL', 'MARRON', 'GRIS', 'NEGRO'
+            ];
 
-            // Filtrado general
-            const valid = (arr, validOpt = [], invalidOpt = []) => {
-                const normalizeKey = (value) => String(value ?? '')
+            const toKey = (value) =>
+                String(value ?? '')
                     .trim()
                     .normalize('NFD')
                     .replace(/\p{Diacritic}/gu, '')
                     .toUpperCase();
 
+            const localeSort = (list) =>
+                (list || []).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+            // ✅ valid robusto: trim + sets normalizados + dedup por key
+            const valid = (arr, validOpt = [], invalidOpt = []) => {
                 const hasAccent = (s) => /[áéíóúÁÉÍÓÚ]/.test(s);
-                const validSet = validOpt.length ? new Set(validOpt.map(normalizeKey)) : null;
-                const invalidSet = invalidOpt.length ? new Set(invalidOpt.map(normalizeKey)) : null;
 
-                return [...new Set(
-                    (arr || []).filter((item) => {
-                        if (!item) return false;
-                        if (typeof item !== 'string') return false;
-                        if (item.includes(';')) return false;
-                        if (hasAccent(item)) return false;
-                        if (item !== item.toUpperCase()) return false;
+                const validSet = validOpt.length ? new Set(validOpt.map(toKey)) : null;
+                const invalidSet = invalidOpt.length ? new Set(invalidOpt.map(toKey)) : null;
 
-                        const key = normalizeKey(item);
+                const seen = new Set();
+                const out = [];
 
-                        // Excluir "CUADROS" aunque venga con sufijos/prefijos (p.ej. "CUADROS - ...")
-                        if (key.includes('CUADROS')) return false;
-                        if (key.includes('RAYAS')) return false;
+                (arr || []).forEach((raw) => {
+                    if (typeof raw !== 'string') return;
+                    const item = raw.trim();
+                    if (!item) return;
 
-                        if (invalidSet && invalidSet.has(key)) return false;
-                        if (validSet && !validSet.has(key)) return false;
-                        return true;
-                    })
-                )];
+                    // Mantengo tus reglas, pero aplicadas sobre el item "limpio"
+                    if (item.includes(';')) return;
+                    if (hasAccent(item)) return;
+                    if (item !== item.toUpperCase()) return;
+
+                    const k = toKey(item);
+                    if (!k) return;
+
+                    if (invalidSet && invalidSet.has(k)) return;
+                    if (validSet && !validSet.has(k)) return;
+
+                    if (seen.has(k)) return;
+                    seen.add(k);
+                    out.push(item);
+                });
+
+                return out;
             };
 
-            setBrands(
-                valid(data.brands, Object.keys(BRAND_NAMES)).sort((a, b) => a.localeCompare(b))
+            // ✅ Regla especial: RAYAS/CUADROS deben ser "Estilos" (fabricPattern), no "Tipos" (fabricType)
+            const removeMisplacedFromTypes = (list) =>
+                (list || []).filter((tipo) => {
+                    const k = toKey(tipo);
+                    // elimina exactos y también variantes tipo "RAYAS - ..." / "CUADROS - ..."
+                    if (k.includes('RAYAS')) return false;
+                    if (k.includes('CUADROS')) return false;
+                    return true;
+                });
+
+            const ensurePatterns = (list) => {
+                const current = Array.isArray(list) ? list : [];
+                const set = new Set(current.map(toKey));
+                const out = [...current];
+
+                if (!set.has('RAYAS')) out.push('RAYAS');
+                if (!set.has('CUADROS')) out.push('CUADROS');
+
+                return out;
+            };
+
+            // ===== Brands / Collections =====
+            setBrands(localeSort(valid(data.brands, Object.keys(BRAND_NAMES))));
+            setCollections(localeSort(valid(data.collections, [], COLEC_INVALIDAS)));
+
+            // ===== Tipos =====
+            const fabricTypesList = removeMisplacedFromTypes(
+                valid(data.fabricTypes, [], TIPOS_INVALIDOS)
             );
-            setCollections(
-                valid(data.collections, [], COLEC_INVALIDAS).sort((a, b) => a.localeCompare(b))
+            setFabricTypes(localeSort(fabricTypesList));
+
+            // ===== Estilos / Dibujo =====
+            const patternsList = ensurePatterns(
+                valid(data.fabricPatterns, [], DIBUJOS_INVALIDOS)
             );
-            setFabricTypes(
-                valid(data.fabricTypes, [], TIPOS_INVALIDOS).sort((a, b) => a.localeCompare(b))
-            );
-            setFabricPatterns(
-                valid(data.fabricPatterns, [], DIBUJOS_INVALIDOS).sort((a, b) => a.localeCompare(b))
-            );
+            setFabricPatterns(localeSort(patternsList));
+
+            // ===== Martindale =====
             setMartindale(
-                (data.martindaleValues || []).filter(v => v).sort((a, b) => b - a)
+                (data.martindaleValues || [])
+                    .map((v) => Number(String(v ?? '').trim()))
+                    .filter((n) => Number.isFinite(n))
+                    .sort((a, b) => b - a)
             );
-            setColors(
-                valid(data.colors)
-                    .filter(c => ALLOWED_COLORS.includes(c.toUpperCase()))
-                    .sort((a, b) =>
-                        COLOR_ORDER.indexOf(a.toUpperCase()) - COLOR_ORDER.indexOf(b.toUpperCase())
-                    )
-            );
+
+            // ===== Colores =====
+            const allowedColorSet = new Set(ALLOWED_COLORS.map(toKey));
+            const orderIndex = (value) => {
+                const idx = COLOR_ORDER.indexOf(toKey(value));
+                return idx === -1 ? Number.MAX_SAFE_INTEGER : idx;
+            };
+
+            const colorsList = valid(data.colors)
+                .filter((color) => allowedColorSet.has(toKey(color)))
+                .sort((a, b) => {
+                    const diff = orderIndex(a) - orderIndex(b);
+                    if (diff !== 0) return diff;
+                    return a.localeCompare(b, undefined, { sensitivity: 'base' });
+                });
+
+            setColors(colorsList);
         })();
     }, [isOpen]);
 
@@ -129,17 +185,75 @@ export default function FilterPanel({ setFilteredProducts, page, clearFiltersCal
         setFn(prev => prev.includes(val) ? prev.filter(x => x !== val) : [...prev, val]);
     };
 
+    const normalizeKey = (value) =>
+        String(value ?? '')
+            .trim()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toUpperCase();
+
+    const MISPLACED = new Set(['RAYAS', 'CUADROS'].map(normalizeKey));
+
+    const moveMisplacedTypeToPattern = ({ fabricType, fabricPattern }) => {
+        const types = Array.isArray(fabricType) ? fabricType : [];
+        const patterns = Array.isArray(fabricPattern) ? fabricPattern : [];
+
+        const movedToPatterns = [];
+        const cleanedTypes = [];
+
+        for (const t of types) {
+            const k = normalizeKey(t);
+            if (MISPLACED.has(k)) movedToPatterns.push(k); // guardamos normalizado
+            else cleanedTypes.push(t);
+        }
+
+        // añadimos a patterns sin duplicar (comparación normalizada)
+        const patternSet = new Set(patterns.map(normalizeKey));
+        const nextPatterns = [...patterns];
+
+        for (const m of movedToPatterns) {
+            if (!patternSet.has(m)) {
+                nextPatterns.push(m); // “RAYAS”/“CUADROS”
+                patternSet.add(m);
+            }
+        }
+
+        return { fabricType: cleanedTypes, fabricPattern: nextPatterns };
+    };
+
     const apply = () => {
-        const toApply = {
-            brand: brandsSel.map(b => Object.keys(BRAND_NAMES).find(k => BRAND_NAMES[k] === b) || b),
+        // 1) construyes filtros como siempre
+        let selectedFilters = {
+            ...EMPTY_FILTERS,
+            brand: brandsSel,
             color: colorsSel,
             collection: collectionsSel,
             fabricType: typesSel,
             fabricPattern: patternsSel,
-            martindale: martSel
+            martindale: martSel,
+            // si en móvil añades uso/mantenimiento, también aquí
         };
-        setFilteredProducts(toApply, page);
+
+        // 2) ✅ blindaje: si RAYAS/CUADROS cayeron en fabricType, los movemos a fabricPattern
+        const fixed = moveMisplacedTypeToPattern({
+            fabricType: selectedFilters.fabricType,
+            fabricPattern: selectedFilters.fabricPattern,
+        });
+
+        selectedFilters = {
+            ...selectedFilters,
+            fabricType: fixed.fabricType,
+            fabricPattern: fixed.fabricPattern,
+        };
+
+        // 3) navegas igual
+        const search = buildProductsSearchFromFilters(selectedFilters);
+        console.log('typesSel:', typesSel);
+        console.log('patternsSel:', patternsSel);
+        navigate(`/products?${search}`);
         setIsOpen(false);
+
+        try { window.scrollTo({ top: 0, behavior: "auto" }); } catch { }
     };
 
     return <>

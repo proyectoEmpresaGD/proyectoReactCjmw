@@ -10,10 +10,16 @@ import CarruselProductosColeccionEspecifica from "../../components/ComponentesBr
 import PresentacionColeccion from "../../components/ComponentesBrands/ultimaColeccionTextoAnimado";
 import Modal from "../../components/ComponentesProductos/modal";
 import usePageMeta from "../../utils/usePageMeta";
+import BloquesInformativos from "../../components/ComponentesBrands/TiposDestacados";
+import NuevasColeccionesGrid from "../../components/ComponentesBrands/nuevasColeccionesGrid";
+import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
+import { useNavigate } from "react-router-dom";
+import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
 
 function HarbourHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     const [modalAbierta, setModalAbierta] = useState(false);
+
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -27,7 +33,18 @@ function HarbourHome() {
         description:
             "Harbour presenta tejidos para cortinas y tapicería que combinan diseño y calidad. Linos, jacquards y chenillas en estilos clásicos y contemporáneos para aportar elegancia y carácter a cada espacio.",
     });
+    const [codesModalOpen, setCodesModalOpen] = useState(false);
+    const [codesModalCodes, setCodesModalCodes] = useState([]);
+    const [codesModalTitle, setCodesModalTitle] = useState("Productos relacionados");
+    const handleOpenProductsFromGallery = (codes, item) => {
+        const list = (codes || []).filter(Boolean);
+        if (!list.length) return;
 
+        setCodesModalCodes(list);
+        setCodesModalTitle(item?.title ? `Productos — ${item.title}` : "Productos relacionados");
+        setCodesModalOpen(true);
+    };
+    const navigate = useNavigate();
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/HARBOUR/HARB_AMB_BOHEMIAN_01CARROUSEL.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_HOME/HARBOUR/HARB_AMB_BOHEMIAN_06CARROUSEL.jpg",
@@ -40,7 +57,49 @@ function HarbourHome() {
         "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HAR01942%20CARIBBEAN%20PARTY%20JUNGLE%20INDIGO_%20CABECERO%20CARIBBEAN%20INDIGO.jpg",
     ]
 
+    const nuevasColecciones = [
+        {
+            name: "BOHEMIAN",
+            image:
+                "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/BOHEMIAN/HARB_AMB_BOHEMIAN_01%2035X35.jpg",
+            description:
+                "Takumi es una colección inspirada en la artesanía japonesa, con tejidos que evocan paciencia y detalle. Sus tonos suaves y colores únicos transforman tapicerías y cortinas en piezas armónicas y poéticas.",
+        },
+        {
+            name: "HUSKY",
+            image:
+                "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/HUSKY/DSC00225%20MINIATURA.jpg",
+            description:
+                "Husky: diseñadas para no incendiarse ni propagar llamas, ofreciendo protección en entornos peligrosos. 100% de opacidad y gama cromática fácil de integrar en proyectos contract.",
+        },
+        {
+            name: "FUTURE",
+            image:
+                "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/HARBOUR%20AMBIENTE/FUTURE/DSC00231%20MINIATURA.jpg",
+            description:
+                "Future está diseñado para adaptarse con precisión a formas esféricas, ofreciendo un acabado uniforme y de gran calidad. Resistencia, flexibilidad y versatilidad.",
+        },
+    ];
+
     const marca = 'HAR';
+
+    const bloquesUso = [
+        {
+            nombre: "FR",
+            imagen: images[0],
+            filtros: { brand: marca, uso: "FR" },
+        },
+        {
+            nombre: "IMO",
+            imagen: images[4],
+            filtros: { brand: marca, uso: "IMO" },
+        },
+        {
+            nombre: "OUTDOOR",
+            imagen: images[5],
+            filtros: { brand: marca, uso: "OUTDOOR" },
+        },
+    ];
     const { t } = useTranslation('pageHarbour');
     // const brochures = [
     //     {
@@ -132,6 +191,30 @@ function HarbourHome() {
             <CartProvider>
                 <Header />
                 <Carrusel images={shuffleArray([...images])} />
+                {/* <div className="">
+                    <BloquesInformativos
+                        titulo="TIPOS DESTACADOS"
+                        texto="Selecciona el uso para ver solo los productos Harbour correspondientes."
+                        bloques={bloquesUso}
+                    />
+                </div> */}
+                {/* <NuevasColeccionesGrid items={nuevasColecciones} />
+                <BrandGallery
+                    brandKey="harbour"
+                    title="GALERÍA"
+                    onOpenProducts={handleOpenProductsFromGallery}
+                />
+                <ModalProductosPorCodigos
+                    isOpen={codesModalOpen}
+                    onClose={() => setCodesModalOpen(false)}
+                    codes={codesModalCodes}
+                    apiUrl={import.meta.env.VITE_API_BASE_URL}
+                    title={codesModalTitle}
+                    onProductClick={(p) => {
+                        setProductoSeleccionado(p);
+                        setModalAbierta(true);
+                    }}
+                /> */}
                 {/* <NotificationPopup brochures={brochures} /> */}
                 {/* className=" bg-[#273A5C]" */}
                 {/* <main>

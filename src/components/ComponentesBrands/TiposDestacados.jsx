@@ -58,7 +58,7 @@ function BloquesInformativos({ titulo, texto, bloques = [] }) {
             {/* Texto */}
             <p
                 ref={textoRef}
-                className={`text-base md:text-lg lg:text-xl text-white max-w-3xl mb-8 transition-all duration-700 delay-200 ${textoVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                className={`text-base md:text-lg lg:text-xl text-black max-w-3xl mb-8 transition-all duration-700 delay-200 ${textoVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                     }`}
             >
                 {texto}

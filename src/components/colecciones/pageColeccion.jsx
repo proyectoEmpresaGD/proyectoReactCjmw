@@ -7,8 +7,8 @@ import { Header } from "../../components/header";
 import Footer from "../../components/footer";
 
 import { useTranslation } from "react-i18next";
-import { imagenesColecciones, coleccionConfigByName } from "../../Constants/constants";
-
+import { imagenesColecciones } from "../../Constants/constants";
+import { coleccionConfigByName } from "../../Constants/coleccionesHelpers"
 import CarruselProductosColeccionEspecifica from "../../components/ComponentesBrands/CarruselProductosColeccionEspecifica";
 import Modal from "../ComponentesProductos/modal";
 import DragImagenesColeccion from "./DragImagenesColeccion";
@@ -154,7 +154,6 @@ export default function ColeccionPage() {
         if (!coleccion) return null;
         return buildColeccionFallbackFromCommon({ collectionName: coleccion, t });
     }, [coleccion, t]);
-
     // ✅ Prioridad: state > query > fallback > null
     const content = useMemo(
         () => ({

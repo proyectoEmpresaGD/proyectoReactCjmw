@@ -10,7 +10,7 @@ import CarruselProductosColeccionEspecifica from "../../components/ComponentesBr
 import Modal from "../../components/ComponentesProductos/modal";
 import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carruselColecionesNuevas"
 import usePageMeta from "../../utils/usePageMeta";
-
+import BloquesInformativos from "../../components/ComponentesBrands/TiposDestacados"
 function ArenaHome() {
     const { t } = useTranslation('pageArena');
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);

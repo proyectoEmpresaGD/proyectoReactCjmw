@@ -141,6 +141,39 @@ export class ProductController {
     }
   }
 
+  async getByCodes(req, res) {
+    try {
+      const raw = req.method === 'GET' ? req.query.codes : req.body?.codes;
+
+      let codes =
+        Array.isArray(raw)
+          ? raw
+          : typeof raw === 'string'
+            ? raw.split(',')
+            : [];
+
+      codes = codes
+        .map((c) => String(c || '').trim())
+        .filter(Boolean);
+
+      // dedupe + límite defensivo
+      codes = Array.from(new Set(codes)).slice(0, 80);
+
+      if (!codes.length) {
+        return res.status(200).json([]);
+      }
+
+      const products = await ProductModel.getByCodes({ codes });
+
+      // cache corto: son “vistas” desde galería, cambia poco
+      okCache(res, 300);
+      return res.status(200).json(products);
+    } catch (error) {
+      console.error('Error in getByCodes:', error);
+      return res.status(500).json({ error: 'Error fetching products by codes', details: error.message });
+    }
+  }
+
   // ✅ POST /api/products/curtains/search
   //   usa el modelo correcto y asegura enviar `ancho` al front
   async searchCurtains(req, res) {

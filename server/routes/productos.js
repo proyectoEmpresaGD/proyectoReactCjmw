@@ -66,7 +66,11 @@ export const createProductRouter = () => {
         productController.getProductByCollection.bind(productController)
     );
 
-
+    // ==============================
+    // 6. Recoger varios productos por codprodu pasado por parametro
+    // ==============================
+    productsRouter.post('/by-codes', productController.getByCodes.bind(productController));
+    productsRouter.get('/by-codes', productController.getByCodes.bind(productController));
 
     // ==============================
     // 6. Rutas por ID (¡AL FINAL!)
