@@ -20,7 +20,7 @@ import InstagramPromo from "../../components/ComponentesBrands/InstagramPromo";
 import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
 import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
 import BrandRandomSelectionCarousel from "../../components/ComponentesBrands/BrandRandomSelectionCarousel";
-import Reveal from "../../components/ComponentesBrands/Reveal";
+import Reveal from "../../components/ComponentesBrands/reveal";
 
 const normalizeColeccionName = (name) => String(name || "").trim().toUpperCase();
 

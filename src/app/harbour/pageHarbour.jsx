@@ -14,7 +14,7 @@ import NuevasColeccionesGrid from "../../components/ComponentesBrands/nuevasCole
 import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
 import { useNavigate } from "react-router-dom";
 import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
-import Reveal from "../../components/ComponentesBrands/Reveal";
+import Reveal from "../../components/ComponentesBrands/reveal";
 import BrandRandomSelectionCarousel from "../../components/ComponentesBrands/BrandRandomSelectionCarousel";
 import InstagramPromo from "../../components/ComponentesBrands/InstagramPromo";
 import { cdnUrl } from "../../Constants/cdn";

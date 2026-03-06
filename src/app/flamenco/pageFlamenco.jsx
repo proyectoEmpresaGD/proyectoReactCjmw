@@ -21,7 +21,7 @@ import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
 import InstagramPromo from "../../components/ComponentesBrands/InstagramPromo";
 import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
 import BrandRandomSelectionCarousel from "../../components/ComponentesBrands/BrandRandomSelectionCarousel";
-import Reveal from "../../components/ComponentesBrands/Reveal";
+import Reveal from "../../components/ComponentesBrands/reveal";
 function FlamencoHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     const [modalAbierta, setModalAbierta] = useState(false);

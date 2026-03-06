@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import NuevasColeccionesGrid from "../../components/ComponentesBrands/nuevasColeccionesGrid";
 import { useTranslation } from "react-i18next";
 import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
-import Reveal from "../../components/ComponentesBrands/Reveal";
+import Reveal from "../../components/ComponentesBrands/reveal";
 import BrandRandomSelectionCarousel from "../../components/ComponentesBrands/BrandRandomSelectionCarousel";
 import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
 import Modal from "../../components/ComponentesProductos/modal";
