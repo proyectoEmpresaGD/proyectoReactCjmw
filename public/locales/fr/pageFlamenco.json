@@ -1,4 +1,11 @@
 {
+    "tiposDestacados": {
+        "title": "Le plus représentatif d’FLAMENCO"
+    },
+    "galeria": {
+        "title": "Des projets qui prennent vie avec nos tissus",
+        "texto": "Explorez chaque projet en cliquant sur l’image pour découvrir le tissu."
+    },
     "BrouchureFlamenco": "L'endroit où le métissage des cultures inspire nos collections. Découvrez-les",
     "newCollections": {
         "indienne": {

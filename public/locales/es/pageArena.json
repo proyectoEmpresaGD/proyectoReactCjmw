@@ -1,4 +1,25 @@
 {
     "BrouchurePuritty": "Volver a la esencia para reinventar nuestras colecciones atemporales. Descúbrelas.",
-    "BrouchureBohemianArena": "¡Nuevo brouchure disponible! Disfruta un viaje de ensueño a través de nuestros nuevos lanzamientos"
+    "BrouchureBohemianArena": "¡Nuevo brouchure disponible! Disfruta un viaje de ensueño a través de nuestros nuevos lanzamientos",
+    "tiposDestacados": {
+        "title": "Lo más representativo de ARENA"
+    },
+    "galeria": {
+        "title": "Proyectos que cobran vida con nuestros tejidos",
+        "texto": "Explora cada propuesta haciendo clic sobre la imagen para conocer el tejido."
+    },
+    "newCollections": {
+        "takumi": {
+            "title": "COLECCIÓN TAKUMI",
+            "description": "Takumi es una colección inspirada en la artesanía japonesa, con tejidos que evocan paciencia y detalle. Sus tonos suaves y colores únicos transforman tapicerías y cortinas en piezas armónicas y poéticas."
+        },
+        "lighthouse": {
+            "title": "COLECCIÓN LIGHTHOUSE",
+            "description": "Lighthouse explora la ligereza y transparencia de los visillos, con un aire orgánico y mediterráneo. Son tejidos que dejan pasar la luz de forma natural, creando ambientes acogedores en cualquier espacio, ya sea urbano, costero o de montaña."
+        },
+        "madamaButterfly": {
+            "title": "COLECCIÓN MADAMA BUTTERFLY",
+            "description": "Inspiradas en la ópera Madame Butterfly, estas colecciones unen tradición y emoción. GEISHA transmite delicadeza con tonos pastel que evocan calma y elegancia. NAGASAKI recrea paisajes japoneses en colores empolvados que reflejan nostalgia y serenidad. Juntas crean espacios poéticos y equilibrados."
+        }
+    }
 }

@@ -1,4 +1,11 @@
 {
+    "tiposDestacados": {
+        "title": "The most representative of FLAMENCO"
+    },
+    "galeria": {
+        "title": "Projects brought to life with our fabrics",
+        "texto": "Explore each project by clicking on the image to discover the fabric."
+    },
     "BrouchureFlamenco": "The place where a blend of cultures inspires our collections. Discover them",
     "newCollections": {
         "indienne": {

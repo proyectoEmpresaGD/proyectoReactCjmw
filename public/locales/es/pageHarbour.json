@@ -1,4 +1,25 @@
 {
     "BrouchureHarbour": "Colores vibrantes y fibras naturales para viajar a la época colonial. Descúbrelas",
-    "BrouchureBohemianHarbour": "¡Nuevo brouchure disponible! Disfruta un viaje de ensueño a través de nuestros nuevos lanzamientos"
+    "BrouchureBohemianHarbour": "¡Nuevo brouchure disponible! Disfruta un viaje de ensueño a través de nuestros nuevos lanzamientos",
+    "tiposDestacados": {
+        "title": "Lo más representativo de HARBOUR"
+    },
+    "galeria": {
+        "title": "Proyectos que cobran vida con nuestros tejidos",
+        "texto": "Explora cada propuesta haciendo clic sobre la imagen para conocer el tejido."
+    },
+    "newCollections": {
+        "bohemian": {
+            "title": "COLECCIÓN BOHEMIAN",
+            "description": "Bohemian es una colección de tejidos de exterior que fusiona carácter y rendimiento, diseñada para resistir sol, humedad y uso intensivo sin perder su esencia estética. Una propuesta versátil y sofisticada, ideal para terrazas, jardines y proyectos contract al aire libre."
+        },
+        "husky": {
+            "title": "COLECCIÓN HUSKY",
+            "description": "Husky es una colección desarrollada para ofrecer máxima seguridad en entornos exigentes. Sus tejidos están diseñados para no incendiarse ni propagar llamas, proporcionando protección y fiabilidad. Con 100% de opacidad y una gama cromática fácil de integrar, es ideal para proyectos contract."
+        },
+        "future": {
+            "title": "COLECCIÓN FUTURE",
+            "description": "Future es una colección diseñada para adaptarse con precisión a formas esféricas, ofreciendo un acabado uniforme y de alta calidad. Sus tejidos combinan resistencia, flexibilidad y versatilidad, permitiendo soluciones innovadoras en proyectos contemporáneos."
+        }
+    }
 }

@@ -1,4 +1,25 @@
 {
+    "tiposDestacados": {
+        "title": "The most representative of HARBOUR"
+    },
+    "galeria": {
+        "title": "Projects brought to life with our fabrics",
+        "texto": "Explore each project by clicking on the image to discover the fabric."
+    },
     "BrouchureHarbour": "Vibrant colors and natural fibers to take you back to the colonial era. Discover them.",
-    "BrouchureBohemianHarbour": "New brochure available! Enjoy a dreamlike journey through our new releases."
+    "BrouchureBohemianHarbour": "New brochure available! Enjoy a dreamlike journey through our new releases.",
+    "newCollections": {
+        "bohemian": {
+            "title": "NEW COLLECTION BOHEMIAN",
+            "description": "Bohemian is an outdoor fabric collection that combines character and performance, designed to withstand sun, humidity, and intensive use without losing its aesthetic essence. A versatile and sophisticated proposal, ideal for terraces, gardens, and outdoor contract projects."
+        },
+        "husky": {
+            "title": "NEW COLLECTION HUSKY",
+            "description": "Husky is a collection developed to provide maximum safety in demanding environments. Its fabrics are designed not to ignite or spread flames, offering protection and reliability. With 100% opacity and an easy-to-integrate color range, it is ideal for contract projects."
+        },
+        "future": {
+            "title": "NEW COLLECTION FUTURE",
+            "description": "Future is a collection designed to adapt precisely to spherical shapes, delivering a uniform and high-quality finish. Its fabrics combine strength, flexibility, and versatility, enabling innovative solutions for contemporary projects."
+        }
+    }
 }

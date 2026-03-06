@@ -18,7 +18,7 @@ export default function DragImagenesColeccion({
     const isLightboxOpen = lightboxIndex != null;
     const [slideDir, setSlideDir] = useState("next"); // "next" | "prev"
     const [animKey, setAnimKey] = useState(0);
-
+    const eagerCount = 50;
     const safeImages = useMemo(() => (images || []).filter(Boolean), [images]);
 
     const dragStateRef = useRef({
@@ -238,7 +238,7 @@ export default function DragImagenesColeccion({
                                     alt={`Imagen ${idx + 1}`}
                                     className="h-[420px] w-full object-cover"
                                     draggable={false}
-                                    loading={idx === 0 ? "eager" : "lazy"}
+                                    loading={idx < eagerCount ? "eager" : "lazy"}
                                     decoding="async"
                                 />
                                 <div className="absolute inset-0 pointer-events-none" />

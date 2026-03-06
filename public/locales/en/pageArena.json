@@ -1,4 +1,25 @@
 {
     "BrouchurePuritty": "Return to the essence to reinvent our timeless collections. Discover them.",
-    "BrouchureBohemianArena": "New brochure available! Enjoy a dreamlike journey through our new releases."
+    "BrouchureBohemianArena": "New brochure available! Enjoy a dreamlike journey through our new releases.",
+    "tiposDestacados": {
+        "title": "The most representative of ARENA"
+    },
+    "galeria": {
+        "title": "Projects brought to life with our fabrics",
+        "texto": "Explore each project by clicking on the image to discover the fabric."
+    },
+    "newCollections": {
+        "takumi": {
+            "title": "NEW COLLECTION TAKUMI",
+            "description": "Takumi is a collection inspired by Japanese craftsmanship, with fabrics that evoke patience and attention to detail. Its soft tones and unique colors transform upholstery and curtains into harmonious and poetic pieces."
+        },
+        "lighthouse": {
+            "title": "NEW COLLECTION LIGHTHOUSE",
+            "description": "Lighthouse explores the lightness and transparency of sheer fabrics with an organic, Mediterranean spirit. These textiles allow natural light to flow through, creating warm and inviting atmospheres in any space, whether urban, coastal, or in the mountains."
+        },
+        "madamaButterfly": {
+            "title": "NEW COLLECTION MADAMA BUTTERFLY",
+            "description": "Inspired by the opera Madame Butterfly, these collections bring together tradition and emotion. GEISHA conveys delicacy through pastel tones that evoke calm and elegance. NAGASAKI recreates Japanese landscapes in dusty colors that reflect nostalgia and serenity. Together they create poetic and balanced spaces."
+        }
+    }
 }

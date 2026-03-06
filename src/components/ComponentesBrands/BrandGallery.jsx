@@ -108,6 +108,7 @@ function buildRowsLayout({
 function BrandGallery({
     brandKey,
     title = DEFAULTS.title,
+    texto,
     items,
     className = "",
     onOpenProducts,
@@ -227,9 +228,19 @@ function BrandGallery({
     return (
         <section className={`w-full px-4 py-12 ${className}`}>
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-end justify-between gap-6 mb-8">
-                    <h2 className="text-2xl md:text-3xl font-bold text-black">{title}</h2>
-                    <div className="hidden md:block h-[2px] flex-1 bg-black/10 rounded-full" />
+                <div className="mb-8">
+                    {/* Fila: título + línea */}
+                    <div className="flex items-end gap-6">
+                        <h2 className="text-2xl md:text-3xl font-bold text-black">
+                            {title}
+                        </h2>
+                        <div className="hidden md:block h-[2px] flex-1 bg-black/10 rounded-full" />
+                    </div>
+
+                    {/* Texto inferior */}
+                    <p className="mt-3 text-sm md:text-base text-black/50">
+                        {texto}
+                    </p>
                 </div>
 
                 <div ref={containerRef} className="w-full">
@@ -254,7 +265,7 @@ function BrandGallery({
                                         ref={(el) => (itemsRef.current[index] = el)}
                                         className={[
                                             "group relative overflow-hidden rounded-2xl ring-1 ring-black/10 shadow-sm",
-                                            "transition-all duration-700 ease-out",
+                                            "transition-[opacity,transform] duration-700 ease-out",
                                             delayClass,
                                             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
                                             spanClass,

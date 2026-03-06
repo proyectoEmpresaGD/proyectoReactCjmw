@@ -14,6 +14,13 @@ import { imagenesColecciones } from "../../Constants/constants";
 import { coleccionConfigByName } from "../../Constants/constants";
 import InstagramFeed from "../../components/ComponentesBrands/instagramPost";
 import usePageMeta from "../../utils/usePageMeta";
+import BloquesInformativos from "../../components/ComponentesBrands/TiposDestacados";
+import NuevasColeccionesGrid from "../../components/ComponentesBrands/nuevasColeccionesGrid";
+import InstagramPromo from "../../components/ComponentesBrands/InstagramPromo";
+import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
+import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
+import BrandRandomSelectionCarousel from "../../components/ComponentesBrands/BrandRandomSelectionCarousel";
+import Reveal from "../../components/ComponentesBrands/Reveal";
 
 const normalizeColeccionName = (name) => String(name || "").trim().toUpperCase();
 
@@ -28,11 +35,30 @@ function BassariHome() {
         setProductoSeleccionado(null);
     };
 
+    const [codesModalOpen, setCodesModalOpen] = useState(false);
+    const [codesModalCodes, setCodesModalCodes] = useState([]);
+    const [codesModalTitle, setCodesModalTitle] = useState("Productos relacionados");
+
+    const handleOpenProductsFromGallery = (codes, item) => {
+        const list = (codes || []).filter(Boolean);
+        if (!list.length) return;
+
+        setCodesModalCodes(list);
+        setCodesModalTitle(item?.title ? `Productos — ${item.title}` : "Productos relacionados");
+        setCodesModalOpen(true);
+    };
+
     const handleProductClick = (producto) => {
         if (!producto) return;
         setProductoSeleccionado(producto);
         setModalAbierta(true);
     };
+
+    usePageMeta({
+        title: "Arena | CJM Group",
+        description:
+            "Arena fusiona elegancia y naturaleza en tejidos para cortinas y tapicería. Diseños contemporáneos inspirados en paisajes orgánicos que aportan sofisticación y armonía a cada espacio.",
+    });
 
     const shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -42,7 +68,56 @@ function BassariHome() {
         return array;
     };
 
+    const images = [
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_ANCESTRAL3.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASSA_ESSENCESDUNIL_YUBA4.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_LEVOYAGEDESWOLOFS%20LA%20CROIX.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_YUBA1.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASSARI%20LE%20VOYAGE%20DES%20WOLOF%20ZOSER%202.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/CJM_BASSARI_2026-1-2_DETALLE%20ESSENCES%20DU%20NIL.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/07_IMAGENES%20PAGINA%20COLECCIONES%20NUEVAS%20/BASSARI/LE%20VOYAGE%20DES%20WOLOF%20/BASS_LIBRO_LEVOYAGEDESWOLOFS_34X34%2B3MM_SANGRE_resultado%20(1)_resultado.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/07_IMAGENES%20PAGINA%20COLECCIONES%20NUEVAS%20/BASSARI/ESSENCES%20DU%20NIL/BASS_LIBRO_ESSENCES_DU_NIL_44X44%2B3MM_SANGRE_resultado_resultado.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20IWOL%20ARGILE_5_11zon_5_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20YEMBE%20_5_11zon_10_11zon.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20INDEFELO%20LA%20MER%20.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20DANDE%20ARGILE%20(COJ%C3%8DN%20PEQUE%C3%91O).webp",
+    ];
+
+    const nuevasColecciones = [
+        {
+            name: "ESSENCES DU NIL",
+            image:
+                "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/07_IMAGENES%20PAGINA%20COLECCIONES%20NUEVAS%20/BASSARI/ESSENCES%20DU%20NIL/BASS_LIBRO_ESSENCES_DU_NIL_44X44%2B3MM_SANGRE_resultado_resultado.webp",
+            description: t("newCollections.essences.description"),
+        },
+        {
+            name: "LE VOYAGE DES WOLOF",
+            image:
+                "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_LEVOYAGEDESWOLOFS%20LA%20CROIX.webp",
+            description: t("newCollections.voyage.description")
+        },
+    ];
+
     const marca = "BAS";
+
+    const bloquesUso = [
+        {
+            nombre: "VISILLO",
+            imagen: images[0],
+            filtros: { brand: marca, fabricType: "VISILLO" },
+        },
+        {
+            nombre: "IMO",
+            imagen: images[4],
+            filtros: { brand: marca, uso: "IMO" },
+        },
+        {
+            nombre: "OUTDOOR",
+            imagen: images[5],
+            filtros: { brand: marca, uso: "OUTDOOR" },
+        },
+    ];
 
     const buildColeccionUrl = (coleccion, params = {}) => {
         const sp = new URLSearchParams();
@@ -103,21 +178,7 @@ function BassariHome() {
 
 
 
-    const images = [
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_ANCESTRAL3.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASSA_ESSENCESDUNIL_YUBA4.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_LEVOYAGEDESWOLOFS%20LA%20CROIX.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_YUBA1.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASSARI%20LE%20VOYAGE%20DES%20WOLOF%20ZOSER%202.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/CJM_BASSARI_2026-1-2_DETALLE%20ESSENCES%20DU%20NIL.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/07_IMAGENES%20PAGINA%20COLECCIONES%20NUEVAS%20/BASSARI/LE%20VOYAGE%20DES%20WOLOF%20/BASS_LIBRO_LEVOYAGEDESWOLOFS_34X34%2B3MM_SANGRE_resultado%20(1)_resultado.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/07_IMAGENES%20PAGINA%20COLECCIONES%20NUEVAS%20/BASSARI/ESSENCES%20DU%20NIL/BASS_LIBRO_ESSENCES_DU_NIL_44X44%2B3MM_SANGRE_resultado_resultado.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20IWOL%20ARGILE_5_11zon_5_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20YEMBE%20_5_11zon_10_11zon.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20INDEFELO%20LA%20MER%20.webp",
-        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20DANDE%20ARGILE%20(COJ%C3%8DN%20PEQUE%C3%91O).webp",
-    ];
+
 
     // Helpers para obtener imagen de fondo de la colección (sin repetir)
     const getColeccionCover = useCallback((collectionName) => {
@@ -181,26 +242,79 @@ function BassariHome() {
             <Header />
 
             <Carrusel images={shuffleArray([...images])} />
-
-            <div className="flex items-center justify-center h-full mt-[2%]">
+            {/* <div className="">
+                <BloquesInformativos
+                    titulo="TIPOS DESTACADOS"
+                    texto="Selecciona el uso para ver solo los productos Harbour correspondientes."
+                    bloques={bloquesUso}
+                />
+            </div> */}
+            <NuevasColeccionesGrid items={nuevasColecciones} />
+            {/* <div className="flex items-center justify-center h-full mt-[2%]">
                 <img
                     src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png"
                     alt=""
                     className="lg:w-[20%] lg:h-[20%] w-[40%] h-[30%] max-w-full max-h-full"
                 />
+            </div> */}
+
+            {/* <CarruselColeccionesNuevas slides={slides} durationMs={15000} /> */}
+            <div>
+                {/* ✅ Tu carrusel de colecciones (igual que antes) */}
+                {/* <CarruselColeccionesNuevas slides={slides} durationMs={15000} /> */}
+
+                {/* ✅ NUEVO (como Harbour): carrusel 12 aleatorios + animación reveal */}
+                <Reveal className="mt-10">
+                    <BrandRandomSelectionCarousel
+                        brandCode={marca}
+                        brandName="BASSARI"
+                        onProductClick={(p) => {
+                            setProductoSeleccionado(p);
+                            setModalAbierta(true);
+                        }}
+                    />
+                </Reveal>
+
+                {/* ✅ NUEVO (como Harbour): galería + modal por códigos */}
+                <BrandGallery
+                    brandKey="bassari"
+                    title={t("galeria.title")}
+                    texto={t("galeria.texto")}
+                    onOpenProducts={handleOpenProductsFromGallery}
+                />
+
+                <ModalProductosPorCodigos
+                    isOpen={codesModalOpen}
+                    onClose={() => setCodesModalOpen(false)}
+                    codes={codesModalCodes}
+                    apiUrl={import.meta.env.VITE_API_BASE_URL}
+                    title={codesModalTitle}
+                    onProductClick={(p) => {
+                        setProductoSeleccionado(p);
+                        setModalAbierta(true);
+                    }}
+                />
+
+                {productoSeleccionado && (
+                    <Modal
+                        isOpen={modalAbierta}
+                        close={() => setModalAbierta(false)}
+                        product={productoSeleccionado}
+                    />
+                )}
+
+                <section id="colecciones">
+                    <ColeccionesMarcas marca={marca} />
+                </section>
+
+                {/* ✅ NUEVO (como Harbour): promo Instagram al final */}
+                <InstagramPromo
+                    className="mt-12 mb-12"
+                    account="@bassarifabrics"
+                    href="https://www.instagram.com/bassarifabrics/"
+                    imageUrl="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASSA_ESSENCESDUNIL_YUBA4.webp"
+                />
             </div>
-
-            <CarruselColeccionesNuevas slides={slides} durationMs={15000} />
-
-            {productoSeleccionado && (
-                <Modal isOpen={modalAbierta} close={handleCloseModal} product={productoSeleccionado} />
-            )}
-
-            <section id="colecciones">
-                <ColeccionesMarcas marca={marca} />
-            </section>
-            {/* <InstagramFeed brand="bassari" className="mt-10" /> */}
-
             <Footer />
         </CartProvider>
     );

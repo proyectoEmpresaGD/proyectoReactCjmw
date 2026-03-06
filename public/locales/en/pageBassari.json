@@ -1,4 +1,11 @@
 {
+    "tiposDestacados": {
+        "title": "The most representative of BASSARI"
+    },
+    "galeria": {
+        "title": "Projects brought to life with our fabrics",
+        "texto": "Explore each project by clicking on the image to discover the fabric."
+    },
     "BrouchureBassari": "A journey to the most remote part of Senegal inspires these collections. Discover them.",
     "newCollections": {
         "voyage": {

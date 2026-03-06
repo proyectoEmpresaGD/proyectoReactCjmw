@@ -1,4 +1,5 @@
 // Devuelve { ref, verifyUrl, shortCode, blobUrl } con el PDF YA firmado
+//Esto se usa para firmar los PDF de los presupuestos que sacan los asistentes
 export async function registerAndSignOnServer(pdfBlob, payload) {
     const fd = new FormData();
     fd.append('file', pdfBlob, `${payload.ref}.pdf`);

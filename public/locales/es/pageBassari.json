@@ -1,5 +1,12 @@
 {
     "BrouchureBassari": "Un viaje al lugar más remoto del Senegal inspira estas colecciones. Descúbrelas.",
+    "tiposDestacados": {
+        "title": "Lo más representativo de BASSARI"
+    },
+    "galeria": {
+        "title": "Proyectos que cobran vida con nuestros tejidos",
+        "texto": "Explora cada propuesta haciendo clic sobre la imagen para conocer el tejido."
+    },
     "newCollections": {
         "voyage": {
             "title": "NUEVA COLECCIÓN: LE VOYAGE DES WOLOF",

@@ -1,4 +1,25 @@
 {
+    "tiposDestacados": {
+        "title": "Le plus représentatif d’HARBOUR"
+    },
+    "galeria": {
+        "title": "Des projets qui prennent vie avec nos tissus",
+        "texto": "Explorez chaque projet en cliquant sur l’image pour découvrir le tissu."
+    },
     "BrouchureHarbour": "Des couleurs vibrantes et des fibres naturelles pour voyager à l’époque coloniale. Découvrez-les.",
-    "BrouchureBohemianHarbour": "Nouveau brochure disponible ! Profitez d’un voyage de rêve à travers nos nouvelles collections."
+    "BrouchureBohemianHarbour": "Nouveau brochure disponible ! Profitez d’un voyage de rêve à travers nos nouvelles collections.",
+    "newCollections": {
+        "bohemian": {
+            "title": "NOUVELLE COLLECTION BOHEMIAN",
+            "description": "Bohemian est une collection de tissus d’extérieur qui allie caractère et performance, conçue pour résister au soleil, à l’humidité et à un usage intensif sans perdre son essence esthétique. Une proposition polyvalente et sophistiquée, idéale pour les terrasses, jardins et projets contract en extérieur."
+        },
+        "husky": {
+            "title": "NOUVELLE COLLECTION HUSKY",
+            "description": "Husky est une collection développée pour offrir une sécurité maximale dans les environnements exigeants. Ses tissus sont conçus pour ne pas s’enflammer ni propager les flammes, offrant protection et fiabilité. Avec 100 % d’opacité et une palette de couleurs facile à intégrer, elle est idéale pour les projets contract."
+        },
+        "future": {
+            "title": "NOUVELLE COLLECTION FUTURE",
+            "description": "Future est une collection conçue pour s’adapter avec précision aux formes sphériques, offrant une finition uniforme et de haute qualité. Ses tissus combinent résistance, flexibilité et polyvalence, permettant des solutions innovantes pour les projets contemporains."
+        }
+    }
 }

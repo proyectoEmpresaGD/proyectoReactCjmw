@@ -15,13 +15,30 @@ import { buildColeccionParams, getColeccionCover } from "../../Constants/colecci
 import { coleccionConfigByName } from "../../Constants/constants";
 import InstagramFeed from "../../components/ComponentesBrands/instagramPost";
 import usePageMeta from "../../utils/usePageMeta";
-
+import BloquesInformativos from "../../components/ComponentesBrands/TiposDestacados";
+import NuevasColeccionesGrid from "../../components/ComponentesBrands/nuevasColeccionesGrid";
+import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
+import InstagramPromo from "../../components/ComponentesBrands/InstagramPromo";
+import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
+import BrandRandomSelectionCarousel from "../../components/ComponentesBrands/BrandRandomSelectionCarousel";
+import Reveal from "../../components/ComponentesBrands/Reveal";
 function FlamencoHome() {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     const [modalAbierta, setModalAbierta] = useState(false);
     const { t } = useTranslation("pageFlamenco");
     const navigate = useNavigate();
+    const [codesModalOpen, setCodesModalOpen] = useState(false);
+    const [codesModalCodes, setCodesModalCodes] = useState([]);
+    const [codesModalTitle, setCodesModalTitle] = useState("Productos relacionados");
 
+    const handleOpenProductsFromGallery = (codes, item) => {
+        const list = (codes || []).filter(Boolean);
+        if (!list.length) return;
+
+        setCodesModalCodes(list);
+        setCodesModalTitle(item?.title ? `Productos — ${item.title}` : "Productos relacionados");
+        setCodesModalOpen(true);
+    };
     const handleCloseModal = () => {
         setModalAbierta(false);
         setProductoSeleccionado(null);
@@ -41,7 +58,7 @@ function FlamencoHome() {
         return array;
     };
 
-    const marca = "FLA";
+
 
     const buildColeccionUrl = (coleccion, params = {}) => {
         const sp = new URLSearchParams();
@@ -69,6 +86,12 @@ function FlamencoHome() {
         [navigate]
     );
 
+    usePageMeta({
+        title: "Arena | CJM Group",
+        description:
+            "Arena fusiona elegancia y naturaleza en tejidos para cortinas y tapicería. Diseños contemporáneos inspirados en paisajes orgánicos que aportan sofisticación y armonía a cada espacio.",
+    });
+
     const images = [
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_SALON%20DE%20LA%20GITANA%20MUSTARD_1.webp",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_PINEDA_IBORY.webp",
@@ -83,6 +106,37 @@ function FlamencoHome() {
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/02_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINAS%20DE%20LAS%20MARCAS%20/FLAMENCO/FLA_MARRAKECH_AGDAL_OLIVE%20.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/02_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINAS%20DE%20LAS%20MARCAS%20/FLAMENCO/FLA_MARRAKECH_COMPOTELAS.jpg",
         "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/02_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINAS%20DE%20LAS%20MARCAS%20/FLAMENCO/FLA_MARRAKECH_KUTUBIA%20APRICOT.jpg",
+    ];
+
+    const nuevasColecciones = [
+        {
+            name: "INDIENNE STRIPES",
+            image:
+                "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/INDIENNE%20STRIPES/CJM_FLAMENCO_2026_INDIENNE%20OCEAN.webp",
+            description: t("newCollections.indienne.description")
+        },
+        {
+            name: "PALACIO DE LAS DUEÑAS",
+            image:
+                "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS/CJM_FLAMENCO_JARDIN%20DE%20ACEITE%20_OLIVE_2.webp",
+            description: t("newCollections.palacio.description")
+        },
+    ];
+
+    const marca = "FLA";
+
+    const bloquesUso = [
+        {
+            nombre: "FLORALES",
+            imagen: images[4],
+            filtros: { brand: marca, fabricPattern: "FLORAL" },
+        },
+        {
+            nombre: "RAYAS",
+            imagen: images[0],
+            filtros: { brand: marca, fabricPattern: "RAYAS" },
+        },
+
     ];
 
     usePageMeta({
@@ -153,25 +207,74 @@ function FlamencoHome() {
         <CartProvider>
             <Header />
             <Carrusel images={shuffleArray([...images])} />
+            <div className="">
+                <BloquesInformativos
+                    titulo={t("tiposDestacados.title")}
+                    bloques={bloquesUso}
+                />
+            </div>
+            <NuevasColeccionesGrid items={nuevasColecciones} />
 
-            <div className="flex items-center justify-center h-full pt-3">
+            {/* <div className="flex items-center justify-center h-full pt-3">
                 <img
                     className="h-20 md:h-32 xl:h-40"
                     src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png"
                     alt="Logo Flamenco"
                 />
-            </div>
+            </div> */}
 
-            <CarruselColeccionesNuevas slides={slides} durationMs={15000} />
+            {/* <CarruselColeccionesNuevas slides={slides} durationMs={15000} /> */}
+
+            <Reveal className="mt-10">
+                <BrandRandomSelectionCarousel
+                    brandCode={marca}
+                    brandName="FLAMENCO"
+                    onProductClick={(p) => {
+                        setProductoSeleccionado(p);
+                        setModalAbierta(true);
+                    }}
+                />
+            </Reveal>
+
+            {/* ✅ NUEVO (como Harbour): galería + modal por códigos */}
+            <BrandGallery
+                brandKey="flamenco"
+                title={t("galeria.title")}
+                texto={t("galeria.texto")}
+                onOpenProducts={handleOpenProductsFromGallery}
+            />
+
+            <ModalProductosPorCodigos
+                isOpen={codesModalOpen}
+                onClose={() => setCodesModalOpen(false)}
+                codes={codesModalCodes}
+                apiUrl={import.meta.env.VITE_API_BASE_URL}
+                title={codesModalTitle}
+                onProductClick={(p) => {
+                    setProductoSeleccionado(p);
+                    setModalAbierta(true);
+                }}
+            />
 
             {productoSeleccionado && (
-                <Modal isOpen={modalAbierta} close={handleCloseModal} product={productoSeleccionado} />
+                <Modal
+                    isOpen={modalAbierta}
+                    close={() => setModalAbierta(false)}
+                    product={productoSeleccionado}
+                />
             )}
 
             <section id="colecciones">
                 <ColeccionesMarcas marca={marca} />
             </section>
-            {/* <InstagramFeed brand="flamenco" className="mt-10" /> */}
+
+            {/* ✅ NUEVO (como Harbour): promo Instagram al final */}
+            <InstagramPromo
+                className="mt-12 mb-12"
+                account="@flamencofabrics"
+                href="https://www.instagram.com/flamencofabrics/"
+                imageUrl="https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/GRAZALEMA/FLA_GRAZALEMA_ROCIODUSTYPINKYSALMON_02.webp"
+            />
             <Footer />
         </CartProvider>
     );

@@ -1,4 +1,11 @@
 {
+    "tiposDestacados": {
+        "title": "Lo más representativo de FLAMENCO"
+    },
+    "galeria": {
+        "title": "Proyectos que cobran vida con nuestros tejidos",
+        "texto": "Explora cada propuesta haciendo clic sobre la imagen para conocer el tejido."
+    },
     "newCollections": {
         "indienne": {
             "title": "NUEVA COLECCIÓN: INDIENNE STRIPES",

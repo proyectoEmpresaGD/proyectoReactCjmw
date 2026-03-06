@@ -1,5 +1,12 @@
 {
     "BrouchureBassari": "Un voyage vers le lieu le plus reculé du Sénégal inspire ces collections. Découvrez-les.",
+    "tiposDestacados": {
+        "title": "Le plus représentatif d’BASSARI"
+    },
+    "galeria": {
+        "title": "Des projets qui prennent vie avec nos tissus",
+        "texto": "Explorez chaque projet en cliquant sur l’image pour découvrir le tissu."
+    },
     "newCollections": {
         "voyage": {
             "title": "NEW COLLECTION LE VOYAGE DES WOLOF",

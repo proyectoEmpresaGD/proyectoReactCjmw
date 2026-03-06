@@ -42,6 +42,10 @@
         "palacioDeDueñas": {
             "introTop": "Palacio de Dueñas representa la vertiente más artística y señorial de la marca. Inspirada en la riqueza cultural de la antigüedad, en el arte clásico y en la majestuosidad de los palacios históricos, esta colección reinterpreta el pasado desde una mirada contemporánea.",
             "introBottom": "Los tejidos cobran protagonismo a través de estampados elaborados, texturas ricas y una estética que evoca lo aristocrático y lo ceremonial. Cada diseño parece extraído de otra época, adaptado al presente sin perder su esencia."
+        },
+        "default": {
+            "introTop": "Descubre la historia y el carácter de esta colección a través de sus ambientes, texturas y detalles.",
+            "introBottom": "Una selección pensada para crear espacios con presencia, equilibrio y un punto de sofisticación."
         }
     }
 }

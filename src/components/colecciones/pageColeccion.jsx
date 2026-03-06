@@ -1,5 +1,5 @@
 // src/components/colecciones/pageColeccion.jsx
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { CartProvider } from "../../components/CartContext";
@@ -7,8 +7,7 @@ import { Header } from "../../components/header";
 import Footer from "../../components/footer";
 
 import { useTranslation } from "react-i18next";
-import { imagenesColecciones } from "../../Constants/constants";
-import { coleccionConfigByName } from "../../Constants/coleccionesHelpers"
+import { coleccionConfigByName } from "../../Constants/coleccionesHelpers";
 import CarruselProductosColeccionEspecifica from "../../components/ComponentesBrands/CarruselProductosColeccionEspecifica";
 import Modal from "../ComponentesProductos/modal";
 import DragImagenesColeccion from "./DragImagenesColeccion";
@@ -21,8 +20,7 @@ function safeDecode(value) {
     }
 }
 
-const normalizeColeccionName = (name) =>
-    String(name || "").trim().toUpperCase();
+const normalizeColeccionName = (name) => String(name || "").trim().toUpperCase();
 
 const safeT = (t, key) => {
     const res = t(key, { defaultValue: "" });
@@ -44,7 +42,7 @@ function readFromSearch(search) {
     const get = (k) => sp.get(k) || null;
 
     const imagesRaw = get("images");
-    let images = [];
+    let images = null;
     if (imagesRaw) {
         try {
             const parsed = JSON.parse(imagesRaw);
@@ -61,54 +59,32 @@ function readFromSearch(search) {
         brochureImage: get("brochureImage"),
         brochurePdf: get("brochurePdf"),
         heroImage: get("heroImage"),
-        images: imagesRaw
-            ? (() => {
-                try {
-                    const parsed = JSON.parse(imagesRaw);
-                    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
-                } catch {
-                    return [];
-                }
-            })()
-            : null,
+        images, // array o null
     };
 }
 
 /**
- * ✅ Fallback desde constants + common.json
- * - imágenes y brochure desde coleccionConfigByName
+ * ✅ Fallback desde backend (JSON) + common.json
+ * - imágenes vienen del backend (imagesFromBackend)
+ * - brochure/índices desde coleccionConfigByName
  * - textos desde common.json: Colecciones.<textKey>.*
  */
-function buildColeccionFallbackFromCommon({ collectionName, t }) {
+function buildColeccionFallbackFromCommon({ collectionName, t, imagesFromBackend }) {
     const key = normalizeColeccionName(collectionName);
     const cfg = coleccionConfigByName?.[key];
     if (!cfg) return null;
 
-    const imgs = cfg.imagesKey
-        ? imagenesColecciones?.[cfg.imagesKey] || []
-        : [];
+    const imgs = Array.isArray(imagesFromBackend) ? imagesFromBackend : [];
 
-    const heroImage = Number.isFinite(cfg.heroIndex)
-        ? imgs?.[cfg.heroIndex] || null
-        : imgs?.[0] || null;
+    const heroImage = Number.isFinite(cfg.heroIndex) ? imgs?.[cfg.heroIndex] || null : imgs?.[0] || null;
 
-    const brochureImage = Number.isFinite(cfg.brochureImageIndex)
-        ? imgs?.[cfg.brochureImageIndex] || null
-        : null;
+    const brochureImage = Number.isFinite(cfg.brochureImageIndex) ? imgs?.[cfg.brochureImageIndex] || null : null;
 
     const textKey = cfg.textKey;
 
-    const introTop = textKey
-        ? safeT(t, `Colecciones.${textKey}.introTop`)
-        : null;
-
-    const introBottom = textKey
-        ? safeT(t, `Colecciones.${textKey}.introBottom`)
-        : null;
-
-    const introBrouchure = textKey
-        ? safeT(t, `Colecciones.${textKey}.introBrouchure`)
-        : null;
+    const introTop = textKey ? safeT(t, `Colecciones.${textKey}.introTop`) : null;
+    const introBottom = textKey ? safeT(t, `Colecciones.${textKey}.introBottom`) : null;
+    const introBrouchure = textKey ? safeT(t, `Colecciones.${textKey}.introBrouchure`) : null;
 
     return {
         introTop,
@@ -149,25 +125,87 @@ export default function ColeccionPage() {
         };
     }, [location.state]);
 
-    // ✅ Fallback desde common.json + constants
+    // ✅ Config (marca + índices + pdf) por nombre de colección
+    const cfg = useMemo(() => {
+        const key = normalizeColeccionName(coleccion);
+        return coleccionConfigByName?.[key] || null;
+    }, [coleccion]);
+
+    // --- Imágenes (prioridad: state.images > query.images > backend) ---
+    const [backendImages, setBackendImages] = useState([]);
+    const [loadingImages, setLoadingImages] = useState(false);
+
+    const imagesFromStateOrQuery = useMemo(() => {
+        // puede ser null (no viene)
+        return stateContent.images ?? queryContent.images ?? null;
+    }, [stateContent.images, queryContent.images]);
+
+    useEffect(() => {
+        const marca = cfg?.marca;
+        const key = normalizeColeccionName(coleccion);
+
+        if (!marca || !key) {
+            setBackendImages([]);
+            return;
+        }
+
+        const controller = new AbortController();
+        setLoadingImages(true);
+
+        (async () => {
+            try {
+                // ✅ Igual que ColeccionesMarcas: pedir TODA la marca
+                const url = `${import.meta.env.VITE_API_BASE_URL}/api/collections/brand/${encodeURIComponent(marca)}`;
+                const res = await fetch(url, { signal: controller.signal });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json(); // { marca, collections: { "BOHEMIAN": [ ... ] } }
+
+                // ✅ AQUÍ cogemos TODAS las imágenes de la colección
+                const list = Array.isArray(data?.collections?.[key]) ? data.collections[key].filter(Boolean) : [];
+
+                // Debug rápido (debería imprimir 12 para BOHEMIAN)
+                console.log("IMAGES COUNT", marca, key, list.length);
+
+                if (!controller.signal.aborted) setBackendImages(list);
+            } catch (err) {
+                if (err?.name === "AbortError") return;
+                console.error("Error cargando imágenes colección:", err);
+                if (!controller.signal.aborted) setBackendImages([]);
+            } finally {
+                if (!controller.signal.aborted) setLoadingImages(false);
+            }
+        })();
+
+        return () => controller.abort();
+    }, [cfg?.marca, coleccion]);
+
+    // ✅ Fallback desde common.json + backend
     const fallbackParams = useMemo(() => {
         if (!coleccion) return null;
-        return buildColeccionFallbackFromCommon({ collectionName: coleccion, t });
-    }, [coleccion, t]);
+        return buildColeccionFallbackFromCommon({
+            collectionName: coleccion,
+            t,
+            imagesFromBackend: backendImages,
+        });
+    }, [coleccion, t, backendImages]);
+
     // ✅ Prioridad: state > query > fallback > null
     const content = useMemo(
         () => ({
             introTop: stateContent.introTop ?? queryContent.introTop ?? fallbackParams?.introTop ?? null,
             introBottom: stateContent.introBottom ?? queryContent.introBottom ?? fallbackParams?.introBottom ?? null,
-            introBrouchure:
-                stateContent.introBrouchure ?? queryContent.introBrouchure ?? fallbackParams?.introBrouchure ?? null,
-            brochureImage:
-                stateContent.brochureImage ?? queryContent.brochureImage ?? fallbackParams?.brochureImage ?? null,
+            introBrouchure: stateContent.introBrouchure ?? queryContent.introBrouchure ?? fallbackParams?.introBrouchure ?? null,
+            brochureImage: stateContent.brochureImage ?? queryContent.brochureImage ?? fallbackParams?.brochureImage ?? null,
             brochurePdf: stateContent.brochurePdf ?? queryContent.brochurePdf ?? fallbackParams?.brochurePdf ?? null,
             heroImage: stateContent.heroImage ?? queryContent.heroImage ?? fallbackParams?.heroImage ?? null,
-            images: stateContent.images ?? queryContent.images ?? fallbackParams?.images ?? [],
+
+            // ✅ IMÁGENES: backend manda si ya cargó
+            images: backendImages?.length
+                ? backendImages
+                : (stateContent.images ?? queryContent.images ?? fallbackParams?.images ?? []),
         }),
-        [stateContent, queryContent, fallbackParams]
+        [stateContent, queryContent, fallbackParams, backendImages]
     );
 
     const heroImage = useMemo(() => {
@@ -224,6 +262,15 @@ export default function ColeccionPage() {
             <Header />
 
             <main className="bg-white text-gray-900">
+                {/* 0) LOADING IMÁGENES (solo cuando dependemos del backend) */}
+                {loadingImages && (
+                    <section className="pt-24 pb-0">
+                        <div className="max-w-5xl mx-auto px-6">
+                            <p className="text-sm text-gray-500">Cargando imágenes...</p>
+                        </div>
+                    </section>
+                )}
+
                 {/* 1) NOMBRE + TEXTO */}
                 <section className="pt-24 pb-10">
                     <div className="max-w-5xl mx-auto px-6">
@@ -300,12 +347,7 @@ export default function ColeccionPage() {
                             <h2 className="mt-3 text-2xl md:text-3xl font-semibold">Descargar brochure</h2>
 
                             <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_auto] items-start">
-                                <a
-                                    href={content.brochurePdf}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="group block"
-                                >
+                                <a href={content.brochurePdf} target="_blank" rel="noreferrer" className="group block">
                                     <div className="relative overflow-hidden rounded-3xl border border-gray-200 shadow-[0_18px_50px_rgba(0,0,0,0.10)] bg-white">
                                         {content.brochureImage ? (
                                             <img

@@ -6,8 +6,9 @@ const DEFAULT_LABELS = Object.freeze({
     button: "EXPLORA LA COLECCIÓN",
 });
 
+// ✅ IMPORTANTE: NO filtramos por image para no devolver null si llega tarde/vacío
 const normalizeItems = (items) =>
-    (items || []).filter((item) => item?.name && item?.description && item?.image);
+    (items || []).filter((item) => item?.name && item?.description);
 
 function NuevasColeccionesGrid({
     title = DEFAULT_LABELS.title,
@@ -20,7 +21,9 @@ function NuevasColeccionesGrid({
     const cardsRef = useRef([]);
 
     const normalizedItems = useMemo(() => normalizeItems(items), [items]);
-    const [visibleCards, setVisibleCards] = useState(() => new Set());
+
+    // ✅ Visibles por defecto (evita “no se ve nada” si el observer no dispara)
+    const [visibleCards, setVisibleCards] = useState(() => "ALL");
 
     const goToCollection = (collectionName) => {
         navigate(`/coleccion/${encodeURIComponent(collectionName)}`);
@@ -29,6 +32,14 @@ function NuevasColeccionesGrid({
     useEffect(() => {
         if (!normalizedItems.length) return;
 
+        // Si ya están visibles todas, no hace falta observer
+        if (visibleCards === "ALL") return;
+
+        if (typeof IntersectionObserver === "undefined") {
+            setVisibleCards("ALL");
+            return;
+        }
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
@@ -36,6 +47,7 @@ function NuevasColeccionesGrid({
                     if (!entry.isIntersecting || idx == null) return;
 
                     setVisibleCards((prev) => {
+                        if (prev === "ALL") return "ALL";
                         const next = new Set(prev);
                         next.add(Number(idx));
                         return next;
@@ -47,12 +59,13 @@ function NuevasColeccionesGrid({
 
         cardsRef.current.forEach((el) => el && observer.observe(el));
         return () => observer.disconnect();
-    }, [normalizedItems.length]);
+    }, [normalizedItems.length, visibleCards]);
 
     if (normalizedItems.length === 0) return null;
 
     // Stagger suave
     const delayClasses = ["delay-0", "delay-100", "delay-200", "delay-300", "delay-500"];
+
     function ExploreButton({ label, onClick, variant = "dark" }) {
         const base =
             "group inline-flex items-center gap-3 rounded-full px-6 py-3 text-sm font-medium backdrop-blur transition-colors focus:outline-none focus-visible:ring-2";
@@ -70,7 +83,6 @@ function NuevasColeccionesGrid({
                 <span>{label}</span>
 
                 <span className="relative inline-flex">
-                    {/* flecha principal: se desplaza a la derecha */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1"
@@ -87,7 +99,6 @@ function NuevasColeccionesGrid({
                         />
                     </svg>
 
-                    {/* trail sutil: aparece y se desplaza un poco más */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="pointer-events-none absolute left-0 h-4 w-4 opacity-0 transition-all duration-300 group-hover:opacity-70 group-hover:translate-x-2"
@@ -107,22 +118,24 @@ function NuevasColeccionesGrid({
             </button>
         );
     }
+
+    const isCardVisible = (index) => {
+        if (visibleCards === "ALL") return true;
+        return visibleCards.has(index);
+    };
+
     return (
         <section ref={sectionRef} className={`w-full px-4 py-12 ${className}`}>
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-end justify-between gap-6 mb-10">
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black">
-                        {title}
-                    </h2>
-
-                    {/* detalle moderno */}
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black">{title}</h2>
                     <div className="hidden md:block h-[2px] flex-1 bg-black/10 rounded-full" />
                 </div>
 
                 <div className="flex flex-col gap-10">
                     {normalizedItems.map((item, index) => {
                         const isReversedDesktop = index % 2 === 1;
-                        const isVisible = visibleCards.has(index);
+                        const isVisible = isCardVisible(index);
                         const delayClass = delayClasses[index % delayClasses.length];
 
                         return (
@@ -145,17 +158,21 @@ function NuevasColeccionesGrid({
                                         isReversedDesktop ? "lg:order-2" : "lg:order-1",
                                     ].join(" ")}
                                 >
-                                    <img
-                                        src={item.image}
-                                        alt={item.name}
-                                        className="w-full h-72 sm:h-80 lg:h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                                        loading="lazy"
-                                    />
+                                    {item.image ? (
+                                        <img
+                                            src={item.image}
+                                            alt={item.name}
+                                            className="w-full h-72 sm:h-80 lg:h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-72 sm:h-80 lg:h-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                            Sin imagen
+                                        </div>
+                                    )}
 
-                                    {/* overlay moderno */}
                                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                                    {/* chip */}
                                     <div className="absolute top-4 left-4 bg-white/85 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-black shadow-sm">
                                         New
                                     </div>
@@ -168,11 +185,7 @@ function NuevasColeccionesGrid({
                                         isReversedDesktop ? "lg:order-1" : "lg:order-2",
                                     ].join(" ")}
                                 >
-                                    <h3 className="text-xl md:text-2xl font-semibold text-black">
-                                        {item.name}
-                                    </h3>
-
-                                    {/* subrayado animado */}
+                                    <h3 className="text-xl md:text-2xl font-semibold text-black">{item.name}</h3>
                                     <div className="mt-2 h-[2px] w-14 bg-black/20 rounded-full" />
 
                                     <p className="mt-4 text-base md:text-lg text-black/80 leading-relaxed">
@@ -183,7 +196,7 @@ function NuevasColeccionesGrid({
                                         <ExploreButton
                                             label={buttonLabel}
                                             onClick={() => goToCollection(item.name)}
-                                            variant="dark"  // usa "light" si estás sobre fondo oscuro
+                                            variant="dark"
                                         />
                                     </div>
                                 </div>

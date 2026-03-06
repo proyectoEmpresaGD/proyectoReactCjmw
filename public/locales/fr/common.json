@@ -42,6 +42,10 @@
         "palacioDeDueñas": {
             "introTop": "Palacio de Dueñas représente la facette la plus artistique et la plus noble de la marque. Inspirée par la richesse culturelle de l’Antiquité, l’art classique et la majesté des palais historiques, cette collection réinterprète le passé à travers un regard contemporain.",
             "introBottom": "Les tissus occupent une place centrale à travers des imprimés élaborés, des textures riches et une esthétique qui évoque l’univers aristocratique et cérémoniel. Chaque création semble issue d’une autre époque, adaptée au présent sans perdre son essence."
+        },
+        "default": {
+            "introTop": "Découvrez l’histoire et le caractère de cette collection à travers ses ambiances, ses textures et ses détails.",
+            "introBottom": "Une sélection pensée pour créer des espaces avec présence, équilibre et une touche de sophistication."
         }
     }
 }

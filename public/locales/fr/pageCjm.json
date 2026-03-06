@@ -1,0 +1,19 @@
+{
+    "tiposDestacados": {
+        "title": "Le plus représentatif d’CJM"
+    },
+    "galeria": {
+        "title": "Des projets qui prennent vie avec nos tissus",
+        "texto": "Explorez chaque projet en cliquant sur l’image pour découvrir le tissu."
+    },
+    "newCollections": {
+        "colony": {
+            "title": "NOUVELLE COLLECTION COLONY WALLPAPER",
+            "description": "Colony Wallpaper est une collection qui invite à transformer les espaces grâce à la fraîcheur de la nature et à l’élégance du design décoratif. Fleurs, feuilles et motifs organiques se combinent avec des palettes douces et harmonieuses pour créer des ambiances sereines, équilibrées et pleines de caractère. Une proposition polyvalente qui apporte chaleur, texture et style aux intérieurs contemporains comme classiques."
+        },
+        "tokio": {
+            "title": "NOUVELLE COLLECTION TOKIO",
+            "description": "Tokio est une collection inspirée par l’harmonie entre tradition et modernité. Ses textures raffinées et ses motifs subtils s’associent à une palette équilibrée pour créer des espaces élégants, accueillants et pleins de caractère. Une proposition qui apporte chaleur, rythme visuel et sophistication aux intérieurs contemporains."
+        }
+    }
+}

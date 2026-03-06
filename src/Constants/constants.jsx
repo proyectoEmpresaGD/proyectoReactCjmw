@@ -797,14 +797,6 @@ export const homeBrands = [
                 productCodes: ["FLA001523", "FLA001508", "FLA001445", "FLA001460", "FLA001427", "FLA001475"],
             },
             {
-                key: "cjm-g-2",
-                title: "Espacio — Silueta y textura",
-                subtitle: "Proyecto / inspiración",
-                image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_KUTUBIA%20APRICOT.webp",
-                productCodes: ["FLA001681"],
-            },
-            {
                 key: "cjm-g-3",
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
@@ -819,14 +811,6 @@ export const homeBrands = [
                 image:
                     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_SALON%20DE%20LA%20GITANA%20MUSTARD_1.webp",
                 productCodes: ["FLA001917"],
-            },
-            {
-                key: "cjm-g-2",
-                title: "Espacio — Silueta y textura",
-                subtitle: "Proyecto / inspiración",
-                image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_KUTUBIA_STRAWBERRY_01.webp",
-                productCodes: ["FLA001680"],
             },
             {
                 key: "cjm-g-3",
@@ -907,14 +891,6 @@ export const homeBrands = [
             },
         ],
         gallery: [
-            {
-                key: "cjm-g-hero",
-                title: "Espacio — Composición contemporánea",
-                subtitle: "Proyecto / inspiración",
-                image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20IWOL%20ARGILE%20(COLCHA)%20WOLOF%20SAVANE%20(CORTINA)%20LOMPOUL%20ARGILE%20(COJINES%20TRASEROS)%20KAOLACK%20ARGILE(COJINES%20DELANTEROS)_3_11zon_3_11zon.webp",
-                productCodes: ["CJM02757", "CJM02735", "CJM02795", "CJM02779", "CJM02802"],
-            },
             {
                 key: "cjm-g-1",
                 title: "Detalle — Trama y luz",
@@ -1258,14 +1234,6 @@ export const homeBrands = [
                 image:
                     "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/CJM%20AMBIENTE/MEDITERRANEAN%20STRIPES/POISON%20RANGE%20OF%20COLOR.webp",
                 productCodes: ["CJM00382"],
-            },
-            {
-                key: "cjm-g-3",
-                title: "Detalle — Paleta neutral",
-                subtitle: "Detalle",
-                image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_MarcasNueva/CJM%20AMBIENTE/MOODBOARDS/MOODBOARD%20SET%20OF%20THREADS%2072px.jpg",
-                productCodes: ["CJM01341", "CJM01350", "CJM01356"],
             },
             {
                 key: "cjm-g-4",
