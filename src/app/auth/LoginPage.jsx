@@ -9,7 +9,7 @@ import { CartProvider } from '../../components/CartContext';
 const VERIFIED_MESSAGE_KEY = 'login_verified_message';
 const VERIFIED_SUCCESS = '1';
 const VERIFIED_ERROR = '0';
-
+//esto es una prueba
 export default function LoginPage() {
   const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
