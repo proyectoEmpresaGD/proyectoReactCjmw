@@ -16,4 +16,4 @@ jobs:
         run: sleep 25
 
       - name: Check production homepage
-        run: curl -f https://TU-DOMINIO.com || exit 1
+        run: curl -f https://www.cjmw.eu/#/ || exit 1
