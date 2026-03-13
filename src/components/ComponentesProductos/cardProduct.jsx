@@ -305,7 +305,6 @@ export default function CardProduct() {
 
     // sync page from URL (hash-safe)
 
-
     useEffect(() => {
         if (initialPageRef.current != null) return;
 

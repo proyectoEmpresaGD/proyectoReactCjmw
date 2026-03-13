@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import { createProductRouter } from './routes/productos.js';
@@ -9,7 +10,6 @@ import pg from 'pg';
 import nodemailer from 'nodemailer';
 import path from 'node:path';
 import { createQuotesRouter } from './routes/quotes.js';
-import 'dotenv/config';
 import fetch from 'node-fetch';
 import { createFtpRouter } from './routes/ftp.js';
 import { createInstagramRouter } from './routes/instagram.js';
@@ -17,6 +17,12 @@ import { createCollectionsRouter } from './routes/collections.js';
 import { createContactRouter } from './routes/contact.js';
 import { ContactRequestModel } from './models/Postgres/contactRequestsModel.js';
 import cron from 'node-cron';
+import { createAuthRouter } from './routes/auth.js';
+import { createClientAreaRouter } from './routes/clientAreas.js';
+import cookieParser from 'cookie-parser';
+import { createCustomerRegistrationRoutes } from './routes/customerRegistrationRoutes.js';
+import { requireAuth } from './middlewares/authMiddleware.js';
+import { requireAdmin } from './middlewares/requireAdmin.js';
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +44,7 @@ app.use(
   })
 );
 app.use(json());
+app.use(cookieParser());
 app.use(corsMiddleware());
 app.disable('x-powered-by');
 app.use(urlencoded({ extended: true }));
@@ -187,15 +194,8 @@ app.get('/api/proxy', async (req, res) => {
 
 /* ================== Estáticos ================== */
 app.use(express.static(join(__dirname, 'web')));
-
 /* ================== Rutas negocio ================== */
-app.use('/api/products', createProductRouter({ pool }));
-app.use('/api/images', createImagenRouter({ pool }));
-app.use('/api/ftp', createFtpRouter());
-app.use('/api/instagram', createInstagramRouter());
-app.use('/api/collections', createCollectionsRouter());
-app.use('/api/quotes', createQuotesRouter());
-app.use('/files', express.static(path.join(__dirname, 'output')));
+
 
 /* ================== Contact router + limpieza ================== */
 const contactModel = new ContactRequestModel(pool);
@@ -227,6 +227,181 @@ const pedidosTransporter = nodemailer.createTransport({
   secure: true,
   auth: { user: process.env.PEDIDOS_EMAIL, pass: process.env.PEDIDOS_PASS },
 });
+
+const emailService = {
+  async sendPasswordResetEmail({ to, firstName, resetUrl }) {
+    const customerName = firstName?.trim() || 'cliente';
+
+    await pedidosTransporter.sendMail({
+      from: `"CJMW WEB" <${process.env.PEDIDOS_EMAIL}>`,
+      to,
+      subject: 'Recupera tu contraseña',
+      html: `
+        <div style="margin:0; padding:0; background-color:#f5f5f4;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f5f5f4; padding:32px 16px;">
+            <tr>
+              <td align="center">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px; background-color:#ffffff; border-radius:20px; overflow:hidden; border:1px solid #e7e5e4;">
+                  <tr>
+                    <td style="background-color:#1c1917; padding:24px 32px; text-align:center;">
+                      <h1 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:24px; line-height:32px; color:#ffffff; font-weight:700;">
+                        CJMW
+                      </h1>
+                      <p style="margin:8px 0 0; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; color:#d6d3d1;">
+                        Recuperación de contraseña
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding:32px;">
+                      <p style="margin:0 0 16px; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:24px; color:#292524;">
+                        Hola <strong>${customerName}</strong>,
+                      </p>
+
+                      <p style="margin:0 0 16px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#44403c;">
+                        Hemos recibido una solicitud para restablecer tu contraseña.
+                      </p>
+
+                      <p style="margin:0 0 24px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#44403c;">
+                        Pulsa en el siguiente botón para cambiarla:
+                      </p>
+
+                      <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px;">
+                        <tr>
+                          <td align="center" style="border-radius:12px; background-color:#1c1917;">
+                            <a
+                              href="${resetUrl}"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style="display:inline-block; padding:14px 24px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none;"
+                            >
+                              Restablecer contraseña
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <p style="margin:0 0 12px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#57534e;">
+                        Este enlace caduca en 3 horas.
+                      </p>
+
+                      <p style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:22px; color:#78716c;">
+                        Si no has solicitado este cambio, puedes ignorar este mensaje.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="border-top:1px solid #e7e5e4; padding:20px 32px; background-color:#fafaf9;">
+                      <p style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:20px; color:#a8a29e; text-align:center;">
+                        Este correo ha sido enviado automáticamente por CJMW.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `,
+    });
+  },
+};
+
+app.use('/api/products', createProductRouter({ pool }));
+app.use('/api/images', createImagenRouter({ pool }));
+app.use('/api/ftp', createFtpRouter());
+app.use('/api/instagram', createInstagramRouter());
+app.use('/api/collections', createCollectionsRouter());
+app.use('/api/quotes', createQuotesRouter());
+app.use('/api/auth', createAuthRouter({ pool, emailService }));
+app.use('/api/client-area', createClientAreaRouter({ pool }));
+app.use('/files', express.static(path.join(__dirname, 'output')));
+app.use(
+  '/api/customer-registration',
+  createCustomerRegistrationRoutes({
+    pool,
+    requireAuth,
+    requireAdmin,
+    emailService: {
+      async sendCustomerVerificationEmail({ to, firstName, verificationUrl }) {
+        const customerName = firstName?.trim() || 'cliente';
+
+        await pedidosTransporter.sendMail({
+          from: `"CJMW WEB" <${process.env.PEDIDOS_EMAIL}>`,
+          to,
+          subject: 'Activa tu cuenta de cliente',
+          html: `
+      <div style="margin:0; padding:0; background-color:#f5f5f4;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f5f5f4; padding:32px 16px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px; background-color:#ffffff; border-radius:20px; overflow:hidden; border:1px solid #e7e5e4;">
+                <tr>
+                  <td style="background-color:#1c1917; padding:24px 32px; text-align:center;">
+                    <h1 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:24px; line-height:32px; color:#ffffff; font-weight:700;">
+                      CJMW
+                    </h1>
+                    <p style="margin:8px 0 0; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; color:#d6d3d1;">
+                      Activación de cuenta de cliente
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:32px;">
+                    <p style="margin:0 0 16px; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:24px; color:#292524;">
+                      Hola <strong>${customerName}</strong>,
+                    </p>
+
+                    <p style="margin:0 0 16px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#44403c;">
+                      Tu solicitud de acceso ha sido aprobada correctamente.
+                    </p>
+
+                    <p style="margin:0 0 24px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#44403c;">
+                      Para activar tu cuenta y poder iniciar sesión, pulsa en el siguiente botón:
+                    </p>
+
+                    <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px;">
+                      <tr>
+                        <td align="center" style="border-radius:12px; background-color:#1c1917;">
+                          <a
+                            href="${verificationUrl}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style="display:inline-block; padding:14px 24px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none;"
+                          >
+                            Verificar y activar cuenta
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <p style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:22px; color:#78716c;">
+                      Si no has solicitado este acceso, puedes ignorar este mensaje.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="border-top:1px solid #e7e5e4; padding:20px 32px; background-color:#fafaf9;">
+                    <p style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:20px; color:#a8a29e; text-align:center;">
+                      Este correo ha sido enviado automáticamente por CJMW.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `,
+        });
+      }
+    },
+  })
+);
 
 /* ================== /api/email (legado) con idioma por país ================== */
 app.post("/api/email", async (req, res) => {

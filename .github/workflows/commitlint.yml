@@ -1,0 +1,34 @@
+name: Commitlint
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install commitlint
+        run: |
+          npm install --no-save @commitlint/cli @commitlint/config-conventional
+
+      - name: Create commitlint config
+        run: |
+          cat <<'EOF' > commitlint.config.cjs
+          module.exports = { extends: ['@commitlint/config-conventional'] };
+          EOF
+
+      - name: Lint commits in PR
+        run: |
+          npx commitlint --from origin/${{ github.base_ref }} --to HEAD --verbose

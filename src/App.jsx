@@ -20,6 +20,13 @@ import Confeccion from "./components/calculadora/confeccion.jsx";
 import ColeccionPage from "./components/colecciones/pageColeccion.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import CookieConsent from "./components/ComponenetesCookies/CookieConsent.jsx";
+import LoginPage from "./app/auth/LoginPage.jsx";
+import RegisterPage from "./app/auth/RegisterPage.jsx";
+import AccountProfilePage from "./components/account/AccountProfilePage.jsx";
+import AccountInvoicesPage from "./components/account/AccountInvoicesPage.jsx";
+import AdminRequestsPage from "./app/admin/AdminRequestsPage.jsx";
+import VerifyEmailPage from "./app/auth/VerifyEmailPage.jsx";
+import ResetPasswordPage from "./app/auth/ResetPasswordPage";
 
 function App() {
   return (
@@ -39,11 +46,18 @@ function App() {
         <Route path="/confeccion" element={<Confeccion />} />
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
+        <Route path="/mis-datos" element={<AccountProfilePage />} />
+        <Route path="/mis-facturas" element={<AccountInvoicesPage />} />
         <Route path="/map/:direccion" element={<GeocodingService />} />
         <Route path="/Contract" element={<Contract />} />
         <Route path="/media" element={<MediaPage />} />
         <Route path="/coleccion/:coleccion" element={<ColeccionPage />} />
         <Route path="/colecciones/:marca" element={<ColeccionesMarcaPage />} />
+        {/* <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/admin/solicitudes" element={<AdminRequestsPage />} />
+        <Route path="/restablecer-password" element={<ResetPasswordPage />} />
+        <Route path="/verificar-email" element={<VerifyEmailPage />} /> */}
 
       </Routes>
     </>

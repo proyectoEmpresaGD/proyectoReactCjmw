@@ -5,11 +5,14 @@ import './index.css';
 import './i18n';               // debe importarse antes de <App />
 import App from './App.jsx';
 import { MarcaProvider } from './components/MarcaContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HashRouter>
     <MarcaProvider>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </MarcaProvider>
   </HashRouter>
 );

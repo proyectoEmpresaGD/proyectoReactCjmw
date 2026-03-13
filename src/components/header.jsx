@@ -10,27 +10,23 @@ import {
     SlidersHorizontal,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import ShoppingCartPanel from './shoppingCart';
+import ShoppingCartPanel from "./shoppingCart";
 import { useCart } from "./CartContext";
 import "tailwindcss/tailwind.css";
 import SearchBar from "./SearchBar";
 import { useMarca } from "./MarcaContext";
-
-// Importar constantes desde el archivo de constantes
+import { useAuth } from "../context/AuthContext.jsx";
 import { languageOptions, brandLogos, defaultLogo } from "../Constants/constants";
 
-// Controller interno: decide qué marca aplica por ruta o por query (?brand=XXX)
 const getBrandCodeFromLocation = (location, pathToBrandMap, logosByBrand) => {
     if (!location) return null;
 
-    // 1) Prioridad: filtro por query param (ej: ?brand=BAS)
     const params = new URLSearchParams(location.search || "");
     const brandFromQuery = params.get("brand");
     if (brandFromQuery && logosByBrand?.[brandFromQuery]) {
         return brandFromQuery;
     }
 
-    // 2) Si estamos en una página de marca (por ruta)
     const brandFromPath = pathToBrandMap?.[location.pathname];
     if (brandFromPath && logosByBrand?.[brandFromPath]) {
         return brandFromPath;
@@ -50,8 +46,8 @@ export const Header = ({ closeModal }) => {
     const location = useLocation();
     const { itemCount } = useCart();
     const { marcaActiva, setMarcaActiva } = useMarca();
+    const { user, isAuthenticated, isAdmin, logout } = useAuth();
 
-    // Dropdown states
     const [showCart, setShowCart] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
@@ -61,16 +57,25 @@ export const Header = ({ closeModal }) => {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
-    // Selected language
     const [selectedLanguage, setSelectedLanguage] = useState(
         languageOptions.find((opt) => opt.value === i18n.language) || languageOptions[0]
     );
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            setShowUserDropdown(false);
+            navigate("/");
+        } catch (error) {
+            console.error("Error cerrando sesión de cliente:", error);
+        }
+    };
+
     useEffect(() => {
         const found = languageOptions.find((opt) => opt.value === i18n.language);
         if (found) setSelectedLanguage(found);
     }, [i18n.language]);
 
-    // Refs for outside-click detection
     const searchRef = useRef(null);
     const cartRef = useRef(null);
     const userRef = useRef(null);
@@ -79,7 +84,6 @@ export const Header = ({ closeModal }) => {
     const brandsRef = useRef(null);
     const productsRef = useRef(null);
 
-    // --- mapa ruta -> código de marca y sincronización estado/ruta ---
     const pathToBrand = {
         "/arenaHome": "ARE",
         "/harbourHome": "HAR",
@@ -91,11 +95,10 @@ export const Header = ({ closeModal }) => {
     useEffect(() => {
         const code = getBrandCodeFromLocation(location, pathToBrand, brandLogos);
         if (marcaActiva !== code) {
-            setMarcaActiva(code); // code puede ser null (limpia al salir de marca/filtro)
+            setMarcaActiva(code);
         }
     }, [location.pathname, location.search]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Logo robusto: prioriza marcaActiva, luego ruta, luego fallback
     const logoSrc = getHeaderLogoSrc(location, {
         pathToBrandMap: pathToBrand,
         logosByBrand: brandLogos,
@@ -127,16 +130,19 @@ export const Header = ({ closeModal }) => {
             ) {
                 closeAllDropdowns();
             }
+
             if (!searchRef.current?.contains(event.target) && !cartRef.current?.contains(event.target)) {
                 closeSearchAndCart();
             }
         };
+
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [closeAllDropdowns, closeSearchAndCart]);
 
     const toggleDropdown = (dropdown) => {
         closeAllDropdowns();
+
         switch (dropdown) {
             case "menu":
                 setShowMenu(!showMenu);
@@ -168,14 +174,15 @@ export const Header = ({ closeModal }) => {
         if (typeof window.closeModalGlobal === "function") {
             window.closeModalGlobal();
         }
+
         setTimeout(() => navigate(path), 100);
         setShowMenu(false);
         closeAllDropdowns();
     };
 
-    // NUEVO: abrir filtros (mobile → SubMenuCarousel, desktop → FilterPanel)
     const hasActiveFilters = useMemo(() => {
         if (!location.pathname.startsWith("/products")) return false;
+
         const params = new URLSearchParams(location.search);
         const filterKeys = [
             "brand",
@@ -188,6 +195,7 @@ export const Header = ({ closeModal }) => {
             "uso",
             "mantenimiento",
         ];
+
         return filterKeys.some((key) => params.getAll(key).length > 0);
     }, [location.pathname, location.search]);
 
@@ -197,13 +205,10 @@ export const Header = ({ closeModal }) => {
         setShowMenu(false);
 
         if (location.pathname.startsWith("/products")) {
-            // Ya estamos en products: disparamos evento global
             window.dispatchEvent(new CustomEvent("openProductFilters"));
             return;
         }
 
-        // No estamos en products:
-        // Navegamos a /products y marcamos en el state que hay que abrir filtros
         navigate("/products", { state: { openFilters: true } });
     }, [closeAllDropdowns, closeSearchAndCart, location.pathname, navigate]);
 
@@ -230,13 +235,11 @@ export const Header = ({ closeModal }) => {
                         showMenu
                         ? "shadow-md"
                         : "bg-transparent"
-                    }
-                    `}
+                    }`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <div className="container mx-auto flex items-center justify-between py-2 px-4 lg:px-8">
-                    {/* Mobile menu & logo */}
                     <div className="flex items-center">
                         <button
                             className="text-gray-800 lg:hidden focus:outline-none"
@@ -246,6 +249,7 @@ export const Header = ({ closeModal }) => {
                         >
                             {showMenu ? <ChevronUp className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>
+
                         <Link
                             to="/"
                             className="flex items-center space-x-2 text-gray-800 hover:scale-110 duration-150 font-semibold py-2 px-2 rounded-lg"
@@ -254,13 +258,11 @@ export const Header = ({ closeModal }) => {
                         </Link>
                     </div>
 
-                    {/* Desktop nav */}
                     <div className="hidden lg:flex flex-grow justify-center items-center space-x-4">
                         <Link to="/" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
                             {t("home")}
                         </Link>
 
-                        {/* Brands */}
                         <div className="relative" ref={brandsRef}>
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
@@ -270,6 +272,7 @@ export const Header = ({ closeModal }) => {
                                 {t("brands")}
                                 {showBrandsDropdown ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
                             </button>
+
                             {showBrandsDropdown && (
                                 <div className="absolute top-full left-0 w-full mt-1 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 z-50 flex flex-col">
                                     {["arenaHome", "harbourHome", "cjmHome", "flamencoHome", "bassariHome"].map((key) => (
@@ -286,7 +289,6 @@ export const Header = ({ closeModal }) => {
                             )}
                         </div>
 
-                        {/* Products */}
                         <div className="relative" ref={productsRef}>
                             <button
                                 className="flex items-center text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg focus:outline-none"
@@ -296,10 +298,14 @@ export const Header = ({ closeModal }) => {
                                 {t("products")}
                                 {showProductsDropdown ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
                             </button>
+
                             {showProductsDropdown && (
                                 <div className="absolute top-full left-0 mt-1 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 w-40 z-50 flex flex-col">
-                                    <button onMouseDown={() => handleLinkClick("/products")} className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md text-left"
-                                        type="button">
+                                    <button
+                                        onMouseDown={() => handleLinkClick("/products")}
+                                        className="py-2 pl-4 text-gray-800 hover:bg-gray-200 rounded-md text-left"
+                                        type="button"
+                                    >
                                         {t("allProducts")}
                                     </button>
                                     <button
@@ -332,10 +338,8 @@ export const Header = ({ closeModal }) => {
                         <Link to="/contract" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">
                             {t("contract")}
                         </Link>
-                        {/* <Link to="/confeccion" className="text-gray-800 font-semibold hover:bg-gray-300 hover:text-gray-900 py-2 px-4 rounded-lg">{t('Confección')}</Link> */}
                     </div>
 
-                    {/* Icons */}
                     <div className="flex items-center space-x-4">
                         <div className="relative">
                             <button
@@ -345,27 +349,114 @@ export const Header = ({ closeModal }) => {
                                 aria-label={t("openFilters", "Abrir filtros")}
                             >
                                 <SlidersHorizontal className="h-5 w-5" />
-                                {hasActiveFilters && <span className="absolute top-0 right-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#26659E]" />}
+                                {hasActiveFilters && (
+                                    <span className="absolute top-0 right-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#26659E]" />
+                                )}
                             </button>
                         </div>
 
-                        {/* User */}
                         <div className="relative" ref={userRef}>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown("user")} type="button">
+                            <button
+                                className="text-gray-800 focus:outline-none"
+                                onClick={() => toggleDropdown("user")}
+                                type="button"
+                            >
                                 <User className="h-6 w-6" />
                             </button>
-                            {showUserDropdown && (
-                                <div className="absolute top-full right-0 bg-ivory bg-slate-100 shadow-lg rounded-md py-2 w-40 z-50">
-                                    <p className="px-4 py-2 text-gray-500">{t("userFeature")}</p>
+
+                            {/* {showUserDropdown && (
+                                <div className="absolute top-full right-0 z-50 w-64 rounded-md bg-slate-100 py-2 shadow-lg">
+                                    {isAuthenticated ? (
+                                        <>
+                                            <div className="border-b border-stone-200 px-4 py-3">
+                                                <p className="text-xs uppercase tracking-wide text-stone-500">Área cliente</p>
+                                                <p className="mt-1 text-sm font-medium text-stone-800">
+                                                    {user?.activeCustomer?.razclien || user?.activeCustomer?.nomcomer || user?.nif}
+                                                </p>
+                                                <p className="mt-1 text-xs text-stone-500">NIF {user?.nif}</p>
+                                            </div>
+
+                                            {isAdmin && (
+                                                <button
+                                                    className="block w-full px-4 py-2 text-left text-sm text-stone-700 transition hover:bg-stone-200"
+                                                    onClick={() => {
+                                                        setShowUserDropdown(false);
+                                                        navigate("/admin/solicitudes");
+                                                    }}
+                                                    type="button"
+                                                >
+                                                    Panel administrador
+                                                </button>
+                                            )}
+
+                                            <button
+                                                className="block w-full px-4 py-2 text-left text-sm text-stone-700 transition hover:bg-stone-200"
+                                                onClick={() => {
+                                                    setShowUserDropdown(false);
+                                                    navigate("/mis-datos");
+                                                }}
+                                                type="button"
+                                            >
+                                                Mis datos
+                                            </button>
+
+                                            <button
+                                                className="block w-full px-4 py-2 text-left text-sm text-stone-700 transition hover:bg-stone-200"
+                                                onClick={() => {
+                                                    setShowUserDropdown(false);
+                                                    navigate("/mis-facturas");
+                                                }}
+                                                type="button"
+                                            >
+                                                Mis facturas
+                                            </button>
+
+                                            <button
+                                                className="block w-full px-4 py-2 text-left text-sm text-stone-700 transition hover:bg-stone-200"
+                                                onClick={handleLogout}
+                                                type="button"
+                                            >
+                                                Cerrar sesión
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button
+                                                className="block w-full px-4 py-2 text-left text-sm text-stone-700 transition hover:bg-stone-200"
+                                                onClick={() => {
+                                                    setShowUserDropdown(false);
+                                                    navigate("/login");
+                                                }}
+                                                type="button"
+                                            >
+                                                Iniciar sesión
+                                            </button>
+
+                                            <button
+                                                className="block w-full px-4 py-2 text-left text-sm text-stone-700 transition hover:bg-stone-200"
+                                                onClick={() => {
+                                                    setShowUserDropdown(false);
+                                                    navigate("/register");
+                                                }}
+                                                type="button"
+                                            >
+                                                Crear cuenta
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
-                            )}
+                            )} */}
                         </div>
 
-                        {/* Search */}
                         <div className="relative" ref={searchRef}>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown("search")} type="button">
+                            <button
+                                className="text-gray-800 focus:outline-none"
+                                onClick={() => toggleDropdown("search")}
+                                type="button"
+                            >
                                 <Search className="h-6 w-6" />
                             </button>
+
                             {showSearchBar && (
                                 <div className="absolute top-full right-0 mt-2 w-72 bg-white shadow-lg rounded-lg z-50 p-4">
                                     <SearchBar closeSearchBar={() => setShowSearchBar(false)} />
@@ -373,9 +464,12 @@ export const Header = ({ closeModal }) => {
                             )}
                         </div>
 
-                        {/* Cart */}
                         <div className="relative cart" ref={cartRef}>
-                            <button className="text-gray-800 focus:outline-none relative" onClick={() => toggleDropdown("cart")} type="button">
+                            <button
+                                className="text-gray-800 focus:outline-none relative"
+                                onClick={() => toggleDropdown("cart")}
+                                type="button"
+                            >
                                 <ShoppingCartIcon className="h-6 w-6" />
                                 {itemCount > 0 && (
                                     <span
@@ -386,6 +480,7 @@ export const Header = ({ closeModal }) => {
                                     </span>
                                 )}
                             </button>
+
                             {showCart && (
                                 <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg p-4 z-50">
                                     <ShoppingCartPanel onClose={() => setShowCart(false)} />
@@ -393,7 +488,6 @@ export const Header = ({ closeModal }) => {
                             )}
                         </div>
 
-                        {/* Language */}
                         <div className="relative" ref={languageRef}>
                             {showLanguageDropdown && (
                                 <div className="absolute top-full right-0 mt-2 bg-slate-100 shadow-lg rounded-md py-2 w-32 z-50">
@@ -413,14 +507,18 @@ export const Header = ({ closeModal }) => {
                     </div>
                 </div>
 
-                {/* Mobile menu */}
                 <div className={`lg:hidden fixed top-0 left-0 w-full h-[100vh] bg-white z-50 transition-all ${showMenu ? "block" : "hidden"}`}>
                     <div className="bg-white shadow-lg py-4 px-6 h-full overflow-auto">
                         <div className="flex justify-between mb-4">
                             <Link to="/" className="font-semibold text-gray-800 hover:bg-gray-300 py-2 px-4 rounded-lg">
                                 <img src={logoSrc} className="h-10" alt="Logo Empresa" />
                             </Link>
-                            <button className="text-gray-800 focus:outline-none" onClick={() => toggleDropdown("menu")} type="button">
+
+                            <button
+                                className="text-gray-800 focus:outline-none"
+                                onClick={() => toggleDropdown("menu")}
+                                type="button"
+                            >
                                 <ChevronUp className="h-6 w-6" />
                             </button>
                         </div>
@@ -434,6 +532,7 @@ export const Header = ({ closeModal }) => {
                                 {t("brands")}
                                 {showBrandsDropdown ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                             </button>
+
                             {showBrandsDropdown && (
                                 <div className="pl-4 mt-2">
                                     {["arenaHome", "harbourHome", "cjmHome", "flamencoHome", "bassariHome"].map((key) => (
@@ -459,9 +558,14 @@ export const Header = ({ closeModal }) => {
                                 {t("products")}
                                 {showProductsDropdown ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                             </button>
+
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
-                                    <button onMouseDown={() => handleLinkClick("/products")} className="block py-1 text-gray-700 hover:text-gray-900" type="button">
+                                    <button
+                                        onMouseDown={() => handleLinkClick("/products")}
+                                        className="block py-1 text-gray-700 hover:text-gray-900"
+                                        type="button"
+                                    >
                                         {t("allProducts")}
                                     </button>
                                     <button
@@ -482,7 +586,6 @@ export const Header = ({ closeModal }) => {
                             )}
                         </div>
 
-                        {/* Botón de filtros en móvil: texto corto “Filtros”, no el texto largo */}
                         <button
                             onClick={openFilters}
                             className="mt-6 w-full rounded-lg bg-[#26659E] py-3 text-center text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-[#26659E]/60"
@@ -490,6 +593,28 @@ export const Header = ({ closeModal }) => {
                         >
                             {t("filtersButtonLabel", "Filtros")}
                         </button>
+
+                        {isAuthenticated && (
+                            <div className="mt-6 border-t border-b border-stone-200 py-4">
+                                <p className="mb-3 text-xs uppercase tracking-wide text-stone-500">Área cliente</p>
+
+                                <button
+                                    onClick={() => handleLinkClick("/mis-datos")}
+                                    className="block w-full text-left text-gray-800 font-semibold py-2"
+                                    type="button"
+                                >
+                                    Mis datos
+                                </button>
+
+                                <button
+                                    onClick={() => handleLinkClick("/mis-facturas")}
+                                    className="block w-full text-left text-gray-800 font-semibold py-2"
+                                    type="button"
+                                >
+                                    Mis facturas
+                                </button>
+                            </div>
+                        )}
 
                         <button onClick={() => handleLinkClick("/about")} className="block text-gray-800 font-semibold py-2" type="button">
                             {t("about")}
@@ -503,9 +628,6 @@ export const Header = ({ closeModal }) => {
                         <button onClick={() => handleLinkClick("/contract")} className="block text-gray-800 font-semibold py-2" type="button">
                             {t("contract")}
                         </button>
-                        {/* <button onClick={() => handleLinkClick('/confeccion')} className="block text-gray-800 font-semibold py-2">
-                            {t('confeccion')}
-                        </button> */}
                     </div>
                 </div>
             </header>

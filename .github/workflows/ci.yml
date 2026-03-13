@@ -1,0 +1,143 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Build project
+        run: npm run build
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target-branch: main
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
+
+      - name: Generate AI release notes
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        id: ai_notes
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          COMMITS=$(git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo HEAD~10)..HEAD)
+
+          PROMPT=$(cat <<EOF
+          Actúa como un Release Engineer senior experto en CI/CD, versionado semántico, GitHub Releases y comunicación técnica de cambios para entornos de producción.
+
+          Tu tarea es generar unas release notes profesionales, claras y útiles para desarrolladores y mantenimiento futuro.
+
+          Contexto del proyecto:
+          - Proyecto web en producción
+          - Stack: React, Vite, Node, Vercel
+          - Entorno real de producción
+
+          Objetivo:
+          Analiza los cambios proporcionados y genera unas release notes profesionales centradas en la lógica de negocio y el impacto funcional.
+
+          Reglas importantes:
+          - No enumeres archivos modificados
+          - No repitas simplemente los commits
+          - No inventes cambios
+          - Escribe en español
+          - Usa un tono técnico claro y profesional
+          - Explica la intención real del cambio
+          - Prioriza funcionalidad, comportamiento, robustez, validaciones y estabilidad
+          - Si hay tests, menciónalos como refuerzo de calidad
+          - Si hay cambios de CI/CD, menciónalos de forma breve y separada
+          - No uses emojis
+          - No añadas secciones vacías
+
+          Estructura obligatoria:
+
+          Resumen
+          Explicación breve del objetivo de la release.
+
+          Cambios principales
+          Lista clara de mejoras funcionales o cambios relevantes de comportamiento.
+
+          Correcciones
+          Bugs o comportamientos corregidos, si aplica.
+
+          Mejoras técnicas
+          Cambios internos que mejoran estabilidad, mantenibilidad o calidad, si aplica.
+
+          Impacto
+          Cómo afecta a usuarios, estabilidad o mantenimiento.
+
+          Información a analizar:
+          Tag de release: $RELEASE_TAG
+
+          Commits incluidos:
+          $COMMITS
+          EOF
+          )
+
+          jq -n \
+            --arg model "gpt-4.1-mini" \
+            --arg input "$PROMPT" \
+            '{model: $model, input: $input}' > request.json
+
+          curl https://api.openai.com/v1/responses \
+            -s \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -d @request.json > response.json
+
+          jq -r '.output[0].content[0].text' response.json > release_notes.md
+
+      - name: Update GitHub Release body
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          gh release edit "$RELEASE_TAG" --notes-file release_notes.md
