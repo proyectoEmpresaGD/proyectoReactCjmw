@@ -63,12 +63,17 @@ jobs:
 
       - name: Generate AI release notes
         if: ${{ steps.release.outputs.release_created == 'true' }}
-        id: ai_notes
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
         run: |
-          COMMITS=$(git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo HEAD~10)..HEAD)
+          PREV_TAG=$(git tag --sort=-v:refname | grep '^v' | grep -v "^${RELEASE_TAG}$" | head -n 1)
+
+          if [ -z "$PREV_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"- %s")
+          else
+            COMMITS=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s")
+          fi
 
           PROMPT=$(cat <<EOF
           Actúa como un Release Engineer senior experto en CI/CD, versionado semántico, GitHub Releases y comunicación técnica de cambios para entornos de producción.
