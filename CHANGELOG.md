@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.7.2](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.7.1...v6.7.2) (2026-03-16)
+
+
+### Bug Fixes
+
+* Cambio para que aparezca bien la release ([20260cf](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/20260cf14e46358b1dc0bce9a046b9c96ca966fc))
+
 ## [6.7.1](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.7.0...v6.7.1) (2026-03-16)
 
 
