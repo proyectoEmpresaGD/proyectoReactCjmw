@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { AuthProvider, useAuth } from './AuthContext';
+import { AuthProvider, useAuth } from '../../src/context/AuthContext';
 
 const { authClientMock } = vi.hoisted(() => ({
     authClientMock: {
@@ -10,7 +10,7 @@ const { authClientMock } = vi.hoisted(() => ({
     },
 }));
 
-vi.mock('../services/authClient', () => ({
+vi.mock('../../src/services/authClient', () => ({
     authClient: authClientMock,
 }));
 

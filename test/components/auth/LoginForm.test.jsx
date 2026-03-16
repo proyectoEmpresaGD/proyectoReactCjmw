@@ -2,13 +2,13 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import LoginForm from './LoginForm';
+import LoginForm from '../../../src/components/auth/LoginForm';
 
 const mockLogin = vi.fn();
 const mockNavigate = vi.fn();
 let currentLocation = { state: { from: { pathname: '/mi-zona' } } };
 
-vi.mock('../../context/AuthContext', () => ({
+vi.mock('../../../src/context/AuthContext', () => ({
     useAuth: () => ({
         login: mockLogin,
     }),

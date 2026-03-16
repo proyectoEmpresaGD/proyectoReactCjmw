@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
-    setupFiles: './src/test/setup.js',
+    setupFiles: './test/setup.js',
     globals: true,
     css: false,
     pool: 'threads',
-    include: ['src/**/*.test.{js,jsx}'],
+    include: ['test/**/*.test.{js,jsx}'],
   },
 })

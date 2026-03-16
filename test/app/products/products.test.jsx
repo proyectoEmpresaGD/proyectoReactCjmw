@@ -1,17 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import Product from './products';
+import Product from '../../../src/app/products/products';
 
-vi.mock('../../components/header', () => ({
+vi.mock('../../../src/components/header', () => ({
     Header: () => <div>Header mock</div>,
 }));
 
-vi.mock('../../components/ComponentesProductos/cardProduct', () => ({
+vi.mock('../../../src/components/ComponentesProductos/cardProduct', () => ({
     default: () => <div>CardProduct mock</div>,
 }));
 
-vi.mock('../../components/CartContext', () => ({
+vi.mock('../../../src/components/CartContext', () => ({
     CartProvider: ({ children }) => <>{children}</>,
 }));
 

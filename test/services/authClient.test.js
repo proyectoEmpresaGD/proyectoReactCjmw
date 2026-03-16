@@ -8,7 +8,7 @@ import {
     getAdminRequests,
     approveAdminRequest,
     denyAdminRequest,
-} from './authClient';
+} from '../../src/services/authClient';
 
 describe('authClient', () => {
     beforeEach(() => {

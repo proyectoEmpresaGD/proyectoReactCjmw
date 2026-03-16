@@ -5,7 +5,7 @@ import {
     searchCurtainFabrics,
     searchWallpapers,
     searchUpholsteryFabrics,
-} from './products';
+} from '../../src/api/products';
 
 describe('products api', () => {
     beforeEach(() => {
