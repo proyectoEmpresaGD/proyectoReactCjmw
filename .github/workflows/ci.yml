@@ -84,56 +84,56 @@ jobs:
           echo "$COMMITS"
 
           PROMPT=$(cat <<EOF
-Actúa como un Release Engineer senior experto en CI/CD, versionado semántico, GitHub Releases y comunicación técnica de cambios para entornos de producción.
+          Actúa como un Release Engineer senior experto en CI/CD, versionado semántico, GitHub Releases y comunicación técnica de cambios para entornos de producción.
 
-Tu tarea es generar unas release notes profesionales basadas en:
-1. los commits incluidos
-2. el diff real del código
+          Tu tarea es generar unas release notes profesionales basadas en:
+          1. los commits incluidos
+          2. el diff real del código
 
-Contexto:
-- Proyecto web en producción
-- Stack: React, Vite, Node, Vercel
-- Entorno real de producción
+          Contexto:
+          - Proyecto web en producción
+          - Stack: React, Vite, Node, Vercel
+          - Entorno real de producción
 
-Instrucciones:
-- Escribe en español
-- No listes archivos salvo que sea imprescindible
-- No repitas commits literalmente
-- No describas cambios superficiales como "se movieron archivos" si no afectan comportamiento
-- Prioriza la lógica funcional real detectada en el diff
-- Explica qué comportamiento cambió, qué flujo se añadió o corrigió y qué impacto tiene
-- Si detectas tests nuevos o refuerzo de validaciones, menciónalo como mejora de calidad
-- Si no hay cambios funcionales, indícalo claramente y explica que son cambios internos o de estructura
-- No inventes cambios que no estén soportados por los datos
-- Si no hay información suficiente para una sección, omítela
+          Instrucciones:
+          - Escribe en español
+          - No listes archivos salvo que sea imprescindible
+          - No repitas commits literalmente
+          - No describas cambios superficiales como "se movieron archivos" si no afectan comportamiento
+          - Prioriza la lógica funcional real detectada en el diff
+          - Explica qué comportamiento cambió, qué flujo se añadió o corrigió y qué impacto tiene
+          - Si detectas tests nuevos o refuerzo de validaciones, menciónalo como mejora de calidad
+          - Si no hay cambios funcionales, indícalo claramente y explica que son cambios internos o de estructura
+          - No inventes cambios que no estén soportados por los datos
+          - Si no hay información suficiente para una sección, omítela
 
-Estructura obligatoria:
+          Estructura obligatoria:
 
-Resumen
-Breve explicación de la finalidad de la release.
+          Resumen
+          Breve explicación de la finalidad de la release.
 
-Cambios principales
-Lista clara de funcionalidades o cambios relevantes de comportamiento.
+          Cambios principales
+          Lista clara de funcionalidades o cambios relevantes de comportamiento.
 
-Correcciones
-Errores solucionados o ajustes de comportamiento, si aplica.
+          Correcciones
+          Errores solucionados o ajustes de comportamiento, si aplica.
 
-Mejoras técnicas
-Cambios internos que mejoran calidad, estabilidad o mantenibilidad, si aplica.
+          Mejoras técnicas
+          Cambios internos que mejoran calidad, estabilidad o mantenibilidad, si aplica.
 
-Impacto
-Cómo afecta esta release a usuarios, estabilidad o mantenimiento.
+          Impacto
+          Cómo afecta esta release a usuarios, estabilidad o mantenimiento.
 
-Tag de release:
-$RELEASE_TAG
+          Tag de release:
+          $RELEASE_TAG
 
-Commits analizados:
-$COMMITS
+          Commits analizados:
+          $COMMITS
 
-Diff analizado:
-$DIFF
-EOF
-)
+          Diff analizado:
+          $DIFF
+          EOF
+          )
 
           jq -n \
             --arg model "gpt-4.1-mini" \
@@ -165,8 +165,8 @@ EOF
             echo "AI generation failed, using fallback notes"
             NOTES="Release $RELEASE_TAG
 
-Cambios incluidos en esta versión:
-$COMMITS"
+          Cambios incluidos en esta versión:
+          $COMMITS"
           fi
 
           printf "%s\n" "$NOTES" > release_notes.md
