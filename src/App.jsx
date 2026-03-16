@@ -53,11 +53,11 @@ function App() {
         <Route path="/media" element={<MediaPage />} />
         <Route path="/coleccion/:coleccion" element={<ColeccionPage />} />
         <Route path="/colecciones/:marca" element={<ColeccionesMarcaPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin/solicitudes" element={<AdminRequestsPage />} />
         <Route path="/restablecer-password" element={<ResetPasswordPage />} />
-        <Route path="/verificar-email" element={<VerifyEmailPage />} />
+        <Route path="/verificar-email" element={<VerifyEmailPage />} /> */}
 
       </Routes>
     </>
