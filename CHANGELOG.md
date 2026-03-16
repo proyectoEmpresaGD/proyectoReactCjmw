@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.8.0](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.7.2...v6.8.0) (2026-03-16)
+
+
+### Features
+
+* **auth:** reactivar rutas de login en App ([5172c9b](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/5172c9bc476a69ca35b39c78998b2a2ef2ee1be3))
+
 ## [6.7.2](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.7.1...v6.7.2) (2026-03-16)
 
 
