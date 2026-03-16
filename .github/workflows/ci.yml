@@ -131,7 +131,7 @@ jobs:
             -H "Authorization: Bearer $OPENAI_API_KEY" \
             -d @request.json > response.json
 
-          jq -r '.output[0].content[0].text' response.json > release_notes.md
+          jq -r '.output[0].content[0].text // empty' response.json > release_notes.md
 
       - name: Update GitHub Release body
         if: ${{ steps.release.outputs.release_created == 'true' }}
