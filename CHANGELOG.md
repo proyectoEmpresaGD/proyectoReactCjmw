@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.7.1](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.7.0...v6.7.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* reorganización de estructura de carpetas ([c58a64d](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/c58a64da62594a2a55f5451fc87e5a7450e4bf99))
+
 ## [6.7.0](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.6.23...v6.7.0) (2026-03-13)
 
 
