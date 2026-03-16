@@ -46,6 +46,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
       - name: Run Release Please
         id: release
         uses: googleapis/release-please-action@v4
@@ -61,69 +66,81 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
         run: |
+          echo "Detecting previous tag..."
+
           PREV_TAG=$(git tag --sort=-v:refname | grep '^v' | grep -v "^${RELEASE_TAG}$" | head -n 1)
 
           if [ -z "$PREV_TAG" ]; then
-            COMMITS=$(git log --pretty=format:"- %s")
+            echo "No previous tag found"
+            COMMITS=$(git log -20 --pretty=format:"- %s")
+            DIFF=$(git diff --unified=0 HEAD~20 HEAD | head -c 12000)
           else
+            echo "Previous tag: $PREV_TAG"
             COMMITS=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s")
+            DIFF=$(git diff --unified=0 "${PREV_TAG}..HEAD" | head -c 12000)
           fi
 
+          echo "Commits detected:"
+          echo "$COMMITS"
+
           PROMPT=$(cat <<EOF
-          Actúa como un Release Engineer senior experto en CI/CD, versionado semántico, GitHub Releases y comunicación técnica de cambios para entornos de producción.
+Actúa como un Release Engineer senior experto en CI/CD, versionado semántico, GitHub Releases y comunicación técnica de cambios para entornos de producción.
 
-          Tu tarea es generar unas release notes profesionales, claras y útiles para desarrolladores y mantenimiento futuro.
+Tu tarea es generar unas release notes profesionales basadas en:
+1. los commits incluidos
+2. el diff real del código
 
-          Contexto del proyecto:
-          - Proyecto web en producción
-          - Stack: React, Vite, Node, Vercel
-          - Entorno real de producción
+Contexto:
+- Proyecto web en producción
+- Stack: React, Vite, Node, Vercel
+- Entorno real de producción
 
-          Objetivo:
-          Analiza los cambios proporcionados y genera unas release notes profesionales centradas en la lógica de negocio y el impacto funcional.
+Instrucciones:
+- Escribe en español
+- No listes archivos salvo que sea imprescindible
+- No repitas commits literalmente
+- No describas cambios superficiales como "se movieron archivos" si no afectan comportamiento
+- Prioriza la lógica funcional real detectada en el diff
+- Explica qué comportamiento cambió, qué flujo se añadió o corrigió y qué impacto tiene
+- Si detectas tests nuevos o refuerzo de validaciones, menciónalo como mejora de calidad
+- Si no hay cambios funcionales, indícalo claramente y explica que son cambios internos o de estructura
+- No inventes cambios que no estén soportados por los datos
+- Si no hay información suficiente para una sección, omítela
 
-          Reglas importantes:
-          - No enumeres archivos modificados
-          - No repitas simplemente los commits
-          - No inventes cambios
-          - Escribe en español
-          - Usa un tono técnico claro y profesional
-          - Explica la intención real del cambio
-          - Prioriza funcionalidad, comportamiento, robustez, validaciones y estabilidad
-          - Si hay tests, menciónalos como refuerzo de calidad
-          - Si hay cambios de CI/CD, menciónalos de forma breve y separada
-          - No uses emojis
-          - No añadas secciones vacías
+Estructura obligatoria:
 
-          Estructura obligatoria:
+Resumen
+Breve explicación de la finalidad de la release.
 
-          Resumen
-          Explicación breve del objetivo de la release.
+Cambios principales
+Lista clara de funcionalidades o cambios relevantes de comportamiento.
 
-          Cambios principales
-          Lista clara de mejoras funcionales o cambios relevantes de comportamiento.
+Correcciones
+Errores solucionados o ajustes de comportamiento, si aplica.
 
-          Correcciones
-          Bugs o comportamientos corregidos, si aplica.
+Mejoras técnicas
+Cambios internos que mejoran calidad, estabilidad o mantenibilidad, si aplica.
 
-          Mejoras técnicas
-          Cambios internos que mejoran estabilidad, mantenibilidad o calidad, si aplica.
+Impacto
+Cómo afecta esta release a usuarios, estabilidad o mantenimiento.
 
-          Impacto
-          Cómo afecta a usuarios, estabilidad o mantenimiento.
+Tag de release:
+$RELEASE_TAG
 
-          Información a analizar:
-          Tag de release: $RELEASE_TAG
+Commits analizados:
+$COMMITS
 
-          Commits incluidos:
-          $COMMITS
-          EOF
-          )
+Diff analizado:
+$DIFF
+EOF
+)
 
           jq -n \
             --arg model "gpt-4.1-mini" \
             --arg input "$PROMPT" \
             '{model: $model, input: $input}' > request.json
+
+          echo "Calling OpenAI API..."
 
           curl https://api.openai.com/v1/responses \
             -s \
@@ -131,7 +148,28 @@ jobs:
             -H "Authorization: Bearer $OPENAI_API_KEY" \
             -d @request.json > response.json
 
-          jq -r '.output[0].content[0].text // empty' response.json > release_notes.md
+          API_ERROR=$(jq -r '.error.message // empty' response.json)
+
+          if [ -n "$API_ERROR" ]; then
+            echo "OpenAI API error: $API_ERROR"
+            NOTES=""
+          else
+            NOTES=$(jq -r '
+              .output_text //
+              ([.output[]?.content[]? | select(.type == "output_text") | .text] | join("\n")) //
+              empty
+            ' response.json)
+          fi
+
+          if [ -z "$NOTES" ]; then
+            echo "AI generation failed, using fallback notes"
+            NOTES="Release $RELEASE_TAG
+
+Cambios incluidos en esta versión:
+$COMMITS"
+          fi
+
+          printf "%s\n" "$NOTES" > release_notes.md
 
       - name: Update GitHub Release body
         if: ${{ steps.release.outputs.release_created == 'true' }}

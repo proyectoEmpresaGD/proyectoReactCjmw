@@ -12,7 +12,6 @@ import CarruselColeccionesNuevas from "../../components/ComponentesBrands/carrus
 import usePageMeta from "../../utils/usePageMeta";
 import BloquesInformativos from "../../components/ComponentesBrands/TiposDestacados";
 import NuevasColeccionesGrid from "../../components/ComponentesBrands/nuevasColeccionesGrid";
-// ✅ NUEVO (como Harbour)
 import BrandGallery from "../../components/ComponentesBrands/BrandGallery";
 import ModalProductosPorCodigos from "../../components/ComponentesBrands/ModalProductosPorCodigos";
 import Reveal from "../../components/ComponentesBrands/reveal";

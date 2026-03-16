@@ -175,6 +175,7 @@ export default function AdminRequestsPage() {
                                         </div>
 
                                         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                            <InfoItem label="Codigo de cliente" value={request.codclien} />
                                             <InfoItem label="Teléfono" value={request.phone} />
                                             <InfoItem label="Móvil" value={request.mobile_phone} />
                                             <InfoItem label="Ciudad" value={request.city} />
