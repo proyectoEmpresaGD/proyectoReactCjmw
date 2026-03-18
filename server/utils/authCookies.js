@@ -11,11 +11,17 @@ function getJwtSecret() {
   return process.env.JWT_SECRET;
 }
 
+function isProduction() {
+  return process.env.NODE_ENV === 'production';
+}
+
 function getCookieOptions() {
+  const production = isProduction();
+
   return {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: production,
+    sameSite: production ? 'none' : 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };

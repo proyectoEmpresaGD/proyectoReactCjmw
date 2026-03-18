@@ -284,7 +284,7 @@ export class AuthController {
       res.cookie('password_reset_session', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
         maxAge: 3 * 60 * 60 * 1000,
       });
@@ -346,7 +346,7 @@ export class AuthController {
       res.clearCookie('password_reset_session', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
       });
 
