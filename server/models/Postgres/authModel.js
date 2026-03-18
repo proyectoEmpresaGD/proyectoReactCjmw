@@ -112,6 +112,24 @@ export class AuthModel {
     );
   }
 
+  async getPrimaryCustomerLink(accountId) {
+    const { rows } = await this.pool.query(
+      `
+        SELECT
+          account_id,
+          codclien,
+          created_at
+        FROM customer_account_links
+        WHERE account_id = $1
+        ORDER BY created_at ASC, codclien ASC
+        LIMIT 1;
+      `,
+      [accountId]
+    );
+
+    return rows[0] ?? null;
+  }
+
   async getLinkedCustomers(accountId) {
     const { rows } = await this.pool.query(
       `

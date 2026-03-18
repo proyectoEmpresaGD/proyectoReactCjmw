@@ -12,6 +12,12 @@ export function optionalSessionAuth(req, _res, next) {
 
     const payload = verifyCustomerToken(token);
 
+    console.log('AUTH DEBUG', {
+      accountId: payload.accountId ?? payload.sub ?? null,
+      codclien: payload.codclien ?? null,
+      role: payload.role ?? 'customer',
+    });
+
     req.user = {
       id: payload.accountId ?? payload.sub ?? null,
       email: payload.email ?? null,

@@ -84,6 +84,19 @@ export class AuthController {
         });
       }
 
+      const primaryCustomerLink =
+        account.role === 'admin'
+          ? null
+          : await this.authModel.getPrimaryCustomerLink(account.id);
+
+      if (account.role !== 'admin' && !primaryCustomerLink?.codclien) {
+        return res.status(403).json({
+          ok: false,
+          code: 'CUSTOMER_LINK_NOT_FOUND',
+          message: 'Tu cuenta no tiene un cliente asociado.',
+        });
+      }
+
       const linkedCustomers =
         account.role === 'admin'
           ? []
@@ -96,7 +109,7 @@ export class AuthController {
         accountId: account.id,
         email: account.email,
         role: account.role || 'customer',
-        codclien: primaryCustomer?.codclien ?? null,
+        codclien: primaryCustomerLink?.codclien ?? null,
         nif: primaryCustomer?.nif ?? null,
       };
 
