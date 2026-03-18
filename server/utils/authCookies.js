@@ -42,12 +42,14 @@ export function setAuthCookie(res, token) {
 }
 
 export function clearAuthCookie(res) {
-  res.clearCookie(AUTH_COOKIE_NAME, getCookieOptions());
-
-  res.clearCookie('customer_session', {
+  const clearOptions = {
     ...getCookieOptions(),
-    maxAge: undefined,
-  });
+    expires: new Date(0),
+    maxAge: 0,
+  };
+
+  res.clearCookie(AUTH_COOKIE_NAME, clearOptions);
+  res.clearCookie('customer_session', clearOptions);
 }
 
 export function getAuthCookieToken(req) {
