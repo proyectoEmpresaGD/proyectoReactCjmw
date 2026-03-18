@@ -1,18 +1,10 @@
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || 'customer_token';
-const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
-
-const buildCookieOptions = () => ({
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
-  path: '/',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+import {
+  signCustomerToken,
+  setAuthCookie,
+  clearAuthCookie,
+} from '../utils/authCookies.js';
 
 export class AuthController {
   constructor({ authModel, emailService }) {
@@ -108,21 +100,10 @@ export class AuthController {
         nif: primaryCustomer?.nif ?? null,
       };
 
-      const token = jwt.sign(tokenPayload, JWT_SECRET, {
-        expiresIn: JWT_EXPIRES_IN,
-      });
+      const token = signCustomerToken(tokenPayload);
 
-      res.clearCookie('customer_session', {
-        ...buildCookieOptions(),
-        maxAge: undefined,
-      });
-
-      res.clearCookie(AUTH_COOKIE_NAME, {
-        ...buildCookieOptions(),
-        maxAge: undefined,
-      });
-
-      res.cookie(AUTH_COOKIE_NAME, token, buildCookieOptions());
+      clearAuthCookie(res);
+      setAuthCookie(res, token);
 
       await this.authModel.touchLastLogin(account.id);
 
@@ -153,15 +134,7 @@ export class AuthController {
 
   logout = async (_req, res) => {
     try {
-      res.clearCookie('customer_session', {
-        ...buildCookieOptions(),
-        maxAge: undefined,
-      });
-
-      res.clearCookie(AUTH_COOKIE_NAME, {
-        ...buildCookieOptions(),
-        maxAge: undefined,
-      });
+      clearAuthCookie(res);
 
       return res.status(200).json({
         ok: true,
@@ -252,11 +225,7 @@ export class AuthController {
         const token = crypto.randomBytes(32).toString('hex');
         const expires = new Date(Date.now() + 3 * 60 * 60 * 1000);
 
-        await this.authModel.setPasswordResetToken(
-          account.id,
-          token,
-          expires
-        );
+        await this.authModel.setPasswordResetToken(account.id, token, expires);
 
         const resetUrl = `${process.env.BACKEND_URL}/api/auth/password-reset/${token}`;
 
