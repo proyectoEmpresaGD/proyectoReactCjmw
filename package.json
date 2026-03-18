@@ -1,7 +1,7 @@
 {
   "name": "proyectoreact",
   "private": true,
-  "version": "6.6.22",
+  "version": "6.8.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
