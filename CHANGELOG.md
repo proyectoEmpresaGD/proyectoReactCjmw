@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.8.1](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.8.0...v6.8.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* correccion en la traduccion del about y prueba login en despliegue ([64088c6](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/64088c6ce395af5b6ce9ca4079bab21e8d4d8362))
+
 ## [6.8.0](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.7.2...v6.8.0) (2026-03-16)
 
 
