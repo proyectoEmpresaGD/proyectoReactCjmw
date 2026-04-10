@@ -1,0 +1,14 @@
+{
+    "title": "Account verification",
+    "subtitle": "We are processing your account activation.",
+    "loading": "Verifying your email...",
+    "success": "Email verified successfully. Redirecting to login...",
+    "errors": {
+        "invalidLink": "The verification link is invalid or incomplete.",
+        "failed": "Email verification failed. The link may have expired or already been used."
+    },
+    "buttons": {
+        "login": "Go to login",
+        "home": "Back to home"
+    }
+}

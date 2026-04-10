@@ -84,10 +84,12 @@ const COLOR_MAP = {
 };
 
 const MARTINDALE_RANGES = [
-    { key: '0-20000' },
-    { key: '20000-50000' },
-    { key: '50000-100000' },
-    { key: '100000+' }
+    { key: '0-10000' },
+    { key: '10000-15000' },
+    { key: '15000-25000' },
+    { key: '25000-40000' },
+    { key: '40000-50000' },
+    { key: '50000+' }
 ];
 
 const buildColorStyle = color => {

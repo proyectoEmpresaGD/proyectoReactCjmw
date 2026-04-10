@@ -1,0 +1,14 @@
+{
+    "title": "Verificación de cuenta",
+    "subtitle": "Estamos procesando la activación de tu acceso.",
+    "loading": "Estamos verificando tu correo...",
+    "success": "Correo verificado correctamente. Redirigiendo al login...",
+    "errors": {
+        "invalidLink": "El enlace de verificación no es válido o está incompleto.",
+        "failed": "No se pudo verificar el correo. Puede que haya caducado o ya se haya usado."
+    },
+    "buttons": {
+        "login": "Ir al login",
+        "home": "Volver al inicio"
+    }
+}

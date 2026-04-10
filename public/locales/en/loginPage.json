@@ -1,0 +1,7 @@
+{
+    "verification": {
+        "successMessage": "Your account has been successfully verified. You can now log in.",
+        "errorMessage": "Your account could not be verified. The link may have expired.",
+        "close": "Close"
+    }
+}

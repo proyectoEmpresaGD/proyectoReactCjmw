@@ -228,12 +228,19 @@ const pedidosTransporter = nodemailer.createTransport({
   auth: { user: process.env.PEDIDOS_EMAIL, pass: process.env.PEDIDOS_PASS },
 });
 
+const infoTransporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: true,
+  auth: { user: process.env.INFO_EMAIL, pass: process.env.INFO_PASS },
+});
+
 const emailService = {
   async sendPasswordResetEmail({ to, firstName, resetUrl }) {
     const customerName = firstName?.trim() || 'cliente';
 
-    await pedidosTransporter.sendMail({
-      from: `"CJMW WEB" <${process.env.PEDIDOS_EMAIL}>`,
+    await infoTransporter.sendMail({
+      from: `"CJMW WEB" <${process.env.INFO_EMAIL}>`,
       to,
       subject: 'Recupera tu contraseña',
       html: `
@@ -328,8 +335,8 @@ app.use(
       async sendCustomerVerificationEmail({ to, firstName, verificationUrl }) {
         const customerName = firstName?.trim() || 'cliente';
 
-        await pedidosTransporter.sendMail({
-          from: `"CJMW WEB" <${process.env.PEDIDOS_EMAIL}>`,
+        await infoTransporter.sendMail({
+          from: `"CJMW WEB" <${process.env.INFO_EMAIL}>`,
           to,
           subject: 'Activa tu cuenta de cliente',
           html: `

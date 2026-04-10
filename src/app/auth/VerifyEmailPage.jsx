@@ -4,17 +4,18 @@ import { Header } from '../../components/header';
 import Footer from '../../components/footer';
 import { CartProvider } from '../../components/CartContext';
 import { authClient } from '../../services/authClient';
+import { useTranslation } from "react-i18next";
 
 const REDIRECT_DELAY_MS = 2500;
 
 export default function VerifyEmailPage() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-
+    const { t } = useTranslation("verifyEmailPage");
     const token = useMemo(() => searchParams.get('token')?.trim() || '', [searchParams]);
 
     const [status, setStatus] = useState('loading');
-    const [message, setMessage] = useState('Estamos verificando tu correo...');
+    const [message, setMessage] = useState(t("loading"));
 
     useEffect(() => {
         let isMounted = true;
@@ -23,7 +24,7 @@ export default function VerifyEmailPage() {
             if (!token) {
                 if (!isMounted) return;
                 setStatus('error');
-                setMessage('El enlace de verificación no es válido o está incompleto.');
+                setMessage(t("errors.invalidLink"));
                 return;
             }
 
@@ -33,7 +34,7 @@ export default function VerifyEmailPage() {
                 if (!isMounted) return;
 
                 setStatus('success');
-                setMessage(response?.message || 'Correo verificado correctamente. Redirigiendo al login...');
+                setMessage(response?.message || t("success"));
 
                 window.setTimeout(() => {
                     navigate('/login?verified=1', { replace: true });
@@ -42,9 +43,7 @@ export default function VerifyEmailPage() {
                 if (!isMounted) return;
 
                 setStatus('error');
-                setMessage(
-                    error?.message || 'No se pudo verificar el correo. Es posible que el enlace haya caducado o ya se haya usado.'
-                );
+                setMessage(error?.message || t("errors.failed"));
             }
         };
 
@@ -63,10 +62,10 @@ export default function VerifyEmailPage() {
                     <section className="mx-auto max-w-xl rounded-3xl border border-stone-200 bg-white p-8 shadow-sm">
                         <div className="mb-6">
                             <h1 className="text-2xl font-semibold text-stone-900">
-                                Verificación de cuenta
+                                {t("title")}
                             </h1>
                             <p className="mt-2 text-sm text-stone-600">
-                                Estamos procesando la activación de tu acceso.
+                                {t("subtitle")}
                             </p>
                         </div>
 
@@ -86,14 +85,14 @@ export default function VerifyEmailPage() {
                                 to="/login"
                                 className="rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
                             >
-                                Ir al login
+                                {t("buttons.login")}
                             </Link>
 
                             <Link
                                 to="/"
                                 className="rounded-xl border border-stone-300 px-5 py-3 text-sm font-medium text-stone-700 transition hover:bg-stone-100"
                             >
-                                Volver al inicio
+                                {t("buttons.home")}
                             </Link>
                         </div>
                     </section>

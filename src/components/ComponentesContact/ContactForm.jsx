@@ -17,6 +17,7 @@ const initialState = {
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
     company: '',
     country: '',
     postalCode: '',
@@ -36,6 +37,7 @@ function sanitizePayload(state) {
         firstName: trimStr(state.firstName),
         lastName: trimStr(state.lastName),
         email: trimStr(state.email).toLowerCase(),
+        phone: trimStr(state.phone),
         company: trimStr(state.company),
         country: trimStr(state.country),
         postalCode: trimStr(state.postalCode),
@@ -116,6 +118,10 @@ const ContactForm = ({ onSuccess }) => {
 
         if (!v.email) newErrors.email = t('form.errors.emailRequired');
         else if (!/^[\w.-]+@([\w-]+\.)+[\w-]{2,}$/u.test(v.email)) newErrors.email = t('form.errors.emailInvalid');
+
+        if (!v.phone) newErrors.phone = t('form.errors.phoneRequired');
+        else if (!/^[0-9+()\s-]{6,20}$/.test(v.phone))
+            newErrors.phone = t('form.errors.phoneInvalid');
 
         if (!v.country) newErrors.country = t('form.errors.country');
         else if (v.country.length > 120) newErrors.country = t('form.errors.countryMax');
@@ -420,6 +426,29 @@ const ContactForm = ({ onSuccess }) => {
                     {errors.email && (
                         <p id="email-error" role="alert" className="mt-1 text-xs text-red-600">
                             {errors.email}
+                        </p>
+                    )}
+                </div>
+
+                <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-neutral-800">
+                        {t('form.phone.label')} *
+                    </label>
+                    <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        autoComplete="tel"
+                        value={formState.phone}
+                        onChange={handleChange}
+                        className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 ${errors.phone ? 'border-red-400' : 'border-neutral-300'
+                            }`}
+                        aria-invalid={errors.phone ? 'true' : 'false'}
+                        aria-describedby={errors.phone ? 'phone-error' : undefined}
+                    />
+                    {errors.phone && (
+                        <p id="phone-error" role="alert" className="mt-1 text-xs text-red-600">
+                            {errors.phone}
                         </p>
                     )}
                 </div>

@@ -229,9 +229,9 @@ export default function PuffCalculator({
                 <div className="flex items-center justify-between gap-3 rounded-t-2xl bg-gradient-to-r from-gray-900 to-gray-700 px-5 py-4 text-white">
                     <div>
                         <h3 className="text-base font-semibold leading-tight">{t('ui.assistantTitle', { defaultValue: 'Asistente de puf' })}</h3>
-                        <p className="mt-0.5 text-xs text-white/80">
+                        {/* <p className="mt-0.5 text-xs text-white/80">
                             {t('ui.fixedSewing', { defaultValue: 'Confección fija:' })} <span className="font-medium">{CONFECCION_COST.toFixed(2)} {currency}</span>
-                        </p>
+                        </p> */}
                     </div>
                     <button
                         className="rounded-md p-2 text-white/90 transition hover:bg-white/10 hover:text-white"

@@ -15,5 +15,23 @@
     "paper": "Papeles",
     "fabric": "Telas",
     "userFeature": "Feature in development",
-    "openFilters": "Abrir filtros"
+    "openFilters": "Abrir filtros",
+    "changeLanguage": "Change language",
+    "company": "Empresa",
+    "tailoring": "Confección",
+    "customerArea": "Área cliente",
+    "nifLabel": "NIF",
+    "adminPanel": "Panel administrador",
+    "myData": "Mis datos",
+    "myInvoices": "Mis facturas",
+    "logout": "Cerrar sesión",
+    "login": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "navigation": "Navegación",
+    "closeMenu": "Cerrar menú",
+    "drawer": {
+        "brandsDescription": "Descubre todas nuestras colecciones y universos de marca.",
+        "productsDescription": "Acceso rápido a las categorías principales de producto.",
+        "companyDescription": "Toda la información corporativa agrupada en un solo sitio."
+    }
 }

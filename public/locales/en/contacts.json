@@ -2,12 +2,12 @@
     "hero": {
         "kicker": "CJMGROUP contact",
         "title": "Let’s craft something together",
-        "subtitle": "We help private clients, studios and hospitality partners with tailored textile solutions.",
+        "subtitle": "We collaborate with private clients, design studios and hospitality partners to deliver tailored textile solutions.",
         "bannerAlt": "Textile moodboard inside a CJMGROUP showroom"
     },
     "form": {
-        "title": "Send us your request",
-        "description": "Fill in the form so we can connect you with the right person in our team.",
+        "title": "Share your project with us",
+        "description": "Complete the form and we will connect you with the right expert from our team.",
         "profile": {
             "label": "I am",
             "options": {
@@ -33,6 +33,9 @@
         },
         "email": {
             "label": "Email"
+        },
+        "phone": {
+            "label": "Phone number"
         },
         "company": {
             "label": "Company",

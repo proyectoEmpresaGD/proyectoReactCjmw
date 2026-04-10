@@ -16,12 +16,12 @@
         "manyColors": "colors available"
     },
     "martindaleUsage": {
-        "decorative": "Uso decorativo (cojines decorativos)",
-        "lightDomestic": "Uso doméstico ligero (tapicería decorativa)",
-        "generalDomestic": "Uso doméstico general (tapicería de uso regular)",
-        "intensiveDomestic": "Uso doméstico intensivo (bajo uso comercial)",
-        "intensiveCommercial": "Uso comercial intensivo (uso moderado en espacios públicos)",
-        "highResistanceContract": "Uso de alta resistencia / Contract (hoteles y restaurantes)"
+        "decorative": "Decorative use (decorative cushions)",
+        "lightDomestic": "Light domestic use (decorative upholstery)",
+        "generalDomestic": "General domestic use (regular upholstery)",
+        "intensiveDomestic": "Intensive domestic use (low commercial use)",
+        "intensiveCommercial": "Intensive commercial use (moderate use in public areas)",
+        "highResistanceContract": "High-resistance use / Contract (hotels and restaurants)"
     },
     "techSheet": "TECHNICAL SHEET",
     "downloadPdf": "Download PDF",

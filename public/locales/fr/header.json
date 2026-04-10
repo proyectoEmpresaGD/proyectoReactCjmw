@@ -5,7 +5,7 @@
     "about": "À propos",
     "media": "Brochures",
     "contact": "Contactez-nous",
-    "contract": "Contrat",
+    "contract": "Contract",
     "arena": "Arena",
     "harbour": "Harbour",
     "cjm": "CJM",
@@ -15,5 +15,23 @@
     "paper": "Papiers",
     "fabric": "Tissus",
     "userFeature": "Fonction en développement",
-    "openFilters": "Ouvrir les filtres"
+    "openFilters": "Ouvrir les filtres",
+    "company": "Entreprise",
+    "tailoring": "Confection",
+    "customerArea": "Espace client",
+    "nifLabel": "NIF",
+    "adminPanel": "Panneau d’administration",
+    "changeLanguage": "Changer de langue",
+    "myData": "Mes données",
+    "myInvoices": "Mes factures",
+    "logout": "Se déconnecter",
+    "login": "Se connecter",
+    "createAccount": "Créer un compte",
+    "navigation": "Navigation",
+    "closeMenu": "Fermer le menu",
+    "drawer": {
+        "brandsDescription": "Découvrez toutes nos collections et univers de marque.",
+        "productsDescription": "Accès rapide aux principales catégories de produits.",
+        "companyDescription": "Toutes les informations de l’entreprise regroupées en un seul endroit."
+    }
 }

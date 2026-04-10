@@ -25,7 +25,13 @@ const DEFAULT_ITEMS = [
         iconUrl: '',
         disabled: false
     },
-    { key: 'tbd2', title: 'Próximamente', bgUrl: '', iconUrl: '', disabled: true },
+    {
+        key: 'tbd2',
+        title: 'Próximamente',
+        bgUrl: '',
+        iconUrl: '',
+        disabled: true
+    },
 ];
 
 /**

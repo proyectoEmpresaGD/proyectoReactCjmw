@@ -173,7 +173,7 @@ export default function WallpaperChatAssistant({
                 <div className="flex items-center justify-between gap-3 rounded-t-2xl bg-gradient-to-r from-gray-900 to-gray-700 px-5 py-4 text-white">
                     <div>
                         <h3 className="text-base font-semibold leading-tight">Asistente de papeles</h3>
-                        <p className="mt-0.5 text-xs text-white/80">{headerSub}</p>
+                        {/* <p className="mt-0.5 text-xs text-white/80">{headerSub}</p> */}
                     </div>
                     <button
                         className="rounded-md p-2 text-white/90 transition hover:bg-white/10 hover:text-white"

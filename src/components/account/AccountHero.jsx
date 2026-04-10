@@ -2,30 +2,41 @@ import { motion } from 'framer-motion';
 import { FileText, ShieldCheck, UserRound } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-
-const featureItems = [
-    {
-        title: 'Mis datos',
-        description: 'Todos los datos del cliente reunidos en un apartado claro y visual.',
-        icon: UserRound,
-        path: '/mis-datos',
-    },
-    {
-        title: 'Mis facturas',
-        description: 'Consulta el histórico de facturación en una pantalla independiente.',
-        icon: FileText,
-        path: '/mis-facturas',
-    },
-    {
-        title: 'Panel renovado',
-        description: 'Diseño más limpio, actual y preparado para seguir creciendo.',
-        icon: ShieldCheck,
-    },
-];
+import { useMemo } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 export default function AccountHero({ linkedCustomersCount, title, subtitle }) {
     const navigate = useNavigate();
     const location = useLocation();
+    const { isAdmin } = useAuth();
+
+    const featureItems = useMemo(() => {
+        const items = [
+            {
+                title: 'Mis datos',
+                description: 'Todos los datos del cliente reunidos en un apartado claro y visual.',
+                icon: UserRound,
+                path: '/mis-datos',
+            },
+            {
+                title: 'Mis facturas',
+                description: 'Consulta el histórico de facturación en una pantalla independiente.',
+                icon: FileText,
+                path: '/mis-facturas',
+            },
+        ];
+
+        if (isAdmin) {
+            items.push({
+                title: 'Panel administrador',
+                description: 'Accede a la gestión administrativa desde un panel exclusivo para usuarios con permisos.',
+                icon: ShieldCheck,
+                path: '/admin/solicitudes',
+            });
+        }
+
+        return items;
+    }, [isAdmin]);
 
     return (
         <motion.section

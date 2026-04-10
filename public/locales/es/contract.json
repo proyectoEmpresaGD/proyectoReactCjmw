@@ -16,9 +16,9 @@
     "team": {
         "heading": "El Equipo",
         "alt": "Equipo",
-        "p1": "La ilusión de mejorar en cada decoración, el orden en la ejecución y la perfecta realización, animan la creación de un equipo de profesionales que viaja a cualquier parte del mundo, instalando nuestros artículos hechos a medida para cada proyecto.",
-        "p2": "Cada hotel es una nueva aventura, una nueva experiencia de aprendizaje para aumentar nuestro bagaje y un nuevo lugar donde podemos demostrar nuestro dinamismo.",
-        "p3": "Somos todos un equipo, del primero al último, y todos dependemos de todos. Desde el inicio del proceso de fabricación hasta que finaliza, ese camino está regido por el amor al trabajo y a nuestros compañeros.",
+        "p1": "La ilusión de mejorar en cada decoración y la perfecta ejecución de la misma anima a la creación de un equipo de profesionales que viaja a cualquier parte del mundo, instalando nuestros artículos hechos a medida para cada proyecto.",
+        "p2": "Cada nuevo proyecto es una aventura, una oportunidad de demostrar nuestra excelencia y profesionalidad.",
+        "p3": "Todos somos un equipo interdependiente, del primer eslabón al último. Desde el inicio del proceso de fabricación hasta la culminación del proyecto, nuestro trabajo está regido por la pasión al trabajo y compañerismo.",
         "bullets": [
             "Coordinación integral de obra",
             "Instalación a medida",
@@ -29,7 +29,7 @@
     "department": {
         "heading": "El Departamento",
         "alt": "Departamento",
-        "p1": "En 2008, nuestra empresa creó una nueva línea de trabajo dedicada a la instalación hotelera. Paso a paso y apoyándonos en diferentes proyectos, profesionalizamos y automatizamos nuestro apartado de Hecho a Medida, incorporando maquinaria y formando a nuestro personal.",
+        "p1": "En 2008, nuestra empresa creó una nueva línea de trabajo dedicada a la instalación hotelera. Paso a paso y apoyándonos en diferentes proyectos, profesionalizamos y automatizamos nuestro apartado de “Hecho a Medida”, incorporando maquinaria y formando a nuestro personal.",
         "p2": "Basados en la confección de calidad y la entrega “just in time”, desarrollamos nuestro propio equipo de instalación. Nuestro objetivo es moldear el espacio leyendo la personalidad del proyecto decorativo.",
         "bullets": [
             "Confección premium",

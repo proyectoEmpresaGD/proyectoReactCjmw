@@ -1,0 +1,7 @@
+{
+    "verification": {
+        "successMessage": "Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.",
+        "errorMessage": "No se ha podido verificar tu cuenta. El enlace puede haber caducado.",
+        "close": "Cerrar"
+    }
+}

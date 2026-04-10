@@ -1,6 +1,5 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-
 import Home from "./app/paginaPrincipal.jsx";
 import About from "./app/about/about.jsx";
 import Contacto from "./app/contact/contactanos.jsx";
@@ -27,6 +26,7 @@ import AccountInvoicesPage from "./components/account/AccountInvoicesPage.jsx";
 import AdminRequestsPage from "./app/admin/AdminRequestsPage.jsx";
 import VerifyEmailPage from "./app/auth/VerifyEmailPage.jsx";
 import ResetPasswordPage from "./app/auth/ResetPasswordPage";
+import ProtectedRoute from "./app/auth/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -44,6 +44,14 @@ function App() {
         <Route path="/bassariHome" element={<BassariHome />} />
         <Route path="/BlogHome/:newsId" element={<BlogHome />} />
         <Route path="/confeccion" element={<Confeccion />} />
+        {/* <Route
+          path="/confeccion"
+          element={
+            <ProtectedRoute>
+              <Confeccion />
+            </ProtectedRoute>
+          }
+        /> */}
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
         <Route path="/mis-datos" element={<AccountProfilePage />} />

@@ -89,6 +89,14 @@ export const brochureCollections = [
                 pdfUrl: 'https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/FLA_RIVIERA_BROCHURE_OK.pdf',
                 descriptionKey: 'BrouchureRiviera',
             },
+            {
+                id: 'flamenco-palacioddueñas',
+                title: 'PALACIO DE DUEÑAS',
+                coverImage:
+                    'https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ChatGPT%20Image%2023%20mar%202026%2C%2008_54_52.png',
+                pdfUrl: 'https://bassari.eu/ImagenesTelasCjmw/PDF/BROUCHURE/FLA_BROUCHURE_PALACIO_INDIENNE.pdf',
+                descriptionKey: '',
+            },
         ],
     },
 ];

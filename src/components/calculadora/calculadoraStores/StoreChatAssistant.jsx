@@ -127,7 +127,7 @@ export default function StoreChatAssistant({
     useEffect(() => {
         if (!open) return;
         // 0) Tela → 1) Ancho → 2) Alto → 3) Varillas → 4) Resumen/PDF
-        if (step === 0) pushBot('Elige la tela del ESTOR.');
+        if (step === 0) pushBot('Elige la tela del ESTORE.');
         if (step === 1) {
             const baseMsg = `Indica el ANCHO (cm). Máximo permitido: ${maxWidth || '—'} cm.`;
             pushBot(baseMsg);
@@ -289,7 +289,7 @@ export default function StoreChatAssistant({
                 <div className="mt-3 flex h-[460px] flex-col px-5 pb-5">
                     <div className="flex-1 space-y-3 overflow-auto rounded-xl border bg-gradient-to-b from-white to-gray-50 p-3">
                         {messages.map((m, i) => (<Bubble key={i} role={m.role}>{m.text}</Bubble>))}
-                        {step === 4 && (<Bubble role="bot"><Summary /></Bubble>)}
+                        {step === 4 && (<Bubble role="bot"><Summary/></Bubble>)}
                         <div ref={scrollRef} />
                     </div>
 

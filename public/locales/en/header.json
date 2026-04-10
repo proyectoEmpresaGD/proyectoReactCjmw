@@ -15,5 +15,23 @@
     "paper": "Papers",
     "fabric": "Fabrics",
     "userFeature": "Feature in development",
-    "openFilters": "Open filters"
+    "openFilters": "Open filters",
+    "company": "Company",
+    "tailoring": "Tailoring",
+    "customerArea": "Customer area",
+    "changeLanguage": "Cambiar idioma",
+    "nifLabel": "Tax ID",
+    "adminPanel": "Admin panel",
+    "myData": "My details",
+    "myInvoices": "My invoices",
+    "logout": "Log out",
+    "login": "Log in",
+    "createAccount": "Create account",
+    "navigation": "Navigation",
+    "closeMenu": "Close menu",
+    "drawer": {
+        "brandsDescription": "Discover all our collections and brand universes.",
+        "productsDescription": "Quick access to the main product categories.",
+        "companyDescription": "All corporate information gathered in one place."
+    }
 }

@@ -124,10 +124,12 @@
         "searchdibujo": "Buscar dibujos..."
     },
     "martRanges": {
-        "0-20000": "Cortinaje: de 0 a 20 000 ciclos",
-        "20000-50000": "Tapicería decorativa: de 20 000 a 50 000 ciclos",
-        "50000-100000": "Tapicería residencial: de 50 000 a 100 000 ciclos",
-        "100000+": "Tapicería alto tránsito: de 100 000 a ∞ ciclos"
+        "0-10000": "Uso decorativo de 0 a 10 000 ciclos",
+        "10000-15000": "Uso doméstico: de 10 000 a 15 000 ciclos",
+        "15000-25000": "Uso doméstico general: de 15 000 a 25 000 ciclos",
+        "25000-40000": "Uso doméstico intensivo: de 25 000 a 40 000 ciclos",
+        "40000-50000": "Uso comercial intensivo: de 40 000 a 50 000 ciclos",
+        "50000+": "Uso de alta resistencia / Contract: de 50 000 a ∞ ciclos"
     },
     "values": {
         "fabricTypes": {

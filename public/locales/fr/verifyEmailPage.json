@@ -1,0 +1,14 @@
+{
+    "title": "Vérification du compte",
+    "subtitle": "Nous traitons l'activation de votre accès.",
+    "loading": "Vérification de votre email...",
+    "success": "Email vérifié avec succès. Redirection vers la connexion...",
+    "errors": {
+        "invalidLink": "Le lien de vérification est invalide ou incomplet.",
+        "failed": "La vérification a échoué. Le lien peut avoir expiré ou déjà été utilisé."
+    },
+    "buttons": {
+        "login": "Aller à la connexion",
+        "home": "Retour à l'accueil"
+    }
+}

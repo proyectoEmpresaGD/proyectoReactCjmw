@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { resetPassword } from "../../services/authClient";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 export default function ResetPasswordPage() {
     const navigate = useNavigate();
-
+    const { t } = useTranslation("resetPasswordPage");
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [error, setError] = useState("");
@@ -18,17 +18,17 @@ export default function ResetPasswordPage() {
         setSuccess("");
 
         if (!password || !repeatPassword) {
-            setError("Debes completar ambos campos");
+            setError(t("errors.emptyFields"));
             return;
         }
 
         if (password.length < 8) {
-            setError("La contraseña debe tener al menos 8 caracteres");
+            setError(t("errors.minLength"));
             return;
         }
 
         if (password !== repeatPassword) {
-            setError("Las contraseñas no coinciden");
+            setError(t("errors.passwordsNotMatch"));
             return;
         }
 
@@ -37,13 +37,13 @@ export default function ResetPasswordPage() {
 
             await resetPassword({ password });
 
-            setSuccess("Contraseña actualizada correctamente. Te llevamos al login...");
+            setSuccess(t("success"));
 
             setTimeout(() => {
                 navigate("/login");
             }, 1800);
         } catch {
-            setError("El enlace no es válido o ha caducado");
+            setError(t("errors.invalidLink"));
         } finally {
             setLoading(false);
         }
@@ -55,11 +55,11 @@ export default function ResetPasswordPage() {
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
                     <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-stone-900 text-sm font-semibold text-white">
-                            CJ
+
                         </div>
                         <div>
                             <p className="text-lg font-semibold text-stone-900">CJMW</p>
-                            <p className="text-sm text-stone-500">Recuperación de contraseña</p>
+                            <p className="text-sm text-stone-500">{t("header.subtitle")}</p>
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@ export default function ResetPasswordPage() {
                         onClick={() => navigate("/login")}
                         className="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
                     >
-                        Volver al login
+                        {t("header.backToLogin")}
                     </button>
                 </div>
             </header>
@@ -78,24 +78,22 @@ export default function ResetPasswordPage() {
                     <div className="hidden bg-stone-900 p-10 text-white lg:flex lg:flex-col lg:justify-between">
                         <div>
                             <p className="mb-3 text-sm uppercase tracking-[0.2em] text-stone-300">
-                                Seguridad de acceso
+                                {t("security.title")}
                             </p>
 
                             <h1 className="max-w-md text-4xl font-semibold leading-tight">
-                                Crea una nueva contraseña para volver a entrar a tu cuenta.
+                                {t("security.heading")}
                             </h1>
 
                             <p className="mt-5 max-w-md text-sm leading-7 text-stone-300">
-                                Por seguridad, este enlace tiene una validez limitada. Elige una
-                                contraseña segura y repítela para confirmar que está escrita correctamente.
+                                {t("security.description")}
                             </p>
                         </div>
 
                         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                            <p className="text-sm font-medium text-white">Recomendación</p>
+                            <p className="text-sm font-medium text-white">{t("recommendation.title")}</p>
                             <p className="mt-2 text-sm leading-6 text-stone-300">
-                                Usa una combinación de letras mayúsculas, minúsculas, números y,
-                                si quieres, algún símbolo para reforzar la seguridad de tu cuenta.
+                                {t("recommendation.text")}
                             </p>
                         </div>
                     </div>
@@ -104,15 +102,15 @@ export default function ResetPasswordPage() {
                         <div className="w-full max-w-md">
                             <div className="mb-8">
                                 <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-400">
-                                    Restablecer contraseña
+                                    {t("form.title")}
                                 </p>
 
                                 <h2 className="mt-2 text-3xl font-semibold text-stone-900">
-                                    Nueva contraseña
+                                    {t("form.heading")}
                                 </h2>
 
                                 <p className="mt-3 text-sm leading-6 text-stone-500">
-                                    Introduce tu nueva contraseña y repítela para confirmar el cambio.
+                                    {t("form.description")}
                                 </p>
                             </div>
 
@@ -122,13 +120,13 @@ export default function ResetPasswordPage() {
                                         htmlFor="password"
                                         className="mb-2 block text-sm font-medium text-stone-700"
                                     >
-                                        Nueva contraseña
+                                        {t("form.password")}
                                     </label>
 
                                     <input
                                         id="password"
                                         type="password"
-                                        placeholder="Escribe tu nueva contraseña"
+                                        placeholder={t("form.passwordPlaceholder")}
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -141,13 +139,13 @@ export default function ResetPasswordPage() {
                                         htmlFor="repeatPassword"
                                         className="mb-2 block text-sm font-medium text-stone-700"
                                     >
-                                        Repetir contraseña
+                                        {t("form.repeatPassword")}
                                     </label>
 
                                     <input
                                         id="repeatPassword"
                                         type="password"
-                                        placeholder="Vuelve a escribir la contraseña"
+                                        placeholder={t("form.repeatPasswordPlaceholder")}
                                         required
                                         value={repeatPassword}
                                         onChange={(e) => setRepeatPassword(e.target.value)}
@@ -172,7 +170,7 @@ export default function ResetPasswordPage() {
                                     disabled={loading}
                                     className="w-full rounded-xl bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-70"
                                 >
-                                    {loading ? "Actualizando..." : "Cambiar contraseña"}
+                                    {loading ? t("form.loading") : t("form.submit")}
                                 </button>
                             </form>
 
@@ -181,7 +179,7 @@ export default function ResetPasswordPage() {
                                 onClick={() => navigate("/login")}
                                 className="mt-5 w-full text-sm font-medium text-stone-500 transition hover:text-stone-800"
                             >
-                                Volver al inicio de sesión
+                                {t("form.back")}
                             </button>
                         </div>
                     </div>

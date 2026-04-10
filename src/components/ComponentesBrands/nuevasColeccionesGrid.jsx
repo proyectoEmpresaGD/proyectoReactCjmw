@@ -1,25 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
-const DEFAULT_LABELS = Object.freeze({
-    title: "NUEVAS COLECCIONES",
-    button: "EXPLORA LA COLECCIÓN",
-});
 
 // ✅ IMPORTANTE: NO filtramos por image para no devolver null si llega tarde/vacío
 const normalizeItems = (items) =>
     (items || []).filter((item) => item?.name && item?.description);
 
-function NuevasColeccionesGrid({
-    title = DEFAULT_LABELS.title,
-    items = [],
-    buttonLabel = DEFAULT_LABELS.button,
-    className = "",
-}) {
+function NuevasColeccionesGrid({ title, items = [], buttonLabel, className = "" }) {
+    const { t } = useTranslation("nuevasColeccionesGrid");
     const navigate = useNavigate();
     const sectionRef = useRef(null);
     const cardsRef = useRef([]);
 
+    const resolvedTitle = title || t("title");
+    const resolvedButtonLabel = buttonLabel || t("button");
     const normalizedItems = useMemo(() => normalizeItems(items), [items]);
 
     // ✅ Visibles por defecto (evita “no se ve nada” si el observer no dispara)
@@ -63,7 +57,6 @@ function NuevasColeccionesGrid({
 
     if (normalizedItems.length === 0) return null;
 
-    // Stagger suave
     const delayClasses = ["delay-0", "delay-100", "delay-200", "delay-300", "delay-500"];
 
     function ExploreButton({ label, onClick, variant = "dark" }) {
@@ -128,7 +121,7 @@ function NuevasColeccionesGrid({
         <section ref={sectionRef} className={`w-full px-4 py-12 ${className}`}>
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-end justify-between gap-6 mb-10">
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black">{title}</h2>
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black">{resolvedTitle}</h2>
                     <div className="hidden md:block h-[2px] flex-1 bg-black/10 rounded-full" />
                 </div>
 
@@ -150,7 +143,6 @@ function NuevasColeccionesGrid({
                                     isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
                                 ].join(" ")}
                             >
-                                {/* Imagen */}
                                 <div
                                     className={[
                                         "relative overflow-hidden rounded-xl shadow-sm ring-1 ring-black/10",
@@ -167,18 +159,17 @@ function NuevasColeccionesGrid({
                                         />
                                     ) : (
                                         <div className="w-full h-72 sm:h-80 lg:h-full bg-gray-100 flex items-center justify-center text-gray-500">
-                                            Sin imagen
+                                            {t("noImage")}
                                         </div>
                                     )}
 
                                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                                     <div className="absolute top-4 left-4 bg-white/85 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-black shadow-sm">
-                                        New
+                                        {t("badge")}
                                     </div>
                                 </div>
 
-                                {/* Texto */}
                                 <div
                                     className={[
                                         "flex flex-col justify-center",
@@ -194,7 +185,7 @@ function NuevasColeccionesGrid({
 
                                     <div className="mt-7">
                                         <ExploreButton
-                                            label={buttonLabel}
+                                            label={resolvedButtonLabel}
                                             onClick={() => goToCollection(item.name)}
                                             variant="dark"
                                         />

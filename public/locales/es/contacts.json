@@ -34,6 +34,9 @@
         "email": {
             "label": "Correo electrónico"
         },
+        "phone": {
+            "label": "telefono"
+        },
         "company": {
             "label": "Empresa",
             "help": "Indícanos tu empresa si contactas como profesional."

@@ -11,15 +11,15 @@
     "newCollections": {
         "bohemian": {
             "title": "NEW COLLECTION BOHEMIAN",
-            "description": "Bohemian is an outdoor fabric collection that combines character and performance, designed to withstand sun, humidity, and intensive use without losing its aesthetic essence. A versatile and sophisticated proposal, ideal for terraces, gardens, and outdoor contract projects."
+            "description": "Bohemian is an outdoor fabric collection that combines character with performance, designed to withstand sun, humidity and heavy use without losing its aesthetic appeal. A versatile and sophisticated range, ideal for terraces, gardens and outdoor contract projects."
         },
         "husky": {
             "title": "NEW COLLECTION HUSKY",
-            "description": "Husky is a collection developed to provide maximum safety in demanding environments. Its fabrics are designed not to ignite or spread flames, offering protection and reliability. With 100% opacity and an easy-to-integrate color range, it is ideal for contract projects."
+            "description": "Husky is a collection designed to provide maximum safety in demanding environments. Its fabrics are flame-resistant, preventing ignition and the spread of fire, offering protection and reliability. With 100% opacity and an easy-to-integrate color palette, it is ideal for contract projects."
         },
         "future": {
             "title": "NEW COLLECTION FUTURE",
-            "description": "Future is a collection designed to adapt precisely to spherical shapes, delivering a uniform and high-quality finish. Its fabrics combine strength, flexibility, and versatility, enabling innovative solutions for contemporary projects."
+            "description": "Future is a collection designed to adapt precisely to spherical shapes, delivering a uniform and high-quality finish. Its fabrics combine strength, flexibility and versatility, enabling innovative solutions for contemporary projects."
         }
     }
 }

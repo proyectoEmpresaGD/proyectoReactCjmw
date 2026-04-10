@@ -635,12 +635,15 @@ export default function CardProduct() {
         setFilters(selFilters);
         setPage(1);
 
+        // 1) cuando no hay resultados, conservar filtros actuales
         if (normalizedTotal === 0) {
             setTotalProducts(0);
             setHasMore(false);
-            const u = new URLSearchParams();
+
+            const u = new URLSearchParams(getQueryString());
             u.set('page', '1');
-            navigate(`/products?${u.toString()}`);
+            navigate(`/products?${u.toString()}`, { replace: true });
+
             try {
                 window.scrollTo({ top: 0, behavior: 'auto' });
             } catch {
@@ -710,7 +713,7 @@ export default function CardProduct() {
         }
     };
 
-    // cargar más (hash-safe)
+    // 2) paginación: reemplazar, no apilar
     const loadMore = () => {
         if (loading || !hasMore) return;
 
@@ -720,13 +723,12 @@ export default function CardProduct() {
         if (nextPageRequestRef.current === nxt) return;
         nextPageRequestRef.current = nxt;
 
-        infiniteLoadTriggeredRef.current = true; // 👈 clave
-
+        infiniteLoadTriggeredRef.current = true;
         setPage(nxt);
 
         const u = new URLSearchParams(getQueryString());
         u.set('page', String(nxt));
-        navigate(`/products?${u.toString()}`);
+        navigate(`/products?${u.toString()}`, { replace: true });
     };
 
     useEffect(() => {
@@ -756,24 +758,16 @@ export default function CardProduct() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [queryKey, fetchByIdParam]);
 
+    // 3) dejar solo este efecto para page > 1
     useEffect(() => {
         if (fetchByIdParam) return;
-        if (page <= 1) return; // page 1 lo carga el efecto de queryKey
+        if (page <= 1) return;
 
         const ap = buildAppliedFilters();
         fetchProducts(page, ap);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, fetchByIdParam]);
-
-    useEffect(() => {
-        if (fetchByIdParam) return;
-
-        const ap = buildAppliedFilters();
-        fetchProducts(page, ap);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page]);
 
     useEffect(() => {
         nextPageRequestRef.current = null;

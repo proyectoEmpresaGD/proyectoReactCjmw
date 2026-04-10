@@ -24,116 +24,36 @@ export class AuthController {
   login = async (req, res) => {
     try {
       const { email, password } = req.body ?? {};
+      const identifier = String(email ?? '').trim();
 
-      const normalizedEmail = this.normalizeEmail(email);
-
-      if (!normalizedEmail || !password) {
+      if (!identifier || !password) {
         return res.status(400).json({
           ok: false,
           message: 'El correo y la contraseña son obligatorios.',
         });
       }
 
-      const account = await this.authModel.findAccountByEmail(normalizedEmail);
+      const resolvedAccount = await this.resolveWebLoginAccount(identifier);
 
-      if (!account) {
+      if (!resolvedAccount) {
         return res.status(401).json({
           ok: false,
           message: 'Credenciales incorrectas.',
         });
       }
 
-      const passwordMatches = await bcrypt.compare(password, account.password_hash);
-
-      if (!passwordMatches) {
-        return res.status(401).json({
-          ok: false,
-          message: 'Credenciales incorrectas.',
+      if (resolvedAccount.accountType === 'staff') {
+        return await this.finishStaffLogin({
+          staff: resolvedAccount.account,
+          password,
+          res,
         });
       }
 
-      if (account.status === 'denied') {
-        return res.status(403).json({
-          ok: false,
-          code: 'ACCOUNT_DENIED',
-          message: 'Tu solicitud ha sido denegada.',
-        });
-      }
-
-      if (account.status !== 'approved') {
-        return res.status(403).json({
-          ok: false,
-          code: 'ACCOUNT_NOT_APPROVED',
-          message: 'Tu cuenta todavía no está aprobada.',
-        });
-      }
-
-      if (!account.is_active) {
-        return res.status(403).json({
-          ok: false,
-          code: 'ACCOUNT_INACTIVE',
-          message: 'Tu cuenta no está activa.',
-        });
-      }
-
-      if (!account.email_verified) {
-        return res.status(403).json({
-          ok: false,
-          code: 'EMAIL_NOT_VERIFIED',
-          message: 'Debes verificar tu correo antes de iniciar sesión.',
-        });
-      }
-
-      const primaryCustomerLink =
-        account.role === 'admin'
-          ? null
-          : await this.authModel.getPrimaryCustomerLink(account.id);
-
-      if (account.role !== 'admin' && !primaryCustomerLink?.codclien) {
-        return res.status(403).json({
-          ok: false,
-          code: 'CUSTOMER_LINK_NOT_FOUND',
-          message: 'Tu cuenta no tiene un cliente asociado.',
-        });
-      }
-
-      const linkedCustomers =
-        account.role === 'admin'
-          ? []
-          : await this.authModel.getLinkedCustomers(account.id);
-
-      const primaryCustomer = linkedCustomers[0] ?? null;
-
-      const tokenPayload = {
-        sub: account.id,
-        accountId: account.id,
-        email: account.email,
-        role: account.role || 'customer',
-        codclien: primaryCustomerLink?.codclien ?? null,
-        nif: primaryCustomer?.nif ?? null,
-      };
-
-      const token = signCustomerToken(tokenPayload);
-
-      clearAuthCookie(res);
-      setAuthCookie(res, token);
-
-      await this.authModel.touchLastLogin(account.id);
-
-      return res.status(200).json({
-        ok: true,
-        message: 'Inicio de sesión correcto.',
-        data: {
-          user: {
-            id: account.id,
-            email: account.email,
-            role: account.role || 'customer',
-            status: account.status,
-            emailVerified: account.email_verified,
-            isActive: account.is_active,
-          },
-          customers: linkedCustomers,
-        },
+      return await this.finishCustomerLogin({
+        account: resolvedAccount.account,
+        password,
+        res,
       });
     } catch (error) {
       console.error('authController.login', error);
@@ -144,6 +64,199 @@ export class AuthController {
       });
     }
   };
+
+  async resolveWebLoginAccount(identifier) {
+    const normalized = String(identifier).trim().toLowerCase();
+    const isEmail = normalized.includes('@');
+
+    if (!normalized) {
+      return null;
+    }
+
+    if (!isEmail) {
+      const staffByUsername = await this.authModel.findStaffByUsername(normalized);
+
+      if (!staffByUsername) {
+        return null;
+      }
+
+      return {
+        accountType: 'staff',
+        account: staffByUsername,
+      };
+    }
+
+    const staffByEmail = await this.authModel.findStaffByEmail(normalized);
+
+    if (staffByEmail) {
+      return {
+        accountType: 'staff',
+        account: staffByEmail,
+      };
+    }
+
+    const customerByEmail = await this.authModel.findAccountByEmail(normalized);
+
+    if (!customerByEmail) {
+      return null;
+    }
+
+    return {
+      accountType: 'customer',
+      account: customerByEmail,
+    };
+  }
+
+  async finishStaffLogin({ staff, password, res }) {
+    const passwordMatches = await bcrypt.compare(password, staff.password);
+
+    if (!passwordMatches) {
+      return res.status(401).json({
+        ok: false,
+        message: 'Credenciales incorrectas.',
+      });
+    }
+
+    if (staff.locked_until && new Date(staff.locked_until) > new Date()) {
+      return res.status(423).json({
+        ok: false,
+        code: 'ACCOUNT_LOCKED',
+        message: 'Tu cuenta está temporalmente bloqueada.',
+      });
+    }
+
+    const tokenPayload = {
+      sub: staff.id,
+      accountId: staff.id,
+      accountType: 'staff',
+      email: staff.email ?? null,
+      username: staff.username,
+      role: staff.role || 'user',
+      codclien: null,
+      nif: null,
+    };
+
+    const token = signCustomerToken(tokenPayload);
+
+    clearAuthCookie(res);
+    setAuthCookie(res, token);
+
+    await this.authModel.touchStaffLastLogin(staff.id);
+
+    return res.status(200).json({
+      ok: true,
+      message: 'Inicio de sesión correcto.',
+      data: {
+        user: {
+          id: staff.id,
+          email: staff.email ?? null,
+          username: staff.username,
+          role: staff.role || 'user',
+          accountType: 'staff',
+        },
+        customers: [],
+      },
+    });
+  }
+
+  async finishCustomerLogin({ account, password, res }) {
+    const passwordMatches = await bcrypt.compare(password, account.password_hash);
+
+    if (!passwordMatches) {
+      return res.status(401).json({
+        ok: false,
+        message: 'Credenciales incorrectas.',
+      });
+    }
+
+    if (account.status === 'denied') {
+      return res.status(403).json({
+        ok: false,
+        code: 'ACCOUNT_DENIED',
+        message: 'Tu solicitud ha sido denegada.',
+      });
+    }
+
+    if (account.status !== 'approved') {
+      return res.status(403).json({
+        ok: false,
+        code: 'ACCOUNT_NOT_APPROVED',
+        message: 'Tu cuenta todavía no está aprobada.',
+      });
+    }
+
+    if (!account.is_active) {
+      return res.status(403).json({
+        ok: false,
+        code: 'ACCOUNT_INACTIVE',
+        message: 'Tu cuenta no está activa.',
+      });
+    }
+
+    if (!account.email_verified) {
+      return res.status(403).json({
+        ok: false,
+        code: 'EMAIL_NOT_VERIFIED',
+        message: 'Debes verificar tu correo antes de iniciar sesión.',
+      });
+    }
+
+    const primaryCustomerLink =
+      account.role === 'admin'
+        ? null
+        : await this.authModel.getPrimaryCustomerLink(account.id);
+
+    if (account.role !== 'admin' && !primaryCustomerLink?.codclien) {
+      return res.status(403).json({
+        ok: false,
+        code: 'CUSTOMER_LINK_NOT_FOUND',
+        message: 'Tu cuenta no tiene un cliente asociado.',
+      });
+    }
+
+    const linkedCustomers =
+      account.role === 'admin'
+        ? []
+        : await this.authModel.getLinkedCustomers(account.id);
+
+    const primaryCustomer = linkedCustomers[0] ?? null;
+
+    const tokenPayload = {
+      sub: account.id,
+      accountId: account.id,
+      accountType: 'customer',
+      email: account.email,
+      username: null,
+      role: account.role || 'customer',
+      codclien: primaryCustomerLink?.codclien ?? null,
+      nif: primaryCustomer?.nif ?? null,
+    };
+
+    const token = signCustomerToken(tokenPayload);
+
+    clearAuthCookie(res);
+    setAuthCookie(res, token);
+
+    await this.authModel.touchLastLogin(account.id);
+
+    return res.status(200).json({
+      ok: true,
+      message: 'Inicio de sesión correcto.',
+      data: {
+        user: {
+          id: account.id,
+          email: account.email,
+          username: null,
+          role: account.role || 'customer',
+          accountType: 'customer',
+          status: account.status,
+          emailVerified: account.email_verified,
+          isActive: account.is_active,
+        },
+        customers: linkedCustomers,
+      },
+    });
+  }
 
   logout = async (_req, res) => {
     try {
@@ -172,6 +285,31 @@ export class AuthController {
         });
       }
 
+      if (req.user.accountType === 'staff') {
+        const staff = await this.authModel.findStaffById(req.user.id);
+
+        if (!staff) {
+          return res.status(404).json({
+            ok: false,
+            message: 'Cuenta no encontrada.',
+          });
+        }
+
+        return res.status(200).json({
+          ok: true,
+          data: {
+            user: {
+              id: staff.id,
+              email: staff.email ?? null,
+              username: staff.username,
+              role: staff.role || 'user',
+              accountType: 'staff',
+            },
+            customers: [],
+          },
+        });
+      }
+
       const account = await this.authModel.findAccountById(req.user.id);
 
       if (!account) {
@@ -192,7 +330,9 @@ export class AuthController {
           user: {
             id: account.id,
             email: account.email,
+            username: null,
             role: account.role || 'customer',
+            accountType: 'customer',
             status: account.status,
             emailVerified: account.email_verified,
             emailVerifiedAt: account.email_verified_at,

@@ -1,0 +1,7 @@
+{
+    "verification": {
+        "successMessage": "Votre compte a été vérifié avec succès. Vous pouvez maintenant vous connecter.",
+        "errorMessage": "Votre compte n’a pas pu être vérifié. Le lien a peut-être expiré.",
+        "close": "Fermer"
+    }
+}

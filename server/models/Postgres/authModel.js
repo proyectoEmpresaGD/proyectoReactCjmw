@@ -38,6 +38,103 @@ export class AuthModel {
     `);
   }
 
+  async findStaffByUsername(username) {
+    const normalizedUsername = String(username).trim().toLowerCase();
+
+    const { rows } = await this.pool.query(
+      `
+        SELECT
+          id,
+          username,
+          password,
+          role,
+          email,
+          active_session,
+          last_activity,
+          last_login_at,
+          failed_login_attempts,
+          locked_until,
+          created_at,
+          updated_at
+        FROM usuarios
+        WHERE LOWER(TRIM(username)) = LOWER(TRIM($1))
+        LIMIT 1;
+      `,
+      [normalizedUsername]
+    );
+
+    return rows[0] ?? null;
+  }
+
+  async findStaffByEmail(email) {
+    const normalizedEmail = normalizeEmail(email);
+
+    const { rows } = await this.pool.query(
+      `
+        SELECT
+          id,
+          username,
+          password,
+          role,
+          email,
+          active_session,
+          last_activity,
+          last_login_at,
+          failed_login_attempts,
+          locked_until,
+          created_at,
+          updated_at
+        FROM usuarios
+        WHERE email IS NOT NULL
+          AND TRIM(email) <> ''
+          AND LOWER(TRIM(email)) = LOWER(TRIM($1))
+        LIMIT 1;
+      `,
+      [normalizedEmail]
+    );
+
+    return rows[0] ?? null;
+  }
+
+  async findStaffById(userId) {
+    const { rows } = await this.pool.query(
+      `
+        SELECT
+          id,
+          username,
+          role,
+          email,
+          active_session,
+          last_activity,
+          last_login_at,
+          failed_login_attempts,
+          locked_until,
+          created_at,
+          updated_at
+        FROM usuarios
+        WHERE id = $1
+        LIMIT 1;
+      `,
+      [userId]
+    );
+
+    return rows[0] ?? null;
+  }
+
+  async touchStaffLastLogin(userId) {
+    await this.pool.query(
+      `
+        UPDATE usuarios
+        SET last_login_at = NOW(),
+            last_activity = NOW(),
+            active_session = TRUE,
+            updated_at = NOW()
+        WHERE id = $1;
+      `,
+      [userId]
+    );
+  }
+
   async findAccountByEmail(email) {
     const normalizedEmail = normalizeEmail(email);
 
