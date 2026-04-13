@@ -508,7 +508,7 @@ export default function CardProduct() {
 
                     const u = new URLSearchParams(getQueryString());
                     u.set('page', '1');
-                    navigate(`/products?${u.toString()}`, { replace: true });
+                    navigate(`/products?${u.toString()}`);
                     return;
                 }
             }
@@ -642,7 +642,7 @@ export default function CardProduct() {
 
             const u = new URLSearchParams(getQueryString());
             u.set('page', '1');
-            navigate(`/products?${u.toString()}`, { replace: true });
+            navigate(`/products?${u.toString()}`,);
 
             try {
                 window.scrollTo({ top: 0, behavior: 'auto' });
@@ -728,7 +728,7 @@ export default function CardProduct() {
 
         const u = new URLSearchParams(getQueryString());
         u.set('page', String(nxt));
-        navigate(`/products?${u.toString()}`, { replace: true });
+        navigate(`/products?${u.toString()}`,);
     };
 
     useEffect(() => {
