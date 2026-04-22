@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./app/paginaPrincipal.jsx";
 import About from "./app/about/about.jsx";
 import Contacto from "./app/contact/contactanos.jsx";
@@ -27,8 +27,22 @@ import AdminRequestsPage from "./app/admin/AdminRequestsPage.jsx";
 import VerifyEmailPage from "./app/auth/VerifyEmailPage.jsx";
 import ResetPasswordPage from "./app/auth/ResetPasswordPage";
 import ProtectedRoute from "./app/auth/ProtectedRoute.jsx";
+import { useEffect } from "react";
+import { initGA, trackPage } from "./services/analytics";
+
 
 function App() {
+  const location = useLocation();
+
+  // 👇 INICIALIZA GOOGLE ANALYTICS (una vez)
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  // 👇 TRACKEA CADA CAMBIO DE RUTA (IMPORTANTE EN REACT)
+  useEffect(() => {
+    trackPage(location.pathname);
+  }, [location]);
   return (
     <>
       <ScrollToTop />
