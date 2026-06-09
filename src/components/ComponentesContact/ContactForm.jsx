@@ -624,7 +624,7 @@ const ContactForm = ({ onSuccess }) => {
                     </p>
                 )}
 
-                <label className="flex items-start gap-3">
+                {/* <label className="flex items-start gap-3">
                     <input
                         id="marketing"
                         name="marketing"
@@ -634,7 +634,7 @@ const ContactForm = ({ onSuccess }) => {
                         className="mt-1 h-4 w-4 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
                     />
                     <span className="text-sm text-neutral-700">{t('form.legal.marketingLabel')}</span>
-                </label>
+                </label> */}
 
                 <p id="consent-help" className="text-xs text-neutral-500">
                     {t('form.legal.dataRetention')}

@@ -229,7 +229,7 @@ function HarbourHome() {
                 <Carrusel images={shuffleArray([...images])} />
 
                 <BloquesInformativos
-                    titulo={t("tiposDestacados.title")}
+                    titulo="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png"
                     bloques={bloquesUso}
                 />
 

@@ -7,41 +7,51 @@ import xss from 'xss';
 const SPANISH_CC = new Set([
   'ES', 'MX', 'AR', 'CL', 'CO', 'PE', 'VE', 'EC', 'BO', 'PY', 'UY', 'GT', 'HN', 'SV', 'NI', 'CR', 'PA', 'CU', 'DO', 'PR', 'AD', 'GQ'
 ]);
+
 const SPANISH_NAMES = new Set([
   'espana', 'españa', 'spain', 'mexico', 'méxico', 'argentina', 'chile', 'colombia', 'peru', 'perú', 'venezuela', 'ecuador',
   'bolivia', 'paraguay', 'uruguay', 'guatemala', 'honduras', 'el salvador', 'nicaragua', 'costa rica', 'panama', 'panamá',
   'cuba', 'dominican republic', 'república dominicana', 'puerto rico', 'andorra', 'equatorial guinea', 'guinea ecuatorial'
 ]);
+
 const normalizeCountry = (v) => (v ?? '')
-  .toString().trim().toLowerCase()
-  .normalize('NFD').replace(/\p{Diacritic}/gu, '');
+  .toString()
+  .trim()
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/\p{Diacritic}/gu, '');
+
 const isSpanishCountry = (country) => {
   if (!country) return false;
+
   const raw = String(country).trim();
-  if (raw.length === 2) return SPANISH_CC.has(raw.toUpperCase());
+
+  if (raw.length === 2) {
+    return SPANISH_CC.has(raw.toUpperCase());
+  }
+
   return SPANISH_NAMES.has(normalizeCountry(raw));
 };
 
 /* ============================================================================
-   Constantes de layout/email (Outlook clásico – motor Word)
+   Constantes de layout/email
 ============================================================================ */
 const ORDER_EMAIL_WIDTH = 640;
 
-const LOGO_URL = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png'; // <- logo solicitado
+const LOGO_URL = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png';
 const DIVIDER = '#E4E8F1';
 const TEXT_MAIN = '#0B1526';
 const TEXT_MUTED = '#4F566B';
-const BRAND_HEADER_BG = '#F3F4F6';  // Header claro (el logo es oscuro)
+const BRAND_HEADER_BG = '#F3F4F6';
 const SOFT_PANEL = '#F7F8FC';
 const BRAND_ACCENT = '#0E1B2E';
 const CTA_TEXT = '#FFFFFF';
 
-// Imagen hero (>=640px ancho real) — cojines / rafias
 const HERO_IMG =
   'https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/KANNATURA%20VOL%20II/AR_AMBIENTE_RAFIAS_YUKI.jpg ';
 
 /* ============================================================================
-   Bloques “seguros” para Outlook clásico (tablas + inline styles)
+   Bloques seguros para email
 ============================================================================ */
 function headerBlock640() {
   return `
@@ -152,7 +162,7 @@ const buildDetailRow = (label, value) => `
 `;
 
 /* ============================================================================
-   Plantilla: notificación interna (al inbox)
+   Plantilla: notificación interna
 ============================================================================ */
 const internalTemplate = ({ record, payload }) => {
   const {
@@ -160,6 +170,7 @@ const internalTemplate = ({ record, payload }) => {
     firstName,
     lastName,
     email,
+    phone,
     company,
     country,
     postalCode,
@@ -195,6 +206,7 @@ const internalTemplate = ({ record, payload }) => {
         ${[
       ['Nombre completo', `<strong>${firstName} ${lastName}</strong>`],
       ['Correo electrónico', `<a href="mailto:${email}" style="color:${BRAND_ACCENT};text-decoration:none;">${email}</a>`],
+      ['Teléfono', phone ? `<a href="tel:${phone}" style="color:${BRAND_ACCENT};text-decoration:none;">${phone}</a>` : '—'],
       ['Empresa', company ?? '—'],
       ['País', country ?? '—'],
       ['Código postal', postalCode ?? '—'],
@@ -232,6 +244,7 @@ const internalTemplate = ({ record, payload }) => {
 Perfil: ${profileLabel}
 Nombre: ${firstName} ${lastName}
 Email: ${email}
+Teléfono: ${phone ?? '—'}
 Empresa: ${company ?? '—'}
 País: ${country ?? '—'}
 Código postal: ${postalCode ?? '—'}
@@ -249,12 +262,15 @@ User-Agent: ${userAgent ?? '—'}
 Fecha: ${record.created_at.toISOString()}
 ${attachmentPath ? `Adjunto: ${attachmentPath}` : ''}`;
 
-  return { subject, html, text };
+  return {
+    subject,
+    html,
+    text
+  };
 };
 
 /* ============================================================================
-   Plantilla: correo de agradecimiento (al usuario)
-   - Showroom: Av. de Europa, 19 · 14550 Montilla (Córdoba) · España
+   Plantilla: correo de agradecimiento
 ============================================================================ */
 const thankYouTemplate = (locale = 'es', { name }) => {
   const subject = locale === 'es'
@@ -273,15 +289,28 @@ const thankYouTemplate = (locale = 'es', { name }) => {
     ? 'Si necesitas añadir más información puedes responder directamente a este correo.'
     : 'If you need to add any information, simply reply to this email.';
 
-  const footer = locale === 'es' ? 'Gracias por confiar en CJMW.' : 'Thank you for choosing CJMW.';
+  const footer = locale === 'es'
+    ? 'Gracias por confiar en CJMW.'
+    : 'Thank you for choosing CJMW.';
 
-  const collectionsTitle = locale === 'es' ? 'Explora nuestras colecciones' : 'Explore our collections';
-  const ctaLabel = locale === 'es' ? 'Visitar la web' : 'Visit our website';
+  const collectionsTitle = locale === 'es'
+    ? 'Explora nuestras colecciones'
+    : 'Explore our collections';
 
-  const showroomTitle = locale === 'es' ? 'Showroom Montilla' : 'Montilla Showroom';
+  const ctaLabel = locale === 'es'
+    ? 'Visitar la web'
+    : 'Visit our website';
+
+  const showroomTitle = locale === 'es'
+    ? 'Showroom Montilla'
+    : 'Montilla Showroom';
+
   const showroomCopy = 'Av. de Europa, 19 · 14550 Montilla (Córdoba) · España';
 
-  const clientServicesTitle = locale === 'es' ? 'Atención al cliente' : 'Client Services';
+  const clientServicesTitle = locale === 'es'
+    ? 'Atención al cliente'
+    : 'Client Services';
+
   const clientServicesCopy = locale === 'es'
     ? 'Para cualquier consulta adicional puedes escribirnos a info@cjmw.eu o llamarnos al +34 957 65 67 08.'
     : 'For any additional enquiries reach us at info@cjmw.eu or call +34 957 65 67 08.';
@@ -324,7 +353,6 @@ const thankYouTemplate = (locale = 'es', { name }) => {
     <td class="p-xs" style="padding:20px 28px 8px 28px;font-family:Arial,Helvetica,sans-serif;color:#14213b;line-height:1.6;">
       <div style="font-weight:700;font-size:16px;margin:0 0 10px 0;color:${TEXT_MAIN};">${collectionsTitle}</div>
 
-      <!-- 2 columnas seguras -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td class="stack" style="width:320px;padding:0 8px 12px 0;vertical-align:top;">
@@ -362,23 +390,26 @@ const thankYouTemplate = (locale = 'es', { name }) => {
         </tr>
       </table>
 
-      <!-- Dos tarjetas informativas -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:8px;">
         <tr>
           <td class="stack" style="width:320px;padding:0 8px 12px 0;vertical-align:top;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${BRAND_ACCENT};color:#ffffff;border:1px solid ${BRAND_ACCENT};">
-              <tr><td style="padding:14px 16px;">
-                <div style="font-weight:700;font-size:15px;margin-bottom:6px;">${showroomTitle}</div>
-                <p style="margin:0;color:#ffffff;font-size:13px;">${showroomCopy}</p>
-              </td></tr>
+              <tr>
+                <td style="padding:14px 16px;">
+                  <div style="font-weight:700;font-size:15px;margin-bottom:6px;">${showroomTitle}</div>
+                  <p style="margin:0;color:#ffffff;font-size:13px;">${showroomCopy}</p>
+                </td>
+              </tr>
             </table>
           </td>
           <td class="stack" style="width:320px;padding:0 0 12px 8px;vertical-align:top;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FDF2EC;color:#7A3411;border:1px solid #F5C5A2;">
-              <tr><td style="padding:14px 16px;">
-                <div style="font-weight:700;font-size:15px;margin-bottom:6px;">${clientServicesTitle}</div>
-                <p style="margin:0;color:#7A3411;font-size:13px;">${clientServicesCopy}</p>
-              </td></tr>
+              <tr>
+                <td style="padding:14px 16px;">
+                  <div style="font-weight:700;font-size:15px;margin-bottom:6px;">${clientServicesTitle}</div>
+                  <p style="margin:0;color:#7A3411;font-size:13px;">${clientServicesCopy}</p>
+                </td>
+              </tr>
             </table>
           </td>
         </tr>
@@ -407,7 +438,11 @@ LinkedIn: https://www.linkedin.com/company/cjmw-group/
 Pinterest: https://www.pinterest.es/cjmw_group/
 `;
 
-  return { subject, html, text };
+  return {
+    subject,
+    html,
+    text
+  };
 };
 
 /* ============================================================================
@@ -415,22 +450,36 @@ Pinterest: https://www.pinterest.es/cjmw_group/
 ============================================================================ */
 export class ContactController {
   constructor({ contactModel, transporter = null, contactInbox = null }) {
-    if (!contactModel) throw new Error('contactModel dependency is required');
+    if (!contactModel) {
+      throw new Error('contactModel dependency is required');
+    }
+
     this.contactModel = contactModel;
     this.transporter = transporter;
     this.contactInbox = contactInbox;
   }
 
   sanitize(value) {
-    if (typeof value !== 'string') return value;
-    return xss(value, { whiteList: {}, stripIgnoreTag: true, stripIgnoreTagBody: ['script'] });
+    if (typeof value !== 'string') {
+      return value;
+    }
+
+    return xss(value, {
+      whiteList: {},
+      stripIgnoreTag: true,
+      stripIgnoreTagBody: ['script']
+    });
   }
 
   async handleCreate(req, res, next) {
     try {
       const validation = validationResult(req);
+
       if (!validation.isEmpty()) {
-        return res.status(400).json({ error: 'Validation failed', details: validation.array() });
+        return res.status(400).json({
+          error: 'Validation failed',
+          details: validation.array()
+        });
       }
 
       const {
@@ -438,6 +487,7 @@ export class ContactController {
         firstName,
         lastName,
         email,
+        phone,
         company,
         country,
         postalCode,
@@ -453,6 +503,7 @@ export class ContactController {
         firstName: this.sanitize(firstName),
         lastName: this.sanitize(lastName),
         email: email.toLowerCase(),
+        phone: phone ? this.sanitize(phone) : null,
         company: company ? this.sanitize(company) : null,
         country: this.sanitize(country),
         postalCode: this.sanitize(postalCode),
@@ -471,10 +522,20 @@ export class ContactController {
 
       const record = await this.contactModel.create(sanitizedPayload);
 
-      await this.sendNotificationEmail({ record, payload: sanitizedPayload, originalAttachment: req.file ?? null });
-      await this.sendThankYouEmail({ payload: sanitizedPayload });
+      await this.sendNotificationEmail({
+        record,
+        payload: sanitizedPayload,
+        originalAttachment: req.file ?? null
+      });
 
-      return res.status(201).json({ message: 'Contact request stored successfully.', id: record.id });
+      await this.sendThankYouEmail({
+        payload: sanitizedPayload
+      });
+
+      return res.status(201).json({
+        message: 'Contact request stored successfully.',
+        id: record.id
+      });
     } catch (error) {
       return next(error);
     }
@@ -487,8 +548,17 @@ export class ContactController {
       const reasonFilter = req.query.reason;
       const profileFilter = req.query.profile;
 
-      const rows = await this.contactModel.list({ limit, offset, reason: reasonFilter, profile: profileFilter });
-      return res.json({ data: rows, count: rows.length });
+      const rows = await this.contactModel.list({
+        limit,
+        offset,
+        reason: reasonFilter,
+        profile: profileFilter
+      });
+
+      return res.json({
+        data: rows,
+        count: rows.length
+      });
     } catch (error) {
       return next(error);
     }
@@ -499,9 +569,14 @@ export class ContactController {
   }
 
   async sendNotificationEmail({ record, payload, originalAttachment }) {
-    if (!this.transporter || !this.contactInbox) return;
+    if (!this.transporter || !this.contactInbox) {
+      return;
+    }
 
-    const { subject, html, text } = internalTemplate({ record, payload });
+    const { subject, html, text } = internalTemplate({
+      record,
+      payload
+    });
 
     const fromAddress =
       this.transporter?.options?.auth?.user ??
@@ -532,12 +607,21 @@ export class ContactController {
   }
 
   async sendThankYouEmail({ payload }) {
-    if (!this.transporter) return;
+    if (!this.transporter) {
+      return;
+    }
+
     const { email, firstName, country } = payload;
-    if (!email) return;
+
+    if (!email) {
+      return;
+    }
 
     const locale = isSpanishCountry(country) ? 'es' : 'en';
-    const tpl = thankYouTemplate(locale, { name: firstName });
+
+    const tpl = thankYouTemplate(locale, {
+      name: firstName
+    });
 
     const fromAddress =
       this.transporter?.options?.auth?.user ??

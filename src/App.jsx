@@ -29,7 +29,8 @@ import ResetPasswordPage from "./app/auth/ResetPasswordPage";
 import ProtectedRoute from "./app/auth/ProtectedRoute.jsx";
 import { useEffect } from "react";
 import { initGA, trackPage } from "./services/analytics";
-
+import AccountInvoiceDetailPage from "./components/account/AccountInvoiceDetailPage.jsx"
+import AccountReturnsPage from "./components/account/AccountReturnsPage.jsx";
 
 function App() {
   const location = useLocation();
@@ -58,14 +59,14 @@ function App() {
         <Route path="/bassariHome" element={<BassariHome />} />
         <Route path="/BlogHome/:newsId" element={<BlogHome />} />
         <Route path="/confeccion" element={<Confeccion />} />
-        {/* <Route
+        <Route
           path="/confeccion"
           element={
             <ProtectedRoute>
               <Confeccion />
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
         <Route path="/mis-datos" element={<AccountProfilePage />} />
@@ -79,7 +80,15 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin/solicitudes" element={<AdminRequestsPage />} />
         <Route path="/restablecer-password" element={<ResetPasswordPage />} />
-        <Route path="/verificar-email" element={<VerifyEmailPage />} /> */}
+        <Route path="/verificar-email" element={<VerifyEmailPage />} />
+        <Route
+          path="/account/invoices/:ejercicio/:codserfacventa/:nfacventa"
+          element={<AccountInvoiceDetailPage />}
+        />
+        <Route path="/mis-datos" element={<AccountProfilePage />} />
+        <Route path="/mis-pedidos" element={<AccountInvoicesPage />} />
+        <Route path="/mis-facturas" element={<AccountInvoicesPage />} />
+        <Route path="/historial-devoluciones" element={<AccountReturnsPage />} /> */}
 
       </Routes>
     </>

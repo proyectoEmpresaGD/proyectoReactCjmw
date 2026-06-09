@@ -8,5 +8,17 @@ export function createClientAreaRouter({ pool }) {
 
     router.get('/invoices', requireCustomerAuth, controller.getInvoices);
 
+    router.get(
+        '/delivery-notes/uninvoiced',
+        requireCustomerAuth,
+        controller.getUninvoicedDeliveryNotes
+    );
+
+    router.get(
+        '/invoices/:ejercicio/:codserfacventa/:nfacventa',
+        requireCustomerAuth,
+        controller.getInvoiceDetail
+    );
+
     return router;
 }

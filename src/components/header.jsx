@@ -426,14 +426,14 @@ export const Header = ({ closeModal }) => {
                             {t("media")}
                         </Link>
 
-                        {/* {isAuthenticated && (
+                        {isAuthenticated && (
                             <Link
                                 to="/confeccion"
                                 className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-4 rounded-full transition"
                             >
                                 {t("tailoring")}
                             </Link>
-                        )} */}
+                        )}
 
                         <div className="relative" ref={companyRef}>
                             <button

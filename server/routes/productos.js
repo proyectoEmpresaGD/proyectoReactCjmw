@@ -1,7 +1,7 @@
 // routes/productos.js
 import { Router } from 'express';
 import { ProductController } from '../controllers/productos.js';
-
+import { optionalSessionAuth } from '../middlewares/authMiddleware.js';
 /**
  * Router de productos
  * Orden MUY importante: las rutas específicas deben ir antes de '/:id'
@@ -9,7 +9,7 @@ import { ProductController } from '../controllers/productos.js';
 export const createProductRouter = () => {
     const productsRouter = Router();
     const productController = new ProductController();
-
+    productsRouter.use(optionalSessionAuth);
     // ==============================
     // 1. CRUD BÁSICO (excepto :id)
     // ==============================

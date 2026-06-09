@@ -9,7 +9,11 @@ function BloquesInformativos({ titulo, texto, bloques = [] }) {
     const [tituloVisible, setTituloVisible] = useState(false);
     const [textoVisible, setTextoVisible] = useState(false);
     const [bloquesVisibles, setBloquesVisibles] = useState([]);
+    const isCjmLogo = "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png"
 
+    const tituloWidthClass = isCjmLogo
+        ? "w-[30%] md:w-[16%]"
+        : "w-[40%] md:w-[22%]";
     const handleClick = (filtros) => {
         const queryString = new URLSearchParams(filtros).toString();
         navigate(`/products?${queryString}`);
@@ -45,15 +49,14 @@ function BloquesInformativos({ titulo, texto, bloques = [] }) {
     const delayClasses = ['delay-0', 'delay-100', 'delay-200', 'delay-300'];
 
     return (
-        <section className="flex flex-col items-center text-center px-4 py-10">
+        <section className="flex flex-col items-center text-center px-4 py-4">
             {/* Título */}
-            <h2
+            <img
                 ref={tituloRef}
-                className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-black transition-all duration-700 ${tituloVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                className={`${tituloWidthClass} transition-all duration-700 ${tituloVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                     }`}
-            >
-                {titulo}
-            </h2>
+                src={titulo}
+            />
 
             {/* Texto */}
             <p

@@ -13,8 +13,40 @@ async function parseResponse(response) {
 
 export async function getInvoices(ejercicio) {
     const query = ejercicio ? `?ejercicio=${encodeURIComponent(ejercicio)}` : '';
+    const url = `${API_BASE}/invoices${query}`;
 
-    const response = await fetch(`${API_BASE}/invoices${query}`, {
+    console.log('DEBUG getInvoices URL:', url);
+
+    const response = await fetch(url, {
+        method: 'GET',
+        credentials: 'include',
+    });
+
+    return parseResponse(response);
+}
+
+export async function getInvoiceDetail({
+    ejercicio,
+    codserfacventa,
+    nfacventa,
+}) {
+    const response = await fetch(
+        `${API_BASE}/invoices/${encodeURIComponent(ejercicio)}/${encodeURIComponent(
+            codserfacventa
+        )}/${encodeURIComponent(nfacventa)}`,
+        {
+            method: 'GET',
+            credentials: 'include',
+        }
+    );
+
+    return parseResponse(response);
+}
+
+export async function getUninvoicedDeliveryNotes(ejercicio) {
+    const query = ejercicio ? `?ejercicio=${encodeURIComponent(ejercicio)}` : '';
+
+    const response = await fetch(`${API_BASE}/delivery-notes/uninvoiced${query}`, {
         method: 'GET',
         credentials: 'include',
     });

@@ -114,7 +114,7 @@ function CjmHome() {
                 <Carrusel images={shuffleArray([...images])} />
                 <div className="">
                     <BloquesInformativos
-                        titulo={t("tiposDestacados.title")}
+                        titulo="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png"
                         bloques={bloquesUso}
                     />
                 </div>

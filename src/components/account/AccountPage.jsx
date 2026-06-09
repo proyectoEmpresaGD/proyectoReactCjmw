@@ -27,7 +27,7 @@ export default function AccountPage() {
 
                 <main className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
                     <div className="grid gap-8">
-                        <AccountHero linkedCustomersCount={linkedCustomers.length} />
+
 
                         <div className="flex flex-wrap items-center justify-between gap-4">
                             <div>

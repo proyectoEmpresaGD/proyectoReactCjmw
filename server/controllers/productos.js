@@ -10,7 +10,6 @@ const toInt = (v, def) => {
 };
 
 const okCache = (res, seconds = 3600) => {
-  // Cache en edge/CDN con revalidación perezosa
   res.set('Cache-Control', `s-maxage=${seconds}, stale-while-revalidate`);
 };
 
@@ -25,32 +24,33 @@ const numberFrom = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 
+const getSessionCustomerCode = (req) =>
+  req.customer?.codclien ?? req.user?.codclien ?? null;
+
 export class ProductController {
   // ===========================================================================
   // 0) Catálogo básico / listado y CRUD
   // ===========================================================================
 
-  /**
-   * GET /api/products
-   * Lista paginada del catálogo base (sin filtros complejos).
-   * Acepta: CodFamil, CodSubFamil, limit, page
-   */
-
   constructor() {
     this.model = ProductModel;
 
-    // Bind como ya haces tú
     this.searchLinings = this.searchLinings.bind(this);
     this.getColors = this.getColors.bind(this);
     this.searchUpholstery = this.searchUpholstery.bind(this);
-
-    // IMPORTANTE: método correcto para cortinas
     this.searchCurtains = this.searchCurtains.bind(this);
-
-    // (compat) si en algún sitio quedara el typo, lo redirigimos
     this.searchCurtais = this.searchCurtains.bind(this);
   }
 
+  async getSessionTariffCode(req) {
+    const codclien = getSessionCustomerCode(req);
+    return ProductModel.getTariffCodeForCustomer(codclien);
+  }
+
+  /**
+   * GET /api/products
+   * Lista paginada del catálogo base.
+   */
   async getAll(req, res) {
     try {
       const { CodFamil, CodSubFamil, limit, page } = req.query;
@@ -58,70 +58,95 @@ export class ProductController {
       const pageParsed = toInt(page, 1);
       const offset = (pageParsed - 1) * requiredLimit;
 
-      const products = await ProductModel.getAll({ CodFamil, CodSubFamil, requiredLimit, offset });
+      const products = await ProductModel.getAll({
+        CodFamil,
+        CodSubFamil,
+        requiredLimit,
+        offset
+      });
 
       okCache(res, 3600);
-      res.json(products);
+      return res.json(products);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 
   /**
    * GET /api/products/:id
-   * Devuelve un producto por id (codprodu)
+   * Devuelve un producto por id usando la tarifa del cliente logeado.
    */
   async getById(req, res) {
     try {
       const { id } = req.params;
-      const product = await ProductModel.getById({ id });
+      const tariffCode = await this.getSessionTariffCode(req);
+
+      const product = await ProductModel.getById({
+        id,
+        tariffCode
+      });
+
       if (product) {
-        okCache(res, 3600);
-        res.json(product);
-      } else {
-        res.status(404).json({ message: 'Product not found' });
+        noStore(res);
+        return res.json(product);
       }
+
+      return res.status(404).json({ message: 'Product not found' });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 
-
-
   /**
    * POST /api/products
-   * Crea un producto (uso interno / administración)
+   * Crea un producto.
    */
   async create(req, res) {
     try {
       const newProduct = await ProductModel.create({ input: req.body });
+
       noStore(res);
-      res.status(201).json(newProduct);
+      return res.status(201).json(newProduct);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   }
 
-  // ==============================
-  // 3. BÚSQUEDAS (rutas con nombre)
-  // ==============================
-  // POST /api/products/linings/search
+  // ===========================================================================
+  // 1) Confección / productos con tarifa por cliente
+  // ===========================================================================
+
+  /**
+   * POST /api/products/linings/search
+   */
   async searchLinings(req, res) {
     try {
-      const { names = [], q = '' } = req.method === 'GET' ? req.query : (req.body || {});
+      const { names = [], q = '' } = req.method === 'GET'
+        ? req.query
+        : (req.body || {});
+
       const list = Array.isArray(names) ? names.filter(Boolean) : [];
+      const tariffCode = await this.getSessionTariffCode(req);
 
       if (list.length > 0 && String(q).trim() === '') {
-        const items = await ProductModel.getLiningsFeatured({ names: list, limit: 80 });
+        const items = await ProductModel.getLiningsFeatured({
+          names: list,
+          limit: 80,
+          tariffCode
+        });
+
+        noStore(res);
         return res.status(200).json({ items });
       }
 
       const items = await ProductModel.searchLiningsByNamesAndQuery({
         names: list,
         q: String(q || ''),
-        limit: 80
+        limit: 80,
+        tariffCode
       });
 
+      noStore(res);
       return res.status(200).json({ items });
     } catch (e) {
       console.error(e);
@@ -129,11 +154,24 @@ export class ProductController {
     }
   }
 
-  // POST /api/products/upholstery/search
+  /**
+   * POST /api/products/upholstery/search
+   */
   async searchUpholstery(req, res) {
     try {
-      const { q = '' } = req.method === 'GET' ? req.query : (req.body || {});
-      const items = await ProductModel.searchUpholsteryByQuery({ q: String(q || ''), limit: 80 });
+      const { q = '' } = req.method === 'GET'
+        ? req.query
+        : (req.body || {});
+
+      const tariffCode = await this.getSessionTariffCode(req);
+
+      const items = await ProductModel.searchUpholsteryByQuery({
+        q: String(q || ''),
+        limit: 80,
+        tariffCode
+      });
+
+      noStore(res);
       return res.status(200).json({ items });
     } catch (e) {
       console.error('searchUpholstery error:', e);
@@ -141,45 +179,65 @@ export class ProductController {
     }
   }
 
+  /**
+   * GET/POST /api/products/by-codes
+   */
   async getByCodes(req, res) {
     try {
-      const raw = req.method === 'GET' ? req.query.codes : req.body?.codes;
+      const raw = req.method === 'GET'
+        ? req.query.codes
+        : req.body?.codes;
 
-      let codes =
-        Array.isArray(raw)
-          ? raw
-          : typeof raw === 'string'
-            ? raw.split(',')
-            : [];
+      let codes = Array.isArray(raw)
+        ? raw
+        : typeof raw === 'string'
+          ? raw.split(',')
+          : [];
 
       codes = codes
         .map((c) => String(c || '').trim())
         .filter(Boolean);
 
-      // dedupe + límite defensivo
       codes = Array.from(new Set(codes)).slice(0, 80);
 
       if (!codes.length) {
         return res.status(200).json([]);
       }
 
-      const products = await ProductModel.getByCodes({ codes });
+      const tariffCode = await this.getSessionTariffCode(req);
 
-      // cache corto: son “vistas” desde galería, cambia poco
-      okCache(res, 300);
+      const products = await ProductModel.getByCodes({
+        codes,
+        tariffCode
+      });
+
+      noStore(res);
       return res.status(200).json(products);
     } catch (error) {
       console.error('Error in getByCodes:', error);
-      return res.status(500).json({ error: 'Error fetching products by codes', details: error.message });
+      return res.status(500).json({
+        error: 'Error fetching products by codes',
+        details: error.message
+      });
     }
   }
 
-  // ✅ POST /api/products/curtains/search
-  //   usa el modelo correcto y asegura enviar `ancho` al front
+  /**
+   * POST /api/products/curtains/search
+   */
   async searchCurtains(req, res) {
     try {
-      const { q = '' } = req.method === 'GET' ? req.query : (req.body || {});
-      const rows = await ProductModel.searchCurtainsByQuery({ q: String(q || ''), limit: 80 });
+      const { q = '' } = req.method === 'GET'
+        ? req.query
+        : (req.body || {});
+
+      const tariffCode = await this.getSessionTariffCode(req);
+
+      const rows = await ProductModel.searchCurtainsByQuery({
+        q: String(q || ''),
+        limit: 80,
+        tariffCode
+      });
 
       const items = rows.map(p => ({
         id: p.id ?? p.codprodu,
@@ -188,9 +246,10 @@ export class ProductController {
         collection: p.collection ?? p.coleccion ?? null,
         pricePerMeter: p.pricePerMeter ?? numberFrom(p.precioMetro) ?? numberFrom(p.precioMetroRaw),
         imageUrl: p.imageUrl ?? null,
-        ancho: p.ancho ?? null, // 👈 CLAVE
+        ancho: p.ancho ?? null,
       }));
 
+      noStore(res);
       return res.status(200).json({ items });
     } catch (e) {
       console.error('searchCurtains error:', e);
@@ -198,11 +257,17 @@ export class ProductController {
     }
   }
 
-  // GET /api/products/:id/colors
+  /**
+   * GET /api/products/:id/colors
+   */
   async getColors(req, res) {
     try {
-      const { id } = req.params; // codprodu base
-      const colors = await ProductModel.getColors(id);
+      const { id } = req.params;
+      const tariffCode = await this.getSessionTariffCode(req);
+
+      const colors = await ProductModel.getColors(id, tariffCode);
+
+      noStore(res);
       return res.status(200).json({ colors });
     } catch (e) {
       console.error(e);
@@ -210,17 +275,25 @@ export class ProductController {
     }
   }
 
+  /**
+   * POST /api/products/wallpapers/search
+   */
   async searchWallpapers(req, res) {
     try {
-      const { limit } = (req.body || {});
+      const { limit } = req.body || {};
+
       const safeLimit = Number.isFinite(Number(limit)) && Number(limit) > 0
         ? Math.min(Number(limit), 200)
         : 80;
 
-      // 👇 Antes llamabas a ProductModel.searchWallpapersByQuery(...)
-      const items = await ProductModel.searchWallpapersAll({ limit: safeLimit });
+      const tariffCode = await this.getSessionTariffCode(req);
 
-      res.set('Cache-Control', 's-maxage=300, stale-while-revalidate');
+      const items = await ProductModel.searchWallpapersAll({
+        limit: safeLimit,
+        tariffCode
+      });
+
+      noStore(res);
       return res.status(200).json({ items });
     } catch (e) {
       console.error('searchWallpapers error:', e);
@@ -228,46 +301,55 @@ export class ProductController {
     }
   }
 
+  // ===========================================================================
+  // 2) Mutaciones
+  // ===========================================================================
+
   /**
    * PATCH /api/products/:id
-   * Actualiza un producto
    */
   async update(req, res) {
     try {
       const { id } = req.params;
-      const updatedProduct = await ProductModel.update({ id, input: req.body });
+
+      const updatedProduct = await ProductModel.update({
+        id,
+        input: req.body
+      });
+
       if (updatedProduct) {
         noStore(res);
-        res.json(updatedProduct);
-      } else {
-        res.status(404).json({ message: 'Product not found' });
+        return res.json(updatedProduct);
       }
+
+      return res.status(404).json({ message: 'Product not found' });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   }
 
   /**
    * DELETE /api/products/:id
-   * Elimina un producto
    */
   async delete(req, res) {
     try {
       const { id } = req.params;
+
       const result = await ProductModel.delete({ id });
+
       if (result) {
         noStore(res);
-        res.json({ message: 'Product deleted' });
-      } else {
-        res.status(404).json({ message: 'Product not found' });
+        return res.json({ message: 'Product deleted' });
       }
+
+      return res.status(404).json({ message: 'Product not found' });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 
   // ===========================================================================
-  // 1) Búsquedas
+  // 3) Búsquedas generales
   // ===========================================================================
 
   /**
@@ -276,10 +358,16 @@ export class ProductController {
   async search(req, res) {
     try {
       const { query, limit, page } = req.query;
+
       if (!query || !query.trim()) {
-        return res
-          .status(200)
-          .json({ products: [], pagination: { currentPage: 1, limit: 0, totalResults: 0 } });
+        return res.status(200).json({
+          products: [],
+          pagination: {
+            currentPage: 1,
+            limit: 0,
+            totalResults: 0
+          }
+        });
       }
 
       const limitParsed = toInt(limit, 12);
@@ -293,6 +381,7 @@ export class ProductController {
       });
 
       okCache(res, 3600);
+
       return res.status(200).json({
         products,
         pagination: {
@@ -303,7 +392,11 @@ export class ProductController {
       });
     } catch (error) {
       console.error('Error searching products:', error);
-      return res.status(500).json({ error: 'Error searching products', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error searching products',
+        details: error.message
+      });
     }
   }
 
@@ -313,19 +406,29 @@ export class ProductController {
   async searchQuick(req, res) {
     try {
       const { query, prodLimit, colLimit } = req.query;
+
       if (!query || !query.trim()) {
-        return res.status(200).json({ products: [], collections: [] });
+        return res.status(200).json({
+          products: [],
+          collections: []
+        });
       }
+
       const data = await ProductModel.searchQuick({
         query: query.trim(),
         prodLimit: toInt(prodLimit, 8),
         colLimit: toInt(colLimit, 6)
       });
-      okCache(res, 120); // cache corto para UX percibida más rápida
+
+      okCache(res, 120);
       return res.json(data);
     } catch (error) {
       console.error('Error in searchQuick:', error);
-      return res.status(500).json({ error: 'Error searching quick', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error searching quick',
+        details: error.message
+      });
     }
   }
 
@@ -335,11 +438,18 @@ export class ProductController {
   async searchProducts(req, res) {
     try {
       const { query, limit, page } = req.query;
+
       if (!query || !query.trim()) {
-        return res
-          .status(200)
-          .json({ products: [], pagination: { currentPage: 1, limit: 0, totalResults: 0 } });
+        return res.status(200).json({
+          products: [],
+          pagination: {
+            currentPage: 1,
+            limit: 0,
+            totalResults: 0
+          }
+        });
       }
+
       const limitParsed = toInt(limit, 16);
       const pageParsed = toInt(page, 1);
       const offset = (pageParsed - 1) * limitParsed;
@@ -351,6 +461,7 @@ export class ProductController {
       });
 
       okCache(res, 3600);
+
       return res.status(200).json({
         products,
         pagination: {
@@ -361,12 +472,16 @@ export class ProductController {
       });
     } catch (error) {
       console.error('Error in searchProducts:', error);
-      return res.status(500).json({ error: 'Error searching products', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error searching products',
+        details: error.message
+      });
     }
   }
 
   // ===========================================================================
-  // 2) Filtros, tipos y colecciones
+  // 4) Filtros, tipos y colecciones
   // ===========================================================================
 
   /**
@@ -375,11 +490,16 @@ export class ProductController {
   async getFilters(req, res) {
     try {
       const filters = await ProductModel.getFilters();
+
       okCache(res, 3600);
-      res.json(filters);
+      return res.json(filters);
     } catch (error) {
       console.error('Error fetching filters:', error);
-      res.status(500).send({ error: 'Error fetching filters', details: error.message });
+
+      return res.status(500).send({
+        error: 'Error fetching filters',
+        details: error.message
+      });
     }
   }
 
@@ -389,20 +509,26 @@ export class ProductController {
   async getFiltersByBrand(req, res) {
     try {
       const { brand } = req.query;
+
       if (!brand) {
         return res.status(400).json({ message: 'Brand is required' });
       }
 
       const filters = await ProductModel.getFiltersByBrand(brand);
+
       if (!filters) {
         return res.status(404).json({ message: 'No filters found for this brand' });
       }
 
       okCache(res, 3600);
-      res.json(filters);
+      return res.json(filters);
     } catch (error) {
       console.error('Error fetching filters by brand:', error);
-      res.status(500).json({ message: 'Error fetching filters by brand', error });
+
+      return res.status(500).json({
+        message: 'Error fetching filters by brand',
+        error
+      });
     }
   }
 
@@ -414,7 +540,9 @@ export class ProductController {
       const { brand } = req.query;
 
       if (!brand || typeof brand !== 'string' || brand.trim() === '') {
-        return res.status(400).json({ message: 'A valid brand parameter is required. Please provide a brand.' });
+        return res.status(400).json({
+          message: 'A valid brand parameter is required. Please provide a brand.'
+        });
       }
 
       const byBrand = await ProductModel.getFiltersByBrand(brand.trim());
@@ -424,6 +552,7 @@ export class ProductController {
       return res.json(collections);
     } catch (error) {
       console.error(`Error fetching collections for brand '${req.query.brand}':`, error);
+
       return res.status(500).json({
         error: 'Error fetching collections by brand',
         details: error.message || 'Unknown error',
@@ -433,23 +562,21 @@ export class ProductController {
 
   /**
    * POST /api/products/filter?limit=16&page=1
-   * Mantiene TUS filtros originales y añade paginación consistente.
    */
   async filterProducts(req, res) {
     try {
       const page = Math.max(1, parseInt(req.query.page || '1', 10));
       const limit = Math.max(1, Math.min(100, parseInt(req.query.limit || '16', 10)));
       const offset = (page - 1) * limit;
-
       const filters = req.body || {};
 
-      // usa TU método filter (con misma lógica) pero ahora devuelve total real
       const { products, total } = await ProductModel.filter(filters, limit, offset);
 
       const totalPages = Math.ceil(total / limit);
       const hasNextPage = page < totalPages;
 
       okCache(res, 300);
+
       return res.json({
         products,
         pagination: {
@@ -462,7 +589,11 @@ export class ProductController {
       });
     } catch (error) {
       console.error('Error filtering products:', error);
-      return res.status(500).json({ error: 'Error filtering products', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error filtering products',
+        details: error.message
+      });
     }
   }
 
@@ -480,9 +611,15 @@ export class ProductController {
     }
 
     try {
-      const { products, total } = await ProductModel.getByType({ type, limit, offset });
+      const { products, total } = await ProductModel.getByType({
+        type,
+        limit,
+        offset
+      });
+
       okCache(res, 3600);
-      res.json({
+
+      return res.json({
         products,
         pagination: {
           currentPage: page,
@@ -492,7 +629,11 @@ export class ProductController {
       });
     } catch (error) {
       console.error('Error filtering products by type:', error);
-      res.status(500).json({ error: 'Error filtering products by type', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error filtering products by type',
+        details: error.message
+      });
     }
   }
 
@@ -503,35 +644,42 @@ export class ProductController {
     try {
       const { codfamil } = req.params;
       const products = await ProductModel.getByCodFamil(codfamil);
+
       okCache(res, 3600);
-      res.json(products);
+      return res.json(products);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 
   // ===========================================================================
-  // 3) Búsquedas internas por texto para autocompletados
+  // 5) Búsquedas internas por texto para autocompletados
   // ===========================================================================
 
   async searchCollections(req, res) {
     try {
       const { searchTerm } = req.query;
+
       if (!searchTerm || searchTerm.trim() === '') {
         return res.status(200).json([]);
       }
+
       const collections = await ProductModel.searchCollections(searchTerm.trim());
+
       return res.status(200).json(collections);
     } catch (error) {
       console.error('Error searching collections:', error);
-      res.status(500).json({ error: 'Error searching collections', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error searching collections',
+        details: error.message
+      });
     }
   }
 
   /**
-  * GET /api/products/holiday?limit=16&page=1
-  * Devuelve solo productos “Especial Navidad” según los prefijos de nombre.
-  */
+   * GET /api/products/holiday?limit=16&page=1
+   */
   async getHolidayProducts(req, res) {
     try {
       const limit = toInt(req.query.limit, 16);
@@ -546,7 +694,8 @@ export class ProductController {
       const totalPages = Math.ceil((total || 0) / limit) || 1;
       const hasNextPage = page < totalPages;
 
-      okCache(res, 300); // cache corto para que vaya ágil
+      okCache(res, 300);
+
       return res.json({
         products,
         pagination: {
@@ -559,6 +708,7 @@ export class ProductController {
       });
     } catch (error) {
       console.error('Error fetching holiday products:', error);
+
       return res.status(500).json({
         error: 'Error fetching holiday products',
         details: error.message
@@ -569,35 +719,47 @@ export class ProductController {
   async searchFabricTypes(req, res) {
     try {
       const { searchTerm } = req.query;
+
       if (!searchTerm || searchTerm.trim() === '') {
         return res.status(200).json([]);
       }
 
       const fabricTypes = await ProductModel.searchFabricTypes(searchTerm.trim());
+
       return res.json(fabricTypes);
     } catch (error) {
       console.error('Error searching fabric types:', error);
-      res.status(500).json({ error: 'Error searching fabric types', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error searching fabric types',
+        details: error.message
+      });
     }
   }
 
   async searchFabricPatterns(req, res) {
     try {
       const { searchTerm } = req.query;
+
       if (!searchTerm || searchTerm.trim() === '') {
         return res.status(200).json([]);
       }
 
       const fabricPatterns = await ProductModel.searchFabricPatterns(searchTerm.trim());
+
       return res.json(fabricPatterns);
     } catch (error) {
       console.error('Error searching fabric patterns:', error);
-      res.status(500).json({ error: 'Error searching fabric patterns', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error searching fabric patterns',
+        details: error.message
+      });
     }
   }
 
   // ===========================================================================
-  // 4) Consultas por relación / similitud / colección exacta
+  // 6) Consultas por relación / similitud / colección exacta
   // ===========================================================================
 
   async getByExactCollection(req, res) {
@@ -605,19 +767,28 @@ export class ProductController {
       const { collection } = req.query;
 
       if (!collection || collection.trim() === '') {
-        return res.status(400).json({ message: 'Collection parameter is required' });
+        return res.status(400).json({
+          message: 'Collection parameter is required'
+        });
       }
 
       const productos = await ProductModel.getByCollectionExact(collection.trim());
+
       if (productos.length === 0) {
-        return res.status(404).json({ message: 'No products found for the specified collection' });
+        return res.status(404).json({
+          message: 'No products found for the specified collection'
+        });
       }
 
       okCache(res, 3600);
-      res.json(productos);
+      return res.json(productos);
     } catch (error) {
       console.error('Error fetching products by exact collection:', error);
-      res.status(500).json({ error: 'Error fetching products by exact collection', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error fetching products by exact collection',
+        details: error.message
+      });
     }
   }
 
@@ -626,7 +797,9 @@ export class ProductController {
       const { estilo, excludeNombre, excludeColeccion } = req.query;
 
       if (!estilo || !excludeNombre || !excludeColeccion) {
-        return res.status(400).json({ message: 'Missing required parameters' });
+        return res.status(400).json({
+          message: 'Missing required parameters'
+        });
       }
 
       const productos = await ProductModel.getSimilarByStyle({
@@ -636,18 +809,23 @@ export class ProductController {
       });
 
       if (!productos || productos.length === 0) {
-        return res.status(404).json({ message: 'No similar products found' });
+        return res.status(404).json({
+          message: 'No similar products found'
+        });
       }
 
       okCache(res, 3600);
-      res.json(productos);
+      return res.json(productos);
     } catch (error) {
       console.error('Error fetching similar products by style:', error);
-      res.status(500).json({ error: 'Error fetching similar products', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error fetching similar products',
+        details: error.message
+      });
     }
   }
 
-  // productController.js
   async getProductByCollection(req, res) {
     try {
       const coleccion = typeof req.query.coleccion === 'string'
@@ -655,16 +833,23 @@ export class ProductController {
         : '';
 
       if (!coleccion) {
-        return res.status(400).json({ message: 'Missing coleccion' });
+        return res.status(400).json({
+          message: 'Missing coleccion'
+        });
       }
 
       const productos = await ProductModel.getProductByCollection({ coleccion });
 
-      // Devuelve 200 aunque esté vacío para no romper el UI
-      return res.json({ products: productos || [] });
+      return res.json({
+        products: productos || []
+      });
     } catch (e) {
       console.error('Error fetching collection products:', e);
-      return res.status(500).json({ error: 'Error fetching collection products', details: e.message });
+
+      return res.status(500).json({
+        error: 'Error fetching collection products',
+        details: e.message
+      });
     }
   }
 
@@ -673,7 +858,9 @@ export class ProductController {
       const { coleccion, excludeCodprodu } = req.query;
 
       if (!coleccion || !excludeCodprodu) {
-        return res.status(400).json({ message: 'Missing required parameters' });
+        return res.status(400).json({
+          message: 'Missing required parameters'
+        });
       }
 
       const productos = await ProductModel.getByCollectionExcluding({
@@ -682,14 +869,20 @@ export class ProductController {
       });
 
       if (!productos || productos.length === 0) {
-        return res.status(404).json({ message: 'No products found in the collection' });
+        return res.status(404).json({
+          message: 'No products found in the collection'
+        });
       }
 
       okCache(res, 3600);
-      res.json(productos);
+      return res.json(productos);
     } catch (error) {
       console.error('Error fetching collection products:', error);
-      res.status(500).json({ error: 'Error fetching collection products', details: error.message });
+
+      return res.status(500).json({
+        error: 'Error fetching collection products',
+        details: error.message
+      });
     }
   }
 }

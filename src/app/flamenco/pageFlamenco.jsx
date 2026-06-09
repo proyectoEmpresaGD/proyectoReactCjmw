@@ -209,7 +209,7 @@ function FlamencoHome() {
             <Carrusel images={shuffleArray([...images])} />
             <div className="">
                 <BloquesInformativos
-                    titulo={t("tiposDestacados.title")}
+                    titulo="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png"
                     bloques={bloquesUso}
                 />
             </div>
