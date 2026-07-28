@@ -30,6 +30,7 @@ import { useProductMedia } from './modal/hooks/useProductMedia';
 import { useRelatedProducts } from './modal/hooks/useRelatedProducts';
 import { encryptProductId, generateProductPdf, shareUrlFor } from './modal/hooks/modalUtils';
 import useFixedPopover from './modal/hooks/useFixedPopover';
+import { getSingleUsageDisplayValue } from '../../utils/usageDisplay';
 
 const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     const { t } = useTranslation('productModal');
@@ -51,7 +52,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     const [addedToCart, setAddedToCart] = useState(false);
 
     const IconoDestacables = useMemo(
-        () => ["FR", "OUTDOOR", "OUTDOOR-INDOOR", "EASYCLEAN", "IMO", "90% OPACIDAD", "100% OPACIDAD"],
+        () => ["FR", "OUTDOOR", "EASYCLEAN", "IMO", "90% OPACIDAD", "100% OPACIDAD"],
         []
     );
     const [showIconMeaning, setShowIconMeaning] = useState('');
@@ -247,7 +248,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 <img
                     key={x}
                     src={usoImages[x]}
-                    alt={x}
+                    alt={getSingleUsageDisplayValue(x)}
                     className="w-7 h-7 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
                     onClick={() => navigate('/usages')}
                 />
@@ -316,7 +317,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                     className="w-6 h-6 mr-2 object-contain shrink-0"
                     onClick={() => setShowIconMeaning(uso)}
                 />
-                <span>{uso}</span>
+                <span>{getSingleUsageDisplayValue(uso)}</span>
             </div>
         ));
     };
@@ -712,7 +713,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         {showIconMeaning && (
                             <div className="fixed bottom-10 left-4 sm:left-10 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl">
                                 <h3 className="text-lg font-semibold text-gray-900">{t('iconTitle')}</h3>
-                                <p className="mt-1 text-sm text-gray-600">{showIconMeaning}</p>
+                                <p className="mt-1 text-sm text-gray-600">{getSingleUsageDisplayValue(showIconMeaning)}</p>
                                 <button
                                     className="mt-3 text-sm font-semibold text-gray-700 underline"
                                     onClick={() => setShowIconMeaning('')}
