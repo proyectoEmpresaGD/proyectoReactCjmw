@@ -113,7 +113,7 @@ function BassariHome() {
             filtros: { brand: marca, uso: "IMO" },
         },
         {
-            nombre: "OUTDOOR",
+            nombre: "OUTDOOR-INDOOR",
             imagen: images[5],
             filtros: { brand: marca, uso: "OUTDOOR" },
         },

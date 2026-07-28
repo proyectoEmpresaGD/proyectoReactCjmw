@@ -59,7 +59,7 @@ const TYPE_KEYS = new Set([
     'RAYAS', 'TERCIOPELO', 'VISILLO', 'PAPEL PINTADO'
 ]);
 
-const USAGE_KEYS = new Set(['FR', 'OUTDOOR', 'IMO']);
+const USAGE_KEYS = new Set(['FR', 'OUTDOOR-INDOOR', 'IMO']);
 const MAINT_KEYS = new Set(['EASYCLEAN', 'EASY CLEAN', 'EASY-CLEAN']);
 
 /** Dada una key y un groupKey original, decide el groupKey correcto */

@@ -7,6 +7,7 @@ import Filtro from '../filters/buttonFiltro';
 import SubMenuCarousel from '../filters/SubMenuCarousel';
 import CryptoJS from 'crypto-js';
 import { useTranslation } from 'react-i18next';
+import { getSingleUsageDisplayValue } from '../../utils/usageDisplay';
 import { cdnUrl } from '../../Constants/cdn';
 import { secretKey, itemsPerPage, defaultImageUrl, apiUrl } from '../../Constants/constants';
 import {
@@ -1057,8 +1058,8 @@ export default function CardProduct() {
                 badge: t('summary.badge.usage', 'Uso seleccionado'),
                 title: translateSummaryTitle(
                     'summary.title.usage',
-                    { value: usageValue },
-                    () => `${filterLabelMap.uso}: ${usageValue}`
+                    { value: getSingleUsageDisplayValue(usageValue) },
+                    () => `${filterLabelMap.uso}: ${getSingleUsageDisplayValue(usageValue)}`
                 ),
                 description: t(
                     'summary.description.usage',
@@ -1180,6 +1181,9 @@ export default function CardProduct() {
         }
         if (key === 'brand') {
             return formatBrandValue(value);
+        }
+        if (key === 'uso') {
+            return getSingleUsageDisplayValue(value);
         }
         return value;
     }, []);

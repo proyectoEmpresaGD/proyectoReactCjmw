@@ -1528,7 +1528,7 @@ export const usageInstructions = [
     {
         id: 8,
         iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/OUTDOOR.jpg',
-        title: "Outdoor (Uso exterior)",
+        title: "OUTDOOR-INDOOR (Uso interior y exterior)",
         details: [
             "Adecuado para el exterior.",
             "Las telas outdoor están diseñadas para resistir condiciones exteriores como sol, lluvia y humedad.",

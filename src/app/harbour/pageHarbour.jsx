@@ -79,7 +79,7 @@ function HarbourHome() {
     const bloquesUso = [
         { nombre: "IGNIFUGO", imagen: images[0], filtros: { brand: marca, uso: "FR" } },
         { nombre: "IMO", imagen: images[4], filtros: { brand: marca, uso: "IMO" } },
-        { nombre: "OUTDOOR", imagen: images[5], filtros: { brand: marca, uso: "OUTDOOR" } },
+        { nombre: "OUTDOOR-INDOOR", imagen: images[5], filtros: { brand: marca, uso: "OUTDOOR" } },
     ];
 
     // ✅ Fallback inicial (SIEMPRE tiene image)

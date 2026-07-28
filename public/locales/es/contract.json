@@ -3,14 +3,14 @@
     "badge": "CONTRACT",
     "introduccion": {
         "p1": "Solución integral para hoteles y espacios con alta exigencia",
-        "p2": "Diseñamos, confeccionamos e instalamos a medida, cumpliendo normativas FR/Outdoor y plazos “just in time”."
+        "p2": "Diseñamos, confeccionamos e instalamos a medida, cumpliendo normativas FR/OUTDOOR-INDOOR y plazos “just in time”."
     },
     "destacado": {
         "t1": "De la idea al ‘go live’",
         "t2": "Calidad certificada",
         "t3": "Plazos reales",
         "p1": "Coordinación end-to-end: mediciones, fabricación e instalación. Un único equipo responsable.",
-        "p2": "Tejidos FR/IMO, Outdoor y alto Martindale bajo marca HARBOUR. Cumplimiento UNE, DIN, BS, IMO.",
+        "p2": "Tejidos FR/IMO, OUTDOOR-INDOOR y alto Martindale bajo marca HARBOUR. Cumplimiento UNE, DIN, BS, IMO.",
         "p3": "Planificación ajustada a obra y entregas ‘just in time’. Supervisión onsite para cero sorpresas."
     },
     "team": {
@@ -49,7 +49,7 @@
         "p1": "Desarrollamos telas adaptadas a las normativas específicas de cada proyecto, incluidas UNE, DIN, BS o IMO. Todos los tejidos están disponibles bajo nuestra marca HARBOUR, que engloba una amplia gama de tejidos ignífugos y para exterior.",
         "tags": [
             "FR",
-            "Outdoor",
+            "OUTDOOR-INDOOR",
             "Abrasion >100k",
             "Washable",
             "IMO"

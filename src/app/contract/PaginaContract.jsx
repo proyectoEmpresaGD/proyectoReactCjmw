@@ -242,7 +242,7 @@ export default function Contract() {
                                 <ol className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-6">
                                     {[
                                         { t: "Brief & medición", d: "Leemos el proyecto, tomamos medidas y definimos requisitos técnicos." },
-                                        { t: "Muestras & validación", d: "Selección FR/Outdoor y test de comportamiento según normativa." },
+                                        { t: "Muestras & validación", d: "Selección FR/OUTDOOR-INDOOR y test de comportamiento según normativa." },
                                         { t: "Confección & control", d: "Producción propia, QA y embalaje listo para instalación." },
                                         { t: "Instalación & entrega", d: "Equipo propio onsite, remates y entrega a tiempo." }
                                     ].map((s, i) => (
@@ -290,7 +290,7 @@ export default function Contract() {
                                     { title: "Suite ambient", src: "https://bassari.eu/ImagenesTelasCjmw/CONTRACT/CONTRACT03.jpg", alt: t("projects.alt") },
                                     { title: "Forest lounge", src: "https://bassari.eu/ImagenesTelasCjmw/CONTRACT/CONTRACT04.jpg", alt: t("projects.alt") },
                                     { title: "Meeting room", src: "https://bassari.eu/ImagenesTelasCjmw/CONTRACT/CONTRACT02.jpg", alt: t("projects.alt") },
-                                    { title: "Outdoor terrace", src: "https://bassari.eu/ImagenesTelasCjmw/CONTRACT/CONTRACT01.jpg", alt: t("projects.alt") }
+                                    { title: "OUTDOOR-INDOOR terrace", src: "https://bassari.eu/ImagenesTelasCjmw/CONTRACT/CONTRACT01.jpg", alt: t("projects.alt") }
                                 ]}
                             />
                         </Reveal>

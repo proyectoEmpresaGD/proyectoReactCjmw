@@ -51,7 +51,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     const [addedToCart, setAddedToCart] = useState(false);
 
     const IconoDestacables = useMemo(
-        () => ["FR", "OUTDOOR", "EASYCLEAN", "IMO", "90% OPACIDAD", "100% OPACIDAD"],
+        () => ["FR", "OUTDOOR", "OUTDOOR-INDOOR", "EASYCLEAN", "IMO", "90% OPACIDAD", "100% OPACIDAD"],
         []
     );
     const [showIconMeaning, setShowIconMeaning] = useState('');
@@ -208,6 +208,9 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     };
 
     // ========================= ICONS UI HELPERS =========================
+    const isEasyCleanIcon = (value) =>
+        String(value || '').trim().toUpperCase() === 'EASYCLEAN';
+
     const getMantenimientoImages = (m) => {
         if (!m) return [];
         try {
@@ -222,7 +225,11 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         key={v}
                         src={mantenimientoImages[v]}
                         alt={v}
-                        className="w-7 h-7 cursor-pointer transition-transform duration-200 hover:scale-110"
+                        className={
+                            isEasyCleanIcon(v)
+                                ? "h-7 w-auto max-w-[52px] object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
+                                : "w-7 h-7 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
+                        }
                         onClick={() => navigate('/usages')}
                     />
                 ));
@@ -241,7 +248,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                     key={x}
                     src={usoImages[x]}
                     alt={x}
-                    className="w-7 h-7 cursor-pointer transition-transform duration-200 hover:scale-110"
+                    className="w-7 h-7 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
                     onClick={() => navigate('/usages')}
                 />
             ));
@@ -279,7 +286,11 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                     <img
                         src={mantenimientoImages[m]}
                         alt={m}
-                        className="w-6 h-6 mr-2"
+                        className={
+                            isEasyCleanIcon(m)
+                                ? "h-6 w-auto max-w-[46px] mr-2 object-contain shrink-0"
+                                : "w-6 h-6 mr-2 object-contain shrink-0"
+                        }
                         onClick={() => setShowIconMeaning(m)}
                     />
                     <span>{m}</span>
@@ -302,7 +313,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 <img
                     src={usoImages[uso]}
                     alt={uso}
-                    className="w-6 h-6 mr-2"
+                    className="w-6 h-6 mr-2 object-contain shrink-0"
                     onClick={() => setShowIconMeaning(uso)}
                 />
                 <span>{uso}</span>

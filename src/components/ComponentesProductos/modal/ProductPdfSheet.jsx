@@ -1,5 +1,6 @@
 import { useMemo, useLayoutEffect, useState } from 'react';
 
+import { getSingleUsageDisplayValue } from '../../../utils/usageDisplay';
 const PAGE_W_CM = 21;
 const PAGE_H_CM = 29.7;
 
@@ -382,7 +383,17 @@ const ProductPdfSheet = ({
                                         .map((u) => u.trim())
                                         .filter((code) => usoBase64?.[code])
                                         .map((code) => (
-                                            <img key={code} src={usoBase64[code]} alt={code} style={{ width: '22px', height: '22px' }} />
+                                            <img
+                                                key={code}
+                                                src={usoBase64[code]}
+                                                alt={getSingleUsageDisplayValue(code)}
+                                                style={{
+                                                    width: '22px',
+                                                    height: '22px',
+                                                    objectFit: 'contain',
+                                                    display: 'block',
+                                                }}
+                                            />
                                         ))}
                                 </div>
                             </div>
@@ -418,7 +429,27 @@ const ProductPdfSheet = ({
                                                 .map((n) => n.textContent.trim())
                                                 .filter((code) => mantBase64?.[code])
                                                 .map((code) => (
-                                                    <img key={code} src={mantBase64[code]} alt={code} style={{ width: '22px', height: '22px' }} />
+                                                    <img
+                                                        key={code}
+                                                        src={mantBase64[code]}
+                                                        alt={code}
+                                                        style={
+                                                            code === 'EASYCLEAN'
+                                                                ? {
+                                                                    width: 'auto',
+                                                                    height: '22px',
+                                                                    maxWidth: '46px',
+                                                                    objectFit: 'contain',
+                                                                    display: 'block',
+                                                                }
+                                                                : {
+                                                                    width: '22px',
+                                                                    height: '22px',
+                                                                    objectFit: 'contain',
+                                                                    display: 'block',
+                                                                }
+                                                        }
+                                                    />
                                                 ));
                                         } catch {
                                             return null;

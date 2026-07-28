@@ -15,7 +15,7 @@ export const CATEGORY_CONFIG = [
     { key: 'TELAS TROPICALES', labelKey: 'categories.telasTropicales', groupKey: 'sections.estilos', target: 'fabricPattern' },
 
     /* ============ TELAS ESPECIALES (Usos + Funcionalidad) ============ */
-    { key: 'OUTDOOR', labelKey: 'categories.outdoor', groupKey: 'sections.especiales', target: 'usage' },
+    { key: 'OUTDOOR-INDOOR', labelKey: 'categories.outdoor', groupKey: 'sections.especiales', target: 'usage' },
     { key: 'FR', labelKey: 'categories.fr', groupKey: 'sections.especiales', target: 'usage' },
     { key: 'IMO', labelKey: 'categories.imo', groupKey: 'sections.especiales', target: 'usage' },
     { key: 'EASYCLEAN', labelKey: 'categories.easyClean', groupKey: 'sections.especiales', target: 'maintenance' },
@@ -54,8 +54,8 @@ export const groupCategories = (translate, type = 'tela') => {
 
 /* ========================= Aliases / equivalencias ========================= */
 const SPECIAL_ALIASES = {
-    OUTDOOR: {
-        uso: ['OUTDOOR'],
+    'OUTDOOR-INDOOR': {
+        uso: ['OUTDOOR-INDOOR','OUTDOOR'],
         fabricType: ['EXTERIOR', 'LISO;EXTERIOR', 'ESTAMPADO;EXTERIOR'],
     },
     FR: {

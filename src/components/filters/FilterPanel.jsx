@@ -272,6 +272,7 @@ export default function FilterPanel({
 
         const formatFallbackLabel = value => {
             if (!value) return '';
+            if (String(value).trim().toUpperCase() === 'OUTDOOR') return 'OUTDOOR-INDOOR';
             return value
                 .split(/[\s;_/+-]+/)
                 .filter(Boolean)

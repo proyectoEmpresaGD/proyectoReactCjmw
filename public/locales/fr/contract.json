@@ -3,14 +3,14 @@
     "badge": "CONTRACT",
     "introduccion": {
         "p1": "Solution globale pour hôtels et espaces à haute exigence",
-        "p2": "Nous concevons, fabriquons et installons sur mesure, dans le respect des normes FR/Outdoor et des délais « just in time »."
+        "p2": "Nous concevons, fabriquons et installons sur mesure, dans le respect des normes FR/OUTDOOR-INDOOR et des délais « just in time »."
     },
     "destacado": {
         "t1": "De l’idée au « go live »",
         "t2": "Qualité certifiée",
         "t3": "Délais réels",
         "p1": "Coordination de bout en bout : prises de mesures, fabrication et installation. Une seule équipe responsable.",
-        "p2": "Tissus FR/IMO, Outdoor et haute résistance Martindale sous la marque HARBOUR. Conformité aux normes UNE, DIN, BS, IMO.",
+        "p2": "Tissus FR/IMO, OUTDOOR-INDOOR et haute résistance Martindale sous la marque HARBOUR. Conformité aux normes UNE, DIN, BS, IMO.",
         "p3": "Planification adaptée au chantier et livraisons « just in time ». Supervision sur site pour zéro surprise."
     },
     "team": {
@@ -49,8 +49,8 @@
         "alt": "Tissus",
         "p1": "Nous développons des tissus adaptés aux réglementations spécifiques de chaque projet, notamment aux normes UNE, DIN, BS ou IMO. Tous les tissus sont disponibles sous notre marque HARBOUR, offrant une large gamme de textiles ignifuges et d’extérieur.",
         "tags": [
-            "FR/IMO, Outdoor",
-            "Outdoor",
+            "FR/IMO, OUTDOOR-INDOOR",
+            "OUTDOOR-INDOOR",
             "Abrasion >100k",
             "Lavable",
             "Antibactérien",
