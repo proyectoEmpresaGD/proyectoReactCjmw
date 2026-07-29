@@ -53,6 +53,27 @@
         "standards": "Standards",
         "specifications": "Specifications",
         "usages": "Usages",
-        "cares": "Cares"
+        "cares": "Cares",
+        "productImage": "Reference image"
+    },
+    "specialFeatures": {
+        "pdfTitle": "Highlighted features",
+        "pdfSubtitle": "Relevant special performance features of this fabric",
+        "fr": {
+            "title": "FR flame retardant",
+            "description": "Flame-retardant fabric designed for projects requiring enhanced safety."
+        },
+        "imo": {
+            "title": "IMO certification",
+            "description": "Suitable for marine projects and spaces subject to IMO regulations."
+        },
+        "easyClean": {
+            "title": "EasyClean",
+            "description": "A finish designed to make everyday cleaning and maintenance easier."
+        },
+        "outdoor": {
+            "title": "OUTDOOR-INDOOR",
+            "description": "Versatile for indoor and outdoor spaces, with performance suited to both environments."
+        }
     }
 }

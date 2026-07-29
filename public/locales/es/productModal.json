@@ -53,6 +53,27 @@
         "standards": "Normativa",
         "specifications": "Especificaciones",
         "usages": "Usos",
-        "cares": "Cuidados"
+        "cares": "Cuidados",
+        "productImage": "Imagen de referencia"
+    },
+    "specialFeatures": {
+        "pdfTitle": "Características destacadas",
+        "pdfSubtitle": "Prestaciones especiales relevantes de este tejido",
+        "fr": {
+            "title": "Ignífugo FR",
+            "description": "Tejido con comportamiento ignífugo para proyectos que requieren mayor seguridad."
+        },
+        "imo": {
+            "title": "Certificación IMO",
+            "description": "Indicado para proyectos marítimos y espacios sujetos a normativa IMO."
+        },
+        "easyClean": {
+            "title": "EasyClean",
+            "description": "Acabado pensado para facilitar la limpieza y el mantenimiento cotidiano."
+        },
+        "outdoor": {
+            "title": "OUTDOOR-INDOOR",
+            "description": "Versátil para espacios interiores y exteriores, con prestaciones específicas para ambos usos."
+        }
     }
 }

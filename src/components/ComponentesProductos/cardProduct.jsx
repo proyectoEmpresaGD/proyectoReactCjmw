@@ -599,8 +599,10 @@ export default function CardProduct() {
         }
     }, [loadLowRes, preloadHighResInto]);
 
-    // efecto principal según URL (hash-safe)
+    // Abrir la modal únicamente cuando la URL contiene un producto explícito.
     useEffect(() => {
+        if (!fetchByIdParam) return undefined;
+
         try {
             observerRef.current?.disconnect();
             observerRef.current = null;
@@ -608,17 +610,18 @@ export default function CardProduct() {
             //
         }
 
-        if (fetchByIdParam) {
-            fetchById(fetchByIdParam);
-        } else {
-            const p = parseInt(params.get('page') || '1', 10);
-            const ap = buildAppliedFilters();
-            fetchProducts(p, ap);
-        }
+        fetchById(fetchByIdParam);
 
         return () => controllerRef.current?.abort();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getQueryString, fetchByIdParam, fetchById, fetchProducts, buildAppliedFilters, params]);
+    }, [fetchByIdParam, fetchById]);
+
+    // Si desaparece pid/productId de la URL, limpiar cualquier modal abierta por URL.
+    useEffect(() => {
+        if (fetchByIdParam) return;
+
+        setModalOpen(false);
+        setSelectedProduct(null);
+    }, [fetchByIdParam]);
 
 
     // filtros desde <Filtro> (acepta total opcional)
@@ -676,42 +679,68 @@ export default function CardProduct() {
         return u.toString();
     }, [getQueryString]);
 
-    // buscador con debounce
-    const debouncedNavigateSearch = useRef(
-        debounce((val) => {
-            const u = new URLSearchParams(getQueryString());
-            u.delete('search');
+    // Buscador: una sola fuente de verdad (URL), sin conservar productos abiertos.
+    const applySearch = useCallback((rawValue) => {
+        const value = String(rawValue || '').trim();
 
-            if (val && val.trim().length >= 3) {
-                u.set('search', val.trim());
-            }
+        // Cancelar cualquier petición o búsqueda anterior.
+        controllerRef.current?.abort();
 
-            u.set('page', '1');
-            navigate(`/products?${u.toString()}`);
-        }, 400)
-    ).current;
+        // Una búsqueda nueva nunca debe conservar una modal o producto anterior.
+        setModalOpen(false);
+        setSelectedProduct(null);
+
+        const nextParams = new URLSearchParams(getQueryString());
+
+        // Estos parámetros abren automáticamente un producto; nunca deben viajar
+        // junto con una búsqueda normal.
+        nextParams.delete('pid');
+        nextParams.delete('productId');
+        nextParams.delete('search');
+
+        if (value.length >= 3) {
+            nextParams.set('search', value);
+        }
+
+        nextParams.set('page', '1');
+
+        navigate(`/products?${nextParams.toString()}`, {
+            replace: true,
+        });
+    }, [getQueryString, navigate]);
+
+    const debouncedNavigateSearch = useMemo(
+        () => debounce(applySearch, 450),
+        [applySearch]
+    );
+
+    useEffect(() => {
+        return () => {
+            debouncedNavigateSearch.cancel();
+        };
+    }, [debouncedNavigateSearch]);
 
     const onChangeSearchInput = (e) => {
-        const val = e.target.value;
-        setSearchInput(val);
-        debouncedNavigateSearch(val);
+        const value = e.target.value;
+        setSearchInput(value);
+
+        const trimmedValue = value.trim();
+
+        // Con uno o dos caracteres todavía no se consulta el servidor.
+        if (trimmedValue.length > 0 && trimmedValue.length < 3) {
+            debouncedNavigateSearch.cancel();
+            return;
+        }
+
+        debouncedNavigateSearch(value);
     };
 
     const onKeyDownSearchInput = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            debouncedNavigateSearch.cancel();
-            const val = (searchInput || '').trim();
-            const u = new URLSearchParams(getQueryString());
-            u.delete('search');
+        if (e.key !== 'Enter') return;
 
-            if (val && val.length >= 3) {
-                u.set('search', val);
-            }
-
-            u.set('page', '1');
-            navigate(`/products?${u.toString()}`);
-        }
+        e.preventDefault();
+        debouncedNavigateSearch.cancel();
+        applySearch(searchInput);
     };
 
     // 2) paginación: reemplazar, no apilar
@@ -824,25 +853,10 @@ export default function CardProduct() {
         [uniqueProducts]
     );
 
-    const normalizeSearch = (value) =>
-        (value || '')
-            .normalize('NFD')
-            .replace(/\p{Diacritic}/gu, '')
-            .toLowerCase()
-            .trim();
-
-    const tokenizeSearch = (value) =>
-        normalizeSearch(value)
-            .split(/\s+/)
-            .filter(Boolean);
-
-    let displayed = productsWithSaleInfo.filter((p) => {
-        const tokens = tokenizeSearch(searchInput);
-        if (tokens.length === 0) return true;
-        const name = normalizeSearch(p.nombre);
-        const tone = normalizeSearch(p.tonalidad);
-        return tokens.every((token) => name.includes(token) || tone.includes(token));
-    });
+    // Los resultados ya llegan filtrados desde la API.
+    // No se vuelven a filtrar con el texto local para evitar resultados antiguos
+    // o cambios de listado antes de que termine la consulta.
+    const displayed = [...productsWithSaleInfo];
 
     displayed.sort((a, b) => {
         if (sortOrder === 'alpha-asc') return (a.nombre || '').localeCompare(b.nombre || '');
@@ -932,7 +946,14 @@ export default function CardProduct() {
     const handleRemoveFilter = (key, value) => {
         const updated = new URLSearchParams(getQueryString());
         if (key === 'search') {
+            debouncedNavigateSearch.cancel();
+            controllerRef.current?.abort();
+            setSearchInput('');
+            setModalOpen(false);
+            setSelectedProduct(null);
             updated.delete('search');
+            updated.delete('pid');
+            updated.delete('productId');
         } else {
             const values = updated.getAll(key).filter((v) => v !== value);
             updated.delete(key);
@@ -943,9 +964,15 @@ export default function CardProduct() {
     };
 
     const handleClearFilters = () => {
+        debouncedNavigateSearch.cancel();
+        controllerRef.current?.abort();
+        setSearchInput('');
+        setModalOpen(false);
+        setSelectedProduct(null);
+
         const cleared = new URLSearchParams();
         cleared.set('page', '1');
-        navigate(`/products?${cleared.toString()}`);
+        navigate(`/products?${cleared.toString()}`, { replace: true });
     };
 
     const BRAND_CODE_LABEL_MAP = {

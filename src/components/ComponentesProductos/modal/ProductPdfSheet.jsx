@@ -44,6 +44,73 @@ const ProductPdfSheet = ({
     const normativaChunks = useMemo(() => chunkArray(normativaItems, 12), [normativaItems]);
     const specChunks = useMemo(() => chunkArray(specItems, 12), [specItems]);
 
+    const specialFeatures = useMemo(() => {
+        const usageValues = splitBySemicolon(selectedProduct?.uso)
+            .map((value) => value.toUpperCase());
+
+        let maintenanceValues = [];
+        try {
+            maintenanceValues = Array.from(
+                new DOMParser()
+                    .parseFromString(selectedProduct?.mantenimiento || '<root/>', 'text/xml')
+                    .getElementsByTagName('Valor')
+            )
+                .map((node) => node.textContent.trim().toUpperCase())
+                .filter(Boolean);
+        } catch {
+            maintenanceValues = [];
+        }
+
+        const hasUsage = (value) => usageValues.includes(value);
+        const hasMaintenance = (value) => maintenanceValues.includes(value);
+
+        return [
+            hasUsage('FR') && {
+                key: 'FR',
+                title: t('specialFeatures.fr.title', 'Ignífugo FR'),
+                description: t(
+                    'specialFeatures.fr.description',
+                    'Tejido con comportamiento ignífugo para proyectos que requieren mayor seguridad.'
+                ),
+                image: usoBase64?.FR,
+            },
+            hasUsage('IMO') && {
+                key: 'IMO',
+                title: t('specialFeatures.imo.title', 'Certificación IMO'),
+                description: t(
+                    'specialFeatures.imo.description',
+                    'Indicado para proyectos marítimos y espacios sujetos a normativa IMO.'
+                ),
+                image: usoBase64?.IMO,
+            },
+            hasMaintenance('EASYCLEAN') && {
+                key: 'EASYCLEAN',
+                title: t('specialFeatures.easyClean.title', 'EasyClean'),
+                description: t(
+                    'specialFeatures.easyClean.description',
+                    'Acabado pensado para facilitar la limpieza y el mantenimiento cotidiano.'
+                ),
+                image: mantBase64?.EASYCLEAN,
+                wideIcon: true,
+            },
+            (hasUsage('OUTDOOR') || hasUsage('OUTDOOR-INDOOR')) && {
+                key: 'OUTDOOR',
+                title: t('specialFeatures.outdoor.title', 'OUTDOOR-INDOOR'),
+                description: t(
+                    'specialFeatures.outdoor.description',
+                    'Versátil para espacios interiores y exteriores, con prestaciones específicas para ambos usos.'
+                ),
+                image: usoBase64?.OUTDOOR || usoBase64?.['OUTDOOR-INDOOR'],
+            },
+        ].filter((feature) => feature && feature.image);
+    }, [
+        selectedProduct?.uso,
+        selectedProduct?.mantenimiento,
+        usoBase64,
+        mantBase64,
+        t,
+    ]);
+
     // ✅ Ajuste automático: si el contenido pasa de 1 página, subimos el minHeight a 2, 3, etc.
     useLayoutEffect(() => {
         const el = etiquetaRef?.current;
@@ -346,6 +413,162 @@ const ProductPdfSheet = ({
                                     </div>
                                 ))}
                         </div>
+
+                        {/* CARACTERÍSTICAS ESPECIALES DESTACADAS */}
+                        {specialFeatures.length > 0 && (
+                            <div
+                                className="avoid-break"
+                                style={{
+                                    gridColumn: '1 / -1',
+                                    background: 'linear-gradient(135deg, rgba(239,246,255,0.98) 0%, rgba(255,255,255,0.98) 55%, rgba(248,250,252,0.98) 100%)',
+                                    border: '1px solid rgba(38,101,158,0.22)',
+                                    borderRadius: '18px',
+                                    padding: '0.62cm',
+                                    boxShadow: '0 10px 28px rgba(15,23,42,0.06)',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'flex-start',
+                                        gap: '0.5cm',
+                                        marginBottom: '0.42cm',
+                                    }}
+                                >
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontSize: '11px',
+                                                fontWeight: 700,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.22em',
+                                                color: '#26659E',
+                                            }}
+                                        >
+                                            {t('specialFeatures.pdfTitle', 'Características destacadas')}
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: '0.12cm',
+                                                fontSize: '12px',
+                                                lineHeight: 1.4,
+                                                color: '#64748b',
+                                            }}
+                                        >
+                                            {t(
+                                                'specialFeatures.pdfSubtitle',
+                                                'Prestaciones especiales relevantes de este tejido'
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            border: '1px solid rgba(38,101,158,0.18)',
+                                            borderRadius: '9999px',
+                                            background: 'rgba(255,255,255,0.9)',
+                                            padding: '0.16cm 0.38cm',
+                                            fontSize: '9px',
+                                            fontWeight: 700,
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.18em',
+                                            color: '#26659E',
+                                        }}
+                                    >
+                                        Premium
+                                    </div>
+                                </div>
+
+                                <div
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: specialFeatures.length === 1
+                                            ? '1fr'
+                                            : 'repeat(2, minmax(0, 1fr))',
+                                        gap: '0.35cm',
+                                    }}
+                                >
+                                    {specialFeatures.map((feature) => (
+                                        <div
+                                            key={feature.key}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.38cm',
+                                                minWidth: 0,
+                                                background: 'rgba(255,255,255,0.94)',
+                                                border: '1px solid rgba(148,163,184,0.20)',
+                                                borderRadius: '15px',
+                                                padding: '0.4cm',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: '1.35cm',
+                                                    height: '1.35cm',
+                                                    flexShrink: 0,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    borderRadius: '13px',
+                                                    background: '#f8fafc',
+                                                    border: '1px solid rgba(148,163,184,0.16)',
+                                                    padding: '0.16cm',
+                                                    boxSizing: 'border-box',
+                                                }}
+                                            >
+                                                <img
+                                                    src={feature.image}
+                                                    alt={feature.title}
+                                                    style={
+                                                        feature.wideIcon
+                                                            ? {
+                                                                width: 'auto',
+                                                                height: '0.78cm',
+                                                                maxWidth: '1.05cm',
+                                                                objectFit: 'contain',
+                                                                display: 'block',
+                                                            }
+                                                            : {
+                                                                width: '0.78cm',
+                                                                height: '0.78cm',
+                                                                objectFit: 'contain',
+                                                                display: 'block',
+                                                            }
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div style={{ minWidth: 0 }}>
+                                                <div
+                                                    style={{
+                                                        fontSize: '13px',
+                                                        fontWeight: 700,
+                                                        color: '#0f172a',
+                                                        lineHeight: 1.2,
+                                                        wordBreak: 'break-word',
+                                                    }}
+                                                >
+                                                    {feature.title}
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        marginTop: '0.1cm',
+                                                        fontSize: '10.5px',
+                                                        lineHeight: 1.4,
+                                                        color: '#64748b',
+                                                        wordBreak: 'break-word',
+                                                    }}
+                                                >
+                                                    {feature.description}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* USOS / CUIDADOS / DIRECCIÓN */}
                         <div

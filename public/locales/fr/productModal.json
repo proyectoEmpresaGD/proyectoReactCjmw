@@ -1,14 +1,14 @@
 {
     "closeModal": "Fermer",
-    "closeAlt": "Fermer le modal",
+    "closeAlt": "Fermer la fenêtre",
     "zoomImage": "Voir l'image agrandie",
     "zoomAlt": "Agrandir l'image",
-    "noProductName": "Pas de nom de produit",
+    "noProductName": "Nom du produit indisponible",
     "collection": "Collection",
     "brand": "Marque",
     "chooseQuantity": "Choisir la quantité",
     "smallSample": "Petit échantillon",
-    "orderSample": "Commander échantillon",
+    "orderSample": "Commander un échantillon",
     "sampleAlt": "Image de l'échantillon",
     "addToCart": "AJOUTER AU PANIER",
     "carousel": {
@@ -24,15 +24,15 @@
         "highResistanceContract": "Usage haute résistance / Contract (hôtels et restaurants)"
     },
     "techSheet": "FICHE TECHNIQUE",
-    "downloadPdf": "Télécharger PDF",
-    "downloadPdfAlt": "Télécharger la fiche technique PDF",
+    "downloadPdf": "Télécharger le PDF",
+    "downloadPdfAlt": "Télécharger la fiche technique en PDF",
     "usages": "Usages",
     "cares": "Entretien",
     "type": "Type",
     "style": "Style",
     "martindale": "Martindale",
-    "rapportH": "Rapport Horizontal",
-    "rapportV": "Rapport Vertical",
+    "rapportH": "Rapport horizontal",
+    "rapportV": "Rapport vertical",
     "composition": "Composition",
     "weight": "Poids",
     "width": "Largeur",
@@ -53,6 +53,27 @@
         "standards": "Normes",
         "specifications": "Spécifications",
         "usages": "Usages",
-        "cares": "Entretien"
+        "cares": "Entretien",
+        "productImage": "Image de référence"
+    },
+    "specialFeatures": {
+        "pdfTitle": "Caractéristiques principales",
+        "pdfSubtitle": "Performances spéciales pertinentes de ce tissu",
+        "fr": {
+            "title": "Ignifuge FR",
+            "description": "Tissu ignifuge conçu pour les projets nécessitant un niveau de sécurité renforcé."
+        },
+        "imo": {
+            "title": "Certification IMO",
+            "description": "Adapté aux projets maritimes et aux espaces soumis à la réglementation IMO."
+        },
+        "easyClean": {
+            "title": "EasyClean",
+            "description": "Finition conçue pour faciliter le nettoyage et l’entretien au quotidien."
+        },
+        "outdoor": {
+            "title": "OUTDOOR-INDOOR",
+            "description": "Polyvalent pour les espaces intérieurs et extérieurs, avec des performances adaptées aux deux usages."
+        }
     }
 }
