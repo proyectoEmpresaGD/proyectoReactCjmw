@@ -29,8 +29,14 @@ export async function toBase64(url) {
         const p = new Promise((resolve) => {
             const task = async () => {
                 try {
-                    const proxied = `${import.meta.env.VITE_API_BASE_URL}/api/proxy?url=${encodeURIComponent(cleanUrl)}`;
-                    const response = await fetch(proxied, { cache: 'no-store' });
+                    // Los iconos alojados en /public se cargan directamente desde la web.
+                    // Las imágenes externas siguen pasando por el proxy para evitar problemas CORS.
+                    const isLocalAsset = cleanUrl.startsWith('/') || cleanUrl.startsWith('./');
+                    const requestUrl = isLocalAsset
+                        ? cleanUrl
+                        : `${import.meta.env.VITE_API_BASE_URL}/api/proxy?url=${encodeURIComponent(cleanUrl)}`;
+
+                    const response = await fetch(requestUrl, { cache: 'no-store' });
                     if (!response.ok) {
                         inflight.delete(cleanUrl);
                         resolve('');

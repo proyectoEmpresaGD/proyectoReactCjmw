@@ -652,6 +652,8 @@ export const mantenimientoImages = {
     "PLANCHAR A 160º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20160%C2%BA.jpg',
     "PLANCHAR A 210º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20210%C2%BA.jpg',
     "NO PLANCHAR": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20planchar.jpg',
+    "PLANCHAR CON UN PAÑO PROTECTOR": '/iconos-mantenimiento/planchar-con-pano-protector.jpg',
+    "NO USAR VAPOR": '/iconos-mantenimiento/no-usar-vapor.jpg',
     "LAVAR A MANO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%20mano.jpg',
     "NO USAR LEJIA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lejia.jpg',
     "LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20en%20seco.jpg',
@@ -1448,6 +1450,24 @@ export const careInstructions = [
         details: [
             "Apto para secado en posición vertical.",
             "Es ideal para evitar arrugas y mantener la forma original de la tela."
+        ],
+    },
+    {
+        id: 16,
+        iconPath: '/iconos-mantenimiento/planchar-con-pano-protector.jpg',
+        title: "Planchar con un paño protector",
+        details: [
+            "Colocar un paño limpio y seco entre la plancha y el tejido.",
+            "Respetar la temperatura indicada para evitar brillos, marcas o daños en la superficie."
+        ],
+    },
+    {
+        id: 17,
+        iconPath: '/iconos-mantenimiento/no-usar-vapor.jpg',
+        title: "No usar vapor",
+        details: [
+            "Planchar en seco, manteniendo desactivada la función de vapor.",
+            "No pulverizar agua ni aplicar vapor directamente sobre el tejido."
         ],
     }
 ];

@@ -199,6 +199,20 @@
                 "Convient au séchage en position verticale.",
                 "Idéal pour éviter les plis et conserver la forme d’origine."
             ]
+        },
+        "16": {
+            "title": "Repasser avec un linge de protection",
+            "details": [
+                "Placer un linge propre et sec entre le fer et le tissu.",
+                "Respecter la température indiquée afin d’éviter les marques, la brillance ou les dommages de surface."
+            ]
+        },
+        "17": {
+            "title": "Ne pas utiliser de vapeur",
+            "details": [
+                "Repasser à sec en désactivant la fonction vapeur.",
+                "Ne pas vaporiser d’eau ni appliquer de vapeur directement sur le tissu."
+            ]
         }
     }
 }

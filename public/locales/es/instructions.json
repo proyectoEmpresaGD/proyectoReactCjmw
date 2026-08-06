@@ -199,6 +199,20 @@
                 "Conviene secar en posición vertical.",
                 "Ideal para evitar arrugas y mantener la forma original."
             ]
+        },
+        "16": {
+            "title": "Planchar con un paño protector",
+            "details": [
+                "Colocar un paño limpio y seco entre la plancha y el tejido.",
+                "Respetar la temperatura indicada para evitar brillos, marcas o daños en la superficie."
+            ]
+        },
+        "17": {
+            "title": "No usar vapor",
+            "details": [
+                "Planchar en seco, manteniendo desactivada la función de vapor.",
+                "No pulverizar agua ni aplicar vapor directamente sobre el tejido."
+            ]
         }
     }
 }
