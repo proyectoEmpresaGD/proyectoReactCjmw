@@ -91,6 +91,90 @@
                 "Dry-strippable wallpaper allows the top layer to be peeled off the wall, leaving the backing behind when removed.",
                 "This paper can also be removed when dry without the need for water or steam."
             ]
+        },
+        "13": {
+            "title": "Antifungal",
+            "details": [
+                "Fabric designed to help prevent the appearance of fungi and mould.",
+                "Especially suitable for spaces where extra hygiene is needed or where there may be ambient humidity."
+            ]
+        },
+        "14": {
+            "title": "Contract Grade",
+            "details": [
+                "Suitable for contract projects and high-use professional environments.",
+                "Intended for commercial, hospitality, or collective installations where higher performance is required."
+            ]
+        },
+        "15": {
+            "title": "Domestic Use",
+            "details": [
+                "Suitable for everyday residential use.",
+                "Recommended for home interiors and moderate-use applications."
+            ]
+        },
+        "16": {
+            "title": "Easy Care",
+            "details": [
+                "Designed to make everyday care and cleaning easier.",
+                "Helps keep the fabric in good condition with simple maintenance."
+            ]
+        },
+        "17": {
+            "title": "Eco-Friendly",
+            "details": [
+                "Product developed with a more environmentally responsible approach.",
+                "May incorporate processes or materials intended to reduce environmental impact."
+            ]
+        },
+        "18": {
+            "title": "Health Care",
+            "details": [
+                "Suitable for healthcare or care-related environments.",
+                "Intended for spaces where hygiene, durability, and ease of maintenance are important."
+            ]
+        },
+        "19": {
+            "title": "Hospitality",
+            "details": [
+                "Suitable for hospitality and accommodation projects.",
+                "Appropriate for hotels, restaurants, and other frequently used spaces."
+            ]
+        },
+        "20": {
+            "title": "Leisure",
+            "details": [
+                "Suitable for leisure and relaxation spaces.",
+                "Recommended for recreational areas where comfort and reliable performance are important."
+            ]
+        },
+        "21": {
+            "title": "Office",
+            "details": [
+                "Suitable for offices and workspaces.",
+                "Designed to provide functionality, durability, and a professional appearance."
+            ]
+        },
+        "22": {
+            "title": "PFC Free",
+            "details": [
+                "PFC-free finish.",
+                "No perfluorinated compounds are used in the treatment, supporting a more responsible option."
+            ]
+        },
+        "23": {
+            "title": "Public Spaces",
+            "details": [
+                "Suitable for public spaces and shared areas.",
+                "Recommended for installations with frequent traffic and higher functional demands."
+            ]
+        },
+        "24": {
+            "title": "UV Resistant",
+            "details": [
+                "Fabric with resistance to ultraviolet radiation.",
+                "Helps improve material performance when exposed to sunlight."
+            ]
         }
     },
     "care": {

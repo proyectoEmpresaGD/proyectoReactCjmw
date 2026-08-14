@@ -652,8 +652,8 @@ export const mantenimientoImages = {
     "PLANCHAR A 160º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20160%C2%BA.jpg',
     "PLANCHAR A 210º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20210%C2%BA.jpg',
     "NO PLANCHAR": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20planchar.jpg',
-    "PLANCHAR CON UN PAÑO PROTECTOR": '/iconos-mantenimiento/planchar-con-pano-protector.jpg',
-    "NO USAR VAPOR": '/iconos-mantenimiento/no-usar-vapor.jpg',
+    "PLANCHAR CON UN PAÑO PROTECTOR": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/PLANCHAR%20CON%20UN%20PA%C3%91O%20PROTECTOR.png',
+    "NO USAR VAPOR": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/NO%20USAR%20VAPOR.png',
     "LAVAR A MANO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%20mano.jpg',
     "NO USAR LEJIA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lejia.jpg',
     "LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20en%20seco.jpg',
@@ -680,7 +680,19 @@ export const usoImages = {
     "SEPARABLE EN SECO": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/SEPARABLE%20EN%20SECO.jpg",
     "ADHESIVO SOBRE EL PAPEL": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/ADHESIVO%20SOBRE%20EL%20PAPEL.jpg",
     "100% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Opaco.jpg',
-    "90% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Semi-opaco.jpg'
+    "90% OPACIDAD": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/Semi-opaco.jpg',
+    "ANTIFUNGAL": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/ANTIFUNGAL.png',
+    "CONTRACT GRADE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/CONTRACT%20GRADE.png',
+    "DOMESTIC USE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/DOMESTIC%20USE.png',
+    "EASY CARE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/EASY%20CARE.png',
+    "ECO- FRIENDLY": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/ECO-%20FRIENDLY.png',
+    "HEALTH- CARE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/HEALTH-%20CARE.png',
+    "HOSPI- TALITY": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/HOSPI-%20TALITY.png',
+    "LEISURE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/LEISURE.png',
+    "OFFICE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/OFFICE.png',
+    "PFC FREE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/PFC%20FREE.png',
+    "PUBLIC SPACES": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/PUBLIC%20SPACES.png',
+    "UV RESISTANT": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/UV%20RESISTANT.png'
 };
 
 export const marcasMap = {
@@ -1454,7 +1466,7 @@ export const careInstructions = [
     },
     {
         id: 16,
-        iconPath: '/iconos-mantenimiento/planchar-con-pano-protector.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/PLANCHAR%20CON%20UN%20PA%C3%91O%20PROTECTOR.png',
         title: "Planchar con un paño protector",
         details: [
             "Colocar un paño limpio y seco entre la plancha y el tejido.",
@@ -1463,7 +1475,7 @@ export const careInstructions = [
     },
     {
         id: 17,
-        iconPath: '/iconos-mantenimiento/no-usar-vapor.jpg',
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/NO%20USAR%20VAPOR.png',
         title: "No usar vapor",
         details: [
             "Planchar en seco, manteniendo desactivada la función de vapor.",
@@ -1586,6 +1598,114 @@ export const usageInstructions = [
         title: "Separable en seco",
         details: [
             "El papel tapiz despegable solo permite que la capa superior del papel tapoz se desprenda de la pared, lo que significa que el papel posterior queda atrás cuando se despega. Este papel también se puede quiter cuando el papel tapiz esté seco",
+        ],
+    },
+    {
+        id: 13,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/ANTIFUNGAL.png',
+        title: "Antifúngico",
+        details: [
+            "Tejido preparado para ayudar a prevenir la aparición de hongos y moho.",
+            "Especialmente indicado para espacios donde se requiere una higiene adicional o puede haber humedad ambiental.",
+        ],
+    },
+    {
+        id: 14,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/CONTRACT%20GRADE.png',
+        title: "Calidad contract",
+        details: [
+            "Apto para proyectos contract y entornos profesionales de uso intensivo.",
+            "Pensado para instalaciones comerciales, hoteleras o colectivas donde se exige mayor rendimiento.",
+        ],
+    },
+    {
+        id: 15,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/DOMESTIC%20USE.png',
+        title: "Uso doméstico",
+        details: [
+            "Adecuado para uso doméstico cotidiano.",
+            "Recomendado para estancias residenciales y aplicaciones de intensidad moderada.",
+        ],
+    },
+    {
+        id: 16,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/EASY%20CARE.png',
+        title: "Fácil cuidado",
+        details: [
+            "Diseñado para facilitar el cuidado y la limpieza diaria.",
+            "Ayuda a mantener el tejido en buen estado con un mantenimiento sencillo.",
+        ],
+    },
+    {
+        id: 17,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/ECO-%20FRIENDLY.png',
+        title: "Ecológico",
+        details: [
+            "Producto concebido con un enfoque más respetuoso con el medio ambiente.",
+            "Puede incorporar procesos o materiales orientados a reducir el impacto ambiental.",
+        ],
+    },
+    {
+        id: 18,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/HEALTH-%20CARE.png',
+        title: "Sanitario",
+        details: [
+            "Adecuado para entornos sanitarios o asistenciales.",
+            "Pensado para espacios donde la higiene, la durabilidad y la facilidad de mantenimiento son importantes.",
+        ],
+    },
+    {
+        id: 19,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/HOSPI-%20TALITY.png',
+        title: "Hostelería",
+        details: [
+            "Indicado para proyectos de hostelería y alojamientos.",
+            "Adecuado para hoteles, restaurantes y otros espacios de uso frecuente.",
+        ],
+    },
+    {
+        id: 20,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/LEISURE.png',
+        title: "Ocio",
+        details: [
+            "Adecuado para espacios de ocio y relax.",
+            "Recomendado para áreas recreativas donde se busca confort y buen comportamiento en uso.",
+        ],
+    },
+    {
+        id: 21,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/OFFICE.png',
+        title: "Oficina",
+        details: [
+            "Adecuado para oficinas y espacios de trabajo.",
+            "Pensado para aportar funcionalidad, resistencia y buena presencia en entornos profesionales.",
+        ],
+    },
+    {
+        id: 22,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/PFC%20FREE.png',
+        title: "Libre de PFC",
+        details: [
+            "Acabado libre de PFC.",
+            "No utiliza compuestos perfluorados en su tratamiento, favoreciendo una opción más responsable.",
+        ],
+    },
+    {
+        id: 23,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/PUBLIC%20SPACES.png',
+        title: "Espacios públicos",
+        details: [
+            "Adecuado para espacios públicos y zonas de uso compartido.",
+            "Recomendado para instalaciones con tránsito frecuente y exigencias funcionales elevadas.",
+        ],
+    },
+    {
+        id: 24,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/UV%20RESISTANT.png',
+        title: "Resistente a los rayos UV",
+        details: [
+            "Tejido con resistencia a la radiación ultravioleta.",
+            "Ayuda a mejorar el comportamiento del material frente a la exposición a la luz solar.",
         ],
     }
 ];

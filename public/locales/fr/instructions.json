@@ -91,6 +91,90 @@
                 "Le papier peint strippable à sec permet de retirer uniquement la couche supérieure, en laissant le support en place.",
                 "Il peut être retiré une fois sec, sans eau ni vapeur."
             ]
+        },
+        "13": {
+            "title": "Antifongique",
+            "details": [
+                "Tissu conçu pour aider à prévenir l’apparition de champignons et de moisissures.",
+                "Particulièrement adapté aux espaces nécessitant une hygiène renforcée ou exposés à l’humidité ambiante."
+            ]
+        },
+        "14": {
+            "title": "Qualité contract",
+            "details": [
+                "Convient aux projets contract et aux environnements professionnels à usage intensif.",
+                "Pensé pour les installations commerciales, hôtelières ou collectives exigeant de hautes performances."
+            ]
+        },
+        "15": {
+            "title": "Usage domestique",
+            "details": [
+                "Convient à un usage quotidien dans l’habitat.",
+                "Recommandé pour les intérieurs résidentiels et les applications à intensité modérée."
+            ]
+        },
+        "16": {
+            "title": "Entretien facile",
+            "details": [
+                "Conçu pour faciliter l’entretien et le nettoyage au quotidien.",
+                "Aide à conserver le tissu en bon état avec un entretien simple."
+            ]
+        },
+        "17": {
+            "title": "Écoresponsable",
+            "details": [
+                "Produit développé dans une approche plus respectueuse de l’environnement.",
+                "Peut intégrer des procédés ou des matériaux visant à réduire l’impact environnemental."
+            ]
+        },
+        "18": {
+            "title": "Secteur de la santé",
+            "details": [
+                "Convient aux environnements de santé ou d’assistance.",
+                "Pensé pour les espaces où l’hygiène, la durabilité et la facilité d’entretien sont essentielles."
+            ]
+        },
+        "19": {
+            "title": "Hôtellerie",
+            "details": [
+                "Indiqué pour les projets d’hôtellerie et d’hébergement.",
+                "Adapté aux hôtels, restaurants et autres espaces à usage fréquent."
+            ]
+        },
+        "20": {
+            "title": "Loisirs",
+            "details": [
+                "Convient aux espaces de loisirs et de détente.",
+                "Recommandé pour les zones récréatives où le confort et le bon comportement à l’usage sont recherchés."
+            ]
+        },
+        "21": {
+            "title": "Bureau",
+            "details": [
+                "Convient aux bureaux et aux espaces de travail.",
+                "Conçu pour offrir fonctionnalité, résistance et bonne présentation dans les environnements professionnels."
+            ]
+        },
+        "22": {
+            "title": "Sans PFC",
+            "details": [
+                "Finition sans PFC.",
+                "N’utilise pas de composés perfluorés dans son traitement, pour une option plus responsable."
+            ]
+        },
+        "23": {
+            "title": "Espaces publics",
+            "details": [
+                "Convient aux espaces publics et aux zones partagées.",
+                "Recommandé pour les installations soumises à un trafic fréquent et à des exigences fonctionnelles élevées."
+            ]
+        },
+        "24": {
+            "title": "Résistant aux UV",
+            "details": [
+                "Tissu résistant au rayonnement ultraviolet.",
+                "Aide à améliorer le comportement du matériau en cas d’exposition à la lumière solaire."
+            ]
         }
     },
     "care": {

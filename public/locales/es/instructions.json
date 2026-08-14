@@ -91,6 +91,90 @@
                 "El papel pintado separable en seco permite despegar solo la capa superior, dejando el respaldo en la pared.",
                 "También se puede retirar cuando está completamente seco, sin agua ni vapor."
             ]
+        },
+        "13": {
+            "title": "Antifúngico",
+            "details": [
+                "Tejido preparado para ayudar a prevenir la aparición de hongos y moho.",
+                "Especialmente indicado para espacios donde se requiere una higiene adicional o puede haber humedad ambiental."
+            ]
+        },
+        "14": {
+            "title": "Calidad contract",
+            "details": [
+                "Apto para proyectos contract y entornos profesionales de uso intensivo.",
+                "Pensado para instalaciones comerciales, hoteleras o colectivas donde se exige mayor rendimiento."
+            ]
+        },
+        "15": {
+            "title": "Uso doméstico",
+            "details": [
+                "Adecuado para uso doméstico cotidiano.",
+                "Recomendado para estancias residenciales y aplicaciones de intensidad moderada."
+            ]
+        },
+        "16": {
+            "title": "Fácil cuidado",
+            "details": [
+                "Diseñado para facilitar el cuidado y la limpieza diaria.",
+                "Ayuda a mantener el tejido en buen estado con un mantenimiento sencillo."
+            ]
+        },
+        "17": {
+            "title": "Ecológico",
+            "details": [
+                "Producto concebido con un enfoque más respetuoso con el medio ambiente.",
+                "Puede incorporar procesos o materiales orientados a reducir el impacto ambiental."
+            ]
+        },
+        "18": {
+            "title": "Sanitario",
+            "details": [
+                "Adecuado para entornos sanitarios o asistenciales.",
+                "Pensado para espacios donde la higiene, la durabilidad y la facilidad de mantenimiento son importantes."
+            ]
+        },
+        "19": {
+            "title": "Hostelería",
+            "details": [
+                "Indicado para proyectos de hostelería y alojamientos.",
+                "Adecuado para hoteles, restaurantes y otros espacios de uso frecuente."
+            ]
+        },
+        "20": {
+            "title": "Ocio",
+            "details": [
+                "Adecuado para espacios de ocio y relax.",
+                "Recomendado para áreas recreativas donde se busca confort y buen comportamiento en uso."
+            ]
+        },
+        "21": {
+            "title": "Oficina",
+            "details": [
+                "Adecuado para oficinas y espacios de trabajo.",
+                "Pensado para aportar funcionalidad, resistencia y buena presencia en entornos profesionales."
+            ]
+        },
+        "22": {
+            "title": "Libre de PFC",
+            "details": [
+                "Acabado libre de PFC.",
+                "No utiliza compuestos perfluorados en su tratamiento, favoreciendo una opción más responsable."
+            ]
+        },
+        "23": {
+            "title": "Espacios públicos",
+            "details": [
+                "Adecuado para espacios públicos y zonas de uso compartido.",
+                "Recomendado para instalaciones con tránsito frecuente y exigencias funcionales elevadas."
+            ]
+        },
+        "24": {
+            "title": "Resistente a los rayos UV",
+            "details": [
+                "Tejido con resistencia a la radiación ultravioleta.",
+                "Ayuda a mejorar el comportamiento del material frente a la exposición a la luz solar."
+            ]
         }
     },
     "care": {
