@@ -692,7 +692,8 @@ export const usoImages = {
     "OFFICE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/OFFICE.png',
     "PFC FREE": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/PFC%20FREE.png',
     "PUBLIC SPACES": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/PUBLIC%20SPACES.png',
-    "UV RESISTANT": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/UV%20RESISTANT.png'
+    "UV RESISTANT": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/UV%20RESISTANT.png',
+    "WATER REPELLENT": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/WATER%20REPELLENT.png'
 };
 
 export const marcasMap = {
@@ -1706,6 +1707,15 @@ export const usageInstructions = [
         details: [
             "Tejido con resistencia a la radiación ultravioleta.",
             "Ayuda a mejorar el comportamiento del material frente a la exposición a la luz solar.",
+        ],
+    },
+    {
+        id: 25,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/WATER%20REPELLENT.png',
+        title: "Repelente al agua",
+        details: [
+            "Tejido con acabado repelente al agua para ayudar a evitar la absorción inmediata de líquidos.",
+            "Facilita el mantenimiento diario al hacer que las gotas permanezcan en la superficie durante más tiempo.",
         ],
     }
 ];

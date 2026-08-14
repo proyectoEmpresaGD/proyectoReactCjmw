@@ -175,6 +175,13 @@
                 "Tissu résistant au rayonnement ultraviolet.",
                 "Aide à améliorer le comportement du matériau en cas d’exposition à la lumière solaire."
             ]
+        },
+        "25": {
+            "title": "Déperlant",
+            "details": [
+                "Tissu avec finition déperlante aidant à éviter l’absorption immédiate des liquides.",
+                "Facilite l’entretien quotidien en permettant aux gouttes de rester plus longtemps en surface."
+            ]
         }
     },
     "care": {

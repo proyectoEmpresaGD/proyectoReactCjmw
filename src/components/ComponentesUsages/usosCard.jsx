@@ -28,20 +28,54 @@ const CareInstructions = () => {
 };
 
 function renderCard(instruction, section, t) {
-    // section = 'usage' ó 'care'
     const key = `${section}.${instruction.id}`;
     const title = t(`${key}.title`);
-    // obtenemos el array traducido
     const details = t(`${key}.details`, { returnObjects: true });
+
+    // Nuevos iconos de USOS añadidos recientemente.
+    // Se muestran un poco más grandes porque sus imágenes contienen
+    // más margen interno que los iconos antiguos.
+    const enlargedUsageIcons = [
+        13, // ANTIFUNGAL
+        14, // CONTRACT GRADE
+        15, // DOMESTIC USE
+        16, // EASY CARE
+        17, // ECO- FRIENDLY
+        18, // HEALTH- CARE
+        19, // HOSPI- TALITY
+        20, // LEISURE
+        21, // OFFICE
+        22, // PFC FREE
+        23, // PUBLIC SPACES
+        24, // UV RESISTANT
+        25, // WATER REPELLENT
+    ];
+
+    // Nuevos iconos de MANTENIMIENTO añadidos recientemente.
+    const enlargedCareIcons = [
+        16, // PLANCHAR CON UN PAÑO PROTECTOR
+        17, // NO USAR VAPOR
+    ];
+
+    const shouldEnlarge =
+        (section === 'usage' && enlargedUsageIcons.includes(instruction.id)) ||
+        (section === 'care' && enlargedCareIcons.includes(instruction.id));
 
     return (
         <div key={instruction.id} className="flex flex-col items-center">
             <div className="h-full max-w-sm w-full bg-white rounded-lg shadow-lg p-3 hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                <img
-                    src={instruction.iconPath}
-                    alt={title}
-                    className="h-10 w-15 mx-auto"
-                />
+                {/*
+                    Contenedor con altura fija para que los títulos sigan
+                    alineados aunque algunos iconos sean más grandes.
+                */}
+                <div className="h-16 flex items-center justify-center">
+                    <img
+                        src={instruction.iconPath}
+                        alt={title}
+                        className={`${shouldEnlarge ? 'h-14' : 'h-10'} w-auto max-w-full object-contain`}
+                    />
+                </div>
+
                 <div>
                     <div className="font-bold text-lg mb-1 text-center pt-2">
                         {title}

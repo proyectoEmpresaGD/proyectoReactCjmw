@@ -175,6 +175,13 @@
                 "Fabric with resistance to ultraviolet radiation.",
                 "Helps improve material performance when exposed to sunlight."
             ]
+        },
+        "25": {
+            "title": "Water Repellent",
+            "details": [
+                "Fabric with a water-repellent finish designed to help prevent the immediate absorption of liquids.",
+                "Makes day-to-day maintenance easier by allowing droplets to remain on the surface for longer."
+            ]
         }
     },
     "care": {

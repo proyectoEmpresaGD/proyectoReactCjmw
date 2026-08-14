@@ -175,6 +175,13 @@
                 "Tejido con resistencia a la radiación ultravioleta.",
                 "Ayuda a mejorar el comportamiento del material frente a la exposición a la luz solar."
             ]
+        },
+        "25": {
+            "title": "Repelente al agua",
+            "details": [
+                "Tejido con acabado repelente al agua para ayudar a evitar la absorción inmediata de líquidos.",
+                "Facilita el mantenimiento diario al hacer que las gotas permanezcan en la superficie durante más tiempo."
+            ]
         }
     },
     "care": {
