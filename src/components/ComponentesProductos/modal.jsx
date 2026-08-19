@@ -209,8 +209,38 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
     };
 
     // ========================= ICONS UI HELPERS =========================
-    const isEasyCleanIcon = (value) =>
-        String(value || '').trim().toUpperCase() === 'EASYCLEAN';
+    const normalizeIconKey = (value) => String(value || '').trim().toUpperCase();
+
+    const isEasyCleanIcon = (value) => normalizeIconKey(value) === 'EASYCLEAN';
+
+    // Los iconos añadidos recientemente tienen más margen interno en la imagen.
+    // En la modal los mostramos un poco más grandes para que tengan el mismo
+    // peso visual que los iconos antiguos cuando se ven a tamaño pequeño.
+    const enlargedUsageIconKeys = new Set([
+        'ANTIFUNGAL',
+        'CONTRACT GRADE',
+        'DOMESTIC USE',
+        'EASY CARE',
+        'ECO- FRIENDLY',
+        'HEALTH- CARE',
+        'HOSPI- TALITY',
+        'LEISURE',
+        'OFFICE',
+        'PFC FREE',
+        'PUBLIC SPACES',
+        'UV RESISTANT',
+        'WATER REPELLENT',
+    ]);
+
+    const enlargedCareIconKeys = new Set([
+        'PLANCHAR CON UN PAÑO PROTECTOR',
+        'NO USAR VAPOR',
+        'USAR LEJIA',
+        'LAVAR A 60º',
+    ]);
+
+    const isEnlargedUsageIcon = (value) => enlargedUsageIconKeys.has(normalizeIconKey(value));
+    const isEnlargedCareIcon = (value) => enlargedCareIconKeys.has(normalizeIconKey(value));
 
     const getMantenimientoImages = (m) => {
         if (!m) return [];
@@ -229,7 +259,9 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         className={
                             isEasyCleanIcon(v)
                                 ? "h-7 w-auto max-w-[52px] object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
-                                : "w-7 h-7 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
+                                : isEnlargedCareIcon(v)
+                                    ? "h-9 w-9 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
+                                    : "w-7 h-7 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
                         }
                         onClick={() => navigate('/usages')}
                     />
@@ -249,7 +281,11 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                     key={x}
                     src={usoImages[x]}
                     alt={getSingleUsageDisplayValue(x)}
-                    className="w-7 h-7 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
+                    className={
+                        isEnlargedUsageIcon(x)
+                            ? "h-9 w-9 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
+                            : "w-7 h-7 object-contain cursor-pointer transition-transform duration-200 hover:scale-110"
+                    }
                     onClick={() => navigate('/usages')}
                 />
             ));
@@ -290,7 +326,9 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                         className={
                             isEasyCleanIcon(m)
                                 ? "h-6 w-auto max-w-[46px] mr-2 object-contain shrink-0"
-                                : "w-6 h-6 mr-2 object-contain shrink-0"
+                                : isEnlargedCareIcon(m)
+                                    ? "h-8 w-8 mr-2 object-contain shrink-0"
+                                    : "w-6 h-6 mr-2 object-contain shrink-0"
                         }
                         onClick={() => setShowIconMeaning(m)}
                     />
@@ -314,7 +352,11 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                 <img
                     src={usoImages[uso]}
                     alt={uso}
-                    className="w-6 h-6 mr-2 object-contain shrink-0"
+                    className={
+                        isEnlargedUsageIcon(uso)
+                            ? "h-8 w-8 mr-2 object-contain shrink-0"
+                            : "w-6 h-6 mr-2 object-contain shrink-0"
+                    }
                     onClick={() => setShowIconMeaning(uso)}
                 />
                 <span>{getSingleUsageDisplayValue(uso)}</span>

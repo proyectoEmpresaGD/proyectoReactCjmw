@@ -304,6 +304,20 @@
                 "Dry iron with the steam function switched off.",
                 "Do not spray water or apply steam directly to the fabric."
             ]
+        },
+        "18": {
+            "title": "Use bleach",
+            "details": [
+                "Bleach may be used when required.",
+                "Always follow the recommended dosage and rinsing instructions to avoid damaging the fabric."
+            ]
+        },
+        "19": {
+            "title": "Wash at 60°C",
+            "details": [
+                "Suitable for machine washing at a maximum temperature of 60°C.",
+                "Follow the remaining fabric care instructions to preserve its properties."
+            ]
         }
     }
 }

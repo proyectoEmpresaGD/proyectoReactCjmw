@@ -55,6 +55,8 @@ function renderCard(instruction, section, t) {
     const enlargedCareIcons = [
         16, // PLANCHAR CON UN PAÑO PROTECTOR
         17, // NO USAR VAPOR
+        18, // USAR LEJIA
+        19, // LAVAR A 60º
     ];
 
     const shouldEnlarge =

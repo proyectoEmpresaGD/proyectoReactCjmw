@@ -304,6 +304,20 @@
                 "Repasser à sec en désactivant la fonction vapeur.",
                 "Ne pas vaporiser d’eau ni appliquer de vapeur directement sur le tissu."
             ]
+        },
+        "18": {
+            "title": "Utiliser de l’eau de Javel",
+            "details": [
+                "L’utilisation d’eau de Javel est autorisée si nécessaire.",
+                "Respecter toujours les instructions de dosage et de rinçage afin d’éviter d’endommager le tissu."
+            ]
+        },
+        "19": {
+            "title": "Lavage à 60 °C",
+            "details": [
+                "Convient au lavage en machine à une température maximale de 60 °C.",
+                "Respecter les autres instructions d’entretien afin de préserver les propriétés du tissu."
+            ]
         }
     }
 }

@@ -646,6 +646,7 @@ export const mantenimientoImages = {
     "LAVAR A 30º DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/02-Lavar-a-30%C2%BA-delicado.jpg',
     "LAVAR A 30º MUY DELICADO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/03-Lavar-a-30%C2%BA-muy-delicado.jpg',
     "LAVAR A 40º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20a%2040%C2%BA.jpg',
+    "LAVAR A 60º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/LAVAR%20A%2060.png',
     "LAVAR A 90º": '',
     "NO LAVAR": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lavar.jpg",
     "PLANCHAR A 120º": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Planchar%20a%20120%C2%BA.jpg',
@@ -659,7 +660,7 @@ export const mantenimientoImages = {
     "LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Lavar%20en%20seco.jpg',
     "NO LAVAR EN SECO": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20lavar%20en%20seco.jpg',
     "NO USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/No%20usar%20secadora.jpg',
-    "USAR LEJIA": '',
+    "USAR LEJIA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/USAR-LEJIA.png',
     "EASYCLEAN": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/EASY%20CLEAN.jpg',
     "USAR SECADORA": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Usar%20secadora.jpg',
     "SECADO VERTICAL": 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/Secado%20vertical.jpg',
@@ -1481,6 +1482,24 @@ export const careInstructions = [
         details: [
             "Planchar en seco, manteniendo desactivada la función de vapor.",
             "No pulverizar agua ni aplicar vapor directamente sobre el tejido."
+        ],
+    },
+    {
+        id: 18,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/01_ICONOS_USOS/USAR-LEJIA.png',
+        title: "Usar lejía",
+        details: [
+            "Se permite el uso de lejía o blanqueador cuando sea necesario.",
+            "Seguir siempre las indicaciones de dosificación y aclarado para evitar daños en el tejido."
+        ],
+    },
+    {
+        id: 19,
+        iconPath: 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/00_ICONOS_USADOS_EN_WEB/00_ICONOS_MANTENIMIENTO/LAVAR%20A%2060.png',
+        title: "Lavar a 60º",
+        details: [
+            "Apto para lavado a máquina a una temperatura máxima de 60 °C.",
+            "Seguir el resto de indicaciones de cuidado del tejido para conservar sus propiedades."
         ],
     }
 ];

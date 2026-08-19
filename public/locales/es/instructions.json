@@ -304,6 +304,20 @@
                 "Planchar en seco, manteniendo desactivada la función de vapor.",
                 "No pulverizar agua ni aplicar vapor directamente sobre el tejido."
             ]
+        },
+        "18": {
+            "title": "Usar lejía",
+            "details": [
+                "Se permite el uso de lejía o blanqueador cuando sea necesario.",
+                "Seguir siempre las indicaciones de dosificación y aclarado para evitar daños en el tejido."
+            ]
+        },
+        "19": {
+            "title": "Lavar a 60º",
+            "details": [
+                "Apto para lavado a máquina a una temperatura máxima de 60 °C.",
+                "Seguir el resto de indicaciones de cuidado del tejido para conservar sus propiedades."
+            ]
         }
     }
 }
