@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.9.2](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.9.1...v6.9.2) (2026-08-26)
+
+
+### Bug Fixes
+
+* **ci:** corregir deteccion de version anterior en releases ([441c808](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/441c808d6c9d72d47a5a2312601dd1eaa40b7249))
+* **ci:** corregir validacion y generacion de releases ([6a555aa](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/6a555aa31a2ac2f953ecd176c7f870cf30941188))
+* **ci:** validar flujo automatico de release ([bce9b83](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/bce9b8352febb61037166daa7659e43d3215e9e2))
+* corregir vulnerabilidades y actualizar tests de productos ([58b4690](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/58b46900848aa39ae574f2941b887c3f2446a8e7))
+
 ## [6.8.1](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.8.0...v6.8.1) (2026-03-18)
 
 
