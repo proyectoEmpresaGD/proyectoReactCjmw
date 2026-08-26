@@ -2,29 +2,31 @@ name: CI Pipeline
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
   push:
-    branches: [main]
+    branches:
+      - main
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   tests:
+    name: Tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: npm
@@ -32,24 +34,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test:run
+      - name: Run CI checks
+        run: npm run ci:check
 
   release:
+    name: Release Please
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: tests
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
-
-      - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
 
       - name: Run Release Please
         id: release
@@ -60,116 +63,248 @@ jobs:
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
 
+      - name: Refresh Git tags
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        run: |
+          git fetch --force --tags origin
+
       - name: Generate AI release notes
         if: ${{ steps.release.outputs.release_created == 'true' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
         run: |
-          echo "Detecting previous tag..."
+          echo "========================================"
+          echo "Current release: $RELEASE_TAG"
+          echo "Detecting previous release..."
+          echo "========================================"
 
-          PREV_TAG=$(git tag --sort=-v:refname | grep '^v' | grep -v "^${RELEASE_TAG}$" | head -n 1)
+          PREV_TAG=$(git tag \
+            --merged "$RELEASE_TAG" \
+            --sort=-version:refname \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+            | grep -Fxv "$RELEASE_TAG" \
+            | head -n 1)
 
           if [ -z "$PREV_TAG" ]; then
-            echo "No previous tag found"
-            COMMITS=$(git log -20 --pretty=format:"- %s")
-            DIFF=$(git diff --unified=0 HEAD~20 HEAD | head -c 12000)
-          else
-            echo "Previous tag: $PREV_TAG"
-            COMMITS=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s")
-            DIFF=$(git diff --unified=0 "${PREV_TAG}..HEAD" | head -c 12000)
+            echo "Error: no previous release was found."
+            exit 1
           fi
 
-          echo "Commits detected:"
-          echo "$COMMITS"
+          if [ "$PREV_TAG" = "$RELEASE_TAG" ]; then
+            echo "Error: previous release matches current release."
+            exit 1
+          fi
 
-          PROMPT=$(cat <<EOF
-          Actúa como un Release Engineer senior experto en CI/CD, versionado semántico, GitHub Releases y comunicación técnica de cambios para entornos de producción.
+          echo ""
+          echo "Previous release: $PREV_TAG"
+          echo "Current release:  $RELEASE_TAG"
+          echo "Comparing:        $PREV_TAG -> $RELEASE_TAG"
+          echo ""
 
-          Tu tarea es generar unas release notes profesionales basadas en:
-          1. los commits incluidos
-          2. el diff real del código
+          git log \
+            "${PREV_TAG}..${RELEASE_TAG}" \
+            --pretty=format:"- %s" \
+            > release_commits.txt
 
-          Contexto:
-          - Proyecto web en producción
-          - Stack: React, Vite, Node, Vercel
-          - Entorno real de producción
+          git diff \
+            --name-status \
+            "${PREV_TAG}..${RELEASE_TAG}" \
+            > release_files.txt
 
-          Instrucciones:
-          - Escribe en español
-          - No listes archivos salvo que sea imprescindible
-          - No repitas commits literalmente
-          - No describas cambios superficiales como "se movieron archivos" si no afectan comportamiento
-          - Prioriza la lógica funcional real detectada en el diff
-          - Explica qué comportamiento cambió, qué flujo se añadió o corrigió y qué impacto tiene
-          - Si detectas tests nuevos o refuerzo de validaciones, menciónalo como mejora de calidad
-          - Si no hay cambios funcionales, indícalo claramente y explica que son cambios internos o de estructura
-          - No inventes cambios que no estén soportados por los datos
-          - Si no hay información suficiente para una sección, omítela
+          git diff \
+            --unified=1 \
+            "${PREV_TAG}..${RELEASE_TAG}" \
+            -- \
+            . \
+            ':(exclude)package-lock.json' \
+            ':(exclude)server/package-lock.json' \
+            > release_diff_full.txt
 
-          Estructura obligatoria:
+          head -c 18000 release_diff_full.txt > release_diff.txt
 
-          Resumen
-          Breve explicación de la finalidad de la release.
+          echo "Commits included:"
+          cat release_commits.txt
 
-          Cambios principales
-          Lista clara de funcionalidades o cambios relevantes de comportamiento.
+          echo ""
+          echo "Changed files:"
+          cat release_files.txt
 
-          Correcciones
-          Errores solucionados o ajustes de comportamiento, si aplica.
+          COMMITS=$(cat release_commits.txt)
+          CHANGED_FILES=$(cat release_files.txt)
+          DIFF=$(cat release_diff.txt)
 
-          Mejoras técnicas
-          Cambios internos que mejoran calidad, estabilidad o mantenibilidad, si aplica.
+          cat > release_prompt.md <<EOF
+          Actúa como un Release Engineer senior.
 
-          Impacto
-          Cómo afecta esta release a usuarios, estabilidad o mantenimiento.
+          Debes documentar EXCLUSIVAMENTE los cambios realizados entre:
 
-          Tag de release:
+          Versión anterior:
+          $PREV_TAG
+
+          Nueva versión:
           $RELEASE_TAG
 
-          Commits analizados:
+          OBJETIVO
+
+          Crear unas release notes claras y profesionales que expliquen
+          qué ha cambiado realmente respecto a la versión inmediatamente
+          anterior.
+
+          No utilices información anterior a $PREV_TAG.
+
+          No inventes cambios.
+
+          Basa todo el contenido únicamente en:
+
+          - Los commits proporcionados.
+          - Los archivos modificados.
+          - El diff proporcionado.
+
+          CONTEXTO DEL PROYECTO
+
+          - React
+          - Vite
+          - Node.js
+          - Vercel
+          - Aplicación en producción
+
+          IDIOMA
+
+          Español.
+
+          FORMATO
+
+          Markdown compatible con GitHub.
+
+          Utiliza únicamente aquellas secciones para las que exista
+          información real.
+
+          ## Resumen
+
+          Explica brevemente qué aporta $RELEASE_TAG respecto a $PREV_TAG.
+
+          ## Cambios principales
+
+          Describe los cambios funcionales importantes.
+
+          ## Correcciones
+
+          Describe errores, problemas o comportamientos corregidos.
+
+          ## Seguridad
+
+          Describe vulnerabilidades solucionadas, actualizaciones de
+          seguridad o dependencias modificadas por motivos de seguridad.
+
+          ## Mejoras técnicas
+
+          Describe refactorizaciones, tests, dependencias, CI/CD,
+          rendimiento, arquitectura o mantenimiento.
+
+          ## Impacto
+
+          Explica brevemente el impacto sobre el usuario final,
+          estabilidad, seguridad o mantenibilidad.
+
+          REGLAS
+
+          - No copies literalmente los mensajes de commit.
+          - No inventes funcionalidades.
+          - No inventes correcciones.
+          - No incluyas cambios anteriores a $PREV_TAG.
+          - No describas algo que no pueda demostrarse con los datos.
+          - Agrupa cambios relacionados.
+          - Prioriza el propósito del cambio sobre el nombre del archivo.
+          - No listes archivos salvo que ayude realmente a entender el cambio.
+          - Omite cualquier sección que no tenga contenido real.
+          - No incluyas introducciones genéricas.
+          - No menciones que eres una IA.
+          - No documentes package-lock.json.
+          - No documentes server/package-lock.json.
+          - No confundas cambios internos con funcionalidades visibles
+            para el usuario.
+
+          ==================================================
+          COMMITS ENTRE $PREV_TAG Y $RELEASE_TAG
+          ==================================================
+
           $COMMITS
 
-          Diff analizado:
+          ==================================================
+          ARCHIVOS MODIFICADOS
+          ==================================================
+
+          $CHANGED_FILES
+
+          ==================================================
+          DIFF ENTRE $PREV_TAG Y $RELEASE_TAG
+          ==================================================
+
           $DIFF
           EOF
-          )
 
-          jq -n \
-            --arg model "gpt-4.1-mini" \
-            --arg input "$PROMPT" \
-            '{model: $model, input: $input}' > request.json
+          jq -Rs \
+            '{
+              model: "gpt-4.1-mini",
+              input: .,
+              store: false,
+              max_output_tokens: 1500
+            }' \
+            release_prompt.md \
+            > request.json
 
-          echo "Calling OpenAI API..."
+          echo ""
+          echo "Generating AI release notes..."
 
-          curl https://api.openai.com/v1/responses \
-            -s \
+          curl \
+            --fail-with-body \
+            --silent \
+            --show-error \
+            https://api.openai.com/v1/responses \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $OPENAI_API_KEY" \
-            -d @request.json > response.json
+            -d @request.json \
+            > response.json
 
           API_ERROR=$(jq -r '.error.message // empty' response.json)
 
           if [ -n "$API_ERROR" ]; then
-            echo "OpenAI API error: $API_ERROR"
-            NOTES=""
-          else
-            NOTES=$(jq -r '
-              .output_text //
-              ([.output[]?.content[]? | select(.type == "output_text") | .text] | join("\n")) //
-              empty
-            ' response.json)
+            echo "OpenAI API error:"
+            echo "$API_ERROR"
+            exit 1
           fi
 
-          if [ -z "$NOTES" ]; then
-            echo "AI generation failed, using fallback notes"
-            NOTES="Release $RELEASE_TAG
+          NOTES=$(jq -r '
+            .output_text //
+            (
+              [
+                .output[]?.content[]?
+                | select(.type == "output_text")
+                | .text
+              ]
+              | join("\n")
+            ) //
+            empty
+          ' response.json)
 
-          Cambios incluidos en esta versión:
-          $COMMITS"
+          if [ -z "$NOTES" ] || [ "$NOTES" = "null" ]; then
+            echo "Error: no release notes were generated."
+            echo ""
+            echo "Raw OpenAI response:"
+            cat response.json
+            exit 1
           fi
 
           printf "%s\n" "$NOTES" > release_notes.md
+
+          echo ""
+          echo "========================================"
+          echo "Generated release notes"
+          echo "========================================"
+          cat release_notes.md
+          echo ""
+          echo "========================================"
 
       - name: Update GitHub Release body
         if: ${{ steps.release.outputs.release_created == 'true' }}
@@ -177,4 +312,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
         run: |
-          gh release edit "$RELEASE_TAG" --notes-file release_notes.md
+          gh release edit "$RELEASE_TAG" \
+            --notes-file release_notes.md
