@@ -9,6 +9,13 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Tag de la release a documentar, por ejemplo v6.9.2"
+        required: true
+        type: string
+
 permissions:
   contents: read
 
@@ -19,6 +26,7 @@ concurrency:
 jobs:
   tests:
     name: Tests
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
@@ -41,9 +49,18 @@ jobs:
         run: npm run build
 
   release:
-    name: Release Please
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Release
     needs: tests
+    if: |
+      always() &&
+      (
+        (
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/main' &&
+          needs.tests.result == 'success'
+        ) ||
+        github.event_name == 'workflow_dispatch'
+      )
     runs-on: ubuntu-latest
 
     permissions:
@@ -59,6 +76,7 @@ jobs:
 
       - name: Run Release Please
         id: release
+        if: github.event_name == 'push'
         uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -66,17 +84,65 @@ jobs:
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
 
+      - name: Resolve release tag
+        id: target
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.release.outputs.release_created == 'true'
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_TAG: ${{ inputs.release_tag }}
+          AUTOMATIC_TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            RELEASE_TAG="$MANUAL_TAG"
+          else
+            RELEASE_TAG="$AUTOMATIC_TAG"
+          fi
+
+          if ! echo "$RELEASE_TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: invalid release tag: $RELEASE_TAG"
+            echo "Expected format: v6.9.2"
+            exit 1
+          fi
+
+          echo "Release tag selected: $RELEASE_TAG"
+          echo "release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+
       - name: Refresh Git tags
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.release.outputs.release_created == 'true'
         run: |
           git fetch --force --tags origin
 
+      - name: Verify release tag
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.release.outputs.release_created == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.target.outputs.release_tag }}
+        run: |
+          if ! git rev-parse "${RELEASE_TAG}^{commit}" >/dev/null 2>&1; then
+            echo "Error: tag $RELEASE_TAG does not exist."
+            exit 1
+          fi
+
+          echo "Tag $RELEASE_TAG exists."
+
       - name: Generate AI release notes
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.release.outputs.release_created == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+          RELEASE_TAG: ${{ steps.target.outputs.release_tag }}
         run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "Error: OPENAI_API_KEY is not configured."
+            exit 1
+          fi
+
           echo "========================================"
           echo "Current release: $RELEASE_TAG"
           echo "Detecting previous release..."
@@ -260,21 +326,61 @@ jobs:
           echo ""
           echo "Generating AI release notes..."
 
-          curl \
-            --fail-with-body \
-            --silent \
-            --show-error \
-            https://api.openai.com/v1/responses \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $OPENAI_API_KEY" \
-            -d @request.json \
-            > response.json
+          MAX_ATTEMPTS=5
+          ATTEMPT=1
+          WAIT_SECONDS=5
+          HTTP_STATUS=""
 
-          API_ERROR=$(jq -r '.error.message // empty' response.json)
+          while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
+            echo ""
+            echo "OpenAI request attempt $ATTEMPT/$MAX_ATTEMPTS"
 
-          if [ -n "$API_ERROR" ]; then
+            HTTP_STATUS=$(curl \
+              --silent \
+              --show-error \
+              --output response.json \
+              --write-out "%{http_code}" \
+              https://api.openai.com/v1/responses \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer $OPENAI_API_KEY" \
+              -d @request.json)
+
+            echo "OpenAI HTTP status: $HTTP_STATUS"
+
+            if [ "$HTTP_STATUS" = "200" ]; then
+              break
+            fi
+
+            API_ERROR=$(jq -r '.error.message // empty' response.json)
+            API_ERROR_TYPE=$(jq -r '.error.type // empty' response.json)
+            API_ERROR_CODE=$(jq -r '.error.code // empty' response.json)
+
             echo "OpenAI API error:"
-            echo "$API_ERROR"
+            echo "Type: $API_ERROR_TYPE"
+            echo "Code: $API_ERROR_CODE"
+            echo "Message: $API_ERROR"
+
+            if [ "$HTTP_STATUS" != "429" ]; then
+              echo "Non-retryable OpenAI API error."
+              exit 1
+            fi
+
+            if [ "$ATTEMPT" -eq "$MAX_ATTEMPTS" ]; then
+              echo "OpenAI API still returned 429 after $MAX_ATTEMPTS attempts."
+              exit 1
+            fi
+
+            echo "Waiting ${WAIT_SECONDS}s before retry..."
+
+            sleep "$WAIT_SECONDS"
+
+            ATTEMPT=$((ATTEMPT + 1))
+            WAIT_SECONDS=$((WAIT_SECONDS * 2))
+          done
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "OpenAI API request failed."
+            cat response.json
             exit 1
           fi
 
@@ -310,10 +416,19 @@ jobs:
           echo "========================================"
 
       - name: Update GitHub Release body
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.release.outputs.release_created == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+          RELEASE_TAG: ${{ steps.target.outputs.release_tag }}
         run: |
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Error: GitHub Release $RELEASE_TAG does not exist."
+            exit 1
+          fi
+
           gh release edit "$RELEASE_TAG" \
             --notes-file release_notes.md
+
+          echo "GitHub Release $RELEASE_TAG updated successfully."
