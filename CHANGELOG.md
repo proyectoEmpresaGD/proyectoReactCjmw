@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.9.3](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.9.2...v6.9.3) (2026-08-26)
+
+
+### Bug Fixes
+
+* **ci:** permitir regenerar notas de release manualmente ([a5ea2db](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/commit/a5ea2dbd9af811ab936538e2956446f418a745f4))
+
 ## [6.9.2](https://github.com/proyectoEmpresaGD/proyectoReactCjmw/compare/v6.9.1...v6.9.2) (2026-08-26)
 
 
