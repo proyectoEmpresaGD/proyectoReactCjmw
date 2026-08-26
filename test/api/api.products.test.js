@@ -90,7 +90,9 @@ describe('products api', () => {
         expect(result).toEqual([
             {
                 id: 'T-1',
+                codprodu: 'T-1',
                 name: 'Tejido lino',
+                collection: '',
                 pricePerMeter: 24.5,
                 imageUrl: '/img/lino.jpg',
                 ancho: '280 cm',
@@ -135,6 +137,7 @@ describe('products api', () => {
         expect(result).toEqual([
             {
                 id: 'P-1',
+                codprodu: 'P-1',
                 name: 'Papel floral',
                 imageUrl: '/img/papel.jpg',
                 collection: 'Spring',
@@ -163,7 +166,9 @@ describe('products api', () => {
                 items: [
                     {
                         id: 90,
+                        codprodu: 90,
                         name: 'Terciopelo',
+                        collection: '',
                         pricePerMeter: 30,
                         imageUrl: '/img/terciopelo.jpg',
                     },
@@ -177,7 +182,9 @@ describe('products api', () => {
         expect(result).toEqual([
             {
                 id: 90,
+                codprodu: 90,
                 name: 'Terciopelo',
+                collection: '',
                 pricePerMeter: 30,
                 imageUrl: '/img/terciopelo.jpg',
             },
