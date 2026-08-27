@@ -8,7 +8,10 @@ import { dirname, resolve } from 'path';
 import fs from 'fs';
 import { ContactController } from '../controllers/contactController.js';
 import { ContactRequestModel } from '../models/Postgres/contactRequestsModel.js';
-
+import {
+    verifyTurnstile,
+    blockHoneypot,
+} from '../middlewares/contactProtection.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const uploadsDir = resolve(__dirname, '..', 'uploads');
@@ -263,7 +266,9 @@ export const createContactRouter = ({ pool, contactModel }) => {
     router.post(
         '/contact',
         submissionLimiter,
+        verifyTurnstile,
         uploadMiddleware,
+        blockHoneypot,
         contactValidation,
         controller.handleCreate.bind(controller)
     );
