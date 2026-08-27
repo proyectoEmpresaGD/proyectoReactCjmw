@@ -65,7 +65,9 @@
         "feedback": {
             "success": "Thank you! We will get back to you within 48 business hours.",
             "error": "We could not submit your request. Please try again or email info@cjmw.eu.",
-            "validation": "Please review the highlighted fields."
+            "validation": "Please review the highlighted fields.",
+            "securityRequired": "Complete the security verification before submitting.",
+            "securityError": "We could not complete the security verification. Please try again."
         },
         "errors": {
             "profile": "Select your profile.",
@@ -118,12 +120,5 @@
                 "description": "Contact info@cjmw.eu to exercise your rights — we reply within 30 days."
             }
         }
-    },
-    "feedback": {
-        "success": "Thank you! We will get back to you within 48 business hours.",
-        "error": "We could not submit your request. Please try again or email info@cjmw.eu.",
-        "validation": "Please review the highlighted fields.",
-        "securityRequired": "Complete the security verification before submitting.",
-        "securityError": "We could not complete the security verification. Please try again."
     }
 }

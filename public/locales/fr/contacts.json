@@ -65,7 +65,9 @@
         "feedback": {
             "success": "Merci ! Nous reviendrons vers vous sous 48 h ouvrées.",
             "error": "L’envoi a échoué. Merci de réessayer ou d’écrire à info@cjmw.eu.",
-            "validation": "Veuillez vérifier les champs signalés."
+            "validation": "Veuillez vérifier les champs signalés.",
+            "securityRequired": "Veuillez compléter la vérification de sécurité avant l’envoi.",
+            "securityError": "La vérification de sécurité a échoué. Veuillez réessayer."
         },
         "errors": {
             "profile": "Sélectionnez votre profil.",
@@ -118,12 +120,5 @@
                 "description": "Contactez info@cjmw.eu pour exercer vos droits — réponse sous 30 jours."
             }
         }
-    },
-    "feedback": {
-        "success": "Merci ! Nous reviendrons vers vous sous 48 h ouvrées.",
-        "error": "L’envoi a échoué. Merci de réessayer ou d’écrire à info@cjmw.eu.",
-        "validation": "Veuillez vérifier les champs signalés.",
-        "securityRequired": "Veuillez compléter la vérification de sécurité avant l’envoi.",
-        "securityError": "La vérification de sécurité a échoué. Veuillez réessayer."
     }
 }

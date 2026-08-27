@@ -65,7 +65,9 @@
         "feedback": {
             "success": "Hemos recibido tu mensaje. Te responderemos en un plazo máximo de 48 horas laborables.",
             "error": "No hemos podido enviar tu solicitud. Inténtalo de nuevo o escríbenos a info@cjmw.eu.",
-            "validation": "Revisa los campos marcados para continuar."
+            "validation": "Revisa los campos marcados para continuar.",
+            "securityRequired": "Completa la verificación de seguridad antes de enviar.",
+            "securityError": "No hemos podido completar la verificación de seguridad. Inténtalo de nuevo."
         },
         "errors": {
             "profile": "Selecciona tu perfil.",
@@ -118,12 +120,5 @@
                 "description": "Gestionamos solicitudes de derechos desde info@cjmw.eu en menos de 30 días."
             }
         }
-    },
-    "feedback": {
-        "success": "Hemos recibido tu mensaje. Te responderemos en un plazo máximo de 48 horas laborables.",
-        "error": "No hemos podido enviar tu solicitud. Inténtalo de nuevo o escríbenos a info@cjmw.eu.",
-        "validation": "Revisa los campos marcados para continuar.",
-        "securityRequired": "Completa la verificación de seguridad antes de enviar.",
-        "securityError": "No hemos podido completar la verificación de seguridad. Inténtalo de nuevo."
     }
 }
