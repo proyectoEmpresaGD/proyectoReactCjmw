@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
     ArrowLeft,
     CalendarRange,
+    Download,
     FileText,
     ImageOff,
     ReceiptText,
@@ -12,7 +13,7 @@ import { Header } from '../../components/header';
 import Footer from '../../components/footer';
 import { CartProvider } from '../../components/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import { getInvoiceDetail } from '../../services/clientAreaClient';
+import { downloadInvoicePdf, getInvoiceDetail } from '../../services/clientAreaClient';
 
 function formatCurrency(value) {
     return new Intl.NumberFormat('es-ES', {
@@ -224,6 +225,8 @@ export default function AccountInvoiceDetailPage() {
     const [invoice, setInvoice] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [pdfLoading, setPdfLoading] = useState(false);
+    const [pdfError, setPdfError] = useState('');
 
     useEffect(() => {
         let cancelled = false;
@@ -262,6 +265,23 @@ export default function AccountInvoiceDetailPage() {
             cancelled = true;
         };
     }, [authLoading, isAuthenticated, ejercicio, codserfacventa, nfacventa]);
+
+    async function handleDownloadPdf() {
+        try {
+            setPdfLoading(true);
+            setPdfError('');
+
+            await downloadInvoicePdf({
+                ejercicio,
+                codserfacventa,
+                nfacventa,
+            });
+        } catch (err) {
+            setPdfError(err.message || 'No se pudo descargar el PDF');
+        } finally {
+            setPdfLoading(false);
+        }
+    }
 
     if (!authLoading && !isAuthenticated) {
         return <Navigate to="/login" replace />;
@@ -317,13 +337,31 @@ export default function AccountInvoiceDetailPage() {
                                         </h1>
 
                                         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-stone-500">
-                                            <span>Fecha: {formatDate(invoice.s)}</span>
+                                            <span>Fecha: {formatDate(invoice.fecha)}</span>
                                             <span>Año: {invoice.ejercicio || '-'}</span>
 
                                             {invoice.referencia && (
                                                 <span>Referencia: {invoice.referencia}</span>
                                             )}
                                         </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={handleDownloadPdf}
+                                            disabled={pdfLoading}
+                                            className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-stone-900 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                        >
+                                            <Download className="h-4 w-4" />
+                                            {pdfLoading
+                                                ? 'Generando PDF...'
+                                                : 'Descargar factura PDF'}
+                                        </button>
+
+                                        {pdfError && (
+                                            <p className="mt-2 text-sm text-rose-600">
+                                                {pdfError}
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[520px]">

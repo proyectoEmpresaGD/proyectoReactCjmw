@@ -31,6 +31,9 @@ import { useEffect } from "react";
 import { initGA, trackPage } from "./services/analytics";
 import AccountInvoiceDetailPage from "./components/account/AccountInvoiceDetailPage.jsx"
 import AccountReturnsPage from "./components/account/AccountReturnsPage.jsx";
+import AccountInvoiceOrdersPage from "./components/account/AccountInvoiceOrdersPage.jsx";
+import AccountOrderDetailPage from './components/account/AccountOrderDetailPage.jsx';
+import AccountOrdersPage from "./components/account/AccountOrdersPage.jsx";
 
 function App() {
   const location = useLocation();
@@ -54,6 +57,14 @@ function App() {
         <Route path="/contact" element={<Contacto />} />
         <Route path="/harbourHome" element={<HarbourHome />} />
         <Route path="/cjmHome" element={<CjmHome />} />
+        <Route
+          path="/account/invoices/:ejercicio/:codserfacventa/:nfacventa/orders"
+          element={<AccountInvoiceOrdersPage />}
+        />
+        <Route
+          path="/account/orders/:ejercicio/:canal/:codserpedventa/:npedventa"
+          element={<AccountOrderDetailPage />}
+        />
         <Route path="/arenaHome" element={<ArenaHome />} />
         <Route path="/flamencoHome" element={<FlamencoHome />} />
         <Route path="/bassariHome" element={<BassariHome />} />
@@ -76,7 +87,7 @@ function App() {
         <Route path="/media" element={<MediaPage />} />
         <Route path="/coleccion/:coleccion" element={<ColeccionPage />} />
         <Route path="/colecciones/:marca" element={<ColeccionesMarcaPage />} />
-        {/* <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin/solicitudes" element={<AdminRequestsPage />} />
         <Route path="/restablecer-password" element={<ResetPasswordPage />} />
@@ -86,9 +97,12 @@ function App() {
           element={<AccountInvoiceDetailPage />}
         />
         <Route path="/mis-datos" element={<AccountProfilePage />} />
-        <Route path="/mis-pedidos" element={<AccountInvoicesPage />} />
+        <Route
+          path="/mis-pedidos"
+          element={<AccountOrdersPage />}
+        />
         <Route path="/mis-facturas" element={<AccountInvoicesPage />} />
-        <Route path="/historial-devoluciones" element={<AccountReturnsPage />} /> */}
+        <Route path="/historial-devoluciones" element={<AccountReturnsPage />} />
 
       </Routes>
     </>

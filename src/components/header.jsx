@@ -465,14 +465,14 @@ export const Header = ({ closeModal }) => {
                             </button>
                         </div>
 
-                        {/* <div className="relative" ref={userRef}>
-                            <button
+                        <div className="relative" ref={userRef}>
+                            {/* <button
                                 className="text-gray-800 focus:outline-none"
                                 onClick={() => toggleDropdown("user")}
                                 type="button"
                             >
                                 <User className="h-6 w-6" />
-                            </button>
+                            </button> */}
 
                             {showUserDropdown && (
                                 <div className="absolute top-full right-0 z-50 w-64 rounded-md bg-slate-100 py-2 shadow-lg">
@@ -556,7 +556,7 @@ export const Header = ({ closeModal }) => {
                                     )}
                                 </div>
                             )}
-                        </div> */}
+                        </div>
 
                         <div className="relative" ref={searchRef}>
                             <button

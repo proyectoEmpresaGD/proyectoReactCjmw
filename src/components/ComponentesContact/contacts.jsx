@@ -6,7 +6,7 @@ import {
 } from '../../Constants/constants';
 import ContactForm from './ContactForm';
 import IconoMapa from './iconoMapa';
-import MapEmbed from './MapEmbed';
+import GeocodingService from './map';
 
 const Contacts = () => {
     const { t } = useTranslation('contacts');
@@ -131,7 +131,7 @@ const Contacts = () => {
                         </div>
 
                         {/* Mapa (iframe) */}
-                        <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-xl sm:p-10">
+                        {/* <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-xl sm:p-10">
                             <h3 className="text-xl font-semibold text-neutral-900 sm:text-2xl">
                                 {t('map.title')}
                             </h3>
@@ -139,12 +139,9 @@ const Contacts = () => {
                                 {t('map.subtitle')}
                             </p>
                             <div className="mt-6 overflow-hidden rounded-3xl">
-                                <MapEmbed
-                                    location={activeLocation}
-                                    className="h-64 sm:h-72 lg:h-[28rem]"
-                                />
+                                <GeocodingService embedded />
                             </div>
-                        </div>
+                        </div> */}
                     </aside>
                 </div>
 

@@ -74,7 +74,8 @@ export class AuthController {
     }
 
     if (!isEmail) {
-      const staffByUsername = await this.authModel.findStaffByUsername(normalized);
+      const staffByUsername =
+        await this.authModel.findStaffByUsername(normalized);
 
       if (!staffByUsername) {
         return null;
@@ -86,7 +87,18 @@ export class AuthController {
       };
     }
 
-    const staffByEmail = await this.authModel.findStaffByEmail(normalized);
+    const customerByEmail =
+      await this.authModel.findAccountByEmail(normalized);
+
+    if (customerByEmail) {
+      return {
+        accountType: 'customer',
+        account: customerByEmail,
+      };
+    }
+
+    const staffByEmail =
+      await this.authModel.findStaffByEmail(normalized);
 
     if (staffByEmail) {
       return {
@@ -95,16 +107,7 @@ export class AuthController {
       };
     }
 
-    const customerByEmail = await this.authModel.findAccountByEmail(normalized);
-
-    if (!customerByEmail) {
-      return null;
-    }
-
-    return {
-      accountType: 'customer',
-      account: customerByEmail,
-    };
+    return null;
   }
 
   async finishStaffLogin({ staff, password, res }) {

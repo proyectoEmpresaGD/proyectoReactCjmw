@@ -108,7 +108,7 @@ export default function AdminRequestsPage() {
     }
 
     if (!user) {
-        return <Navigate to="/auth/login" replace />;
+        return <Navigate to="/" replace />;
     }
 
     if (!isAdmin) {

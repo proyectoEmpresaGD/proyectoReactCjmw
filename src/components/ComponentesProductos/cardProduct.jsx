@@ -251,10 +251,7 @@ export default function CardProduct() {
     const sentinelRef = useRef(null);
     const observerRef = useRef(null);
     const controllerRef = useRef(null);
-    const initialPageRef = useRef(null);
     const userHasScrolledRef = useRef(false);
-    const infiniteLoadTriggeredRef = useRef(false);
-    const didNormalizeOnReloadRef = useRef(false);
 
     const getQueryString = useCallback(() => {
         if (location.search && location.search !== '?') return location.search;
@@ -301,25 +298,6 @@ export default function CardProduct() {
     const [searchInput, setSearchInput] = useState('');
     const [sortOrder, setSortOrder] = useState('alpha-asc');
     const [viewMode, setViewMode] = useState('grid4');
-
-    // const [showOnlyHoliday, setShowOnlyHoliday] = useState(isHolidayParam);
-
-    // sync page from URL (hash-safe)
-
-    useEffect(() => {
-        if (initialPageRef.current != null) return;
-
-        const u = new URLSearchParams(getQueryString());
-        initialPageRef.current = parseInt(u.get('page') || '1', 10);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getQueryString]);
-
-    // Guarda la página inicial SOLO al entrar (para que loadMore no la cambie)
-    useEffect(() => {
-        const u = new URLSearchParams(getQueryString());
-        initialPageRef.current = parseInt(u.get('page') || '1', 10);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     // Marca si el usuario ha hecho scroll (para no auto-cargar sin interacción)
     useEffect(() => {
@@ -485,35 +463,6 @@ export default function CardProduct() {
 
             const wi = await Promise.all((list || []).map(loadLowRes));
 
-            const hasActiveFilters =
-                (appliedFilters.search && String(appliedFilters.search).trim()) ||
-                (Object.keys(appliedFilters).length > 0 &&
-                    Object.entries(appliedFilters).some(
-                        ([k, v]) =>
-                            k !== 'search' &&
-                            (Array.isArray(v) ? v.length > 0 : Boolean(v))
-                    ));
-
-            const shouldNormalizeToFirstPageOnReload =
-                pageNum > 1 &&
-                pageNum === initialPageRef.current &&
-                !infiniteLoadTriggeredRef.current &&
-                !didNormalizeOnReloadRef.current;
-
-            if (shouldNormalizeToFirstPageOnReload) {
-                const shouldGoFirstPage =
-                    !hasActiveFilters || (hasActiveFilters && wi.length === 0);
-
-                if (shouldGoFirstPage) {
-                    didNormalizeOnReloadRef.current = true;
-
-                    const u = new URLSearchParams(getQueryString());
-                    u.set('page', '1');
-                    navigate(`/products?${u.toString()}`);
-                    return;
-                }
-            }
-
             setProducts((prev) => (pageNum > 1 ? [...prev, ...wi] : wi));
 
             const totalFromApi =
@@ -570,7 +519,9 @@ export default function CardProduct() {
                 //
             }
         } finally {
-            setLoading(false);
+            if (controllerRef.current === controller) {
+                setLoading(false);
+            }
         }
     }, [getQueryString, loadLowRes, navigate]);
 
@@ -595,7 +546,9 @@ export default function CardProduct() {
         } catch (err) {
             if (err.name !== 'AbortError') setError(err.message);
         } finally {
-            setLoading(false);
+            if (controllerRef.current === controller) {
+                setLoading(false);
+            }
         }
     }, [loadLowRes, preloadHighResInto]);
 
@@ -747,31 +700,33 @@ export default function CardProduct() {
     const loadMore = () => {
         if (loading || !hasMore) return;
 
-        const current = parseInt(new URLSearchParams(getQueryString()).get('page') || '1', 10);
+        const current = parseInt(
+            new URLSearchParams(getQueryString()).get('page') || '1',
+            10
+        );
+
         const nxt = current + 1;
 
         if (nextPageRequestRef.current === nxt) return;
+
         nextPageRequestRef.current = nxt;
 
-        infiniteLoadTriggeredRef.current = true;
         setPage(nxt);
 
         const u = new URLSearchParams(getQueryString());
         u.set('page', String(nxt));
-        navigate(`/products?${u.toString()}`,);
+
+        navigate(`/products?${u.toString()}`);
     };
 
     useEffect(() => {
         if (fetchByIdParam) return;
 
-        // Reset de estado al cambiar filtros
         setProducts([]);
         setHasMore(false);
         setTotalProducts(0);
 
         nextPageRequestRef.current = null;
-        infiniteLoadTriggeredRef.current = false;
-        didNormalizeOnReloadRef.current = false;
 
         try {
             observerRef.current?.disconnect();
@@ -780,10 +735,25 @@ export default function CardProduct() {
             //
         }
 
+        // La entrada al catálogo o un cambio de filtros siempre empieza
+        // desde la primera página.
         setPage(1);
 
-        const ap = buildAppliedFilters();
-        fetchProducts(1, ap);
+        const currentParams = new URLSearchParams(getQueryString());
+        const currentPage = parseInt(currentParams.get('page') || '1', 10);
+
+        // Si hemos recargado estando en page > 1, normalizamos la URL,
+        // pero la petición de página 1 se realiza igualmente aquí.
+        if (currentPage !== 1) {
+            currentParams.set('page', '1');
+
+            navigate(`/products?${currentParams.toString()}`, {
+                replace: true,
+            });
+        }
+
+        const appliedFilters = buildAppliedFilters();
+        fetchProducts(1, appliedFilters);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [queryKey, fetchByIdParam]);
@@ -900,17 +870,6 @@ export default function CardProduct() {
         },
         [t]
     );
-
-    useEffect(() => {
-        const p = parseInt(params.get('page') || '1', 10);
-
-        // Si la URL dice page=1 pero tú ya estás en page>1 por infinite scroll,
-        // NO vuelvas a forzar page=1 (si no, te quedas clavado).
-        if (p === 1 && page > 1) return;
-
-        if (p !== page) setPage(p);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [queryKey]);
 
     const chipEntries = useMemo(() => {
         const entries = [];

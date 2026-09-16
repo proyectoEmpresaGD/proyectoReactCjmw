@@ -506,7 +506,6 @@ export const puntos = [
     { lat: 40.436792, lng: -3.709762, title: "Showroom Madrid", description: "Showroom exclusivo con las últimas tendencias." }
 ];
 
-export const GOOGLE_MAPS_API_KEY = "AIzaSyAtnktr-IqG1RseoruDMk7ZpLIrzdtPgbg";
 
 //
 //

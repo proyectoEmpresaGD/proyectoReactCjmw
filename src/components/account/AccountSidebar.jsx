@@ -5,34 +5,76 @@ import {
     History,
     PackageCheck,
     UserRound,
+    FileText
 } from 'lucide-react';
 
 const sidebarGroups = [
     {
-        title: 'Mi cuenta',
+        title:
+            'Mi cuenta',
+
         items: [
             {
-                label: 'Mis datos',
-                path: '/mis-datos',
-                icon: UserRound,
-                description: 'Empresa y dirección',
+                label:
+                    'Mis datos',
+
+                path:
+                    '/mis-datos',
+
+                icon:
+                    UserRound,
+
+                description:
+                    'Empresa y dirección',
             },
         ],
     },
+
     {
-        title: 'Pedidos y devoluciones',
+        title:
+            'Documentos',
+
         items: [
             {
-                label: 'Mis pedidos',
-                path: '/mis-pedidos',
-                icon: PackageCheck,
-                description: 'Pedidos y facturas',
+                label:
+                    'Mis facturas',
+
+                path:
+                    '/mis-facturas',
+
+                icon:
+                    FileText,
+
+                description:
+                    'Facturas emitidas',
             },
+
             {
-                label: 'Historial devoluciones',
-                path: '/historial-devoluciones',
-                icon: History,
-                description: 'Facturas de devolución',
+                label:
+                    'Mis pedidos',
+
+                path:
+                    '/mis-pedidos',
+
+                icon:
+                    PackageCheck,
+
+                description:
+                    'Servidos y pendientes',
+            },
+
+            {
+                label:
+                    'Historial devoluciones',
+
+                path:
+                    '/historial-devoluciones',
+
+                icon:
+                    History,
+
+                description:
+                    'Facturas de devolución',
             },
         ],
     },

@@ -21,8 +21,10 @@ import { createAuthRouter } from './routes/auth.js';
 import { createClientAreaRouter } from './routes/clientAreas.js';
 import cookieParser from 'cookie-parser';
 import { createCustomerRegistrationRoutes } from './routes/customerRegistrationRoutes.js';
+import { createMapsRouter } from './routes/maps.js';
 import { requireAuth } from './middlewares/authMiddleware.js';
 import { requireAdmin } from './middlewares/requireAdmin.js';
+import { createPuntosVentaRouter } from "./routes/puntosVenta.js";
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -316,6 +318,7 @@ const emailService = {
   },
 };
 
+app.use('/api/maps', createMapsRouter());
 app.use('/api/products', createProductRouter({ pool }));
 app.use('/api/images', createImagenRouter({ pool }));
 app.use('/api/ftp', createFtpRouter());
@@ -324,6 +327,10 @@ app.use('/api/collections', createCollectionsRouter());
 app.use('/api/quotes', createQuotesRouter());
 app.use('/api/auth', createAuthRouter({ pool, emailService }));
 app.use('/api/client-area', createClientAreaRouter({ pool }));
+app.use(
+  "/api/puntos-venta",
+  createPuntosVentaRouter()
+);
 app.use('/files', express.static(path.join(__dirname, 'output')));
 app.use(
   '/api/customer-registration',

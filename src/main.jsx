@@ -6,12 +6,15 @@ import './i18n';               // debe importarse antes de <App />
 import App from './App.jsx';
 import { MarcaProvider } from './components/MarcaContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { CartProvider } from './components/CartContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HashRouter>
     <MarcaProvider>
       <AuthProvider>
-        <App />
+        <CartProvider>
+          <App />
+        </CartProvider>
       </AuthProvider>
     </MarcaProvider>
   </HashRouter>
