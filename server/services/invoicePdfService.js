@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf';
+import { invoiceLogoAssets } from '../config/invoiceLogoAssets.js';
 
 const PAGE = {
     width: 210,
@@ -16,26 +17,6 @@ const COMPANY = {
     city: '14550 MONTILLA (CORDOBA)',
     phone: '957 656 475',
     web: 'www.cjmw.eu',
-};
-
-const ASSET_URLS = {
-    crest:
-        'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/ESCUDOS/ESCUDO%20FAMILIAR/CJMlogo.png',
-
-    harbour:
-        'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png',
-
-    cjm:
-        'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png',
-
-    arena:
-        'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png',
-
-    flamenco:
-        'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png',
-
-    bassari:
-        'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png',
 };
 
 const ENGLISH_INVOICE_SERIES = new Set([
@@ -162,9 +143,7 @@ const LINE_HEIGHT = {
     description: 4.6,
 };
 
-const ASSETS = {};
-
-let assetsLoadPromise = null;
+const ASSETS = invoiceLogoAssets;
 
 function safeText(value) {
     return value == null
@@ -237,71 +216,6 @@ function getPaymentMethodLabel(
     return getPdfTexts(
         invoice
     ).paymentMethod;
-}
-
-async function loadPngDataUrl(
-    url,
-    assetName
-) {
-    try {
-        const response =
-            await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
-        const buffer =
-            Buffer.from(
-                await response.arrayBuffer()
-            );
-
-        return (
-            'data:image/png;base64,' +
-            buffer.toString('base64')
-        );
-    } catch (error) {
-        console.error(
-            `invoicePdfService: no se pudo cargar el logo "${assetName}" desde ${url}`,
-            error
-        );
-
-        return null;
-    }
-}
-
-async function ensureAssetsLoaded() {
-    if (!assetsLoadPromise) {
-        assetsLoadPromise =
-            Promise.all(
-                Object.entries(
-                    ASSET_URLS
-                ).map(
-                    async (
-                        [key, url]
-                    ) => [
-                            key,
-                            await loadPngDataUrl(
-                                url,
-                                key
-                            ),
-                        ]
-                )
-            ).then((entries) => {
-                Object.assign(
-                    ASSETS,
-                    Object.fromEntries(
-                        entries
-                    )
-                );
-
-                return ASSETS;
-            });
-    }
-
-    return assetsLoadPromise;
 }
 
 function toNumber(value) {
@@ -1478,9 +1392,7 @@ function drawBlock(
     );
 }
 
-function drawBrandFooter(
-    doc
-) {
+function drawBrandFooter(doc) {
     const x = 8.5;
     const y = 272;
 
@@ -1491,11 +1403,26 @@ function drawBrandFooter(
     const paddingY = 2;
 
     const logos = [
-        ASSETS.harbour,
-        ASSETS.cjm,
-        ASSETS.arena,
-        ASSETS.flamenco,
-        ASSETS.bassari,
+        {
+            image: ASSETS.harbour,
+            scale: 1,
+        },
+        {
+            image: ASSETS.cjm,
+            scale: 0.5,
+        },
+        {
+            image: ASSETS.arena,
+            scale: 1,
+        },
+        {
+            image: ASSETS.flamenco,
+            scale: 1,
+        },
+        {
+            image: ASSETS.bassari,
+            scale: 1,
+        },
     ];
 
     const slotWidth =
@@ -1504,9 +1431,7 @@ function drawBrandFooter(
 
     doc.setDrawColor(0);
 
-    doc.setLineWidth(
-        0.3
-    );
+    doc.setLineWidth(0.3);
 
     doc.rect(
         x,
@@ -1517,23 +1442,45 @@ function drawBrandFooter(
 
     logos.forEach(
         (logo, index) => {
-            addImageContained(
-                doc,
-                logo,
+            const availableWidth =
+                slotWidth -
+                paddingX * 2;
 
+            const availableHeight =
+                height -
+                paddingY * 2;
+
+            const logoWidth =
+                availableWidth *
+                logo.scale;
+
+            const logoHeight =
+                availableHeight *
+                logo.scale;
+
+            const logoX =
                 x +
                 index *
                 slotWidth +
-                paddingX,
+                (
+                    slotWidth -
+                    logoWidth
+                ) / 2;
 
+            const logoY =
                 y +
-                paddingY,
+                (
+                    height -
+                    logoHeight
+                ) / 2;
 
-                slotWidth -
-                paddingX * 2,
-
-                height -
-                paddingY * 2
+            addImageContained(
+                doc,
+                logo.image,
+                logoX,
+                logoY,
+                logoWidth,
+                logoHeight
             );
         }
     );
@@ -1830,8 +1777,6 @@ function drawTotals(
 export async function generateInvoicePdf(
     invoice
 ) {
-    await ensureAssetsLoaded();
-
     const doc =
         new jsPDF({
             orientation:
