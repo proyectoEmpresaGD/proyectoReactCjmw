@@ -3,5 +3,6 @@ export const hiddenCollections = Object.freeze([
     'NOBUCK',
     'WABI SABI',
     'KANNATURA VOL III',
-    'ALPHONSE'
+    'ALPHONSE',
+    'THE ARTISAN'
 ]);
