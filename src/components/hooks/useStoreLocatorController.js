@@ -695,49 +695,98 @@ export function useStoreLocatorController({ stores, t }) {
         [cityName, processOrigin]
     );
 
-    const handleUseMyLocation = useCallback(() => {
+    const handleUseMyLocation = useCallback(async () => {
         if (!navigator.geolocation) {
             setSearchErrorKey("locationUnavailable");
             return;
         }
 
-        setIsLocationLoading(true);
         setSearchErrorKey(null);
+
+        // Comprobamos el permiso antes de solicitar la ubicación.
+        if (navigator.permissions?.query) {
+            try {
+                const permissionStatus =
+                    await navigator.permissions.query({
+                        name: "geolocation",
+                    });
+
+                // Si el usuario lo ha bloqueado anteriormente,
+                // el navegador no permite volver a abrir el popup
+                // desde JavaScript.
+                if (permissionStatus.state === "denied") {
+                    setSearchErrorKey(
+                        "locationPermissionDeniedHelp"
+                    );
+                    return;
+                }
+            } catch (error) {
+                // Si Permissions API no está disponible correctamente,
+                // continuamos usando Geolocation API.
+                console.warn(
+                    "No se pudo consultar el permiso de ubicación:",
+                    error
+                );
+            }
+        }
+
+        setIsLocationLoading(true);
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 setIsLocationLoading(false);
 
-                const lat = Number(position.coords?.latitude);
-                const lng = Number(position.coords?.longitude);
+                const lat = Number(
+                    position.coords?.latitude
+                );
+
+                const lng = Number(
+                    position.coords?.longitude
+                );
 
                 if (!isValidCoordinate(lat, lng)) {
-                    setSearchErrorKey("invalidCoordinates");
+                    setSearchErrorKey(
+                        "invalidCoordinates"
+                    );
                     return;
                 }
+
+                setSearchErrorKey(null);
 
                 processOrigin({
                     lat,
                     lng,
                 });
             },
+
             (error) => {
                 setIsLocationLoading(false);
 
-                if (error.code === error.PERMISSION_DENIED) {
+                if (
+                    error.code ===
+                    error.PERMISSION_DENIED
+                ) {
                     setSearchErrorKey(
-                        "locationPermissionDenied"
+                        "locationPermissionDeniedHelp"
                     );
                     return;
                 }
 
-                if (error.code === error.TIMEOUT) {
-                    setSearchErrorKey("locationTimeout");
+                if (
+                    error.code ===
+                    error.TIMEOUT
+                ) {
+                    setSearchErrorKey(
+                        "locationTimeout"
+                    );
                     return;
                 }
 
-                setSearchErrorKey("locationUnavailable");
+                setSearchErrorKey(
+                    "locationUnavailable"
+                );
             },
+
             {
                 enableHighAccuracy: false,
                 timeout: 10000,

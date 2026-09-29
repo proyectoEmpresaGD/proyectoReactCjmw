@@ -1,28 +1,141 @@
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import GeocodingService from "../../components/ComponentesContact/map";
 
 const ModalMapa = ({ isOpen, close }) => {
-    if (!isOpen) return null;
+    useEffect(() => {
+        if (!isOpen) {
+            return undefined;
+        }
 
-    return (
-        <div className="fixed inset-0 z-40 flex max-h-[100%] items-center justify-center overflow-auto bg-black bg-opacity-50 py-[25%] lg:py-[7%] xl:py-[7%]">
-            <div className="my-auto w-[90%] gap-3 rounded-lg bg-gradient-to-r from-[#ebdecf] to-[#8a7862]">
-                <div className="z-20 flex justify-end">
+        const previousOverflow =
+            document.body.style.overflow;
+
+        document.body.style.overflow = "hidden";
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                close();
+            }
+        };
+
+        window.addEventListener(
+            "keydown",
+            handleKeyDown
+        );
+
+        return () => {
+            document.body.style.overflow =
+                previousOverflow;
+
+            window.removeEventListener(
+                "keydown",
+                handleKeyDown
+            );
+        };
+    }, [isOpen, close]);
+
+    if (!isOpen) {
+        return null;
+    }
+
+    return createPortal(
+        <div
+            className="
+                fixed
+                inset-0
+                z-[99999]
+                flex
+                items-center
+                justify-center
+                overflow-hidden
+                bg-white
+                p-3
+                sm:p-5
+                lg:p-8
+            "
+        >
+            <div
+                className="
+                    flex
+                    h-full
+                    max-h-[900px]
+                    w-full
+                    max-w-[1600px]
+                    min-h-0
+                    flex-col
+                    overflow-hidden
+                    rounded-2xl
+                    border
+                    border-neutral-200
+                    bg-white
+                    shadow-xl
+                "
+            >
+                {/* CABECERA INDEPENDIENTE */}
+                <div
+                    className="
+                        flex
+                        h-16
+                        shrink-0
+                        items-center
+                        justify-between
+                        border-b
+                        border-neutral-200
+                        bg-white
+                        px-5
+                    "
+                >
+                    <h2 className="text-lg font-semibold text-neutral-900">
+                        Puntos de venta
+                    </h2>
+
                     <button
                         type="button"
-                        className="relative m-4 overflow-hidden"
                         onClick={close}
+                        aria-label="Cerrar mapa"
+                        className="
+                            flex
+                            h-10
+                            w-10
+                            shrink-0
+                            items-center
+                            justify-center
+                            rounded-full
+                            border
+                            border-neutral-200
+                            bg-white
+                            text-2xl
+                            leading-none
+                            text-neutral-700
+                            shadow-sm
+                            transition
+                            hover:bg-neutral-100
+                            hover:text-black
+                        "
                     >
-                        <img
-                            src="close.svg"
-                            alt=""
-                            className="h-6 w-6 justify-end transition-transform duration-200 hover:scale-125"
-                        />
+                        ×
                     </button>
                 </div>
 
-                <GeocodingService embedded />
+                {/* MAPA Y PUNTOS DE VENTA */}
+                <div
+                    className="
+                        min-h-0
+                        flex-1
+                        overflow-hidden
+                        bg-white
+                        p-4
+                    "
+                >
+                    <GeocodingService
+                        embedded
+                        showAllStoresOnLoad
+                    />
+                </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

@@ -558,6 +558,7 @@ export const Header = ({ closeModal }) => {
                             )}
                         </div> */}
 
+
                         <div className="relative" ref={searchRef}>
                             <button
                                 className="text-gray-800 focus:outline-none"

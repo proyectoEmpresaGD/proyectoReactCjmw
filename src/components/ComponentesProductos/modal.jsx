@@ -6,6 +6,7 @@ import Filtro from '../filters/buttonFiltro';
 import CarruselMismoEstilo from "./CarruselEstiloProducto";
 import CarruselColeccion from "./CarruselProductosColeccion";
 import { CartProvider, useCart } from "../CartContext";
+import ModalMapa from './modalMapa';
 import { useMarca } from '../MarcaContext';
 import {
     defaultImageUrlModalProductos,
@@ -638,21 +639,50 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                     </div>
                                                 </div>
 
-                                                <button
-                                                    onClick={handleAddToCart}
-                                                    className="inline-flex items-center gap-3 self-start rounded-full border border-neutral-200 bg-neutral-100 px-5 py-3 text-sm font-semibold text-neutral-900 shadow-sm transition hover:bg-neutral-200"
-                                                    title={t('orderSample')}
-                                                    type="button"
-                                                >
-                                                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/50 border border-neutral-200">
-                                                        <img
-                                                            src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/04_QUALITY/fabric.png"
-                                                            alt={t('sampleAlt')}
-                                                            className="h-7 w-7 object-contain"
-                                                        />
-                                                    </span>
-                                                    <span>{t('addToCart')}</span>
-                                                </button>
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <button
+                                                        onClick={handleAddToCart}
+                                                        className="inline-flex items-center gap-3 self-start rounded-full border border-neutral-200 bg-neutral-100 px-5 py-3 text-sm font-semibold text-neutral-900 shadow-sm transition hover:bg-neutral-200"
+                                                        title={t('orderSample')}
+                                                        type="button"
+                                                    >
+                                                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/50 border border-neutral-200">
+                                                            <img
+                                                                src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/04_QUALITY/fabric.png"
+                                                                alt={t('sampleAlt')}
+                                                                className="h-7 w-7 object-contain"
+                                                            />
+                                                        </span>
+
+                                                        <span>{t('addToCart')}</span>
+                                                    </button>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setModalMapaOpen(true)}
+                                                        className="inline-flex items-center gap-3 self-start rounded-full border border-neutral-200 bg-neutral-100 px-5 py-3 text-sm font-semibold text-neutral-900 shadow-sm transition hover:bg-neutral-200"
+                                                    >
+                                                        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white/50">
+                                                            <svg
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth="1.8"
+                                                                className="h-5 w-5"
+                                                                aria-hidden="true"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    d="M12 21s7-5.686 7-12A7 7 0 1 0 5 9c0 6.314 7 12 7 12Z"
+                                                                />
+                                                                <circle cx="12" cy="9" r="2.5" />
+                                                            </svg>
+                                                        </span>
+
+                                                        <span>Dónde comprar</span>
+                                                    </button>
+                                                </div>
 
                                                 {usoMantenimientoIcons.length > 0 && (
                                                     <div className="flex flex-wrap gap-4 rounded-2xl border border-white/60 bg-white/70 p-4 text-sm text-gray-700 shadow-inner">
@@ -765,7 +795,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                             </div>
                         )}
 
-                        {/* {modalMapaOpen && <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />} */}
+                        {modalMapaOpen && <ModalMapa isOpen={modalMapaOpen} close={() => setModalMapaOpen(false)} />}
                     </div>
 
                     {/* Footer de la modal pegado abajo */}

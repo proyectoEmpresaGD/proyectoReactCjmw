@@ -54,7 +54,6 @@ export class ProductModel {
   static holidayNamePrefixes = [
     'ADELFAS',
     'GENESIS',
-    // añade aquí más prefijos de familias a liquidar
   ];
 
   static normalizeTariffCode(codtarifa) {

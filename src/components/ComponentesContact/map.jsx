@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { getPuntosVenta } from "../../services/puntosVentaApi.js";
@@ -9,10 +10,10 @@ import StorePanel from "./StorePanel.jsx";
 function StoreLocator({
   stores,
   embedded,
+  showAllStoresOnLoad,
   t,
 }) {
-  const [isExpanded, setIsExpanded] =
-    useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const {
     mapContainerRef,
@@ -40,6 +41,7 @@ function StoreLocator({
   } = useStoreLocatorController({
     stores,
     t,
+    showAllStoresOnLoad,
   });
 
   /*
@@ -52,28 +54,20 @@ function StoreLocator({
 
     let secondFrame = null;
 
-    const firstFrame =
-      requestAnimationFrame(() => {
-        secondFrame =
-          requestAnimationFrame(() => {
-            resizeMap();
-          });
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => {
+        resizeMap();
       });
+    });
 
     return () => {
       cancelAnimationFrame(firstFrame);
 
       if (secondFrame !== null) {
-        cancelAnimationFrame(
-          secondFrame
-        );
+        cancelAnimationFrame(secondFrame);
       }
     };
-  }, [
-    isExpanded,
-    resizeMap,
-    setExpandedView,
-  ]);
+  }, [isExpanded, resizeMap, setExpandedView]);
 
   /*
    * Cuando el mapa está expandido:
@@ -85,11 +79,9 @@ function StoreLocator({
       return undefined;
     }
 
-    const previousOverflow =
-      document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -97,66 +89,62 @@ function StoreLocator({
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow =
-        previousOverflow;
-
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isExpanded]);
 
-  const searchButtonText =
-    isGeocodeLoading
-      ? t("searchLoading")
-      : t("searchButton");
+  const searchButtonText = isGeocodeLoading
+    ? t("searchLoading")
+    : t("searchButton");
 
-  const locationButtonText =
-    isLocationLoading
-      ? t("locationLoading")
-      : t("useMyLocationButton");
+  const locationButtonText = isLocationLoading
+    ? t("locationLoading")
+    : t("useMyLocationButton");
 
   const routeErrorText =
     routeErrorCode === "QUOTA_EXCEEDED"
       ? t("quotaExceeded")
       : routeErrorCode === "ROUTE_ERROR"
         ? t("routeError")
-        : routeErrorCode ===
-          "SEARCH_LOCATION_FIRST"
+        : routeErrorCode === "SEARCH_LOCATION_FIRST"
           ? t("searchLocationFirst")
           : null;
 
   const hasNoNearbyStores =
-    Boolean(origin) &&
-    nearbyStores.length === 0;
+    Boolean(origin) && nearbyStores.length === 0;
 
   /*
-   * En vista normal solo mostramos:
+   * Vista normal:
    * - establecimientos dentro del radio
-   * - o el más próximo si no existe ninguno dentro
+   * - o el más próximo
    *
-   * En vista expandida mostramos todos,
-   * ordenados por distancia desde el controlador.
+   * Modal "Dónde comprar":
+   * - todas las tiendas al abrir
+   *
+   * Vista expandida:
+   * - todas ordenadas por distancia
    */
   const compactPanelStores =
     nearbyStores.length > 0
       ? nearbyStores
       : nearestStoreOutsideRadius
-        ? [
-          nearestStoreOutsideRadius,
-        ]
+        ? [nearestStoreOutsideRadius]
         : [];
 
   const panelStores = isExpanded
     ? allStoresByDistance
-    : compactPanelStores;
+    : showAllStoresOnLoad && !origin
+      ? stores
+      : compactPanelStores;
+
+  const showStoresPanel =
+    isExpanded ||
+    !embedded ||
+    showAllStoresOnLoad;
 
   return (
     <section
@@ -170,33 +158,39 @@ function StoreLocator({
               to-[#8a7862]
               p-2 sm:p-4
             `
-          : embedded
+          : showAllStoresOnLoad
             ? `
-                w-full overflow-hidden
-                rounded-2xl
-                border border-neutral-200
-                bg-white
-                shadow-lg
-              `
-            : `
-                mx-auto
-                bg-gradient-to-r
-                from-[#ebdecf]
-                to-[#8a7862]
-                pb-[10%]
-                lg:px-[5%]
-                xl:pb-[5%]
-              `
+      w-full
+      bg-white
+      lg:h-full
+      lg:overflow-hidden
+    `
+            : embedded
+              ? `
+                  w-full overflow-hidden
+                  rounded-2xl
+                  border border-neutral-200
+                  bg-white
+                  shadow-lg
+                `
+              : `
+                  mx-auto
+                  bg-gradient-to-r
+                  from-[#ebdecf]
+                  to-[#8a7862]
+                  pb-[10%]
+                  lg:px-[5%]
+                  xl:pb-[5%]
+                `
       }
     >
-      {!embedded &&
-        !isExpanded && (
-          <div className="mx-auto max-w-2xl py-[5%] text-center xl:pb-[5%]">
-            <h2 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-              {t("findUsTitle")}
-            </h2>
-          </div>
-        )}
+      {!embedded && !isExpanded && (
+        <div className="mx-auto max-w-2xl py-[5%] text-center xl:pb-[5%]">
+          <h2 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+            {t("findUsTitle")}
+          </h2>
+        </div>
+      )}
 
       <div
         className={
@@ -206,54 +200,91 @@ function StoreLocator({
                 grid-cols-1 gap-4
                 lg:grid-cols-[minmax(0,1fr)_400px]
               `
-            : embedded
-              ? "w-full"
-              : `
-                  grid grid-cols-4
-                  gap-4
-                  lg:grid-cols-4
-                  xl:grid-cols-4
-                `
+            : showAllStoresOnLoad
+              ? `
+              grid
+              grid-cols-1
+              gap-4
+              bg-white
+              lg:h-full
+              lg:min-h-0
+              lg:grid-cols-[400px_minmax(0,1fr)]
+              lg:overflow-hidden
+    `
+              : embedded
+                ? "w-full"
+                : `
+                    grid grid-cols-4
+                    gap-4
+                    lg:grid-cols-4
+                    xl:grid-cols-4
+                  `
         }
       >
         {/* MAPA */}
         <div
           className={
-            isExpanded
-              ? "min-w-0 min-h-0"
-              : embedded
-                ? "w-full"
-                : `
-                    col-span-4
-                    lg:col-span-3
-                    xl:col-span-3
-                  `
+            showAllStoresOnLoad && !isExpanded
+              ? `
+                order-1
+                min-w-0
+                bg-white
+                lg:order-2
+                lg:flex
+                lg:h-full
+                lg:min-h-0
+                lg:flex-col
+                lg:overflow-hidden
+              `
+              : isExpanded
+                ? "min-h-0 min-w-0"
+                : embedded
+                  ? "w-full"
+                  : `
+                      col-span-4
+                      lg:col-span-3
+                      xl:col-span-3
+                    `
           }
         >
           {/* BUSCADOR */}
           <form
             onSubmit={handleSearchSubmit}
             className={
-              embedded &&
-                !isExpanded
+              showAllStoresOnLoad && !isExpanded
                 ? `
-                    mx-auto mb-0
-                    flex w-full
-                    flex-col gap-2
-                    bg-white
-                    p-3 sm:p-4
-                  `
-                : `
-                    mx-auto mb-4
-                    flex w-full
-                    max-w-4xl
-                    flex-col gap-2
-                    px-2
-                    text-center
-                    sm:flex-row
-                    sm:items-stretch
-                    sm:justify-center
-                  `
+                  mx-auto
+                  mb-4
+                  flex
+                  w-full
+                  flex-col
+                  gap-2
+                  bg-white
+                  px-1
+                  sm:px-2
+                  md:flex-row
+                  md:items-stretch
+                  md:justify-center
+                `
+                : embedded && !isExpanded
+                  ? `
+                      mx-auto mb-0
+                      flex w-full
+                      flex-col gap-2
+                      bg-white
+                      p-3 sm:p-4
+                    `
+                  : `
+                      mx-auto mb-4
+                      flex w-full
+                      max-w-4xl
+                      flex-col gap-2
+                      px-2
+                      text-center
+                      sm:flex-row
+                      sm:items-stretch
+                      sm:justify-center
+                    `
             }
           >
             <label
@@ -268,13 +299,9 @@ function StoreLocator({
               type="text"
               value={cityName}
               onChange={(event) =>
-                setCityName(
-                  event.target.value
-                )
+                setCityName(event.target.value)
               }
-              placeholder={t(
-                "inputPlaceholder"
-              )}
+              placeholder={t("inputPlaceholder")}
               maxLength={160}
               disabled={isBusy}
               className="
@@ -295,16 +322,13 @@ function StoreLocator({
               "
             />
 
-            {embedded &&
-              !isExpanded ? (
+            {embedded && !isExpanded ? (
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <button
                   type="submit"
                   disabled={
                     isBusy ||
-                    cityName
-                      .trim()
-                      .length < 2
+                    cityName.trim().length < 2
                   }
                   className="
                     btn-clase
@@ -325,9 +349,7 @@ function StoreLocator({
 
                 <button
                   type="button"
-                  onClick={
-                    handleUseMyLocation
-                  }
+                  onClick={handleUseMyLocation}
                   disabled={isBusy}
                   className="
                     w-full
@@ -352,9 +374,7 @@ function StoreLocator({
                   type="submit"
                   disabled={
                     isBusy ||
-                    cityName
-                      .trim()
-                      .length < 2
+                    cityName.trim().length < 2
                   }
                   className="
                     btn-clase
@@ -375,9 +395,7 @@ function StoreLocator({
 
                 <button
                   type="button"
-                  onClick={
-                    handleUseMyLocation
-                  }
+                  onClick={handleUseMyLocation}
                   disabled={isBusy}
                   className="
                     rounded-xl
@@ -411,8 +429,7 @@ function StoreLocator({
                 text-sm font-medium
                 text-red-700
 
-                ${embedded &&
-                  !isExpanded
+                ${embedded && !isExpanded
                   ? "mx-3"
                   : "mx-2"
                 }
@@ -431,8 +448,7 @@ function StoreLocator({
                 text-center
                 text-sm font-medium
 
-                ${embedded &&
-                  !isExpanded
+                ${embedded && !isExpanded
                   ? "text-neutral-600"
                   : "text-white"
                 }
@@ -444,49 +460,41 @@ function StoreLocator({
 
           {/* CONTENEDOR MAPA */}
           <div className="relative">
-            <button
-              type="button"
-              onClick={() =>
-                setIsExpanded(
-                  (current) =>
-                    !current
-                )
-              }
-              className={`
-                absolute top-3 z-20
-                rounded-xl
-                bg-neutral-900/90
-                px-4 py-2
-                text-sm font-semibold
-                text-white
-                shadow-lg
-                backdrop-blur
-                transition
-                hover:bg-neutral-700
-
-                ${embedded &&
-                  !isExpanded
-                  ? "right-3"
-                  : "left-3"
+            {!showAllStoresOnLoad && (
+              <button
+                type="button"
+                onClick={() =>
+                  setIsExpanded(
+                    (current) => !current
+                  )
                 }
-              `}
-              aria-pressed={
-                isExpanded
-              }
-            >
-              {isExpanded
-                ? t(
-                  "closeExpandedMapButton"
-                )
-                : t(
-                  "expandMapButton"
-                )}
-            </button>
+                className={`
+                  absolute top-3 z-20
+                  rounded-xl
+                  bg-neutral-900/90
+                  px-4 py-2
+                  text-sm font-semibold
+                  text-white
+                  shadow-lg
+                  backdrop-blur
+                  transition
+                  hover:bg-neutral-700
+
+                  ${embedded && !isExpanded
+                    ? "right-3"
+                    : "left-3"
+                  }
+                `}
+                aria-pressed={isExpanded}
+              >
+                {isExpanded
+                  ? t("closeExpandedMapButton")
+                  : t("expandMapButton")}
+              </button>
+            )}
 
             <div
-              ref={
-                mapContainerRef
-              }
+              ref={mapContainerRef}
               className="
                 w-full
                 overflow-hidden
@@ -495,27 +503,28 @@ function StoreLocator({
               style={{
                 height: isExpanded
                   ? "calc(100dvh - 8.5rem)"
-                  : embedded
-                    ? "420px"
-                    : "65vh",
-
-                minHeight:
-                  isExpanded
-                    ? "420px"
+                  : showAllStoresOnLoad
+                    ? "clamp(320px, 52dvh, 520px)"
+                    : embedded
+                      ? "420px"
+                      : "65vh",
+                minHeight: isExpanded
+                  ? "420px"
+                  : showAllStoresOnLoad
+                    ? "320px"
                     : embedded
                       ? "320px"
                       : "360px",
 
                 borderRadius:
-                  isExpanded
+                  isExpanded ||
+                    showAllStoresOnLoad
                     ? "1rem"
                     : embedded
                       ? "0 0 1rem 1rem"
                       : "1rem",
               }}
-              aria-label={t(
-                "mapAriaLabel"
-              )}
+              aria-label={t("mapAriaLabel")}
             />
           </div>
 
@@ -533,8 +542,7 @@ function StoreLocator({
                   text-sm font-medium
                   text-amber-900
 
-                  ${embedded &&
-                    !isExpanded
+                  ${embedded && !isExpanded
                     ? "mx-3 mb-3"
                     : "mx-2"
                   }
@@ -545,11 +553,10 @@ function StoreLocator({
                   {
                     store:
                       nearestStoreOutsideRadius.title,
-
                     distance:
-                      nearestStoreOutsideRadius
-                        .distanceKm
-                        .toFixed(1),
+                      nearestStoreOutsideRadius.distanceKm.toFixed(
+                        1
+                      ),
                   }
                 )}
               </div>
@@ -568,55 +575,42 @@ function StoreLocator({
                   text-sm font-medium
                   text-neutral-800
 
-                  ${embedded &&
-                    !isExpanded
+                  ${embedded && !isExpanded
                     ? "mx-3 mb-3"
                     : "mx-2"
                   }
                 `}
               >
-                {t(
-                  "noNearbyStores"
-                )}
+                {t("noNearbyStores")}
               </div>
             )}
 
           {/* RESUMEN DE RUTA SELECCIONADA */}
           {selectedStore &&
             (!embedded ||
-              isExpanded) && (
+              isExpanded ||
+              showAllStoresOnLoad) && (
               <div
                 className="
                   mx-2 mt-4
                   overflow-hidden
                   rounded-2xl
-                  border border-white/50
-                  bg-white/95
+                  border border-neutral-200
+                  bg-white
                   px-5 py-4
                   text-sm
                   text-neutral-700
                   shadow-sm
-                  backdrop-blur
                 "
               >
                 <div className="flex flex-col gap-1">
-                  <p
-                    className="
-                      text-base
-                      font-semibold
-                      text-neutral-950
-                    "
-                  >
-                    {
-                      selectedStore.title
-                    }
+                  <p className="text-base font-semibold text-neutral-950">
+                    {selectedStore.title}
                   </p>
 
                   {selectedStore.direccion && (
                     <p className="text-neutral-500">
-                      {
-                        selectedStore.direccion
-                      }
+                      {selectedStore.direccion}
                     </p>
                   )}
                 </div>
@@ -643,9 +637,7 @@ function StoreLocator({
                           hover:text-[#26659E]
                         "
                         >
-                          {
-                            selectedStore.telefono
-                          }
+                          {selectedStore.telefono}
                         </a>
                       )}
 
@@ -660,9 +652,7 @@ function StoreLocator({
                           hover:text-[#26659E]
                         "
                         >
-                          {
-                            selectedStore.correo
-                          }
+                          {selectedStore.correo}
                         </a>
                       )}
                     </div>
@@ -671,36 +661,19 @@ function StoreLocator({
                 {Number.isFinite(
                   selectedStore.distanceKm
                 ) && (
-                    <p
-                      className="
-                      mt-3
-                      font-semibold
-                      text-[#26659E]
-                    "
-                    >
-                      {t(
-                        "distanceFromYou",
-                        {
-                          distance:
-                            selectedStore
-                              .distanceKm
-                              .toFixed(1),
-                        }
-                      )}
+                    <p className="mt-3 font-semibold text-[#26659E]">
+                      {t("distanceFromYou", {
+                        distance:
+                          selectedStore.distanceKm.toFixed(
+                            1
+                          ),
+                      })}
                     </p>
                   )}
 
                 {isRouteLoading && (
-                  <p
-                    className="
-                      mt-3
-                      font-medium
-                      text-[#26659E]
-                    "
-                  >
-                    {t(
-                      "routeLoading"
-                    )}
+                  <p className="mt-3 font-medium text-[#26659E]">
+                    {t("routeLoading")}
                   </p>
                 )}
 
@@ -715,27 +688,14 @@ function StoreLocator({
                     "
                   >
                     <div>
-                      <p
-                        className="
-                          text-base
-                          font-semibold
-                          text-neutral-950
-                        "
-                      >
+                      <p className="text-base font-semibold text-neutral-950">
                         {routeSummary.distanceKm.toFixed(
                           1
                         )}{" "}
                         km
                       </p>
 
-                      <p
-                        className="
-                          text-xs
-                          uppercase
-                          tracking-wide
-                          text-neutral-400
-                        "
-                      >
+                      <p className="text-xs uppercase tracking-wide text-neutral-400">
                         {t(
                           "drivingDistanceLabel",
                           {
@@ -747,27 +707,14 @@ function StoreLocator({
                     </div>
 
                     <div>
-                      <p
-                        className="
-                          text-base
-                          font-semibold
-                          text-neutral-950
-                        "
-                      >
+                      <p className="text-base font-semibold text-neutral-950">
                         {Math.round(
                           routeSummary.durationMinutes
                         )}{" "}
                         min
                       </p>
 
-                      <p
-                        className="
-                          text-xs
-                          uppercase
-                          tracking-wide
-                          text-neutral-400
-                        "
-                      >
+                      <p className="text-xs uppercase tracking-wide text-neutral-400">
                         {t(
                           "estimatedDurationLabel",
                           {
@@ -781,24 +728,14 @@ function StoreLocator({
                 )}
 
                 {routeErrorText && (
-                  <p
-                    className="
-                      mt-3
-                      font-medium
-                      text-red-700
-                    "
-                  >
-                    {
-                      routeErrorText
-                    }
+                  <p className="mt-3 font-medium text-red-700">
+                    {routeErrorText}
                   </p>
                 )}
 
                 {googleMapsUrl && (
                   <a
-                    href={
-                      googleMapsUrl
-                    }
+                    href={googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="
@@ -810,9 +747,7 @@ function StoreLocator({
                       hover:text-[#1f527f]
                     "
                   >
-                    {t(
-                      "openInGoogleMaps"
-                    )}
+                    {t("openInGoogleMaps")}
                     <span className="ml-1">
                       →
                     </span>
@@ -822,30 +757,37 @@ function StoreLocator({
             )}
         </div>
 
-        {/* PANEL DERECHO */}
-        {(isExpanded ||
-          !embedded) && (
+        {/* PUNTOS DE VENTA */}
+        {showStoresPanel && (
+          <div
+            className={
+              showAllStoresOnLoad && !isExpanded
+                ? `
+            order-1
+            h-full
+            min-h-0
+            overflow-y-auto
+            overflow-x-hidden
+            bg-white
+            pr-2
+          `
+                : "min-h-0"
+            }
+          >
             <StorePanel
               stores={panelStores}
               origin={origin}
-              nearbyStores={
-                nearbyStores
-              }
+              nearbyStores={nearbyStores}
               nearestStoreOutsideRadius={
                 nearestStoreOutsideRadius
               }
-              selectedStore={
-                selectedStore
-              }
-              onSelect={
-                handleStoreSelection
-              }
-              isExpanded={
-                isExpanded
-              }
+              selectedStore={selectedStore}
+              onSelect={handleStoreSelection}
+              isExpanded={isExpanded}
               t={t}
             />
-          )}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -853,67 +795,50 @@ function StoreLocator({
 
 const GeocodingService = ({
   embedded = false,
+  showAllStoresOnLoad = false,
 }) => {
   const { t } = useTranslation(
     "geocodingService"
   );
 
-  const [stores, setStores] =
-    useState([]);
-
-  const [
-    storesLoading,
-    setStoresLoading,
-  ] = useState(true);
+  const [stores, setStores] = useState([]);
+  const [storesLoading, setStoresLoading] =
+    useState(true);
 
   useEffect(() => {
-    const controller =
-      new AbortController();
+    const controller = new AbortController();
 
-    const loadStores =
-      async () => {
-        setStoresLoading(true);
+    const loadStores = async () => {
+      setStoresLoading(true);
 
-        try {
-          const puntosVenta =
-            await getPuntosVenta({
-              signal:
-                controller.signal,
-            });
+      try {
+        const puntosVenta =
+          await getPuntosVenta({
+            signal: controller.signal,
+          });
 
-          if (
-            controller.signal.aborted
-          ) {
-            return;
-          }
-
-          setStores(
-            puntosVenta
-          );
-        } catch (error) {
-          if (
-            error?.name ===
-            "AbortError"
-          ) {
-            return;
-          }
-
-          console.error(
-            "Error cargando puntos de venta:",
-            error
-          );
-
-          setStores([]);
-        } finally {
-          if (
-            !controller.signal.aborted
-          ) {
-            setStoresLoading(
-              false
-            );
-          }
+        if (controller.signal.aborted) {
+          return;
         }
-      };
+
+        setStores(puntosVenta);
+      } catch (error) {
+        if (error?.name === "AbortError") {
+          return;
+        }
+
+        console.error(
+          "Error cargando puntos de venta:",
+          error
+        );
+
+        setStores([]);
+      } finally {
+        if (!controller.signal.aborted) {
+          setStoresLoading(false);
+        }
+      }
+    };
 
     loadStores();
 
@@ -926,32 +851,35 @@ const GeocodingService = ({
     return (
       <section
         className={
-          embedded
+          showAllStoresOnLoad
             ? `
-                w-full
-                overflow-hidden
-                rounded-2xl
-                border border-neutral-200
+                h-full w-full
                 bg-white
-                shadow-lg
               `
-            : `
-                mx-auto
-                bg-gradient-to-r
-                from-[#ebdecf]
-                to-[#8a7862]
-                pb-[10%]
-                lg:px-[5%]
-                xl:pb-[5%]
-              `
+            : embedded
+              ? `
+                  w-full
+                  overflow-hidden
+                  rounded-2xl
+                  border border-neutral-200
+                  bg-white
+                  shadow-lg
+                `
+              : `
+                  mx-auto
+                  bg-gradient-to-r
+                  from-[#ebdecf]
+                  to-[#8a7862]
+                  pb-[10%]
+                  lg:px-[5%]
+                  xl:pb-[5%]
+                `
         }
       >
         {!embedded && (
           <div className="mx-auto max-w-2xl py-[5%] text-center xl:pb-[5%]">
             <h2 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-              {t(
-                "findUsTitle"
-              )}
+              {t("findUsTitle")}
             </h2>
           </div>
         )}
@@ -964,7 +892,8 @@ const GeocodingService = ({
             text-center
             font-medium
 
-            ${embedded
+            ${embedded ||
+              showAllStoresOnLoad
               ? `
                     min-h-[320px]
                     text-neutral-600
@@ -987,6 +916,9 @@ const GeocodingService = ({
     <StoreLocator
       stores={stores}
       embedded={embedded}
+      showAllStoresOnLoad={
+        showAllStoresOnLoad
+      }
       t={t}
     />
   );

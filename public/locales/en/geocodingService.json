@@ -31,5 +31,6 @@
     "mapLoading": "Loading map...",
     "mapAriaLabel": "Store locator map",
     "expandMapButton": "Open large map",
-    "closeExpandedMapButton": "Close large map"
+    "closeExpandedMapButton": "Close large map",
+    "locationPermissionDeniedHelp": "Location access is blocked for this website. Enable location permission in your browser settings and then click \"Use my location\" again."
 }

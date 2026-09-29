@@ -131,7 +131,7 @@ const Contacts = () => {
                         </div>
 
                         {/* Mapa (iframe) */}
-                        {/* <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-xl sm:p-10">
+                        <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-xl sm:p-10">
                             <h3 className="text-xl font-semibold text-neutral-900 sm:text-2xl">
                                 {t('map.title')}
                             </h3>
@@ -141,7 +141,7 @@ const Contacts = () => {
                             <div className="mt-6 overflow-hidden rounded-3xl">
                                 <GeocodingService embedded />
                             </div>
-                        </div> */}
+                        </div>
                     </aside>
                 </div>
 

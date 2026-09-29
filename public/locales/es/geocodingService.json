@@ -31,5 +31,6 @@
     "mapLoading": "Cargando mapa...",
     "mapAriaLabel": "Mapa del localizador de tiendas",
     "expandMapButton": "Abrir mapa grande",
-    "closeExpandedMapButton": "Cerrar mapa grande"
+    "closeExpandedMapButton": "Cerrar mapa grande",
+    "locationPermissionDeniedHelp": "La ubicación está bloqueada para esta web. Activa el permiso de ubicación desde los permisos del navegador y vuelve a pulsar \"Usar mi ubicación\"."
 }
