@@ -46,6 +46,10 @@
         "default": {
             "introTop": "Descubre la historia y el carácter de esta colección a través de sus ambientes, texturas y detalles.",
             "introBottom": "Una selección pensada para crear espacios con presencia, equilibrio y un punto de sofisticación."
+        },
+        "kannaturaVolIII": {
+            "introTop": "Kannatura Vol III explora la belleza natural de la rafia a través de un tejido con textura, profundidad y un carácter orgánico muy marcado. Su aspecto artesanal aporta calidez y convierte cada superficie en un elemento decorativo con identidad propia.",
+            "introBottom": "La trama de la rafia crea un juego sutil de relieves y matices que conecta los interiores con la naturaleza. Una colección pensada para espacios serenos y contemporáneos, donde la materia y la textura se convierten en protagonistas."
         }
     }
 }

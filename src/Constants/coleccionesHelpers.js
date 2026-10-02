@@ -39,6 +39,13 @@ export function getColeccionCover({ collectionName, images, configByName }) {
 
 // Config de meta por colección (NO incluye arrays de imágenes: eso viene del backend)
 export const coleccionConfigByName = {
+    "KANNATURA VOL III": {
+        marca: "ARE",
+        textKey: "kannaturaVolIII",
+        brochurePdf: null,
+        brochureImageIndex: 0,
+        heroIndex: 0,
+    },
     "ESSENCES DU NIL": {
         marca: "BAS",
         textKey: "essencesDuNil",

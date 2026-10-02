@@ -46,6 +46,10 @@
         "default": {
             "introTop": "Discover the story and character of this collection through its atmospheres, textures, and details.",
             "introBottom": "A selection designed to create spaces with presence, balance, and a touch of sophistication."
+        },
+        "kannaturaVolIII": {
+            "introTop": "Kannatura Vol III explore la beauté naturelle du raphia à travers un tissage texturé, profond et au caractère organique affirmé. Son aspect artisanal apporte de la chaleur et transforme chaque surface en un élément décoratif doté de sa propre identité.",
+            "introBottom": "Le tissage du raphia crée un jeu subtil de reliefs et de nuances qui rapproche les intérieurs de la nature. Une collection pensée pour des espaces sereins et contemporains, où la matière et la texture deviennent les véritables protagonistes."
         }
     }
 }

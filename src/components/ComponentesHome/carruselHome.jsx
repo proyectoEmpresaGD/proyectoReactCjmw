@@ -79,7 +79,7 @@ const CarruselHome = ({
     );
 
     // ✅ Solo las marcas que quieres ahora
-    const ORDER = useMemo(() => ["BASSARI", "FLAMENCO", "HARBOUR", "ARENA", "CJM"], []);
+    const ORDER = useMemo(() => ["ARENA", "BASSARI", "FLAMENCO", "HARBOUR", "CJM"], []);
 
     const slides = useMemo(() => {
         const nameToIndex = new Map();
