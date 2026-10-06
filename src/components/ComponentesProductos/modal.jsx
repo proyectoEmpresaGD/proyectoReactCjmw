@@ -680,7 +680,7 @@ const Modal = ({ isOpen, close, product, alt, onApplyFilters }) => {
                                                             </svg>
                                                         </span>
 
-                                                        <span>Dónde comprar</span>
+                                                        <span>{t('whereToBuy')}</span>
                                                     </button>
                                                 </div>
 

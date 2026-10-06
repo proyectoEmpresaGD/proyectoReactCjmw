@@ -32,5 +32,7 @@
     "mapAriaLabel": "Carte du localisateur de magasins",
     "expandMapButton": "Ouvrir la grande carte",
     "closeExpandedMapButton": "Fermer la grande carte",
-    "locationPermissionDeniedHelp": "L'accès à la localisation est bloqué pour ce site. Activez l'autorisation de localisation dans les paramètres de votre navigateur, puis cliquez à nouveau sur « Utiliser ma position »."
+    "locationPermissionDeniedHelp": "L'accès à la localisation est bloqué pour ce site. Activez l'autorisation de localisation dans les paramètres de votre navigateur, puis cliquez à nouveau sur « Utiliser ma position ».",
+    "storeLocations": "Points de vente",
+    "closeStoreLocator": "Fermer la carte"
 }

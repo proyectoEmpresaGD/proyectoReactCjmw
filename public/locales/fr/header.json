@@ -16,6 +16,7 @@
     "fabric": "Tissus",
     "userFeature": "Fonction en développement",
     "openFilters": "Ouvrir les filtres",
+    "whereToBuy": "Où acheter",
     "company": "Entreprise",
     "tailoring": "Confection",
     "customerArea": "Espace client",
@@ -33,5 +34,6 @@
         "brandsDescription": "Découvrez toutes nos collections et univers de marque.",
         "productsDescription": "Accès rapide aux principales catégories de produits.",
         "companyDescription": "Toutes les informations de l’entreprise regroupées en un seul endroit."
-    }
+    },
+    "search": "Rechercher"
 }

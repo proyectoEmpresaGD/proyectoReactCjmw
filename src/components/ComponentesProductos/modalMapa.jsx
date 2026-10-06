@@ -1,8 +1,10 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 import GeocodingService from "../../components/ComponentesContact/map";
 
 const ModalMapa = ({ isOpen, close }) => {
+    const { t } = useTranslation("geocodingService");
     useEffect(() => {
         if (!isOpen) {
             return undefined;
@@ -87,13 +89,13 @@ const ModalMapa = ({ isOpen, close }) => {
                     "
                 >
                     <h2 className="text-lg font-semibold text-neutral-900">
-                        Puntos de venta
+                        {t("storeLocations", { defaultValue: "Puntos de venta" })}
                     </h2>
 
                     <button
                         type="button"
                         onClick={close}
-                        aria-label="Cerrar mapa"
+                        aria-label={t("closeStoreLocator", { defaultValue: "Cerrar mapa" })}
                         className="
                             flex
                             h-10
@@ -123,9 +125,11 @@ const ModalMapa = ({ isOpen, close }) => {
                     className="
                         min-h-0
                         flex-1
-                        overflow-hidden
+                        overflow-y-auto
                         bg-white
-                        p-4
+                        p-2
+                        sm:p-4
+                        lg:overflow-hidden
                     "
                 >
                     <GeocodingService

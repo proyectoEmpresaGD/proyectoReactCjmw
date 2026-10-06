@@ -16,7 +16,8 @@
     "fabric": "Telas",
     "userFeature": "Feature in development",
     "openFilters": "Abrir filtros",
-    "changeLanguage": "Change language",
+    "whereToBuy": "Dónde comprar",
+    "changeLanguage": "Cambiar idioma",
     "company": "Empresa",
     "tailoring": "Confección",
     "customerArea": "Área cliente",
@@ -33,5 +34,6 @@
         "brandsDescription": "Descubre todas nuestras colecciones y universos de marca.",
         "productsDescription": "Acceso rápido a las categorías principales de producto.",
         "companyDescription": "Toda la información corporativa agrupada en un solo sitio."
-    }
+    },
+    "search": "Buscar"
 }

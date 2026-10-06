@@ -16,10 +16,11 @@
     "fabric": "Fabrics",
     "userFeature": "Feature in development",
     "openFilters": "Open filters",
+    "whereToBuy": "Where to buy",
     "company": "Company",
     "tailoring": "Tailoring",
     "customerArea": "Customer area",
-    "changeLanguage": "Cambiar idioma",
+    "changeLanguage": "Change language",
     "nifLabel": "Tax ID",
     "adminPanel": "Admin panel",
     "myData": "My details",
@@ -33,5 +34,6 @@
         "brandsDescription": "Discover all our collections and brand universes.",
         "productsDescription": "Quick access to the main product categories.",
         "companyDescription": "All corporate information gathered in one place."
-    }
+    },
+    "search": "Search"
 }
