@@ -1,0 +1,118 @@
+/* CJMW — Localizador de puntos de venta
+   CSS aislado para no cambiar otras secciones de la web.
+   El mapa se redimensiona con ResizeObserver desde map.jsx.
+*/
+.cjmw-store-locator { --locator-accent: #26659e; }
+.cjmw-store-locator :is(select, input, button):focus-visible,
+.cjmw-store-modal-overlay button:focus-visible {
+  outline: 2px solid var(--locator-accent, #26659e);
+  outline-offset: 2px;
+}
+.cjmw-store-filters {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  border-radius: 12px;
+}
+.cjmw-store-filters label { min-width: 0; }
+.cjmw-store-filters select { min-height: 42px; }
+.cjmw-store-filters button { min-height: 42px; }
+.cjmw-store-search input,
+.cjmw-store-search button { min-height: 44px; }
+.cjmw-store-map-canvas { isolation: isolate; }
+.cjmw-store-results-header { padding: 14px 16px; }
+.cjmw-store-results-header h3 { font-size: 1.05rem; line-height: 1.3; }
+.cjmw-store-results-list { padding: 10px; scrollbar-gutter: stable; }
+.cjmw-store-card { border-radius: 12px; }
+.cjmw-store-card > button { padding-top: 12px; padding-bottom: 10px; }
+.cjmw-store-card .group { gap: 8px; }
+.cjmw-store-card h4 { overflow-wrap: anywhere; }
+.cjmw-store-card a { min-width: 28px; min-height: 28px; }
+.cjmw-store-panel-container { min-width: 0; }
+
+/* 0–639: pantalla completa, lectura en una columna y mapa táctil. */
+@media (max-width: 639px) {
+  .cjmw-store-modal-overlay { padding: 0; }
+  .cjmw-store-modal-dialog { max-height: 100dvh; border-radius: 0; border: 0; }
+  .cjmw-store-modal-header { height: 56px; padding: 0 14px; }
+  .cjmw-store-modal-body { padding: 10px; overflow-y: auto; overscroll-behavior: contain; }
+  .cjmw-store-locator--modal .cjmw-store-layout { gap: 12px; }
+  .cjmw-store-locator--modal .cjmw-store-map-column { overflow: visible; }
+  .cjmw-store-locator--modal .cjmw-store-filters { margin-bottom: 10px; padding: 10px; gap: 8px; }
+  .cjmw-store-locator--modal .cjmw-store-search {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px; margin-bottom: 10px; padding: 0;
+  }
+  .cjmw-store-locator--modal .cjmw-store-search input { grid-column: 1 / -1; }
+  .cjmw-store-locator--modal .cjmw-store-search button { width: 100%; padding: 9px 8px; line-height: 1.25; font-size: 13px; }
+  .cjmw-store-locator--modal .cjmw-store-map-canvas { height: clamp(290px, 43dvh, 490px); }
+  .cjmw-store-locator--modal .cjmw-store-panel-container { overflow: visible; padding: 0; }
+  .cjmw-store-locator--modal .cjmw-store-results { width: 100%; margin: 0; padding: 0; }
+  .cjmw-store-locator--modal .cjmw-store-results-box { max-height: min(58dvh, 540px); box-shadow: none; border-color: #e2e8f0; }
+  .cjmw-store-locator--modal .cjmw-store-results-list { max-height: min(45dvh, 430px); }
+  .cjmw-store-locator--expanded { overflow: auto !important; }
+  .cjmw-store-locator--expanded .cjmw-store-map-canvas { height: 43dvh !important; min-height: 270px !important; }
+}
+/* 640–1023: mapa prioritario y tarjetas en lista debajo, sin recortes. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .cjmw-store-modal-overlay { padding: 12px; }
+  .cjmw-store-modal-body { overflow-y: auto; padding: 12px; }
+  .cjmw-store-locator--modal .cjmw-store-layout { gap: 12px; }
+  .cjmw-store-locator--modal .cjmw-store-filters { grid-template-columns: minmax(0,1fr) minmax(0,1fr) auto; padding: 10px; }
+  .cjmw-store-locator--modal .cjmw-store-filters > button { grid-column: auto; }
+  .cjmw-store-locator--modal .cjmw-store-search { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 8px; padding: 0; }
+  .cjmw-store-locator--modal .cjmw-store-search input { width: 100%; }
+  .cjmw-store-locator--modal .cjmw-store-map-canvas { height: clamp(340px, 46dvh, 600px); }
+  .cjmw-store-locator--modal .cjmw-store-panel-container { overflow: visible; padding: 0; }
+  .cjmw-store-locator--modal .cjmw-store-results { width: 100%; margin: 0; padding: 0; }
+  .cjmw-store-locator--modal .cjmw-store-results-box { max-height: 48dvh; border-color: #e2e8f0; box-shadow: none; }
+  .cjmw-store-locator--expanded { overflow: auto !important; }
+  .cjmw-store-locator--expanded .cjmw-store-map-canvas { height: 45dvh !important; min-height: 320px !important; }
+}
+/* 1024+: panel izquierdo estable, zona de búsqueda compacta y mapa con altura flexible. */
+@media (min-width: 1024px) {
+  .cjmw-store-modal-overlay { padding: 14px; background: rgba(15,23,42,.36); }
+  .cjmw-store-modal-dialog { max-width: 1820px; max-height: 1100px; border-radius: 18px; }
+  .cjmw-store-modal-header { height: 58px; padding: 0 20px; }
+  .cjmw-store-modal-body { padding: 12px; overflow: hidden; }
+  .cjmw-store-locator--modal { height: 100%; min-height: 0; overflow: hidden; }
+  .cjmw-store-locator--modal .cjmw-store-layout {
+    display: grid; height: 100%; min-height: 0; gap: 12px;
+    grid-template-columns: clamp(305px, 23.5vw, 365px) minmax(0, 1fr);
+  }
+  .cjmw-store-locator--modal .cjmw-store-map-column {
+    height: 100%; min-height: 0; overflow-y: auto; overflow-x: hidden;
+    overscroll-behavior: contain; display: flex; flex-direction: column;
+  }
+  .cjmw-store-locator--modal .cjmw-store-filters {
+    flex: 0 0 auto; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) auto;
+    padding: 9px 10px; gap: 9px; margin: 0 0 9px;
+  }
+  .cjmw-store-locator--modal .cjmw-store-filters label { font-size: 12px; gap: 4px; }
+  .cjmw-store-locator--modal .cjmw-store-filters select,
+  .cjmw-store-locator--modal .cjmw-store-filters button { height: 40px; min-height: 40px; }
+  .cjmw-store-locator--modal .cjmw-store-filters > button { grid-column: auto; font-size: 12px; white-space: nowrap; }
+  .cjmw-store-locator--modal .cjmw-store-search {
+    flex: 0 0 auto; display: grid; grid-template-columns: minmax(0,1fr) auto auto;
+    align-items: stretch; justify-content: stretch; width: 100%; margin: 0 0 9px;
+    padding: 0; gap: 8px;
+  }
+  .cjmw-store-locator--modal .cjmw-store-search input,
+  .cjmw-store-locator--modal .cjmw-store-search button { height: 42px; min-height: 42px; padding-top: 8px; padding-bottom: 8px; }
+  .cjmw-store-locator--modal .cjmw-store-map-shell {
+    flex: 1 0 min(320px, 45dvh); min-height: min(320px, 45dvh); overflow: hidden;
+  }
+  .cjmw-store-locator--modal .cjmw-store-map-canvas { height: 100% !important; min-height: 0 !important; }
+  .cjmw-store-locator--modal .cjmw-store-panel-container { height: 100%; min-height: 0; padding: 0; overflow: hidden; }
+  .cjmw-store-locator--modal .cjmw-store-results { height: 100%; min-height: 0; width: 100%; margin: 0; padding: 0; }
+  .cjmw-store-locator--modal .cjmw-store-results-box {
+    display: flex; flex-direction: column; height: 100%; min-height: 0; max-height: none;
+    border: 1px solid #e2e8f0; box-shadow: none;
+  }
+  .cjmw-store-locator--modal .cjmw-store-results-list {
+    flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cjmw-store-locator .cjmw-store-card,
+  .cjmw-store-locator .cjmw-store-card * { transition-duration: 0s !important; }
+}

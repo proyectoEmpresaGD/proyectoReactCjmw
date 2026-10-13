@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import "./storeLocatorResponsive.css";
 
 import { getPuntosVenta } from "../../services/puntosVentaApi.js";
 import { useStoreLocatorController } from "../../components/hooks/useStoreLocatorController.js";
 import StorePanel from "./StorePanel.jsx";
+import { normalizeStores } from "../../utils/storeLocator.js";
+import { availableCountries, availableProvinces } from "../../utils/storeRegions.js";
 
 function StoreLocator({
   stores,
@@ -14,6 +17,18 @@ function StoreLocator({
   t,
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
+
+  // Usamos los mismos puntos válidos que utiliza MapLibre. Cada opción de los
+  // desplegables tiene al menos un punto real y visible en el localizador.
+  const validStores = useMemo(() => normalizeStores(stores), [stores]);
+  const countries = useMemo(() => availableCountries(validStores), [validStores]);
+  const provinces = useMemo(
+    () => availableProvinces(validStores, selectedCountry),
+    [validStores, selectedCountry]
+  );
+  const hasRegionFilter = Boolean(selectedCountry || selectedProvince);
 
   const {
     mapContainerRef,
@@ -23,6 +38,8 @@ function StoreLocator({
     origin,
     nearbyStores,
     allStoresByDistance,
+    filteredStores,
+    clearStoreSelection,
     nearestStoreOutsideRadius,
     selectedStore,
     routeSummary,
@@ -42,6 +59,8 @@ function StoreLocator({
     stores,
     t,
     showAllStoresOnLoad,
+    selectedCountry,
+    selectedProvince,
   });
 
   /*
@@ -68,6 +87,17 @@ function StoreLocator({
       }
     };
   }, [isExpanded, resizeMap, setExpandedView]);
+
+  // Ajusta el lienzo de MapLibre cuando cambia el tamaño del contenedor.
+  // Es especialmente importante al redimensionar la modal en escritorio.
+  useEffect(() => {
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const container = mapContainerRef.current;
+    if (!container) return undefined;
+    const observer = new ResizeObserver(() => resizeMap());
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [resizeMap, mapContainerRef]);
 
   /*
    * Cuando el mapa está expandido:
@@ -115,7 +145,35 @@ function StoreLocator({
           : null;
 
   const hasNoNearbyStores =
-    Boolean(origin) && nearbyStores.length === 0;
+    Boolean(origin) && nearbyStores.length === 0 && !hasRegionFilter;
+
+  const onCountryChange = (event) => {
+    clearStoreSelection();
+    setSelectedCountry(event.target.value);
+    setSelectedProvince("");
+  };
+
+  const onProvinceChange = (event) => {
+    clearStoreSelection();
+    setSelectedProvince(event.target.value);
+  };
+
+  const clearRegionFilters = () => {
+    clearStoreSelection();
+    setSelectedCountry("");
+    setSelectedProvince("");
+  };
+
+  useEffect(() => {
+    if (selectedCountry && !countries.some((country) => country.value === selectedCountry)) {
+      clearStoreSelection();
+      setSelectedCountry("");
+      setSelectedProvince("");
+    } else if (selectedProvince && !provinces.some((province) => province.value === selectedProvince)) {
+      clearStoreSelection();
+      setSelectedProvince("");
+    }
+  }, [countries, provinces, selectedCountry, selectedProvince, clearStoreSelection]);
 
   /*
    * Vista normal:
@@ -135,11 +193,13 @@ function StoreLocator({
         ? [nearestStoreOutsideRadius]
         : [];
 
-  const panelStores = isExpanded
+  const panelStores = hasRegionFilter
     ? allStoresByDistance
-    : showAllStoresOnLoad && !origin
-      ? stores
-      : compactPanelStores;
+    : isExpanded
+      ? allStoresByDistance
+      : showAllStoresOnLoad && !origin
+        ? filteredStores
+        : compactPanelStores;
 
   const showStoresPanel =
     isExpanded ||
@@ -148,7 +208,7 @@ function StoreLocator({
 
   return (
     <section
-      className={
+      className={`cjmw-store-locator ${showAllStoresOnLoad ? "cjmw-store-locator--modal" : ""} ${isExpanded ? "cjmw-store-locator--expanded" : ""} ${
         isExpanded
           ? `
               fixed inset-0 z-[9999]
@@ -182,7 +242,7 @@ function StoreLocator({
                   lg:px-[5%]
                   xl:pb-[5%]
                 `
-      }
+      }`}
     >
       {!embedded && !isExpanded && (
         <div className="mx-auto max-w-2xl py-[5%] text-center xl:pb-[5%]">
@@ -193,12 +253,12 @@ function StoreLocator({
       )}
 
       <div
-        className={
+        className={`cjmw-store-layout ${
           isExpanded
             ? `
                 grid h-full min-h-0
                 grid-cols-1 gap-4
-                lg:grid-cols-[minmax(0,1fr)_400px]
+                lg:grid-cols-[350px_minmax(0,1fr)]
               `
             : showAllStoresOnLoad
               ? `
@@ -208,7 +268,7 @@ function StoreLocator({
               bg-white
               lg:h-full
               lg:min-h-0
-              lg:grid-cols-[400px_minmax(0,1fr)]
+              lg:grid-cols-[350px_minmax(0,1fr)]
               lg:overflow-hidden
     `
               : embedded
@@ -219,11 +279,11 @@ function StoreLocator({
                     lg:grid-cols-4
                     xl:grid-cols-4
                   `
-        }
+        }`}
       >
         {/* MAPA */}
         <div
-          className={
+          className={`cjmw-store-map-column ${
             showAllStoresOnLoad && !isExpanded
               ? `
                 order-1
@@ -234,10 +294,10 @@ function StoreLocator({
                 lg:h-full
                 lg:min-h-0
                 lg:flex-col
-                lg:overflow-hidden
+                lg:overflow-y-auto
               `
               : isExpanded
-                ? "min-h-0 min-w-0"
+                ? "min-h-0 min-w-0 lg:order-2"
                 : embedded
                   ? "w-full"
                   : `
@@ -245,12 +305,66 @@ function StoreLocator({
                       lg:col-span-3
                       xl:col-span-3
                     `
-          }
+          }`}
         >
+          {/* FILTROS DE PAÍS / PROVINCIA, GENERADOS DE LA API */}
+          <div className="cjmw-store-filters mb-3 grid grid-cols-1 items-end gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2 lg:mb-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:p-2">
+            <label className="flex min-w-0 flex-col gap-1 text-xs font-semibold text-slate-700">
+              {t("countryFilterLabel")}
+              <select
+                value={selectedCountry}
+                onChange={onCountryChange}
+                className="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 lg:h-9 lg:py-1.5 focus:border-[#26659E] focus:outline-none focus:ring-2 focus:ring-[#26659E]/20"
+              >
+                <option value="">{t("allCountries")}</option>
+                {countries.map((country) => (
+                  <option value={country.value} key={country.value}>{country.label}</option>
+                ))}
+              </select>
+            </label>
+            <label className="flex min-w-0 flex-col gap-1 text-xs font-semibold text-slate-700">
+              {t("provinceFilterLabel")}
+              <select
+                value={selectedProvince}
+                onChange={onProvinceChange}
+                disabled={!selectedCountry || provinces.length === 0}
+                className="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 lg:h-9 lg:py-1.5 focus:border-[#26659E] focus:outline-none focus:ring-2 focus:ring-[#26659E]/20 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+              >
+                <option value="">{t("allProvinces")}</option>
+                {provinces.map((province) => (
+                  <option value={province.value} key={province.value}>{province.label}</option>
+                ))}
+              </select>
+            </label>
+            <button
+              type="button"
+              onClick={clearRegionFilters}
+              disabled={!hasRegionFilter}
+              className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 lg:h-9 lg:px-3 lg:py-1.5 transition hover:border-[#26659E] hover:text-[#26659E] disabled:cursor-not-allowed disabled:opacity-40 sm:col-span-2 lg:col-span-1"
+            >
+              {t("clearRegionFilters")}
+            </button>
+            {hasRegionFilter && (
+              <p className="text-xs text-slate-600 sm:col-span-2 lg:col-span-3" aria-live="polite">
+                {t("filteredStoresCount", { count: filteredStores.length })}
+              </p>
+            )}
+            {countries.length === 0 && (
+              <p className="text-xs text-slate-500 sm:col-span-2 lg:col-span-3">
+                {t("countryFilterUnavailable")}
+              </p>
+            )}
+            {selectedCountry && provinces.length === 0 && (
+              <p className="text-xs text-slate-500 sm:col-span-2 lg:col-span-3">
+                {t("provinceFilterUnavailable")}
+              </p>
+            )}
+          </div>
+
           {/* BUSCADOR */}
           <form
             onSubmit={handleSearchSubmit}
-            className={
+            className={`cjmw-store-search ${
               showAllStoresOnLoad && !isExpanded
                 ? `
                   mx-auto
@@ -265,6 +379,7 @@ function StoreLocator({
                   md:flex-row
                   md:items-stretch
                   md:justify-center
+                  lg:mb-2 lg:justify-start lg:gap-2 lg:px-0
                 `
                 : embedded && !isExpanded
                   ? `
@@ -285,7 +400,7 @@ function StoreLocator({
                       sm:items-stretch
                       sm:justify-center
                     `
-            }
+            }`}
           >
             <label
               htmlFor="store-locator-search"
@@ -311,6 +426,7 @@ function StoreLocator({
                 border border-neutral-300
                 bg-white
                 px-4 py-3
+                lg:h-10 lg:py-2 lg:text-sm
                 text-neutral-900
                 outline-none
                 transition
@@ -381,6 +497,7 @@ function StoreLocator({
                     rounded-xl
                     bg-[#26659E]
                     px-5 py-3
+                    lg:h-10 lg:px-4 lg:py-2 lg:text-sm lg:whitespace-nowrap
                     font-semibold
                     text-white
                     shadow-sm
@@ -402,6 +519,7 @@ function StoreLocator({
                     border border-white
                     bg-white/95
                     px-5 py-3
+                    lg:h-10 lg:px-4 lg:py-2 lg:text-sm lg:whitespace-nowrap
                     font-semibold
                     text-neutral-900
                     shadow-sm
@@ -458,8 +576,11 @@ function StoreLocator({
             </div>
           )}
 
-          {/* CONTENEDOR MAPA */}
-          <div className="relative">
+          {/* CONTENEDOR MAPA: flexibilidad vertical dentro de la modal */}
+          <div className={`cjmw-store-map-shell ${showAllStoresOnLoad && !isExpanded
+            ? "relative lg:min-h-[260px] lg:flex-1"
+            : "relative"
+          }`}>
             {!showAllStoresOnLoad && (
               <button
                 type="button"
@@ -495,23 +616,28 @@ function StoreLocator({
 
             <div
               ref={mapContainerRef}
-              className="
+              className={`
+                cjmw-store-map-canvas
                 w-full
                 overflow-hidden
                 shadow-sm
-              "
+                ${showAllStoresOnLoad && !isExpanded
+                  ? "h-[clamp(340px,55dvh,620px)] lg:h-full"
+                  : ""
+                }
+              `}
               style={{
                 height: isExpanded
                   ? "calc(100dvh - 8.5rem)"
                   : showAllStoresOnLoad
-                    ? "clamp(320px, 52dvh, 520px)"
+                    ? undefined
                     : embedded
                       ? "420px"
                       : "65vh",
                 minHeight: isExpanded
                   ? "420px"
                   : showAllStoresOnLoad
-                    ? "320px"
+                    ? undefined
                     : embedded
                       ? "320px"
                       : "360px",
@@ -760,7 +886,7 @@ function StoreLocator({
         {/* PUNTOS DE VENTA */}
         {showStoresPanel && (
           <div
-            className={
+            className={`cjmw-store-panel-container ${
               showAllStoresOnLoad && !isExpanded
                 ? `
             order-1
@@ -771,11 +897,12 @@ function StoreLocator({
             bg-white
             pr-2
           `
-                : "min-h-0"
-            }
+                : isExpanded ? "min-h-0 lg:order-1" : "min-h-0"
+            }`}
           >
             <StorePanel
               stores={panelStores}
+              hasRegionFilter={hasRegionFilter}
               origin={origin}
               nearbyStores={nearbyStores}
               nearestStoreOutsideRadius={

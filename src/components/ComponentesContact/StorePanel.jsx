@@ -22,7 +22,7 @@ function StoreCard({
     return (
         <li
             className={`
-                group relative overflow-hidden rounded-2xl border
+                cjmw-store-card group relative overflow-hidden rounded-2xl border
                 transition duration-200
 
                 ${isSelected
@@ -219,6 +219,7 @@ function StoreCard({
                                 transition hover:text-[#26659E]
                             "
                             title={store.telefono}
+                            aria-label={`${t('phone', { defaultValue: 'Teléfono' })}: ${store.telefono}`}
                         >
                             <Phone
                                 className="h-3.5 w-3.5"
@@ -242,6 +243,7 @@ function StoreCard({
                                 transition hover:text-[#26659E]
                             "
                             title={store.correo}
+                            aria-label={`${t('email', { defaultValue: 'Email' })}: ${store.correo}`}
                         >
                             <Mail
                                 className="h-3.5 w-3.5"
@@ -296,15 +298,17 @@ export default function StorePanel({
     selectedStore,
     onSelect,
     isExpanded,
+    hasRegionFilter = false,
     t,
 }) {
     const hasNoNearbyStores =
         Boolean(origin) &&
-        nearbyStores.length === 0;
+        nearbyStores.length === 0 &&
+        !hasRegionFilter;
 
     return (
         <aside
-            className={
+            className={`cjmw-store-results ${
                 isExpanded
                     ? `
                         min-h-0 w-full
@@ -314,10 +318,11 @@ export default function StorePanel({
                         col-span-4 mx-auto w-full px-2
                         lg:col-span-1
                     `
-            }
+            }`}
         >
             <div
                 className={`
+                    cjmw-store-results-box
                     overflow-hidden
                     rounded-2xl
                     border border-white/40
@@ -335,7 +340,8 @@ export default function StorePanel({
                 {/* Cabecera */}
                 <div
                     className="
-                        shrink-0 border-b border-slate-100
+                        cjmw-store-results-header
+                    shrink-0 border-b border-slate-100
                         bg-white/95 px-5 py-5
                         backdrop-blur
                     "
@@ -379,9 +385,11 @@ export default function StorePanel({
                                     tracking-tight text-slate-950
                                 "
                             >
-                                {isExpanded
-                                    ? t('allStoresByProximityTitle')
-                                    : t('nearbyStoresTitle')
+                                {hasRegionFilter
+                                    ? t('filteredStoresTitle')
+                                    : isExpanded
+                                        ? t('allStoresByProximityTitle')
+                                        : t('nearbyStoresTitle')
                                 }
                             </h3>
                         </div>
@@ -413,6 +421,7 @@ export default function StorePanel({
                 {/* Contenido desplazable */}
                 <div
                     className={`
+                        cjmw-store-results-list
                         p-3
 
                         ${isExpanded
@@ -474,6 +483,12 @@ export default function StorePanel({
                                 {t('noNearbyStores')}
                             </div>
                         )}
+
+                    {hasRegionFilter && stores.length === 0 && (
+                        <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600" role="status">
+                            {t('noStoresMatchFilters')}
+                        </p>
+                    )}
 
                     {stores.length > 0 && (
                         <ul className="space-y-2.5">

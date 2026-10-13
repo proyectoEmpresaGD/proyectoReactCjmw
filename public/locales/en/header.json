@@ -35,5 +35,6 @@
         "productsDescription": "Quick access to the main product categories.",
         "companyDescription": "All corporate information gathered in one place."
     },
-    "search": "Search"
+    "search": "Search",
+    "storeLocations": "Store locations"
 }

@@ -11,8 +11,7 @@ import {
     ArrowRight,
     X,
     Globe,
-    Mail,
-    MapPin
+    Mail
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import ShoppingCartPanel from "./shoppingCart";
@@ -287,6 +286,13 @@ export const Header = ({ closeModal }) => {
         }
     };
 
+    const openStoreLocator = () => {
+        closeAllDropdowns();
+        closeSearchAndCart();
+        setShowMenu(false);
+        setShowStoreLocator(true);
+    };
+
     const handleLinkClick = (path) => {
         if (typeof window.closeModalGlobal === "function") {
             window.closeModalGlobal();
@@ -396,7 +402,7 @@ export const Header = ({ closeModal }) => {
                     <div className="hidden lg:flex flex-grow justify-center items-center gap-2 xl:gap-3">
                         <div className="relative" ref={brandsRef}>
                             <button
-                                className={`flex items-center rounded-full px-4 py-2.5 font-semibold transition ${showBrandsDropdown
+                                className={`flex items-center rounded-full px-2 xl:px-4 py-2.5 font-semibold transition ${showBrandsDropdown
                                     ? "bg-slate-900 text-white shadow-md"
                                     : "text-gray-800 hover:bg-gray-200 hover:text-gray-900"
                                     }`}
@@ -410,7 +416,7 @@ export const Header = ({ closeModal }) => {
 
                         <div className="relative" ref={productsRef}>
                             <button
-                                className={`flex items-center rounded-full px-4 py-2.5 font-semibold transition ${showProductsDropdown
+                                className={`flex items-center rounded-full px-2 xl:px-4 py-2.5 font-semibold transition ${showProductsDropdown
                                     ? "bg-slate-900 text-white shadow-md"
                                     : "text-gray-800 hover:bg-gray-200 hover:text-gray-900"
                                     }`}
@@ -424,15 +430,23 @@ export const Header = ({ closeModal }) => {
 
                         <Link
                             to="/media"
-                            className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-4 rounded-full transition"
+                            className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-2 xl:px-4 rounded-full transition"
                         >
                             {t("media")}
                         </Link>
 
+                        <button
+                            type="button"
+                            onClick={openStoreLocator}
+                            className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-2 xl:px-4 rounded-full transition"
+                        >
+                            {t("storeLocations", "Puntos de venta")}
+                        </button>
+
                         {isAuthenticated && (
                             <Link
                                 to="/confeccion"
-                                className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-4 rounded-full transition"
+                                className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-2 xl:px-4 rounded-full transition"
                             >
                                 {t("tailoring")}
                             </Link>
@@ -440,7 +454,7 @@ export const Header = ({ closeModal }) => {
 
                         <div className="relative" ref={companyRef}>
                             <button
-                                className={`flex items-center rounded-full px-4 py-2.5 font-semibold transition ${showCompanyDropdown
+                                className={`flex items-center rounded-full px-2 xl:px-4 py-2.5 font-semibold transition ${showCompanyDropdown
                                     ? "bg-slate-900 text-white shadow-md"
                                     : "text-gray-800 hover:bg-gray-200 hover:text-gray-900"
                                     }`}
@@ -453,31 +467,7 @@ export const Header = ({ closeModal }) => {
                         </div>
                     </div>
 
-                    <div className="flex items-center space-x-4">
-                        <div className="group relative">
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    closeAllDropdowns();
-                                    closeSearchAndCart();
-                                    setShowMenu(false);
-                                    setShowStoreLocator(true);
-                                }}
-                                className="text-gray-800 focus:outline-none transition hover:text-[#26659E] focus-visible:text-[#26659E]"
-                                aria-label={t("whereToBuy", "Dónde comprar")}
-                            >
-                                <MapPin className="h-6 w-6" />
-                            </button>
-
-                            <div
-                                role="tooltip"
-                                className="pointer-events-none absolute left-1/2 top-full z-[100] mt-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 lg:block"
-                            >
-                                {t("whereToBuy", "Dónde comprar")}
-                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-gray-900" />
-                            </div>
-                        </div>
-
+                    <div className="flex items-center space-x-2 xl:space-x-4">
                         <div className="group relative">
                             <button
                                 type="button"
@@ -857,6 +847,14 @@ export const Header = ({ closeModal }) => {
                                 {t("tailoring")}
                             </button>
                         )} */}
+
+                        <button
+                            onClick={openStoreLocator}
+                            className="block w-full text-left text-gray-800 font-semibold py-2"
+                            type="button"
+                        >
+                            {t("storeLocations", "Puntos de venta")}
+                        </button>
 
                         <button
                             onClick={openFilters}

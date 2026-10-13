@@ -43,7 +43,11 @@ const ModalMapa = ({ isOpen, close }) => {
 
     return createPortal(
         <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cjmw-puntos-venta-dialog-title"
             className="
+                cjmw-store-modal-overlay
                 fixed
                 inset-0
                 z-[99999]
@@ -54,16 +58,17 @@ const ModalMapa = ({ isOpen, close }) => {
                 bg-white
                 p-3
                 sm:p-5
-                lg:p-8
+                lg:p-4 xl:p-5
             "
         >
             <div
                 className="
+                    cjmw-store-modal-dialog
                     flex
                     h-full
-                    max-h-[900px]
+                    max-h-[1040px]
                     w-full
-                    max-w-[1600px]
+                    max-w-[1720px]
                     min-h-0
                     flex-col
                     overflow-hidden
@@ -77,6 +82,7 @@ const ModalMapa = ({ isOpen, close }) => {
                 {/* CABECERA INDEPENDIENTE */}
                 <div
                     className="
+                        cjmw-store-modal-header
                         flex
                         h-16
                         shrink-0
@@ -88,7 +94,7 @@ const ModalMapa = ({ isOpen, close }) => {
                         px-5
                     "
                 >
-                    <h2 className="text-lg font-semibold text-neutral-900">
+                    <h2 id="cjmw-puntos-venta-dialog-title" className="text-lg font-semibold text-neutral-900">
                         {t("storeLocations", { defaultValue: "Puntos de venta" })}
                     </h2>
 
@@ -123,12 +129,14 @@ const ModalMapa = ({ isOpen, close }) => {
                 {/* MAPA Y PUNTOS DE VENTA */}
                 <div
                     className="
+                        cjmw-store-modal-body
                         min-h-0
                         flex-1
                         overflow-y-auto
                         bg-white
                         p-2
                         sm:p-4
+                        lg:p-3
                         lg:overflow-hidden
                     "
                 >

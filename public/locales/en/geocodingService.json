@@ -34,5 +34,16 @@
     "closeExpandedMapButton": "Close large map",
     "locationPermissionDeniedHelp": "Location access is blocked for this website. Enable location permission in your browser settings and then click \"Use my location\" again.",
     "storeLocations": "Store locations",
-    "closeStoreLocator": "Close map"
+    "closeStoreLocator": "Close map",
+    "countryFilterLabel": "Country",
+    "allCountries": "All countries",
+    "provinceFilterLabel": "Province / region",
+    "allProvinces": "All provinces / regions",
+    "clearRegionFilters": "Clear filters",
+    "filteredStoresCount_one": "{{count}} store found",
+    "filteredStoresCount_other": "{{count}} stores found",
+    "countryFilterUnavailable": "Country and province filters are not available yet.",
+    "noStoresMatchFilters": "No stores match these filters.",
+    "filteredStoresTitle": "Filtered store locations",
+    "provinceFilterUnavailable": "No provinces or regions are registered for this country."
 }

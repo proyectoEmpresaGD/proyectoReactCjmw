@@ -15,6 +15,7 @@ import {
     isValidCoordinate,
     normalizeStores,
 } from "../../utils/storeLocator.js";
+import { storesInRegion } from "../../utils/storeRegions.js";
 
 maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
@@ -85,7 +86,7 @@ function addDistanceData(origin, stores) {
         .sort((a, b) => a.distanceKm - b.distanceKm);
 }
 
-export function useStoreLocatorController({ stores, t }) {
+export function useStoreLocatorController({ stores, t, selectedCountry = "", selectedProvince = "" }) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const storeMarkersRef = useRef([]);
@@ -124,6 +125,11 @@ export function useStoreLocatorController({ stores, t }) {
     const [isRouteLoading, setIsRouteLoading] = useState(false);
 
     const validStores = useMemo(() => normalizeStores(stores), [stores]);
+    const filteredStores = useMemo(
+        () => storesInRegion(validStores, selectedCountry, selectedProvince),
+        [validStores, selectedCountry, selectedProvince]
+    );
+    const hasRegionFilter = Boolean(selectedCountry || selectedProvince);
 
     const closePopup = useCallback(() => {
         popupRef.current?.remove();
@@ -578,7 +584,7 @@ export function useStoreLocatorController({ stores, t }) {
 
             const storesByDistance = addDistanceData(
                 currentOrigin,
-                validStores
+                filteredStores
             );
 
             const foundStores = storesByDistance.filter(
@@ -594,7 +600,9 @@ export function useStoreLocatorController({ stores, t }) {
             setNearbyStores(foundStores);
             setNearestStoreOutsideRadius(nearestStore);
 
-            if (isExpandedRef.current) {
+            if (hasRegionFilter) {
+                setVisibleStoreMarkers(filteredStores);
+            } else if (isExpandedRef.current) {
                 setVisibleStoreMarkers(storesByDistance);
             } else if (foundStores.length > 0) {
                 setVisibleStoreMarkers(foundStores);
@@ -632,7 +640,8 @@ export function useStoreLocatorController({ stores, t }) {
             requestRoute,
             setVisibleStoreMarkers,
             showCustomerMarker,
-            validStores,
+            filteredStores,
+            hasRegionFilter,
         ]
     );
 
@@ -806,11 +815,18 @@ export function useStoreLocatorController({ stores, t }) {
             if (!mapRef.current) return;
 
             if (expanded) {
-                const storesToShow = originRef.current
-                    ? allStoresByDistance
-                    : validStores;
+                const storesToShow = hasRegionFilter
+                    ? filteredStores
+                    : originRef.current
+                        ? allStoresByDistance
+                        : validStores;
 
                 setVisibleStoreMarkers(storesToShow);
+                return;
+            }
+
+            if (hasRegionFilter) {
+                setVisibleStoreMarkers(filteredStores);
                 return;
             }
 
@@ -839,8 +855,63 @@ export function useStoreLocatorController({ stores, t }) {
             nearestStoreOutsideRadius,
             setVisibleStoreMarkers,
             validStores,
+            filteredStores,
+            hasRegionFilter,
         ]
     );
+
+    const clearStoreSelection = useCallback(() => {
+        closePopup();
+        clearRoute({ abortRequest: true });
+        setSelectedStore(null);
+        setIsRouteLoading(false);
+    }, [closePopup, clearRoute]);
+
+    // Cambia solo la visibilidad de los marcadores: no recrea el mapa al filtrar.
+    // Recalcula además el listado si hay una búsqueda de proximidad activa.
+    useEffect(() => {
+        if (!mapReady || !mapRef.current) return;
+
+        const currentOrigin = originRef.current;
+        const sortedStores = currentOrigin
+            ? addDistanceData(currentOrigin, filteredStores)
+            : filteredStores;
+        const nearby = currentOrigin
+            ? sortedStores.filter((store) => store.isWithinRadius)
+            : [];
+        const nearest = currentOrigin && !nearby.length
+            ? sortedStores[0] ?? null
+            : null;
+
+        setAllStoresByDistance(sortedStores);
+        setNearbyStores(nearby);
+        setNearestStoreOutsideRadius(nearest);
+
+        if (hasRegionFilter || !currentOrigin || isExpandedRef.current) {
+            setVisibleStoreMarkers(filteredStores);
+        } else {
+            setVisibleStoreMarkers(nearby.length ? nearby : nearest ? [nearest] : []);
+        }
+
+        // Zoom automático cuando hay un país/provincia seleccionado.
+        // Si se eliminan los filtros, se vuelve a encuadrar el catálogo completo.
+        const map = mapRef.current;
+        if (filteredStores.length === 1) {
+            map.easeTo({
+                center: [filteredStores[0].lng, filteredStores[0].lat],
+                zoom: 12,
+                duration: 500,
+            });
+        } else if (filteredStores.length > 1) {
+            const bounds = new maplibregl.LngLatBounds();
+            filteredStores.forEach((store) => bounds.extend([store.lng, store.lat]));
+            map.fitBounds(bounds, {
+                padding: 55,
+                maxZoom: 12,
+                duration: 500,
+            });
+        }
+    }, [filteredStores, mapReady, hasRegionFilter, setVisibleStoreMarkers]);
 
     useEffect(() => {
         if (!mapContainerRef.current || mapRef.current) {
@@ -963,7 +1034,9 @@ export function useStoreLocatorController({ stores, t }) {
         origin,
         nearbyStores,
         allStoresByDistance:
-            origin ? allStoresByDistance : validStores,
+            origin ? allStoresByDistance : filteredStores,
+        filteredStores,
+        clearStoreSelection,
         nearestStoreOutsideRadius,
         selectedStore,
         routeSummary,

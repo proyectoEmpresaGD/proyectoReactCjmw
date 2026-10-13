@@ -35,5 +35,6 @@
         "productsDescription": "Acceso rápido a las categorías principales de producto.",
         "companyDescription": "Toda la información corporativa agrupada en un solo sitio."
     },
-    "search": "Buscar"
+    "search": "Buscar",
+    "storeLocations": "Puntos de venta"
 }

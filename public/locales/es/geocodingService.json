@@ -34,5 +34,16 @@
     "closeExpandedMapButton": "Cerrar mapa grande",
     "locationPermissionDeniedHelp": "La ubicación está bloqueada para esta web. Activa el permiso de ubicación desde los permisos del navegador y vuelve a pulsar \"Usar mi ubicación\".",
     "storeLocations": "Puntos de venta",
-    "closeStoreLocator": "Cerrar mapa"
+    "closeStoreLocator": "Cerrar mapa",
+    "countryFilterLabel": "País",
+    "allCountries": "Todos los países",
+    "provinceFilterLabel": "Provincia",
+    "allProvinces": "Todas las provincias",
+    "clearRegionFilters": "Limpiar filtros",
+    "filteredStoresCount_one": "{{count}} punto de venta encontrado",
+    "filteredStoresCount_other": "{{count}} puntos de venta encontrados",
+    "countryFilterUnavailable": "Los filtros por país y provincia aún no están disponibles.",
+    "noStoresMatchFilters": "No hay puntos de venta para estos filtros.",
+    "filteredStoresTitle": "Puntos de venta filtrados",
+    "provinceFilterUnavailable": "No hay provincias registradas para este país."
 }

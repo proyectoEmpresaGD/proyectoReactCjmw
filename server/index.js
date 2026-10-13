@@ -25,6 +25,7 @@ import { createMapsRouter } from './routes/maps.js';
 import { requireAuth } from './middlewares/authMiddleware.js';
 import { requireAdmin } from './middlewares/requireAdmin.js';
 import { createPuntosVentaRouter } from "./routes/puntosVenta.js";
+import { startStoreGeographyAutoSync } from "./services/storeGeographyAutoSync.js";
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -666,6 +667,9 @@ const PORT = process.env.PORT || 1234;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Serving static files from ${join(__dirname, 'web')}`);
+  // Vigila altas, traslados y bajas realizados directamente en PostgreSQL.
+  // No bloquea el arranque de la web aunque el servicio geográfico falle.
+  startStoreGeographyAutoSync();
 });
 
 export default app;
