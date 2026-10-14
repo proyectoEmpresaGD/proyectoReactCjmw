@@ -53,7 +53,7 @@ const Footer = () => {
                             <img
                                 src={LOGO_URL}
                                 alt={t('altLogo')}
-                                className="w-20 h-20 object-contain rounded-full"
+                                className="w-28 h-20 object-contain rounded-full"
                             />
                         </Link>
                     </div>
