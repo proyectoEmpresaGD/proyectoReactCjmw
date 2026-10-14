@@ -67,7 +67,7 @@ export const CURTAIN_CONFIG = {
 
 
 // Constantes de URLs para logos
-export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/ESCUDOS/ESCUDO%20FAMILIAR/CJMlogo.png";
+export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/Logotipo%20CJM%20Group%20oto%C3%B1al.png";
 
 // Redes Sociales
 export const SOCIAL_MEDIA_LINKS = {
@@ -257,7 +257,7 @@ export const brandLogos = {
 };
 
 // Logo predeterminado
-export const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM_group.png';
+export const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/Logotipo%20CJM%20Group%20oto%C3%B1al.png';
 
 // Íconos de redes sociales
 export const socialMediaIcons = [
@@ -354,7 +354,7 @@ export const coleccionesPorMarca = {
         "LE VOYAGE DES WOLOF", "ESSENCES DU NIL", "KASSUMAY", "TRIBAL", "UNIVERS",
     ],
     ARE: [
-        "TAKUMI", "LIGHTHOUSE", "MADAMA BUTTERFLY", "CRANE", "SOBOKUNA", "COSY", "KANNATURA", "KANNATURA VOL II", "KANNATURA VOL III", "ATMOSPHERE", "JEWEL", "PURITTY", "MONTANA", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA", "LINOTTO",
+        "WABI SABI", "THE ARTISAN", "NOBUCK", "GRASSLAND", "TAKUMI", "LIGHTHOUSE", "MADAMA BUTTERFLY", "CRANE", "SOBOKUNA", "COSY", "KANNATURA", "KANNATURA VOL II", "KANNATURA VOL III", "ATMOSPHERE", "JEWEL", "PURITTY", "MONTANA", "CALCUTA", "CÔTE D´AZUR", "DUNE", "FENICIA", "LINOTTO",
         "MEDITERRANEAN STRIPES", "NOMAD", "PAPIRO",
         "STONE", "STRATOS", "TAIGA", "TOUCH", "RUSTICA"
     ],
