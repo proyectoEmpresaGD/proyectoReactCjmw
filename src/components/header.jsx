@@ -20,6 +20,7 @@ import "tailwindcss/tailwind.css";
 import SearchBar from "./SearchBar";
 import { useMarca } from "./MarcaContext";
 import { useAuth } from "../context/AuthContext.jsx";
+import ModalMapa from "./ComponentesProductos/modalMapa.jsx";
 import { languageOptions, brandLogos, defaultLogo } from "../Constants/constants";
 
 const getBrandCodeFromLocation = (location, pathToBrandMap, logosByBrand) => {
@@ -62,6 +63,7 @@ export const Header = ({ closeModal }) => {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [showDrawerLinks, setShowDrawerLinks] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [showStoreLocator, setShowStoreLocator] = useState(false);
 
     const [selectedLanguage, setSelectedLanguage] = useState(
         languageOptions.find((opt) => opt.value === i18n.language) || languageOptions[0]
@@ -284,6 +286,13 @@ export const Header = ({ closeModal }) => {
         }
     };
 
+    const openStoreLocator = () => {
+        closeAllDropdowns();
+        closeSearchAndCart();
+        setShowMenu(false);
+        setShowStoreLocator(true);
+    };
+
     const handleLinkClick = (path) => {
         if (typeof window.closeModalGlobal === "function") {
             window.closeModalGlobal();
@@ -393,7 +402,7 @@ export const Header = ({ closeModal }) => {
                     <div className="hidden lg:flex flex-grow justify-center items-center gap-2 xl:gap-3">
                         <div className="relative" ref={brandsRef}>
                             <button
-                                className={`flex items-center rounded-full px-4 py-2.5 font-semibold transition ${showBrandsDropdown
+                                className={`flex items-center rounded-full px-2 xl:px-4 py-2.5 font-semibold transition ${showBrandsDropdown
                                     ? "bg-slate-900 text-white shadow-md"
                                     : "text-gray-800 hover:bg-gray-200 hover:text-gray-900"
                                     }`}
@@ -407,7 +416,7 @@ export const Header = ({ closeModal }) => {
 
                         <div className="relative" ref={productsRef}>
                             <button
-                                className={`flex items-center rounded-full px-4 py-2.5 font-semibold transition ${showProductsDropdown
+                                className={`flex items-center rounded-full px-2 xl:px-4 py-2.5 font-semibold transition ${showProductsDropdown
                                     ? "bg-slate-900 text-white shadow-md"
                                     : "text-gray-800 hover:bg-gray-200 hover:text-gray-900"
                                     }`}
@@ -421,15 +430,23 @@ export const Header = ({ closeModal }) => {
 
                         <Link
                             to="/media"
-                            className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-4 rounded-full transition"
+                            className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-2 xl:px-4 rounded-full transition"
                         >
                             {t("media")}
                         </Link>
 
+                        <button
+                            type="button"
+                            onClick={openStoreLocator}
+                            className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-2 xl:px-4 rounded-full transition"
+                        >
+                            {t("storeLocations", "Puntos de venta")}
+                        </button>
+
                         {isAuthenticated && (
                             <Link
                                 to="/confeccion"
-                                className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-4 rounded-full transition"
+                                className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-2 xl:px-4 rounded-full transition"
                             >
                                 {t("tailoring")}
                             </Link>
@@ -437,7 +454,7 @@ export const Header = ({ closeModal }) => {
 
                         <div className="relative" ref={companyRef}>
                             <button
-                                className={`flex items-center rounded-full px-4 py-2.5 font-semibold transition ${showCompanyDropdown
+                                className={`flex items-center rounded-full px-2 xl:px-4 py-2.5 font-semibold transition ${showCompanyDropdown
                                     ? "bg-slate-900 text-white shadow-md"
                                     : "text-gray-800 hover:bg-gray-200 hover:text-gray-900"
                                     }`}
@@ -450,19 +467,27 @@ export const Header = ({ closeModal }) => {
                         </div>
                     </div>
 
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
+                    <div className="flex items-center space-x-2 xl:space-x-4">
+                        <div className="group relative">
                             <button
                                 type="button"
                                 onClick={openFilters}
-                                className="text-gray-800 focus:outline-none relative"
+                                className="relative text-gray-800 focus:outline-none transition hover:text-[#26659E] focus-visible:text-[#26659E]"
                                 aria-label={t("openFilters", "Abrir filtros")}
                             >
-                                <SlidersHorizontal className="h-5 w-5" />
+                                <SlidersHorizontal className="h-6 w-6" />
                                 {hasActiveFilters && (
                                     <span className="absolute top-0 right-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#26659E]" />
                                 )}
                             </button>
+
+                            <div
+                                role="tooltip"
+                                className="pointer-events-none absolute left-1/2 top-full z-[100] mt-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 lg:block"
+                            >
+                                {t("openFilters", "Abrir filtros")}
+                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-gray-900" />
+                            </div>
                         </div>
 
                         {/* <div className="relative" ref={userRef}>
@@ -560,13 +585,24 @@ export const Header = ({ closeModal }) => {
 
 
                         <div className="relative" ref={searchRef}>
-                            <button
-                                className="text-gray-800 focus:outline-none"
-                                onClick={() => toggleDropdown("search")}
-                                type="button"
-                            >
-                                <Search className="h-6 w-6" />
-                            </button>
+                            <div className="group relative">
+                                <button
+                                    className="text-gray-800 focus:outline-none transition hover:text-[#26659E] focus-visible:text-[#26659E]"
+                                    onClick={() => toggleDropdown("search")}
+                                    type="button"
+                                    aria-label={t("search", "Buscar")}
+                                >
+                                    <Search className="h-6 w-6" />
+                                </button>
+
+                                <div
+                                    role="tooltip"
+                                    className="pointer-events-none absolute left-1/2 top-full z-[100] mt-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 lg:block"
+                                >
+                                    {t("search", "Buscar")}
+                                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-gray-900" />
+                                </div>
+                            </div>
 
                             {showSearchBar && (
                                 <div className="absolute top-full right-0 mt-2 w-72 bg-white shadow-lg rounded-lg z-50 p-4">
@@ -575,15 +611,24 @@ export const Header = ({ closeModal }) => {
                             )}
                         </div>
                         <div className="relative" ref={languageRef}>
-                            <button
-                                className="text-gray-800 focus:outline-none"
-                                onClick={() => toggleDropdown("language")}
-                                type="button"
-                                aria-label={t("changeLanguage", "Cambiar idioma")}
-                                title={t("changeLanguage", "Cambiar idioma")}
-                            >
-                                <Globe className="h-6 w-6" />
-                            </button>
+                            <div className="group relative">
+                                <button
+                                    className="text-gray-800 focus:outline-none transition hover:text-[#26659E] focus-visible:text-[#26659E]"
+                                    onClick={() => toggleDropdown("language")}
+                                    type="button"
+                                    aria-label={t("changeLanguage", "Cambiar idioma")}
+                                >
+                                    <Globe className="h-6 w-6" />
+                                </button>
+
+                                <div
+                                    role="tooltip"
+                                    className="pointer-events-none absolute left-1/2 top-full z-[100] mt-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 lg:block"
+                                >
+                                    {t("changeLanguage", "Cambiar idioma")}
+                                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-gray-900" />
+                                </div>
+                            </div>
 
                             {showLanguageDropdown && (
                                 <div className="absolute top-full right-0 mt-2 min-w-[180px] rounded-md bg-white py-2 shadow-lg z-50">
@@ -804,6 +849,14 @@ export const Header = ({ closeModal }) => {
                         )} */}
 
                         <button
+                            onClick={openStoreLocator}
+                            className="block w-full text-left text-gray-800 font-semibold py-2"
+                            type="button"
+                        >
+                            {t("storeLocations", "Puntos de venta")}
+                        </button>
+
+                        <button
                             onClick={openFilters}
                             className="mt-6 w-full rounded-lg bg-[#26659E] py-3 text-center text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-[#26659E]/60"
                             type="button"
@@ -832,6 +885,11 @@ export const Header = ({ closeModal }) => {
                     </div>
                 </div>
             </header>
+
+            <ModalMapa
+                isOpen={showStoreLocator}
+                close={() => setShowStoreLocator(false)}
+            />
         </>
     );
 };

@@ -32,5 +32,18 @@
     "mapAriaLabel": "Carte du localisateur de magasins",
     "expandMapButton": "Ouvrir la grande carte",
     "closeExpandedMapButton": "Fermer la grande carte",
-    "locationPermissionDeniedHelp": "L'accès à la localisation est bloqué pour ce site. Activez l'autorisation de localisation dans les paramètres de votre navigateur, puis cliquez à nouveau sur « Utiliser ma position »."
+    "locationPermissionDeniedHelp": "L'accès à la localisation est bloqué pour ce site. Activez l'autorisation de localisation dans les paramètres de votre navigateur, puis cliquez à nouveau sur « Utiliser ma position ».",
+    "storeLocations": "Points de vente",
+    "closeStoreLocator": "Fermer la carte",
+    "countryFilterLabel": "Pays",
+    "allCountries": "Tous les pays",
+    "provinceFilterLabel": "Province / région",
+    "allProvinces": "Toutes les provinces / régions",
+    "clearRegionFilters": "Effacer les filtres",
+    "filteredStoresCount_one": "{{count}} point de vente trouvé",
+    "filteredStoresCount_other": "{{count}} points de vente trouvés",
+    "countryFilterUnavailable": "Les filtres par pays et province ne sont pas encore disponibles.",
+    "noStoresMatchFilters": "Aucun point de vente ne correspond à ces filtres.",
+    "filteredStoresTitle": "Points de vente filtrés",
+    "provinceFilterUnavailable": "Aucune province ou région n’est renseignée pour ce pays."
 }

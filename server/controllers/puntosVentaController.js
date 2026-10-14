@@ -15,10 +15,9 @@ export class PuntosVentaController {
             const puntosVenta =
                 await this.model.getAll();
 
-            res.set(
-                "Cache-Control",
-                "s-maxage=300, stale-while-revalidate"
-            );
+            // Datos de localización: evitar cachés CDN obsoletas después
+            // de completar o actualizar país y provincia en PostgreSQL.
+            res.set("Cache-Control", "no-store");
 
             return res.status(200).json(puntosVenta);
         } catch (error) {

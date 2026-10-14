@@ -9,7 +9,9 @@
     "start:mysql": "node --watch server-with-mysql.js",
     "start:local": "node --watch server-with-local.js",
     "start:postgre": "node --watch server-with-postgre.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "geo:sync-once": "node scripts/sincronizarGeografiaPuntosVenta.js",
+    "test:geo": "node --test tests/storeGeographyAutoSync.test.js"
   },
   "keywords": [],
   "author": "",
