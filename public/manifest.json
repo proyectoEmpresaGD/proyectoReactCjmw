@@ -4,17 +4,17 @@
     "description": "CJM Group combina tradición textil y diseño contemporáneo. Cada rollo de tela refleja nuestra pasión por la textura, el color y la calidad que define a los mejores tejidos.",
     "icons": [
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/Logo_CJMW_64x64.png ",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/CJM_OTONAL_64x64.png",
             "sizes": "64x64 32x32 24x24 16x16",
             "type": "image/x-icon"
         },
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/Logo_CJMW_192x192.png",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/CJM_OTONAL_192x192.png",
             "type": "image/svg+xml",
             "sizes": "192x192"
         },
         {
-            "src": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/Logo_CJMW_512x512.png",
+            "src": "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/CJM_OTONAL_512x512.png",
             "type": "image/png",
             "sizes": "512x512"
         }
