@@ -197,11 +197,23 @@ const ProductImageViewer = ({
                                 'relative w-24 sm:w-24 aspect-square overflow-hidden rounded-xl border border-white/70 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg',
                                 idx === selectedArtisticIndex ? 'ring-2 ring-gray-300' : '',
                             ].join(' ')}
-                            title={pair.kind === 'ambiente' ? `Ver ambiente ${pair.group ?? ''}`.trim() : 'Ver artística'}
+                            title={
+                                pair.kind === 'ambiente'
+                                    ? `Ver ambiente ${pair.group ?? ''}`.trim()
+                                    : pair.kind === 'detallada'
+                                        ? 'Ver detalle'
+                                        : 'Ver artística'
+                            }
                         >
                             <img
                                 src={pair.thumb}
-                                alt={pair.kind === 'ambiente' ? `Ambiente ${pair.group ?? ''}`.trim() : 'Artística'}
+                                alt={
+                                    pair.kind === 'ambiente'
+                                        ? `Ambiente ${pair.group ?? ''}`.trim()
+                                        : pair.kind === 'detallada'
+                                            ? 'Detalle del producto'
+                                            : 'Artística'
+                                }
                                 className="h-full w-full object-cover"
                                 loading="lazy"
                             />

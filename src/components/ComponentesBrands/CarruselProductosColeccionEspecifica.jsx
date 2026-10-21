@@ -57,6 +57,7 @@ function CarruselProductosColeccionEspecifica({
     coleccion,
     colecciones,
     onProductClick,
+    onProductsLoaded,
     limit,
 }) {
     const [productos, setProductos] = useState([]);
@@ -106,11 +107,17 @@ function CarruselProductosColeccionEspecifica({
 
                 const sliced = typeof limit === "number" ? unique.slice(0, Math.max(0, limit)) : unique;
 
-                if (mounted) setProductos(sliced);
+                if (mounted) {
+                    setProductos(sliced);
+                    onProductsLoaded?.(sliced);
+                }
             } catch (err) {
                 if (err.name !== "AbortError") {
                     console.error("Error al obtener productos:", err);
-                    if (mounted) setProductos([]);
+                    if (mounted) {
+                        setProductos([]);
+                        onProductsLoaded?.([]);
+                    }
                 }
             } finally {
                 if (mounted) setLoading(false);
@@ -121,7 +128,7 @@ function CarruselProductosColeccionEspecifica({
             mounted = false;
             controller.abort();
         };
-    }, [coleccionesNormalizadas, limit]);
+    }, [coleccionesNormalizadas, limit, onProductsLoaded]);
 
     const usarCarrusel = productos.length > 4;
 

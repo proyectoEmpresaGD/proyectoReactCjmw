@@ -165,6 +165,7 @@ export function useProductMedia({
     }, [selectedProduct, selectedImage]);
 
     // Artística (por codprodu) + Ambientes (por nombre normalizado)
+    // Artística + Detallada por codprodu + Ambientes por nombre normalizado
     useEffect(() => {
         if (!selectedProduct?.codprodu) {
             setArtisticPairs([]);
@@ -173,60 +174,214 @@ export function useProductMedia({
         }
 
         const cod = selectedProduct.codprodu;
-        const normalizedNombre = normalizeProductNameForImages(selectedProduct?.nombre);
 
-        if (prevCodProduRef.current === cod) return;
+        const normalizedNombre =
+            normalizeProductNameForImages(
+                selectedProduct?.nombre
+            );
+
+        if (
+            prevCodProduRef.current === cod
+        ) {
+            return;
+        }
+
         prevCodProduRef.current = cod;
 
         let cancelled = false;
 
         (async () => {
             try {
-                // 1) Artística por codprodu
-                const [bajaRes, buenaRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${cod}/ARTISTICA_BAJA`),
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/images/${cod}/ARTISTICA_BUENA`),
+                /*
+                 * 1) Artística y detallada
+                 * por codprodu.
+                 */
+                const [
+                    artisticaBajaRes,
+                    artisticaBuenaRes,
+                    detalladaBajaRes,
+                    detalladaBuenaRes,
+                ] = await Promise.all([
+                    fetch(
+                        `${import.meta.env
+                            .VITE_API_BASE_URL
+                        }/api/images/${cod}/ARTISTICA_BAJA`
+                    ),
+                    fetch(
+                        `${import.meta.env
+                            .VITE_API_BASE_URL
+                        }/api/images/${cod}/ARTISTICA_BUENA`
+                    ),
+                    fetch(
+                        `${import.meta.env
+                            .VITE_API_BASE_URL
+                        }/api/images/${cod}/DETALLADA_BAJA`
+                    ),
+                    fetch(
+                        `${import.meta.env
+                            .VITE_API_BASE_URL
+                        }/api/images/${cod}/DETALLADA_BUENA`
+                    ),
                 ]);
 
-                const bajaJson = bajaRes.ok ? await bajaRes.json() : null;
-                const buenaJson = buenaRes.ok ? await buenaRes.json() : null;
+                const [
+                    artisticaBajaJson,
+                    artisticaBuenaJson,
+                    detalladaBajaJson,
+                    detalladaBuenaJson,
+                ] = await Promise.all([
+                    artisticaBajaRes.ok
+                        ? artisticaBajaRes.json()
+                        : null,
 
-                const bajaUrl = normalizeUrl(bajaJson?.ficadjunto || bajaJson?.url);
-                const buenaUrl = normalizeUrl(buenaJson?.ficadjunto || buenaJson?.url);
+                    artisticaBuenaRes.ok
+                        ? artisticaBuenaRes.json()
+                        : null,
+
+                    detalladaBajaRes.ok
+                        ? detalladaBajaRes.json()
+                        : null,
+
+                    detalladaBuenaRes.ok
+                        ? detalladaBuenaRes.json()
+                        : null,
+                ]);
+
+                /*
+                 * ARTÍSTICA
+                 */
+                const artisticaBajaUrl =
+                    normalizeUrl(
+                        artisticaBajaJson?.ficadjunto ||
+                        artisticaBajaJson?.url
+                    );
+
+                const artisticaBuenaUrl =
+                    normalizeUrl(
+                        artisticaBuenaJson?.ficadjunto ||
+                        artisticaBuenaJson?.url
+                    );
 
                 const artistic =
-                    bajaUrl || buenaUrl
+                    artisticaBajaUrl ||
+                        artisticaBuenaUrl
                         ? [
                             {
-                                key: 'artistica',
-                                kind: 'artistica',
-                                thumb: bajaUrl || buenaUrl,
-                                full: buenaUrl || bajaUrl,
+                                key:
+                                    'artistica',
+
+                                kind:
+                                    'artistica',
+
+                                thumb:
+                                    artisticaBajaUrl ||
+                                    artisticaBuenaUrl,
+
+                                full:
+                                    artisticaBuenaUrl ||
+                                    artisticaBajaUrl,
                             },
                         ]
                         : [];
 
-                // 2) Ambientes por nombre (normalizado)
-                let ambiente = [];
-                if (normalizedNombre.length) {
-                    const res = await fetch(
-                        `${import.meta.env.VITE_API_BASE_URL}/api/images/product-name/${encodeURIComponent(normalizedNombre)}`
+                /*
+                 * DETALLADA
+                 */
+                const detalladaBajaUrl =
+                    normalizeUrl(
+                        detalladaBajaJson?.ficadjunto ||
+                        detalladaBajaJson?.url
                     );
 
-                    const json = res.ok ? await res.json() : [];
-                    const images = ensureArray(json);
+                const detalladaBuenaUrl =
+                    normalizeUrl(
+                        detalladaBuenaJson?.ficadjunto ||
+                        detalladaBuenaJson?.url
+                    );
 
-                    ambiente = buildAmbientePairsFromImages(images);
+                const detailed =
+                    detalladaBajaUrl ||
+                        detalladaBuenaUrl
+                        ? [
+                            {
+                                key:
+                                    'detallada',
+
+                                kind:
+                                    'detallada',
+
+                                thumb:
+                                    detalladaBajaUrl ||
+                                    detalladaBuenaUrl,
+
+                                full:
+                                    detalladaBuenaUrl ||
+                                    detalladaBajaUrl,
+                            },
+                        ]
+                        : [];
+
+                /*
+                 * 2) Ambientes por nombre
+                 * normalizado.
+                 */
+                let ambiente = [];
+
+                if (
+                    normalizedNombre.length
+                ) {
+                    const response =
+                        await fetch(
+                            `${import.meta.env
+                                .VITE_API_BASE_URL
+                            }/api/images/product-name/${encodeURIComponent(
+                                normalizedNombre
+                            )}`
+                        );
+
+                    const json =
+                        response.ok
+                            ? await response.json()
+                            : [];
+
+                    const images =
+                        ensureArray(
+                            json
+                        );
+
+                    ambiente =
+                        buildAmbientePairsFromImages(
+                            images
+                        );
                 }
 
+                /*
+                 * Orden:
+                 *
+                 * artística
+                 * detallada
+                 * ambientes
+                 */
                 if (!cancelled) {
-                    setArtisticPairs([...artistic, ...ambiente]);
-                    setSelectedArtisticIndex(0);
+                    setArtisticPairs([
+                        ...artistic,
+                        ...detailed,
+                        ...ambiente,
+                    ]);
+
+                    setSelectedArtisticIndex(
+                        0
+                    );
                 }
             } catch {
                 if (!cancelled) {
-                    setArtisticPairs([]);
-                    setSelectedArtisticIndex(0);
+                    setArtisticPairs(
+                        []
+                    );
+
+                    setSelectedArtisticIndex(
+                        0
+                    );
                 }
             }
         })();
@@ -234,8 +389,10 @@ export function useProductMedia({
         return () => {
             cancelled = true;
         };
-    }, [selectedProduct?.codprodu, selectedProduct?.nombre]);
-
+    }, [
+        selectedProduct?.codprodu,
+        selectedProduct?.nombre,
+    ]);
     // Opcional: blindaje para que nunca sea "" (evita warnings si alguien renderiza selectedImage sin check)
     const safeSelectedImage = typeof selectedImage === 'string' && selectedImage.trim() ? selectedImage : null;
 

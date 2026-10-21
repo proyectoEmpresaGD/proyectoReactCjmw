@@ -487,7 +487,7 @@ export const contactInfo = [
         pais: 'España',
         telefono: '+34 957 65 64 75',
         correo: 'info@cjmw.eu',
-        horario: 'De lunes a viernes, de 9:00 a 18:00',
+        horario: 'De lunes a viernes, de 7:00 a 15:00',
         googleMapsUrl:
             'https://www.google.com/maps/place/CJM+Group/@37.5860011,-4.6604229,17z/data=!3m1!4b1!4m6!3m5!1s0xd6d1489062003d9:0x240df88bc1abecb9!8m2!3d37.5859969!4d-4.657848!16s%2Fg%2F11z9l6xfv?entry=ttu&g_ep=EgoyMDI1MTAwMS4wIKXMDSoASAFQAw%3D%3D',
         googleMapsEmbed:
@@ -812,7 +812,7 @@ export const homeBrands = [
                 title: "Espacio — Composición contemporánea",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/GRAZALEMA/CHIPIONA%20ROUGE(COJIN)%20Y%20JARA%20ROUGE(BUTACA).webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/GRAZALEMA/CHIPIONA%20ROUGE(COJIN)%20Y%20JARA%20ROUGE(BUTACA).webp",
                 productCodes: ["FLA001523", "FLA001508"],
             },
             {
@@ -820,7 +820,7 @@ export const homeBrands = [
                 title: "Detalle — Trama y luz",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/GRAZALEMA/FLA_GRAZALEMA_SANFERNANDOCORAL(CABECERO)ROCIO%20DUSTY%20PINK%20Y%20SALMON%20(COJINES)%20SANLUCAR%20BLOSSOM%20(PRIMER%20COJIN)_1.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/GRAZALEMA/FLA_GRAZALEMA_SANFERNANDOCORAL(CABECERO)ROCIO%20DUSTY%20PINK%20Y%20SALMON%20(COJINES)%20SANLUCAR%20BLOSSOM%20(PRIMER%20COJIN)_1.webp",
                 productCodes: ["FLA001523", "FLA001508", "FLA001445", "FLA001460", "FLA001427", "FLA001475"],
             },
             {
@@ -828,7 +828,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_MAJORELLE_ROSE.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/MARRAKECH/FLA_MARRAKECH_MAJORELLE_ROSE.webp",
                 productCodes: ["FLA001647"],
             },
             {
@@ -836,7 +836,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_SALON%20DE%20LA%20GITANA%20MUSTARD_1.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS/CJM_FLAMENCO_2026_SALON%20DE%20LA%20GITANA%20MUSTARD_1.webp",
                 productCodes: ["FLA001917"],
             },
             {
@@ -844,7 +844,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/SISAL/Cover%20Front.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/SISAL/Cover%20Front.webp",
                 productCodes: ["FLA001118"],
             },
             {
@@ -852,7 +852,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/RIVIERA/FLA001218%20COLONIAL%20DAMASK%20SPRING%20GREEN_01%20.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/RIVIERA/FLA001218%20COLONIAL%20DAMASK%20SPRING%20GREEN_01%20.webp",
                 productCodes: ["FLA001218"],
             },
             {
@@ -860,7 +860,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_SALO%CC%81N%20DE%20LA%20GITANA%20DEEP%20TEAL.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_SALO%CC%81N%20DE%20LA%20GITANA%20DEEP%20TEAL.webp",
                 productCodes: ["FLA001919"],
             },
             {
@@ -868,7 +868,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_PINEDA_IBORY.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_PINEDA_IBORY.webp",
                 productCodes: ["FLA001948"],
             },
         ],
@@ -923,7 +923,7 @@ export const homeBrands = [
                 title: "Detalle — Trama y luz",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20DAKAR%20BOUE%20SABLE%20ET%20GRIS%20NUAGE.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/TRIBAL/BASSARI%20TRIBAL%20DAKAR%20BOUE%20SABLE%20ET%20GRIS%20NUAGE.webp",
                 productCodes: ["BAS00025"],
             },
             {
@@ -931,7 +931,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_BERBERE6.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_BERBERE6.webp",
                 productCodes: ["BAS00512"],
             },
             {
@@ -939,7 +939,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASSARI%20LE%20VOYAGE%20DES%20WOLOF%20ZOSER%202.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASSARI%20LE%20VOYAGE%20DES%20WOLOF%20ZOSER%202.webp",
                 productCodes: ["BAS00440"],
             },
             {
@@ -947,7 +947,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/UNIVERS/BASSARI%20UNIVERS%20MARTIEN%20SAUGE%20ET%20VERT%20EMPIRE.webp",
                 productCodes: ["BAS00241"],
             },
             {
@@ -955,7 +955,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20WOLOF%20SAVANE_4_11zon_9_11zon.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20WOLOF%20SAVANE_4_11zon_9_11zon.webp",
                 productCodes: ["BAS00139"],
             },
             {
@@ -963,7 +963,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20NIOKOLO%20KOBA%20NOIR_3_11zon_4_11zon.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20NIOKOLO%20KOBA%20NOIR_3_11zon_4_11zon.webp",
                 productCodes: ["BAS00154"],
             },
             {
@@ -971,7 +971,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_HORIZONTAL_ESSENCES%20DU%20NIL%20Y%20LE%20KHAYMA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_HORIZONTAL_ESSENCES%20DU%20NIL%20Y%20LE%20KHAYMA.webp",
                 productCodes: ["BAS00530", "BAS00561"],
             },
             {
@@ -979,7 +979,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_LABYRINTHE%20D%C2%B4AFRIQUE_2.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_LABYRINTHE%20D%C2%B4AFRIQUE_2.webp",
                 productCodes: ["BAS00498"],
             },
             {
@@ -987,7 +987,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_LEVOYAGEDESWOLOFS%20LA%20CROIX.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_LEVOYAGEDESWOLOFS%20LA%20CROIX.webp",
                 productCodes: ["BAS00466"],
             },
         ],
@@ -1041,7 +1041,7 @@ export const homeBrands = [
                 title: "Espacio — Composición contemporánea",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/BOHEMIAN/HARB_AMB_BOHEMIAN_07%2035X35.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/BOHEMIAN/HARB_AMB_BOHEMIAN_07%2035X35.webp",
                 productCodes: ["HAR02397", "HAR02402", "HAR02406", "HAR02409", "HAR02387"],
             },
             {
@@ -1049,7 +1049,7 @@ export const homeBrands = [
                 title: "Detalle — Trama y luz",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01953%20CARIBBEAN%20PARTY%20PALM%20BEACH%20MARSHMALLOW_MANTEL.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01953%20CARIBBEAN%20PARTY%20PALM%20BEACH%20MARSHMALLOW_MANTEL.webp",
                 productCodes: ["HAR01898", "HAR01927", "HAR01937", "HAR01948", "HAR01953"],
             },
             {
@@ -1057,7 +1057,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01903%20CARIBBEAN%20PARTY%20PARTY%20INDIGO_TEJIDO%20ESPIGA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01903%20CARIBBEAN%20PARTY%20PARTY%20INDIGO_TEJIDO%20ESPIGA.webp",
                 productCodes: ["HAR01894", "HAR01933", "HAR01903", "HAR01913"],
             },
             {
@@ -1065,7 +1065,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/GOTLAND/RIVIERA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/GOTLAND/RIVIERA.webp",
                 productCodes: ["HAR00153"],
             },
             {
@@ -1073,7 +1073,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/FUTURE/DSC00231%20MINIATURA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/FUTURE/DSC00231%20MINIATURA.webp",
                 productCodes: ["HAR02484", "HAR02483"],
             },
             {
@@ -1081,7 +1081,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01942%20CARIBBEAN%20PARTY%20JUNGLE%20INDIGO%20_%20SILLA%202.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01942%20CARIBBEAN%20PARTY%20JUNGLE%20INDIGO%20_%20SILLA%202.webp",
                 productCodes: ["HAR01923", "HAR01942", "HAR01952"],
             },
             {
@@ -1089,7 +1089,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/DUKE/HAR01729%20DUKE%20DEEP%20TEAL%20IMG_0498%2035x35.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/DUKE/HAR01729%20DUKE%20DEEP%20TEAL%20IMG_0498%2035x35.webp",
                 productCodes: ["HAR01729"],
             },
             {
@@ -1097,7 +1097,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/HARBOUR%20AMBIENTE/BOLONIA%20%26%20VARADERO/MOOD%20BOARD%20VARADERO.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/HARBOUR%20AMBIENTE/BOLONIA%20_%20VARADERO/MOOD%20BOARD%20VARADERO.webp",
                 productCodes: ["HAR00171"],
             },
         ],
@@ -1120,7 +1120,7 @@ export const homeBrands = [
                 enlace: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
                 subtitle: "Ambiente",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/LIGHTHOUSE/_26A5100-2_OK%2035x35.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/LIGHTHOUSE/_26A5100-2_OK%2035x35.webp",
             },
             {
                 key: "are-1",
@@ -1129,7 +1129,7 @@ export const homeBrands = [
                 enlace: "https://bassari.eu/ImagenesTelasCjmw/imagenes%20Newletters/2025/BROUCHURES%20LIBROS/ARN_HABITAT_VLC_25_25_BROUCHURE_2025_AAFF.pdf",
                 subtitle: "Ambiente",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/MADAMA%20BUTTERFLY/ARN_AMB_NAGASAKI_02%20MINIATURA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/MADAMA%20BUTTERFLY/ARN_AMB_NAGASAKI_02%20MINIATURA.webp",
             },
         ],
         accentBarClass: "bg-[#B58836]",
@@ -1151,7 +1151,7 @@ export const homeBrands = [
                 title: "Espacio — Composición contemporánea",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/SOBOKUNA/ARN_AMB_BIANCALANI_01%20MINIATURA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/SOBOKUNA/ARN_AMB_BIANCALANI_01%20MINIATURA.webp",
                 productCodes: ["ARE02045"],
             },
             {
@@ -1159,7 +1159,7 @@ export const homeBrands = [
                 title: "Detalle — Trama y luz",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/TAKUMI/_26A5010-2-OK%20MINIATURA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/TAKUMI/_26A5010-2-OK%20MINIATURA.webp",
                 productCodes: ["ARE02174"],
             },
             {
@@ -1167,7 +1167,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/CRANE/ARN_AMB_CRANE_02%20MINIATURA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/CRANE/ARN_AMB_CRANE_02%20MINIATURA.webp",
                 productCodes: ["ARE01951"],
             },
             {
@@ -1175,7 +1175,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/KANNATURA%20VOL%20II/ARN_RAFIAS_AMBIENTE_THI.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/KANNATURA%20VOL%20II/ARN_RAFIAS_AMBIENTE_THI.webp",
                 productCodes: ["ARE01719"],
             },
             {
@@ -1183,7 +1183,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/KANNATURA/ARN_RAFIAS_AMBIENTE_KLIM.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/KANNATURA/ARN_RAFIAS_AMBIENTE_KLIM.webp",
                 productCodes: ["ARE01894"],
             },
             {
@@ -1191,7 +1191,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/COSY/ARN_COSY_6%20MINIATURA.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/COSY/ARN_COSY_6%20MINIATURA.webp",
                 productCodes: ["ARE01826"],
             },
             {
@@ -1199,7 +1199,7 @@ export const homeBrands = [
                 title: "Detalle — Paleta neutral",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/PURITTY/TANGLED_SILVER_2_11zon_18_11zon.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/PURITTY/TANGLED_SILVER_2_11zon_18_11zon.webp",
                 productCodes: ["ARE01235"],
             },
             {
@@ -1207,7 +1207,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/TOUCH/TOUCH%20GINGER%20R_2_11zon_4_11zon.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/ARENA%20AMBIENTE/TOUCH/TOUCH%20GINGER%20R_2_11zon_4_11zon.webp",
                 productCodes: ["ARE00015"],
             },
         ],
@@ -1243,7 +1243,7 @@ export const homeBrands = [
                 title: "Espacio — Composición contemporánea",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/CJM%20AMBIENTE/TOKIO/TOKIO%20Y%20KIOTO.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/CJM%20AMBIENTE/TOKIO/TOKIO%20Y%20KIOTO.webp",
                 productCodes: ["CJM02757", "CJM02735", "CJM02795", "CJM02779", "CJM02802"],
             },
             {
@@ -1251,7 +1251,7 @@ export const homeBrands = [
                 title: "Detalle — Trama y luz",
                 subtitle: "Detalle",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/CJM%20AMBIENTE/SET%20OF%20THREADS/ASIAN%20ROMANTICISM%20ROYAL%20BLUE%20F2.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/CJM%20AMBIENTE/SET%20OF%20THREADS/ASIAN%20ROMANTICISM%20ROYAL%20BLUE%20F2.webp",
                 productCodes: ["CJM01384"],
             },
             {
@@ -1259,7 +1259,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/CJM%20AMBIENTE/MEDITERRANEAN%20STRIPES/POISON%20RANGE%20OF%20COLOR.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/CJM%20AMBIENTE/MEDITERRANEAN%20STRIPES/POISON%20RANGE%20OF%20COLOR.webp",
                 productCodes: ["CJM00382"],
             },
             {
@@ -1267,7 +1267,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/CJM%20AMBIENTE/SABANNA/MOODBOARD%20SABANNA%2001.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/CJM%20AMBIENTE/SABANNA/MOODBOARD%20SABANNA%2001.webp",
                 productCodes: ["CJM02230"],
             },
             {
@@ -1275,7 +1275,7 @@ export const homeBrands = [
                 title: "Espacio — Silueta y textura",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/CJM%20AMBIENTE/COLONY%20WALLPAPER/Amb%20Colony%2005Miniatura.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/CJM%20AMBIENTE/COLONY%20WALLPAPER/Amb%20Colony%2005Miniatura.webp",
                 productCodes: ["CJM02829"],
             },
             {
@@ -1291,7 +1291,7 @@ export const homeBrands = [
                 title: "Espacio — Contraste suave",
                 subtitle: "Proyecto / inspiración",
                 image:
-                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/CJM%20AMBIENTE/URBAN%20CONTEMPORARY/LOFT%20ALUMINIUM%202.webp",
+                    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/CJM%20AMBIENTE/URBAN%20CONTEMPORARY/LOFT%20ALUMINIUM%202.webp",
                 productCodes: ["CJM01764"],
             },
         ],

@@ -367,19 +367,320 @@ export default function CardProduct() {
         return ap;
     }, [getArray, searchQuery, typeParam]);
 
-    const loadLowRes = useCallback(async (prod) => {
+    const fetchLowResImage = useCallback(async (codprodu) => {
+        if (!codprodu) {
+            return null;
+        }
+
         try {
-            const low = await fetch(
-                `${apiUrl}/api/images/${prod.codprodu}/PRODUCTO_BAJA`
-            ).then((r) => (r.ok ? r.json() : null));
-            return {
-                ...prod,
-                imageBaja: cdnUrl(low ? `${low.ficadjunto}` : defaultImageUrl),
-            };
+            const response = await fetch(
+                `${apiUrl}/api/images/${encodeURIComponent(
+                    codprodu
+                )}/PRODUCTO_BAJA`
+            );
+
+            if (!response.ok) {
+                return null;
+            }
+
+            const data = await response.json();
+
+            if (!data?.ficadjunto) {
+                return null;
+            }
+
+            return cdnUrl(data.ficadjunto);
         } catch {
-            return { ...prod, imageBaja: defaultImageUrl };
+            return null;
         }
     }, []);
+
+    const normalizeSuggestionName = (value) =>
+        String(value || "")
+            .trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, " ")
+            .toUpperCase();
+
+    const preferSuggestionsWithImage = (
+        products,
+        defaultImageUrl
+    ) => {
+        const bestByName = new Map();
+
+        for (const product of products || []) {
+            const nameKey =
+                normalizeSuggestionName(
+                    product?.nombre
+                );
+
+            if (!nameKey) {
+                continue;
+            }
+
+            const current =
+                bestByName.get(
+                    nameKey
+                );
+
+            const hasOwnImage =
+                Boolean(
+                    product?.imageBaja &&
+                    product.imageBaja !==
+                    defaultImageUrl &&
+                    product?.imageCodprodu ===
+                    product?.codprodu
+                );
+
+            /*
+             * Si todavía no existe sugerencia,
+             * guardamos esta.
+             */
+            if (!current) {
+                bestByName.set(
+                    nameKey,
+                    {
+                        product,
+                        hasOwnImage,
+                    }
+                );
+
+                continue;
+            }
+
+            /*
+             * Si la sugerencia actual no tiene
+             * imagen pero esta sí, sustituimos.
+             */
+            if (
+                !current.hasOwnImage &&
+                hasOwnImage
+            ) {
+                bestByName.set(
+                    nameKey,
+                    {
+                        product,
+                        hasOwnImage,
+                    }
+                );
+            }
+        }
+
+        return Array.from(
+            bestByName.values()
+        ).map(
+            ({ product }) =>
+                product
+        );
+    };
+
+    const normalizeProductName = (value) =>
+        String(value || "")
+            .trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, " ")
+            .toUpperCase();
+
+    const findAlternativeProductImage = useCallback(
+        async (prod) => {
+            const productName =
+                String(prod?.nombre || "").trim();
+
+            if (!productName) {
+                return null;
+            }
+
+            try {
+                const url = new URL(
+                    `${apiUrl}/api/products/search-products`
+                );
+
+                url.searchParams.set(
+                    "query",
+                    productName
+                );
+
+                url.searchParams.set(
+                    "limit",
+                    "50"
+                );
+
+                url.searchParams.set(
+                    "page",
+                    "1"
+                );
+
+                let response =
+                    await fetch(url);
+
+                // Compatibilidad con el endpoint antiguo
+                if (!response.ok) {
+                    const legacyUrl =
+                        new URL(
+                            `${apiUrl}/api/products/search`
+                        );
+
+                    legacyUrl.searchParams.set(
+                        "query",
+                        productName
+                    );
+
+                    legacyUrl.searchParams.set(
+                        "limit",
+                        "50"
+                    );
+
+                    legacyUrl.searchParams.set(
+                        "page",
+                        "1"
+                    );
+
+                    response =
+                        await fetch(
+                            legacyUrl
+                        );
+                }
+
+                if (!response.ok) {
+                    return null;
+                }
+
+                const data =
+                    await response.json();
+
+                const candidates =
+                    Array.isArray(
+                        data?.products
+                    )
+                        ? data.products
+                        : Array.isArray(data)
+                            ? data
+                            : [];
+
+                const normalizedName =
+                    normalizeProductName(
+                        productName
+                    );
+
+                const sameProductCandidates =
+                    candidates.filter(
+                        (candidate) =>
+                            candidate?.codprodu &&
+                            candidate.codprodu !==
+                            prod.codprodu &&
+                            normalizeProductName(
+                                candidate.nombre
+                            ) ===
+                            normalizedName
+                    );
+
+                for (const candidate of sameProductCandidates) {
+                    const image =
+                        await fetchLowResImage(
+                            candidate.codprodu
+                        );
+
+                    if (image) {
+                        return {
+                            image,
+                            sourceProduct:
+                                candidate,
+                        };
+                    }
+                }
+
+                return null;
+            } catch (error) {
+                console.error(
+                    `Error buscando imagen alternativa para ${productName}:`,
+                    error
+                );
+
+                return null;
+            }
+        },
+        [fetchLowResImage]
+    );
+
+    const loadLowRes = useCallback(
+        async (
+            prod,
+            {
+                allowAlternativeImage = true
+            } = {}
+        ) => {
+            const ownImage =
+                await fetchLowResImage(
+                    prod.codprodu
+                );
+
+            if (ownImage) {
+                return {
+                    ...prod,
+                    imageBaja:
+                        ownImage,
+                    imageCodprodu:
+                        prod.codprodu,
+                };
+            }
+
+            /*
+             * En búsquedas rápidas no queremos
+             * reutilizar la imagen de otro color.
+             *
+             * Si SNOW no tiene imagen:
+             * SNOW -> default.webp
+             *
+             * Nunca:
+             * SNOW -> foto de IVORY
+             */
+            if (!allowAlternativeImage) {
+                return {
+                    ...prod,
+                    imageBaja:
+                        defaultImageUrl,
+                    imageCodprodu:
+                        null,
+                };
+            }
+
+            /*
+             * En otros listados sí permitimos
+             * buscar otra variante del mismo producto.
+             */
+            const alternative =
+                await findAlternativeProductImage(
+                    prod
+                );
+
+            if (alternative?.image) {
+                return {
+                    ...prod,
+                    imageBaja:
+                        alternative.image,
+                    imageCodprodu:
+                        alternative
+                            .sourceProduct
+                            ?.codprodu ||
+                        null,
+                };
+            }
+
+            return {
+                ...prod,
+                imageBaja:
+                    defaultImageUrl,
+                imageCodprodu:
+                    null,
+            };
+        },
+        [
+            fetchLowResImage,
+            findAlternativeProductImage,
+        ]
+    );
 
     const preloadHighResInto = useCallback(async (prod) => {
         try {
@@ -461,9 +762,68 @@ export default function CardProduct() {
                 }
             }
 
-            const wi = await Promise.all((list || []).map(loadLowRes));
+            const isQuickSearch =
+                Boolean(
+                    appliedFilters.search &&
+                    String(
+                        appliedFilters.search
+                    ).trim()
+                );
 
-            setProducts((prev) => (pageNum > 1 ? [...prev, ...wi] : wi));
+            const wi =
+                await Promise.all(
+                    (list || []).map(
+                        (product) =>
+                            loadLowRes(
+                                product,
+                                {
+                                    allowAlternativeImage:
+                                        !isQuickSearch,
+                                }
+                            )
+                    )
+                );
+
+            const processedProducts =
+                isQuickSearch
+                    ? preferSuggestionsWithImage(
+                        wi,
+                        defaultImageUrl
+                    )
+                    : wi;
+
+
+            setProducts((prev) => {
+                if (!isQuickSearch) {
+                    return pageNum > 1
+                        ? [
+                            ...prev,
+                            ...processedProducts,
+                        ]
+                        : processedProducts;
+                }
+
+                /*
+                 * En búsqueda agrupamos también con
+                 * páginas ya cargadas.
+                 *
+                 * Si existe el mismo nombre varias veces,
+                 * preferimos la variante que realmente
+                 * tenga fotografía propia.
+                 */
+                const combined =
+                    pageNum > 1
+                        ? [
+                            ...prev,
+                            ...processedProducts,
+                        ]
+                        : processedProducts;
+
+                return preferSuggestionsWithImage(
+                    combined,
+                    defaultImageUrl
+                );
+            });
 
             const totalFromApi =
                 data?.pagination?.totalResults ??

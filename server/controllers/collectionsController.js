@@ -2,7 +2,8 @@
 import {
     getRandomImageUrlFromJson,
     getCollectionsForBrand,
-    getAllImagesForCollection
+    getAllImagesForCollection,
+    getCollectionPreviewsForBrand
 } from '../models/Postgres/collectionsService.js';
 
 const setCache = (res) => {
@@ -27,6 +28,35 @@ export class CollectionsController {
         } catch (err) {
             console.error('❌ Error en getImage:', err);
             res.status(500).json({ error: 'Error interno' });
+        }
+    }
+
+    async getBrandCollectionPreviews(req, res) {
+        const { marca } = req.params;
+
+        if (!marca) {
+            return res.status(400).json({
+                error: 'Falta parámetro "marca".'
+            });
+        }
+
+        try {
+            const collections =
+                await getCollectionPreviewsForBrand(marca);
+
+            return res.status(200).json({
+                marca,
+                collections,
+            });
+        } catch (error) {
+            console.error(
+                'Error cargando previews de colecciones:',
+                error
+            );
+
+            return res.status(500).json({
+                error: 'Error interno'
+            });
         }
     }
 

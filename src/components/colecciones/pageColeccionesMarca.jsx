@@ -36,9 +36,35 @@ const brandConfigs = {
         taglineKey: "brands.flamenco.tagline",
         introKey: "brands.flamenco.intro",
         highlightKey: "brands.flamenco.highlight",
-        // 🔵 Marino profundo (más luminoso que negro)
         gradient: "from-[#0B1F33] via-[#102A44] to-[#071423]",
         accent: "text-[#0B1F33]",
+        panel: "bg-white/75",
+    },
+    ARE: {
+        nameKey: "brands.arena.name",
+        taglineKey: "brands.arena.tagline",
+        introKey: "brands.arena.intro",
+        highlightKey: "brands.arena.highlight",
+        gradient: "from-stone-500 via-stone-400 to-stone-600",
+        accent: "text-stone-700",
+        panel: "bg-white/75",
+    },
+    HAR: {
+        nameKey: "brands.harbour.name",
+        taglineKey: "brands.harbour.tagline",
+        introKey: "brands.harbour.intro",
+        highlightKey: "brands.harbour.highlight",
+        gradient: "from-slate-700 via-slate-600 to-slate-800",
+        accent: "text-slate-700",
+        panel: "bg-white/75",
+    },
+    CJM: {
+        nameKey: "brands.cjm.name",
+        taglineKey: "brands.cjm.tagline",
+        introKey: "brands.cjm.intro",
+        highlightKey: "brands.cjm.highlight",
+        gradient: "from-zinc-700 via-zinc-600 to-zinc-800",
+        accent: "text-zinc-700",
         panel: "bg-white/75",
     },
 };
@@ -81,6 +107,13 @@ function ColeccionesMarcaPage() {
     const navigate = useNavigate();
     const marcaKey = (marca || "").toUpperCase();
     const config = brandConfigs[marcaKey];
+    const brandHomeByCode = {
+        BAS: "/bassariHome",
+        FLA: "/flamencoHome",
+        ARE: "/arenaHome",
+        HAR: "/harbourHome",
+        CJM: "/cjmHome",
+    };
 
     const coleccionesBase = coleccionesPorMarca[marcaKey] || [];
 
@@ -97,11 +130,7 @@ function ColeccionesMarcaPage() {
     const isFlamenco = marcaKey === "FLA";
     const isNuevaColeccionBrand = isBassari || isFlamenco;
 
-    const colecciones = useMemo(() => {
-        if (isBassari) return coleccionesNuevasBAS;
-        if (isFlamenco) return coleccionesNuevasFLA;
-        return coleccionesBase;
-    }, [isBassari, isFlamenco, coleccionesNuevasBAS, coleccionesNuevasFLA, coleccionesBase]);
+    const colecciones = coleccionesBase;
 
     const [imagenes, setImagenes] = useState({});
 
@@ -463,7 +492,7 @@ function ColeccionesMarcaPage() {
                                     {t("hero.cta.exploreProducts")}
                                 </button>
                                 <button
-                                    onClick={() => navigate(`/${marcaKey === "BAS" ? "bassariHome" : "flamencoHome"}`)}
+                                    onClick={() => navigate(brandHomeByCode[marcaKey] || "/")}
                                     className="px-6 py-3 rounded-full border border-white/70 text-white hover:bg-white/15 transition"
                                 >
                                     {t("hero.cta.backToBrand")}
@@ -561,7 +590,7 @@ function ColeccionesMarcaPage() {
                                         {t("sections.grid.label")}
                                     </p>
                                     <h2 className="mt-4 text-3xl md:text-4xl font-semibold text-gray-900">
-                                        {t(isNuevaColeccionBrand ? "sections.grid.title.new" : "sections.grid.title.all")}
+                                        {t("sections.grid.title.all")}
                                     </h2>
                                 </div>
 
@@ -580,7 +609,7 @@ function ColeccionesMarcaPage() {
                             {colecciones.map((coleccion, index) => (
                                 <Reveal key={coleccion} delay={index * 80}>
                                     <button
-                                        onClick={() => navigate(buildProductUrl({ collection: coleccion }))}
+                                        onClick={() => navigate(`/coleccion/${encodeURIComponent(coleccion)}?brand=${marcaKey}`)}
                                         className="group text-left"
                                     >
                                         <div className="relative overflow-hidden rounded-3xl shadow-[0_18px_50px_rgba(0,0,0,0.10)] border border-gray-200 bg-white">

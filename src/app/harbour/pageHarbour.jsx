@@ -113,7 +113,8 @@ function HarbourHome() {
 
         const fetchBrand = async () => {
             try {
-                const url = `${import.meta.env.VITE_API_BASE_URL}/api/collections/brand/${encodeURIComponent(marca)}`;
+                const url = `${import.meta.env.VITE_API_BASE_URL
+                    }/api/collections/previews/${encodeURIComponent(marca)}`;
                 const res = await fetch(url, { signal: ac.signal });
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json(); // { marca, collections: { "BOHEMIAN": ["url1", ...], ... } }

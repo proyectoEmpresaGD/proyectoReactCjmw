@@ -34,7 +34,7 @@ import AccountReturnsPage from "./components/account/AccountReturnsPage.jsx";
 import AccountInvoiceOrdersPage from "./components/account/AccountInvoiceOrdersPage.jsx";
 import AccountOrderDetailPage from './components/account/AccountOrderDetailPage.jsx';
 import AccountOrdersPage from "./components/account/AccountOrdersPage.jsx";
-
+import ColeccionesPage from "./components/colecciones/pageColecciones.jsx";
 function App() {
   const location = useLocation();
 
@@ -87,6 +87,10 @@ function App() {
         <Route path="/media" element={<MediaPage />} />
         <Route path="/coleccion/:coleccion" element={<ColeccionPage />} />
         <Route path="/colecciones/:marca" element={<ColeccionesMarcaPage />} />
+        <Route
+          path="/colecciones"
+          element={<ColeccionesPage />}
+        />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin/solicitudes" element={<AdminRequestsPage />} />

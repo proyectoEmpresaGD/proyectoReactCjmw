@@ -7,7 +7,8 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+let collectionPreviewsCache = null;
+let collectionPreviewsLastLoadTs = 0;
 // ENV opcionales:
 // COLLECTIONS_JSON_PATH   -> ruta absoluta al JSON (prioridad máxima)
 // COLLECTIONS_JSON_INLINE -> contenido Base64 del JSON (fallback serverless)
@@ -28,6 +29,124 @@ function normalizeKey(s = '') {
         .replace(/&/g, 'AND')
         .replace(/[^A-Za-z0-9]/g, '')
         .toUpperCase();
+}
+
+async function readCollectionPreviewsJSON() {
+    const requireCandidates = [
+        path.join(
+            __dirname,
+            'data',
+            'collectionPreviews.json'
+        ),
+
+        path.join(
+            __dirname,
+            '..',
+            'data',
+            'collectionPreviews.json'
+        ),
+
+        path.resolve(
+            process.cwd(),
+            'server',
+            'models',
+            'Postgres',
+            'data',
+            'collectionPreviews.json'
+        ),
+
+        path.resolve(
+            process.cwd(),
+            'server',
+            'models',
+            'data',
+            'collectionPreviews.json'
+        ),
+
+        path.resolve(
+            process.cwd(),
+            'models',
+            'data',
+            'collectionPreviews.json'
+        )
+    ];
+
+    for (const p of requireCandidates) {
+        try {
+            const data = require(p);
+            return data;
+        } catch {
+            // probar siguiente ruta
+        }
+    }
+
+    for (const p of requireCandidates) {
+        try {
+            const raw =
+                await fs.readFile(
+                    p,
+                    'utf8'
+                );
+
+            return JSON.parse(raw);
+        } catch {
+            // probar siguiente ruta
+        }
+    }
+
+    throw new Error(
+        'No se encontró collectionPreviews.json.'
+    );
+}
+
+async function loadCollectionPreviews() {
+    const now = Date.now();
+
+    if (
+        collectionPreviewsCache &&
+        now - collectionPreviewsLastLoadTs < RELOAD_MS
+    ) {
+        return collectionPreviewsCache;
+    }
+
+    const parsed =
+        await readCollectionPreviewsJSON();
+
+    const brandIndex =
+        parsed || {};
+
+    const brandIndexNorm = {};
+
+    for (const [
+        brand,
+        collections
+    ] of Object.entries(brandIndex)) {
+        const normalizedCollections = {};
+
+        for (const [
+            collectionName,
+            imageUrl
+        ] of Object.entries(
+            collections || {}
+        )) {
+            normalizedCollections[
+                normalizeKey(collectionName)
+            ] = imageUrl;
+        }
+
+        brandIndexNorm[brand] =
+            normalizedCollections;
+    }
+
+    collectionPreviewsCache = {
+        brandIndex,
+        brandIndexNorm
+    };
+
+    collectionPreviewsLastLoadTs =
+        now;
+
+    return collectionPreviewsCache;
 }
 
 /** Intenta leer el JSON desde:
@@ -128,6 +247,41 @@ function maybeCdn(url) {
     } catch {
         return url;
     }
+}
+
+export async function getCollectionPreviewsForBrand(marca) {
+    const { brandIndex } =
+        await loadCollectionPreviews();
+
+    const brand =
+        brandIndex[marca] || {};
+
+    const result = {};
+
+    for (const [collectionName, images] of Object.entries(brand)) {
+        const previewImage =
+            Array.isArray(images)
+                ? images.find(
+                    (image) =>
+                        typeof image === 'string' &&
+                        image.trim()
+                )
+                : typeof images === 'string'
+                    ? images
+                    : null;
+
+        if (!previewImage) {
+            result[collectionName] = null;
+            continue;
+        }
+
+        result[collectionName] =
+            maybeCdn(
+                toAbsoluteUrl(previewImage)
+            );
+    }
+
+    return result;
 }
 
 // --------- API del modelo ----------
