@@ -1,10 +1,24 @@
 import {
     ChevronRight,
+    ExternalLink,
+    Globe,
     Mail,
     MapPin,
     Navigation,
     Phone,
 } from 'lucide-react';
+
+const ONLINE_STORE = {
+    __storeId: 'online-store',
+    title: 'DECO & YOU',
+    description: 'Tienda online',
+    direccion: 'Compra online a través de nuestra web',
+    cp: '',
+    telefono: '',
+    correo: '',
+    web: 'https://www.decoandyou.com/es/',
+    online: true,
+};
 
 function StoreCard({
     store,
@@ -13,38 +27,76 @@ function StoreCard({
     onSelect,
     t,
 }) {
+    const isOnline =
+        store?.online === true;
+
     const isSelected =
+        !isOnline &&
         selectedStore?.__storeId === store.__storeId;
 
     const hasDistance =
+        !isOnline &&
         Number.isFinite(store.distanceKm);
+
+    const handleStoreClick = () => {
+        if (
+            isOnline &&
+            store.web
+        ) {
+            window.open(
+                store.web,
+                '_blank',
+                'noopener,noreferrer'
+            );
+
+            return;
+        }
+
+        onSelect(store);
+    };
 
     return (
         <li
             className={`
-                cjmw-store-card group relative overflow-hidden rounded-2xl border
-                transition duration-200
+                cjmw-store-card
+                group
+                relative
+                overflow-hidden
+                rounded-2xl
+                border
+                transition
+                duration-200
 
                 ${isSelected
                     ? `
-                        border-[#26659E]
-                        bg-[#26659E]/[0.045]
-                        shadow-[0_8px_30px_rgba(38,101,158,0.12)]
-                    `
-                    : `
-                        border-slate-200
-                        bg-white
-                        hover:border-[#26659E]/30
-                        hover:shadow-md
-                    `
+                            border-[#26659E]
+                            bg-[#26659E]/[0.045]
+                            shadow-[0_8px_30px_rgba(38,101,158,0.12)]
+                        `
+                    : isOnline
+                        ? `
+                              border-[#26659E]/30
+                              bg-[#26659E]/[0.035]
+                              hover:border-[#26659E]/60
+                              hover:shadow-md
+                          `
+                        : `
+                              border-slate-200
+                              bg-white
+                              hover:border-[#26659E]/30
+                              hover:shadow-md
+                          `
                 }
             `}
         >
             {isSelected && (
                 <span
                     className="
-                        absolute inset-y-0 left-0
-                        w-1 bg-[#26659E]
+                        absolute
+                        inset-y-0
+                        left-0
+                        w-1
+                        bg-[#26659E]
                     "
                     aria-hidden="true"
                 />
@@ -52,59 +104,92 @@ function StoreCard({
 
             <button
                 type="button"
-                onClick={() => onSelect(store)}
+                onClick={
+                    handleStoreClick
+                }
                 className="
-                    block w-full px-4 pb-3 pt-4
+                    block
+                    w-full
+                    px-4
+                    pb-3
+                    pt-4
                     text-left
                     focus:outline-none
                     focus-visible:ring-2
                     focus-visible:ring-inset
                     focus-visible:ring-[#26659E]
                 "
-                aria-pressed={isSelected}
+                aria-pressed={
+                    isOnline
+                        ? undefined
+                        : isSelected
+                }
             >
                 <div className="flex items-start gap-3">
-
-                    {/* Posición */}
+                    {/* Posición / icono online */}
                     <span
                         className={`
-                            flex h-9 w-9 shrink-0
-                            items-center justify-center
+                            flex
+                            h-9
+                            w-9
+                            shrink-0
+                            items-center
+                            justify-center
                             rounded-full
-                            text-xs font-bold
+                            text-xs
+                            font-bold
 
-                            ${isSelected
+                            ${isSelected ||
+                                isOnline
                                 ? 'bg-[#26659E] text-white'
                                 : 'bg-slate-100 text-slate-500'
                             }
                         `}
                     >
-                        {String(position).padStart(2, '0')}
+                        {isOnline ? (
+                            <Globe
+                                className="h-4 w-4"
+                                aria-hidden="true"
+                            />
+                        ) : (
+                            String(
+                                position
+                            ).padStart(
+                                2,
+                                '0'
+                            )
+                        )}
                     </span>
 
                     <div className="min-w-0 flex-1">
-
                         {/* Nombre + distancia */}
                         <div className="flex items-start justify-between gap-3">
-
                             <div className="min-w-0">
                                 <h4
                                     className="
-                                        text-[0.95rem] font-semibold
-                                        leading-snug text-slate-900
+                                        text-[0.95rem]
+                                        font-semibold
+                                        leading-snug
+                                        text-slate-900
                                     "
                                 >
-                                    {store.title}
+                                    {
+                                        store.title
+                                    }
                                 </h4>
 
                                 {store.description && (
                                     <p
                                         className="
-                                            mt-0.5 text-xs
-                                            leading-relaxed text-slate-500
+                                            mt-0.5
+                                            text-xs
+                                            leading-relaxed
+                                            text-slate-500
                                         "
                                     >
-                                        {store.description}
+                                        {
+                                            store.description
+                                        }
                                     </p>
                                 )}
                             </div>
@@ -113,64 +198,133 @@ function StoreCard({
                                 <div className="shrink-0 text-right">
                                     <span
                                         className="
-                                            block text-base font-bold
+                                            block
+                                            text-base
+                                            font-bold
                                             text-[#26659E]
                                         "
                                     >
-                                        {store.distanceKm.toFixed(1)} km
+                                        {store.distanceKm.toFixed(
+                                            1
+                                        )}{' '}
+                                        km
                                     </span>
 
                                     <span
                                         className="
-                                            text-[0.65rem] font-medium
-                                            uppercase tracking-[0.12em]
+                                            text-[0.65rem]
+                                            font-medium
+                                            uppercase
+                                            tracking-[0.12em]
                                             text-slate-400
                                         "
                                     >
-                                        {t('distance', {
-                                            defaultValue: 'Distancia',
-                                        })}
+                                        {t(
+                                            'distance',
+                                            {
+                                                defaultValue:
+                                                    'Distancia',
+                                            }
+                                        )}
                                     </span>
                                 </div>
+                            )}
+
+                            {isOnline && (
+                                <ExternalLink
+                                    className="
+                                        mt-0.5
+                                        h-4
+                                        w-4
+                                        shrink-0
+                                        text-[#26659E]
+                                        transition
+                                        group-hover:translate-x-0.5
+                                        group-hover:-translate-y-0.5
+                                    "
+                                    aria-hidden="true"
+                                />
                             )}
                         </div>
 
                         {/* Dirección */}
-                        {(store.direccion || store.cp) && (
-                            <div
-                                className="
-                                    mt-3 flex items-start gap-2
-                                    text-xs leading-relaxed text-slate-500
-                                "
-                            >
-                                <MapPin
+                        {(store.direccion ||
+                            store.cp) && (
+                                <div
                                     className="
-                                        mt-0.5 h-3.5 w-3.5
-                                        shrink-0 text-slate-400
-                                    "
-                                    aria-hidden="true"
-                                />
-
-                                <span>
-                                    {store.direccion}
-
-                                    {store.cp && (
-                                        <>
-                                            {store.direccion ? ', ' : ''}
-                                            {store.cp}
-                                        </>
+                                    mt-3
+                                    flex
+                                    items-start
+                                    gap-2
+                                    text-xs
+                                    leading-relaxed
+                                    text-slate-500
+                                "
+                                >
+                                    {isOnline ? (
+                                        <Globe
+                                            className="
+                                            mt-0.5
+                                            h-3.5
+                                            w-3.5
+                                            shrink-0
+                                            text-slate-400
+                                        "
+                                            aria-hidden="true"
+                                        />
+                                    ) : (
+                                        <MapPin
+                                            className="
+                                            mt-0.5
+                                            h-3.5
+                                            w-3.5
+                                            shrink-0
+                                            text-slate-400
+                                        "
+                                            aria-hidden="true"
+                                        />
                                     )}
-                                </span>
-                            </div>
-                        )}
+
+                                    <span>
+                                        {
+                                            store.direccion
+                                        }
+
+                                        {store.cp && (
+                                            <>
+                                                {store.direccion
+                                                    ? ', '
+                                                    : ''}
+
+                                                {
+                                                    store.cp
+                                                }
+                                            </>
+                                        )}
+                                    </span>
+                                </div>
+                            )}
+
+                        {/* Web */}
+                        {isOnline &&
+                            store.web && (
+                                <div className="mt-2 text-xs font-medium text-[#26659E]">
+                                    {
+                                        store.web
+                                    }
+                                </div>
+                            )}
 
                         {/* Estado de proximidad */}
                         {hasDistance && (
                             <div className="mt-3">
                                 <span
                                     className={`
-                                        inline-flex items-center gap-1.5
-                                        text-[0.7rem] font-semibold
+                                        inline-flex
+                                        items-center
+                                        gap-1.5
+                                        text-[0.7rem]
+                                        font-semibold
 
                                         ${store.isWithinRadius
                                             ? 'text-emerald-700'
@@ -180,7 +334,9 @@ function StoreCard({
                                 >
                                     <span
                                         className={`
-                                            h-1.5 w-1.5 rounded-full
+                                            h-1.5
+                                            w-1.5
+                                            rounded-full
 
                                             ${store.isWithinRadius
                                                 ? 'bg-emerald-500'
@@ -190,9 +346,12 @@ function StoreCard({
                                     />
 
                                     {store.isWithinRadius
-                                        ? t('withinRadius')
-                                        : t('outsideRadius')
-                                    }
+                                        ? t(
+                                            'withinRadius'
+                                        )
+                                        : t(
+                                            'outsideRadius'
+                                        )}
                                 </span>
                             </div>
                         )}
@@ -203,23 +362,40 @@ function StoreCard({
             {/* Pie */}
             <div
                 className="
-                    mx-4 flex items-center justify-between
-                    border-t border-slate-100
+                    mx-4
+                    flex
+                    items-center
+                    justify-between
+                    border-t
+                    border-slate-100
                     py-3
                 "
             >
                 <div className="flex items-center gap-3">
-
                     {store.telefono && (
                         <a
                             href={`tel:${store.telefono}`}
                             className="
-                                inline-flex items-center gap-1.5
-                                text-xs font-medium text-slate-500
-                                transition hover:text-[#26659E]
+                                inline-flex
+                                items-center
+                                gap-1.5
+                                text-xs
+                                font-medium
+                                text-slate-500
+                                transition
+                                hover:text-[#26659E]
                             "
-                            title={store.telefono}
-                            aria-label={`${t('phone', { defaultValue: 'Teléfono' })}: ${store.telefono}`}
+                            title={
+                                store.telefono
+                            }
+                            aria-label={`${t(
+                                'phone',
+                                {
+                                    defaultValue:
+                                        'Teléfono',
+                                }
+                            )}: ${store.telefono
+                                }`}
                         >
                             <Phone
                                 className="h-3.5 w-3.5"
@@ -227,9 +403,13 @@ function StoreCard({
                             />
 
                             <span className="hidden xl:inline">
-                                {t('phone', {
-                                    defaultValue: 'Teléfono',
-                                })}
+                                {t(
+                                    'phone',
+                                    {
+                                        defaultValue:
+                                            'Teléfono',
+                                    }
+                                )}
                             </span>
                         </a>
                     )}
@@ -238,12 +418,26 @@ function StoreCard({
                         <a
                             href={`mailto:${store.correo}`}
                             className="
-                                inline-flex items-center gap-1.5
-                                text-xs font-medium text-slate-500
-                                transition hover:text-[#26659E]
+                                inline-flex
+                                items-center
+                                gap-1.5
+                                text-xs
+                                font-medium
+                                text-slate-500
+                                transition
+                                hover:text-[#26659E]
                             "
-                            title={store.correo}
-                            aria-label={`${t('email', { defaultValue: 'Email' })}: ${store.correo}`}
+                            title={
+                                store.correo
+                            }
+                            aria-label={`${t(
+                                'email',
+                                {
+                                    defaultValue:
+                                        'Email',
+                                }
+                            )}: ${store.correo
+                                }`}
                         >
                             <Mail
                                 className="h-3.5 w-3.5"
@@ -251,9 +445,13 @@ function StoreCard({
                             />
 
                             <span className="hidden xl:inline">
-                                {t('email', {
-                                    defaultValue: 'Email',
-                                })}
+                                {t(
+                                    'email',
+                                    {
+                                        defaultValue:
+                                            'Email',
+                                    }
+                                )}
                             </span>
                         </a>
                     )}
@@ -261,29 +459,52 @@ function StoreCard({
 
                 <button
                     type="button"
-                    onClick={() => onSelect(store)}
+                    onClick={
+                        handleStoreClick
+                    }
                     className="
-                        inline-flex items-center gap-1
-                        text-xs font-semibold text-[#26659E]
+                        inline-flex
+                        items-center
+                        gap-1
+                        text-xs
+                        font-semibold
+                        text-[#26659E]
                         transition
                         hover:gap-2
                     "
                 >
-                    {isSelected
-                        ? t('selectedStore', {
-                            defaultValue: 'Seleccionado',
-                        })
-                        : t('viewOnMap', {
-                            defaultValue: 'Ver en mapa',
-                        })
-                    }
+                    {isOnline
+                        ? 'Visitar web'
+                        : isSelected
+                            ? t(
+                                'selectedStore',
+                                {
+                                    defaultValue:
+                                        'Seleccionado',
+                                }
+                            )
+                            : t(
+                                'viewOnMap',
+                                {
+                                    defaultValue:
+                                        'Ver en mapa',
+                                }
+                            )}
 
-                    {!isSelected && (
-                        <ChevronRight
-                            className="h-3.5 w-3.5"
-                            aria-hidden="true"
-                        />
-                    )}
+                    {(!isSelected ||
+                        isOnline) && (
+                            isOnline ? (
+                                <ExternalLink
+                                    className="h-3.5 w-3.5"
+                                    aria-hidden="true"
+                                />
+                            ) : (
+                                <ChevronRight
+                                    className="h-3.5 w-3.5"
+                                    aria-hidden="true"
+                                />
+                            )
+                        )}
                 </button>
             </div>
         </li>
@@ -301,31 +522,50 @@ export default function StorePanel({
     hasRegionFilter = false,
     t,
 }) {
+    const safeStores =
+        Array.isArray(stores)
+            ? stores
+            : [];
+
+    /*
+     * La tienda online siempre aparece
+     * la primera.
+     */
+    const storesWithOnline = [
+        ONLINE_STORE,
+        ...safeStores,
+    ];
+
     const hasNoNearbyStores =
         Boolean(origin) &&
-        nearbyStores.length === 0 &&
+        nearbyStores.length ===
+        0 &&
         !hasRegionFilter;
 
     return (
         <aside
-            className={`cjmw-store-results ${
-                isExpanded
-                    ? `
-                        min-h-0 w-full
+            className={`cjmw-store-results ${isExpanded
+                ? `
+                        min-h-0
+                        w-full
                         lg:max-h-[calc(100dvh-2rem)]
                     `
-                    : `
-                        col-span-4 mx-auto w-full px-2
+                : `
+                        col-span-4
+                        mx-auto
+                        w-full
+                        px-2
                         lg:col-span-1
                     `
-            }`}
+                }`}
         >
             <div
                 className={`
                     cjmw-store-results-box
                     overflow-hidden
                     rounded-2xl
-                    border border-white/40
+                    border
+                    border-white/40
                     bg-white/95
                     shadow-xl
                     backdrop-blur
@@ -336,22 +576,27 @@ export default function StorePanel({
                     }
                 `}
             >
-
                 {/* Cabecera */}
                 <div
                     className="
                         cjmw-store-results-header
-                    shrink-0 border-b border-slate-100
-                        bg-white/95 px-5 py-5
+                        shrink-0
+                        border-b
+                        border-slate-100
+                        bg-white/95
+                        px-5
+                        py-5
                         backdrop-blur
                     "
                 >
                     <div className="flex items-start justify-between gap-3">
-
                         <div>
                             <div
                                 className="
-                                    mb-1 flex items-center gap-2
+                                    mb-1
+                                    flex
+                                    items-center
+                                    gap-2
                                     text-[#26659E]
                                 "
                             >
@@ -362,60 +607,89 @@ export default function StorePanel({
 
                                 <span
                                     className="
-                                        text-[0.65rem] font-bold
-                                        uppercase tracking-[0.18em]
+                                        text-[0.65rem]
+                                        font-bold
+                                        uppercase
+                                        tracking-[0.18em]
                                     "
                                 >
                                     {origin
-                                        ? t('sortedByProximity', {
-                                            defaultValue:
-                                                'Ordenados por proximidad',
-                                        })
-                                        : t('storeLocations', {
-                                            defaultValue:
-                                                'Puntos de venta',
-                                        })
-                                    }
+                                        ? t(
+                                            'sortedByProximity',
+                                            {
+                                                defaultValue:
+                                                    'Ordenados por proximidad',
+                                            }
+                                        )
+                                        : t(
+                                            'storeLocations',
+                                            {
+                                                defaultValue:
+                                                    'Puntos de venta',
+                                            }
+                                        )}
                                 </span>
                             </div>
 
                             <h3
                                 className="
-                                    text-xl font-semibold
-                                    tracking-tight text-slate-950
+                                    text-xl
+                                    font-semibold
+                                    tracking-tight
+                                    text-slate-950
                                 "
                             >
                                 {hasRegionFilter
-                                    ? t('filteredStoresTitle')
+                                    ? t(
+                                        'filteredStoresTitle'
+                                    )
                                     : isExpanded
-                                        ? t('allStoresByProximityTitle')
-                                        : t('nearbyStoresTitle')
-                                }
+                                        ? t(
+                                            'allStoresByProximityTitle'
+                                        )
+                                        : t(
+                                            'nearbyStoresTitle'
+                                        )}
                             </h3>
                         </div>
 
-                        {stores.length > 0 && (
-                            <span
-                                className="
-                                    flex h-8 min-w-8 items-center
-                                    justify-center rounded-full
-                                    bg-slate-100 px-2
-                                    text-xs font-bold text-slate-600
-                                "
-                            >
-                                {stores.length}
-                            </span>
-                        )}
+                        {storesWithOnline.length >
+                            0 && (
+                                <span
+                                    className="
+                                        flex
+                                        h-8
+                                        min-w-8
+                                        items-center
+                                        justify-center
+                                        rounded-full
+                                        bg-slate-100
+                                        px-2
+                                        text-xs
+                                        font-bold
+                                        text-slate-600
+                                    "
+                                >
+                                    {
+                                        storesWithOnline.length
+                                    }
+                                </span>
+                            )}
                     </div>
 
-                    {origin && stores.length > 0 && (
-                        <p className="mt-2 text-xs text-slate-400">
-                            {t('nearestFirst', {
-                                defaultValue:
-                                    'Los establecimientos más cercanos aparecen primero.',
-                            })}
-                        </p>
-                    )}
+                    {origin &&
+                        safeStores.length >
+                        0 && (
+                            <p className="mt-2 text-xs text-slate-400">
+                                {t(
+                                    'nearestFirst',
+                                    {
+                                        defaultValue:
+                                            'Los establecimientos más cercanos aparecen primero.',
+                                    }
+                                )}
+                            </p>
+                        )}
                 </div>
 
                 {/* Contenido desplazable */}
@@ -430,30 +704,42 @@ export default function StorePanel({
                         }
                     `}
                 >
-
-                    {!origin && isExpanded && (
-                        <div
-                            className="
-                                mb-3 rounded-xl
-                                border border-slate-200
-                                bg-slate-50
-                                px-4 py-3
-                                text-sm leading-relaxed text-slate-600
-                            "
-                        >
-                            {t('searchToSortByProximity')}
-                        </div>
-                    )}
+                    {!origin &&
+                        isExpanded && (
+                            <div
+                                className="
+                                    mb-3
+                                    rounded-xl
+                                    border
+                                    border-slate-200
+                                    bg-slate-50
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    leading-relaxed
+                                    text-slate-600
+                                "
+                            >
+                                {t(
+                                    'searchToSortByProximity'
+                                )}
+                            </div>
+                        )}
 
                     {hasNoNearbyStores &&
                         nearestStoreOutsideRadius && (
                             <div
                                 className="
-                                    mb-3 rounded-xl
-                                    border border-amber-200
+                                    mb-3
+                                    rounded-xl
+                                    border
+                                    border-amber-200
                                     bg-amber-50
-                                    px-4 py-3
-                                    text-sm leading-relaxed text-amber-900
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    leading-relaxed
+                                    text-amber-900
                                 "
                             >
                                 {t(
@@ -465,7 +751,9 @@ export default function StorePanel({
                                         distance:
                                             nearestStoreOutsideRadius
                                                 .distanceKm
-                                                .toFixed(1),
+                                                .toFixed(
+                                                    1
+                                                ),
                                     }
                                 )}
                             </div>
@@ -475,35 +763,70 @@ export default function StorePanel({
                         !nearestStoreOutsideRadius && (
                             <div
                                 className="
-                                    mb-3 rounded-xl
-                                    bg-slate-50 px-4 py-3
-                                    text-sm text-slate-600
+                                    mb-3
+                                    rounded-xl
+                                    bg-slate-50
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-slate-600
                                 "
                             >
-                                {t('noNearbyStores')}
+                                {t(
+                                    'noNearbyStores'
+                                )}
                             </div>
                         )}
 
-                    {hasRegionFilter && stores.length === 0 && (
-                        <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600" role="status">
-                            {t('noStoresMatchFilters')}
-                        </p>
-                    )}
+                    {hasRegionFilter &&
+                        safeStores.length ===
+                        0 && (
+                            <p
+                                className="
+                                    mb-3
+                                    rounded-xl
+                                    bg-slate-50
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-slate-600
+                                "
+                                role="status"
+                            >
+                                {t(
+                                    'noStoresMatchFilters'
+                                )}
+                            </p>
+                        )}
 
-                    {stores.length > 0 && (
-                        <ul className="space-y-2.5">
-                            {stores.map((store, index) => (
+                    <ul className="space-y-2.5">
+                        {storesWithOnline.map(
+                            (
+                                store,
+                                index
+                            ) => (
                                 <StoreCard
-                                    key={store.__storeId}
-                                    store={store}
-                                    position={index + 1}
-                                    selectedStore={selectedStore}
-                                    onSelect={onSelect}
+                                    key={
+                                        store.__storeId
+                                    }
+                                    store={
+                                        store
+                                    }
+                                    position={
+                                        index +
+                                        1
+                                    }
+                                    selectedStore={
+                                        selectedStore
+                                    }
+                                    onSelect={
+                                        onSelect
+                                    }
                                     t={t}
                                 />
-                            ))}
-                        </ul>
-                    )}
+                            )
+                        )}
+                    </ul>
                 </div>
             </div>
         </aside>
