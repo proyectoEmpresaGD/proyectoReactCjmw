@@ -7,6 +7,7 @@
   "contact": "Contáctanos",
   "contract": "Contract",
   "arena": "Arena",
+  "brochures": "Brochures",
   "harbour": "Harbour",
   "cjm": "CJM",
   "flamenco": "Flamenco",
@@ -35,5 +36,30 @@
     "companyDescription": "Toda la información corporativa agrupada en un solo sitio.",
     "collectionsDescription": "Explora todas las colecciones agrupadas por marca."
   },
-  "collections": "Colecciones"
+  "collections": "Colecciones",
+  "productMenu": {
+    "viewAll": "Ver todo",
+    "type": "Tipo",
+    "usage": "Uso",
+    "fabric": {
+      "velvet": "Terciopelo",
+      "sheer": "Visillo",
+      "linen": "Lino",
+      "printed": "Estampado",
+      "cotton": "Algodón",
+      "fireRetardant": "Ignífugo",
+      "outdoor": "Outdoor",
+      "imo": "IMO",
+      "blackout": "Blackout",
+      "easyClean": "Easy clean",
+      "description": "Explora nuestra selección de tejidos por composición y aplicación."
+    },
+    "wallpaper": {
+      "title": "Wallpapers",
+      "raffia": "Rafias",
+      "wallpaperPaper": "Papel pared",
+      "vinylWallpaper": "Papel vinílico",
+      "description": "Explora nuestra selección de revestimientos murales por composición."
+    }
+  }
 }

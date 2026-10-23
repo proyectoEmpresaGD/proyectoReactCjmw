@@ -340,32 +340,112 @@ export default function CardProduct() {
 
     const buildAppliedFilters = useCallback(() => {
         const ap = {};
+
         const brands = getArray('brand');
         const colors = getArray('color');
         const collections = getArray('collection');
         const fabricTypes = getArray('fabricType');
         const patterns = getArray('fabricPattern');
+
         const martindales = getArray('martindale')
             .map((value) => Number(value))
             .filter(Number.isFinite);
-        const martindaleRanges = getArray('martindaleRange');
-        const usos = getArray('uso');
-        const mantenimientos = getArray('mantenimiento');
 
-        if (brands.length) ap.brand = brands;
-        if (colors.length) ap.color = colors;
-        if (collections.length) ap.collection = collections;
-        if (fabricTypes.length) ap.fabricType = fabricTypes;
-        if (patterns.length) ap.fabricPattern = patterns;
-        if (martindales.length) ap.martindale = martindales;
-        if (martindaleRanges.length) ap.martindaleRanges = martindaleRanges;
-        if (usos.length) ap.uso = usos;
-        if (mantenimientos.length) ap.mantenimiento = mantenimientos;
-        if (searchQuery) ap.search = searchQuery;
-        if (typeParam === 'papel') ap.fabricType = ['WALLPAPER', 'PAPEL PINTADO'];
+        const martindaleRanges =
+            getArray('martindaleRange');
+
+        const usos =
+            getArray('uso');
+
+        const mantenimientos =
+            getArray('mantenimiento');
+
+        const codtipos =
+            getArray('codtipo');
+
+        if (brands.length) {
+            ap.brand = brands;
+        }
+
+        if (colors.length) {
+            ap.color = colors;
+        }
+
+        if (collections.length) {
+            ap.collection = collections;
+        }
+
+        if (fabricTypes.length) {
+            ap.fabricType = fabricTypes;
+        }
+
+        if (patterns.length) {
+            ap.fabricPattern = patterns;
+        }
+
+        if (martindales.length) {
+            ap.martindale = martindales;
+        }
+
+        if (martindaleRanges.length) {
+            ap.martindaleRanges =
+                martindaleRanges;
+        }
+
+        if (usos.length) {
+            ap.uso = usos;
+        }
+
+        if (mantenimientos.length) {
+            ap.mantenimiento =
+                mantenimientos;
+        }
+
+        /*
+         * Si viene un codtipo explícito en la URL,
+         * respetamos ese código.
+         */
+        if (codtipos.length) {
+            ap.codtipo = codtipos;
+        }
+
+        if (searchQuery) {
+            ap.search = searchQuery;
+        }
+
+        /*
+         * WALLPAPERS - VER TODO
+         *
+         * Solo ponemos los tres códigos cuando
+         * no se ha seleccionado un tipo concreto.
+         */
+        if (
+            typeParam === 'wallpaper' &&
+            !codtipos.length
+        ) {
+            ap.codtipo = [
+                '103',
+                '111',
+                '112'
+            ];
+        }
+
+        /*
+         * TELAS - VER TODO
+         */
+        if (
+            typeParam === 'tela' &&
+            !codtipos.length
+        ) {
+            ap.codtipo = ['101'];
+        }
 
         return ap;
-    }, [getArray, searchQuery, typeParam]);
+    }, [
+        getArray,
+        searchQuery,
+        typeParam
+    ]);
 
     const fetchLowResImage = useCallback(async (codprodu) => {
         if (!codprodu) {

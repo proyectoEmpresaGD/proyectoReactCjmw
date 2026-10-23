@@ -2222,6 +2222,11 @@ export class ProductModel {
           { uppercase: true }
         ),
 
+      codtipo:
+        normalizeStringList(
+          rawFilters.codtipo
+        ),
+
       fabricType:
         normalizeStringList(
           rawFilters.fabricType,
@@ -2273,6 +2278,19 @@ export class ProductModel {
 
       params.push(
         filters.brand
+      );
+    }
+
+    if (
+      filters.codtipo.length
+    ) {
+      where += `
+        AND TRIM("codtipo"::text)
+            = ANY($${index++})
+    `;
+
+      params.push(
+        filters.codtipo
       );
     }
 

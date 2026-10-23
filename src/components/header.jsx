@@ -89,6 +89,12 @@ export const Header = ({ closeModal }) => {
     const [showProductsDropdown, setShowProductsDropdown] =
         useState(false);
 
+    const [showFabricLayer, setShowFabricLayer] =
+        useState(false);
+
+    const [showWallpaperLayer, setShowWallpaperLayer] =
+        useState(false);
+
     const [showCompanyDropdown, setShowCompanyDropdown] =
         useState(false);
 
@@ -157,22 +163,139 @@ export const Header = ({ closeModal }) => {
 
     const productLinks = useMemo(
         () => [
+            // {
+            //     key: "allProducts",
+            //     label: t("allProducts"),
+            //     path: "/products"
+            // },
             {
-                key: "allProducts",
-                label: t("allProducts"),
-                path: "/products"
-            },
-            {
-                key: "paper",
-                label: t("paper"),
-                path: "/products?type=papel"
+                key: "wallpaper",
+                label: t("wallpapers", "Wallpapers"),
+                hasSubmenu: true
             },
             {
                 key: "fabric",
                 label: t("fabric"),
-                path: "/products?type=tela"
+                hasSubmenu: true
             },
         ],
+        [t]
+    );
+
+    const wallpaperMenu = useMemo(
+        () => ({
+            all: {
+                key: "wallpaperAll",
+                label: t("productMenu.viewAll"),
+                path: "/products?type=wallpaper"
+            },
+
+            sectionLabel: t(
+                "productMenu.type"
+            ),
+
+            items: [
+                {
+                    key: "raffia",
+                    label: t(
+                        "productMenu.wallpaper.raffia"
+                    ),
+                    path: "/products?type=wallpaper&codtipo=103"
+                },
+                {
+                    key: "wallpaperPaper",
+                    label: t(
+                        "productMenu.wallpaper.wallpaperPaper"
+                    ),
+                    path: "/products?type=wallpaper&codtipo=111"
+                },
+                {
+                    key: "vinylWallpaper",
+                    label: t(
+                        "productMenu.wallpaper.vinylWallpaper"
+                    ),
+                    path: "/products?type=wallpaper&codtipo=112"
+                },
+
+            ]
+        }),
+        [t]
+    );
+
+    const fabricMenu = useMemo(
+        () => ({
+            all: {
+                key: "fabricAll",
+                label: t("productMenu.viewAll"),
+                path: "/products?type=tela"
+            },
+            sections: [
+                {
+                    key: "fabricType",
+                    label: t("productMenu.type"),
+                    items: [
+                        {
+                            key: "velvet",
+                            label: t("productMenu.fabric.velvet"),
+                            path: "/products?type=tela&fabricType=TERCIOPELO"
+                        },
+                        {
+                            key: "sheer",
+                            label: t("productMenu.fabric.sheer"),
+                            path: "/products?type=tela&fabricType=VISILLO"
+                        },
+                        {
+                            key: "linen",
+                            label: t("productMenu.fabric.linen"),
+                            path: "/products?type=tela&fabricType=LINO"
+                        },
+                        {
+                            key: "printed",
+                            label: t("productMenu.fabric.printed"),
+                            path: "/products?type=tela&fabricType=ESTAMPADO"
+                        },
+                        {
+                            key: "cotton",
+                            label: t("productMenu.fabric.cotton"),
+                            path: "/products?type=tela&fabricType=ALGODON"
+                        },
+                    ]
+                },
+                {
+                    key: "fabricUsage",
+                    label: t("productMenu.usage"),
+                    items: [
+                        {
+                            key: "easyClean",
+                            label: t(
+                                "productMenu.fabric.easyClean"
+                            ),
+                            path: "/products?type=tela&mantenimiento=EASYCLEAN"
+                        },
+                        {
+                            key: "fireRetardant",
+                            label: t("productMenu.fabric.fireRetardant"),
+                            path: "/products?type=tela&uso=FR"
+                        },
+                        {
+                            key: "outdoor",
+                            label: t("productMenu.fabric.outdoor"),
+                            path: "/products?type=tela&uso=OUTDOOR"
+                        },
+                        {
+                            key: "imo",
+                            label: t("productMenu.fabric.imo"),
+                            path: "/products?type=tela&uso=IMO"
+                        },
+                        {
+                            key: "blackout",
+                            label: t("productMenu.fabric.blackout"),
+                            path: "/products?type=tela&uso=100%25%20OPACIDAD"
+                        },
+                    ]
+                }
+            ]
+        }),
         [t]
     );
 
@@ -192,6 +315,11 @@ export const Header = ({ closeModal }) => {
                 key: "contract",
                 label: t("contract"),
                 path: "/contract"
+            },
+            {
+                key: "brochures",
+                label: t("brochures"),
+                path: "/media"
             },
         ],
         [t]
@@ -318,6 +446,10 @@ export const Header = ({ closeModal }) => {
         useCallback(() => {
             setShowBrandsDropdown(false);
             setShowProductsDropdown(false);
+
+            setShowFabricLayer(false);
+            setShowWallpaperLayer(false);
+
             setShowCompanyDropdown(false);
             setShowUserDropdown(false);
             setShowLanguageDropdown(false);
@@ -609,11 +741,42 @@ export const Header = ({ closeModal }) => {
                 (link, index) => (
                     <button
                         key={link.key}
-                        onMouseDown={() =>
-                            handleLinkClick(
-                                link.path
-                            )
-                        }
+                        onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            if (
+                                showProductsDropdown &&
+                                link.key === "fabric"
+                            ) {
+                                setShowWallpaperLayer(false);
+
+                                setShowFabricLayer(
+                                    (current) => !current
+                                );
+
+                                return;
+                            }
+
+                            if (
+                                showProductsDropdown &&
+                                link.key === "wallpaper"
+                            ) {
+                                setShowFabricLayer(false);
+
+                                setShowWallpaperLayer(
+                                    (current) => !current
+                                );
+
+                                return;
+                            }
+
+                            if (link.path) {
+                                handleLinkClick(
+                                    link.path
+                                );
+                            }
+                        }}
                         type="button"
                         style={{
                             transitionDelay:
@@ -621,8 +784,14 @@ export const Header = ({ closeModal }) => {
                                     ? `${index * 120}ms`
                                     : "0ms",
                         }}
-                        className={`group flex w-full items-center justify-between rounded-2xl border border-transparent bg-white/70 px-4 py-4 text-left
+                        className={`group flex w-full items-center justify-between rounded-2xl border px-4 py-4 text-left
                             transition-all duration-500 ease-out hover:border-slate-200 hover:bg-white hover:shadow-sm
+                            ${showProductsDropdown &&
+                                link.key === "fabric" &&
+                                showFabricLayer
+                                ? "border-slate-300 bg-white shadow-sm"
+                                : "border-transparent bg-white/70"
+                            }
                             ${isVisible
                                 ? "translate-x-0 opacity-100"
                                 : "-translate-x-12 opacity-0 pointer-events-none"
@@ -632,7 +801,12 @@ export const Header = ({ closeModal }) => {
                             {link.label}
                         </span>
 
-                        <ArrowRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-700" />
+                        <ArrowRight className={`h-4 w-4 transition group-hover:translate-x-1 ${showProductsDropdown &&
+                            link.key === "fabric" &&
+                            showFabricLayer
+                            ? "translate-x-1 text-slate-700"
+                            : "text-slate-400 group-hover:text-slate-700"
+                            }`} />
                     </button>
                 )
             );
@@ -756,13 +930,6 @@ export const Header = ({ closeModal }) => {
                                 )}
                             </button>
                         </div>
-
-                        <Link
-                            to="/media"
-                            className="text-gray-800 font-semibold hover:bg-gray-200 hover:text-gray-900 py-2.5 px-2 xl:px-4 rounded-full transition"
-                        >
-                            {t("media")}
-                        </Link>
 
                         <button
                             type="button"
@@ -1052,6 +1219,469 @@ export const Header = ({ closeModal }) => {
                     </div>
                 </aside>
 
+                <aside
+                    className={`hidden lg:block fixed left-1/4 top-[84px] z-40
+        h-[calc(100vh-84px)] w-[390px]
+        overflow-y-auto
+        border-r border-stone-200/80
+        bg-[#FCFBF9]
+        shadow-[18px_0_45px_-28px_rgba(15,23,42,0.35)]
+        transition-all duration-500 ease-out
+        ${showProductsDropdown && showFabricLayer
+                            ? "translate-x-0 opacity-100"
+                            : "-translate-x-full opacity-0 pointer-events-none"
+                        }`}
+                    aria-hidden={
+                        !(showProductsDropdown && showFabricLayer)
+                    }
+                >
+                    <div className="flex min-h-full flex-col px-8 py-9">
+
+                        {/* Cabecera */}
+                        <div className="mb-9 flex items-start justify-between gap-5">
+                            <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-stone-400">
+                                    {t("products")}
+                                </p>
+
+                                <h3 className="mt-3 text-[30px] font-medium leading-none tracking-[-0.03em] text-stone-900">
+                                    {t("fabric")}
+                                </h3>
+
+                                <div className="mt-4 h-px w-10 bg-stone-900" />
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setShowFabricLayer(false)
+                                }
+                                className="
+                    group flex h-9 w-9 items-center justify-center
+                    rounded-full
+                    border border-stone-200
+                    bg-white
+                    text-stone-400
+                    shadow-sm
+                    transition-all duration-300
+                    hover:-rotate-90
+                    hover:border-stone-300
+                    hover:text-stone-900
+                    hover:shadow-md
+                "
+                                aria-label={t("closeMenu")}
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        {/* Ver todas */}
+                        <button
+                            type="button"
+                            onMouseDown={() =>
+                                handleLinkClick(
+                                    fabricMenu.all.path
+                                )
+                            }
+                            className="
+                group relative mb-10
+                flex w-full items-center justify-between
+                overflow-hidden
+                border-y border-stone-200
+                py-4
+                text-left
+            "
+                        >
+                            <span
+                                className="
+                    relative z-10
+                    text-[13px] font-semibold
+                    tracking-[0.08em]
+                    text-stone-900
+                    transition-transform duration-300
+                    group-hover:translate-x-1
+                "
+                            >
+                                {fabricMenu.all.label}
+                            </span>
+
+                            <span
+                                className="
+                    relative z-10
+                    flex h-8 w-8 items-center justify-center
+                    rounded-full
+                    bg-stone-900
+                    text-white
+                    transition-all duration-300
+                    group-hover:translate-x-1
+                    group-hover:bg-black
+                "
+                            >
+                                <ArrowRight className="h-3.5 w-3.5" />
+                            </span>
+
+                            <span
+                                className="
+                    absolute inset-0
+                    origin-left scale-x-0
+                    bg-stone-100/80
+                    transition-transform duration-500 ease-out
+                    group-hover:scale-x-100
+                "
+                            />
+                        </button>
+
+                        {/* Categorías */}
+                        <div className="space-y-10">
+                            {fabricMenu.sections.map(
+                                (section) => (
+                                    <section
+                                        key={section.key}
+                                    >
+                                        <div className="mb-4 flex items-center gap-4">
+                                            <p
+                                                className="
+                                    shrink-0
+                                    text-[10px] font-semibold
+                                    uppercase
+                                    tracking-[0.3em]
+                                    text-stone-400
+                                "
+                                            >
+                                                {section.label}
+                                            </p>
+
+                                            <span className="h-px flex-1 bg-stone-200" />
+                                        </div>
+
+                                        <div>
+                                            {section.items.map(
+                                                (item) => (
+                                                    <button
+                                                        key={item.key}
+                                                        type="button"
+                                                        onMouseDown={() =>
+                                                            handleLinkClick(
+                                                                item.path
+                                                            )
+                                                        }
+                                                        className="
+                                            group relative
+                                            flex w-full
+                                            items-center justify-between
+                                            border-b border-stone-100
+                                            py-3.5
+                                            text-left
+                                            transition-all duration-300
+                                            last:border-b-0
+                                        "
+                                                    >
+                                                        <span
+                                                            className="
+                                                relative
+                                                text-[14px]
+                                                font-normal
+                                                tracking-[0.015em]
+                                                text-stone-600
+                                                transition-all duration-300
+                                                group-hover:translate-x-2
+                                                group-hover:font-medium
+                                                group-hover:text-stone-950
+                                            "
+                                                        >
+                                                            {item.label}
+                                                        </span>
+
+                                                        <span
+                                                            className="
+                                                flex h-7 w-7
+                                                translate-x-2
+                                                items-center justify-center
+                                                rounded-full
+                                                border border-transparent
+                                                text-stone-300
+                                                opacity-0
+                                                transition-all duration-300
+                                                group-hover:translate-x-0
+                                                group-hover:border-stone-200
+                                                group-hover:bg-white
+                                                group-hover:text-stone-800
+                                                group-hover:opacity-100
+                                            "
+                                                        >
+                                                            <ArrowRight className="h-3 w-3" />
+                                                        </span>
+
+                                                        <span
+                                                            className="
+                                                absolute bottom-0 left-0
+                                                h-px w-0
+                                                bg-stone-800
+                                                transition-all duration-500
+                                                group-hover:w-full
+                                            "
+                                                        />
+                                                    </button>
+                                                )
+                                            )}
+                                        </div>
+                                    </section>
+                                )
+                            )}
+                        </div>
+
+                        {/* Detalle decorativo inferior */}
+                        <div className="mt-auto pt-12">
+                            <div className="border-t border-stone-200 pt-5">
+                                <p
+                                    className="
+                        max-w-[260px]
+                        text-[11px]
+                        leading-5
+                        tracking-[0.04em]
+                        text-stone-400
+                    "
+                                >
+                                    Explora nuestra selección de tejidos
+                                    por composición y aplicación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <aside
+                    className={`hidden lg:block fixed left-1/4 top-[84px] z-40
+        h-[calc(100vh-84px)] w-[390px]
+        overflow-y-auto
+        border-r border-stone-200/80
+        bg-[#FCFBF9]
+        shadow-[18px_0_45px_-28px_rgba(15,23,42,0.35)]
+        transition-all duration-500 ease-out
+        ${showProductsDropdown &&
+                            showWallpaperLayer
+                            ? "translate-x-0 opacity-100"
+                            : "-translate-x-full opacity-0 pointer-events-none"
+                        }`}
+                    aria-hidden={
+                        !(
+                            showProductsDropdown &&
+                            showWallpaperLayer
+                        )
+                    }
+                >
+                    <div className="flex min-h-full flex-col px-8 py-9">
+
+                        {/* Cabecera */}
+                        <div className="mb-9 flex items-start justify-between gap-5">
+                            <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-stone-400">
+                                    {t("products")}
+                                </p>
+
+                                <h3 className="mt-3 text-[30px] font-medium leading-none tracking-[-0.03em] text-stone-900">
+                                    {t(
+                                        "wallpapers",
+                                        "Wallpapers"
+                                    )}
+                                </h3>
+
+                                <div className="mt-4 h-px w-10 bg-stone-900" />
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setShowWallpaperLayer(false)
+                                }
+                                className="
+                    group flex h-9 w-9 items-center justify-center
+                    rounded-full
+                    border border-stone-200
+                    bg-white
+                    text-stone-400
+                    shadow-sm
+                    transition-all duration-300
+                    hover:-rotate-90
+                    hover:border-stone-300
+                    hover:text-stone-900
+                    hover:shadow-md
+                "
+                                aria-label={t("closeMenu")}
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        {/* Ver todo */}
+                        <button
+                            type="button"
+                            onMouseDown={() =>
+                                handleLinkClick(
+                                    wallpaperMenu.all.path
+                                )
+                            }
+                            className="
+                group relative mb-10
+                flex w-full items-center justify-between
+                overflow-hidden
+                border-y border-stone-200
+                py-4
+                text-left
+            "
+                        >
+                            <span
+                                className="
+                    relative z-10
+                    text-[13px] font-semibold
+                    tracking-[0.08em]
+                    text-stone-900
+                    transition-transform duration-300
+                    group-hover:translate-x-1
+                "
+                            >
+                                {wallpaperMenu.all.label}
+                            </span>
+
+                            <span
+                                className="
+                    relative z-10
+                    flex h-8 w-8 items-center justify-center
+                    rounded-full
+                    bg-stone-900
+                    text-white
+                    transition-all duration-300
+                    group-hover:translate-x-1
+                    group-hover:bg-black
+                "
+                            >
+                                <ArrowRight className="h-3.5 w-3.5" />
+                            </span>
+
+                            <span
+                                className="
+                    absolute inset-0
+                    origin-left scale-x-0
+                    bg-stone-100/80
+                    transition-transform duration-500 ease-out
+                    group-hover:scale-x-100
+                "
+                            />
+                        </button>
+
+                        {/* Tipo */}
+                        <div className="space-y-10">
+                            <section>
+                                <div className="mb-4 flex items-center gap-4">
+                                    <p
+                                        className="
+                            shrink-0
+                            text-[10px] font-semibold
+                            uppercase
+                            tracking-[0.3em]
+                            text-stone-400
+                        "
+                                    >
+                                        TIPO
+                                    </p>
+
+                                    <span className="h-px flex-1 bg-stone-200" />
+                                </div>
+
+                                <div>
+                                    {wallpaperMenu.items.map(
+                                        (item) => (
+                                            <button
+                                                key={item.key}
+                                                type="button"
+                                                onMouseDown={() =>
+                                                    handleLinkClick(
+                                                        item.path
+                                                    )
+                                                }
+                                                className="
+                                    group relative
+                                    flex w-full
+                                    items-center justify-between
+                                    border-b border-stone-100
+                                    py-3.5
+                                    text-left
+                                    transition-all duration-300
+                                    last:border-b-0
+                                "
+                                            >
+                                                <span
+                                                    className="
+                                        relative
+                                        text-[14px]
+                                        font-normal
+                                        tracking-[0.015em]
+                                        text-stone-600
+                                        transition-all duration-300
+                                        group-hover:translate-x-2
+                                        group-hover:font-medium
+                                        group-hover:text-stone-950
+                                    "
+                                                >
+                                                    {item.label}
+                                                </span>
+
+                                                <span
+                                                    className="
+                                        flex h-7 w-7
+                                        translate-x-2
+                                        items-center justify-center
+                                        rounded-full
+                                        border border-transparent
+                                        text-stone-300
+                                        opacity-0
+                                        transition-all duration-300
+                                        group-hover:translate-x-0
+                                        group-hover:border-stone-200
+                                        group-hover:bg-white
+                                        group-hover:text-stone-800
+                                        group-hover:opacity-100
+                                    "
+                                                >
+                                                    <ArrowRight className="h-3 w-3" />
+                                                </span>
+
+                                                <span
+                                                    className="
+                                        absolute bottom-0 left-0
+                                        h-px w-0
+                                        bg-stone-800
+                                        transition-all duration-500
+                                        group-hover:w-full
+                                    "
+                                                />
+                                            </button>
+                                        )
+                                    )}
+                                </div>
+                            </section>
+                        </div>
+
+                        {/* Pie */}
+                        <div className="mt-auto pt-12">
+                            <div className="border-t border-stone-200 pt-5">
+                                <p
+                                    className="
+                        max-w-[260px]
+                        text-[11px]
+                        leading-5
+                        tracking-[0.04em]
+                        text-stone-400
+                    "
+                                >
+                                    Explora nuestra selección de
+                                    revestimientos murales por
+                                    composición.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
                 <div
                     className={`lg:hidden fixed top-0 left-0 w-full h-[100vh] bg-white z-50 transition-all ${showMenu
                         ? "block"
@@ -1168,24 +1798,120 @@ export const Header = ({ closeModal }) => {
                             {showProductsDropdown && (
                                 <div className="pl-4 mt-2">
                                     {productLinks.map(
-                                        (link) => (
-                                            <button
-                                                key={
-                                                    link.key
-                                                }
-                                                onMouseDown={() =>
-                                                    handleLinkClick(
-                                                        link.path
-                                                    )
-                                                }
-                                                className="block py-1 text-gray-700 hover:text-gray-900"
-                                                type="button"
-                                            >
-                                                {
-                                                    link.label
-                                                }
-                                            </button>
-                                        )
+                                        (link) => {
+                                            const isFabric =
+                                                link.key === "fabric";
+
+                                            return (
+                                                <div
+                                                    key={
+                                                        link.key
+                                                    }
+                                                >
+                                                    <button
+                                                        onClick={(event) => {
+                                                            event.preventDefault();
+                                                            event.stopPropagation();
+
+                                                            if (
+                                                                isFabric
+                                                            ) {
+                                                                setShowFabricLayer(
+                                                                    (current) =>
+                                                                        !current
+                                                                );
+                                                                return;
+                                                            }
+
+                                                            if (link.path) {
+                                                                handleLinkClick(
+                                                                    link.path
+                                                                );
+                                                            }
+                                                        }}
+                                                        className="flex w-full items-center justify-between py-1 text-left text-gray-700 hover:text-gray-900"
+                                                        type="button"
+                                                    >
+                                                        <span>
+                                                            {
+                                                                link.label
+                                                            }
+                                                        </span>
+
+                                                        {isFabric &&
+                                                            (showFabricLayer ? (
+                                                                <ChevronUp className="h-4 w-4" />
+                                                            ) : (
+                                                                <ChevronDown className="h-4 w-4" />
+                                                            ))}
+                                                    </button>
+
+                                                    {isFabric &&
+                                                        showFabricLayer && (
+                                                            <div className="ml-3 mt-2 space-y-4 border-l border-slate-200 pl-3">
+                                                                <button
+                                                                    type="button"
+                                                                    onMouseDown={() =>
+                                                                        handleLinkClick(
+                                                                            fabricMenu
+                                                                                .all
+                                                                                .path
+                                                                        )
+                                                                    }
+                                                                    className="block w-full py-1 text-left text-sm font-semibold text-gray-800"
+                                                                >
+                                                                    {
+                                                                        fabricMenu
+                                                                            .all
+                                                                            .label
+                                                                    }
+                                                                </button>
+
+                                                                {fabricMenu.sections.map(
+                                                                    (
+                                                                        section
+                                                                    ) => (
+                                                                        <div
+                                                                            key={
+                                                                                section.key
+                                                                            }
+                                                                        >
+                                                                            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                                                                {
+                                                                                    section.label
+                                                                                }
+                                                                            </p>
+
+                                                                            {section.items.map(
+                                                                                (
+                                                                                    item
+                                                                                ) => (
+                                                                                    <button
+                                                                                        key={
+                                                                                            item.key
+                                                                                        }
+                                                                                        type="button"
+                                                                                        onMouseDown={() =>
+                                                                                            handleLinkClick(
+                                                                                                item.path
+                                                                                            )
+                                                                                        }
+                                                                                        className="block w-full py-1 text-left text-sm text-gray-600 hover:text-gray-900"
+                                                                                    >
+                                                                                        {
+                                                                                            item.label
+                                                                                        }
+                                                                                    </button>
+                                                                                )
+                                                                            )}
+                                                                        </div>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                </div>
+                                            );
+                                        }
                                     )}
                                 </div>
                             )}
@@ -1235,18 +1961,6 @@ export const Header = ({ closeModal }) => {
                                 </div>
                             )}
                         </div>
-
-                        <button
-                            onClick={() =>
-                                handleLinkClick(
-                                    "/media"
-                                )
-                            }
-                            className="block text-gray-800 font-semibold py-2"
-                            type="button"
-                        >
-                            {t("media")}
-                        </button>
 
                         <button
                             onClick={

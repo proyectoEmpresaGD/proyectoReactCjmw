@@ -19,6 +19,7 @@
   "company": "Company",
   "tailoring": "Tailoring",
   "customerArea": "Customer area",
+  "brochures": "Brochures",
   "changeLanguage": "Cambiar idioma",
   "nifLabel": "Tax ID",
   "adminPanel": "Admin panel",
@@ -35,5 +36,30 @@
     "companyDescription": "All corporate information gathered in one place.",
     "collectionsDescription": "Explore all collections grouped by brand."
   },
-  "collections": "Collections"
+  "collections": "Collections",
+  "productMenu": {
+    "viewAll": "View all",
+    "type": "Type",
+    "usage": "Use",
+    "fabric": {
+      "velvet": "Velvet",
+      "sheer": "Sheer",
+      "linen": "Linen",
+      "printed": "Printed",
+      "cotton": "Cotton",
+      "fireRetardant": "Fire retardant",
+      "outdoor": "Outdoor",
+      "imo": "IMO",
+      "blackout": "Blackout",
+      "easyClean": "Easy clean",
+      "description": "Explore our selection of fabrics by composition and application."
+    },
+    "wallpaper": {
+      "title": "Wallpapers",
+      "raffia": "Raffias",
+      "wallpaperPaper": "Wallpaper",
+      "vinylWallpaper": "Vinyl wallpaper",
+      "description": "Explore our selection of wallcoverings by composition."
+    }
+  }
 }

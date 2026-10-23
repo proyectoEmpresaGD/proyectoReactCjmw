@@ -11,6 +11,7 @@
   "cjm": "CJM",
   "flamenco": "Flamenco",
   "bassari": "Bassari",
+  "brochures": "Brochures",
   "allProducts": "Tous les produits",
   "paper": "Papiers",
   "fabric": "Tissus",
@@ -35,5 +36,30 @@
     "companyDescription": "Toutes les informations de l’entreprise regroupées en un seul endroit.",
     "collectionsDescription": "Découvrez toutes les collections regroupées par marque."
   },
-  "collections": "Collections"
+  "collections": "Collections",
+  "productMenu": {
+    "viewAll": "Tout voir",
+    "type": "Type",
+    "usage": "Usage",
+    "fabric": {
+      "velvet": "Velours",
+      "sheer": "Voilage",
+      "linen": "Lin",
+      "printed": "Imprimé",
+      "cotton": "Coton",
+      "fireRetardant": "Ignifuge",
+      "outdoor": "Extérieur",
+      "imo": "IMO",
+      "easyClean": "Easy clean",
+      "blackout": "Occultant",
+      "description": "Découvrez notre sélection de tissus par composition et application."
+    },
+    "wallpaper": {
+      "title": "Papiers peints",
+      "raffia": "Raphias",
+      "wallpaperPaper": "Papier peint",
+      "vinylWallpaper": "Papier peint vinyle",
+      "description": "Découvrez notre sélection de revêtements muraux par composition."
+    }
+  }
 }
