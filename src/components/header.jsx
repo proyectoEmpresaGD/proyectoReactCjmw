@@ -889,83 +889,64 @@ export const Header = () => {
 
 
     /* ──────────────────────────────
-       MOBILE NAVIGATION
-       ────────────────────────────── */
+   MOBILE NAVIGATION
+   ────────────────────────────── */
 
-    const openMobileProducts =
-        () => {
-            setShowBrandsDropdown(
-                false
-            );
+    const openMobileBrands = () => {
+        setShowProductsDropdown(false);
+        setShowCompanyDropdown(false);
+        setShowFabricLayer(false);
+        setShowWallpaperLayer(false);
 
-            setShowCompanyDropdown(
-                false
-            );
-
-            setShowFabricLayer(
-                false
-            );
-
-            setShowWallpaperLayer(
-                false
-            );
-
-            setShowProductsDropdown(
-                true
-            );
-        };
+        setShowBrandsDropdown(true);
+    };
 
 
-    const openMobileFabric =
-        () => {
-            setShowWallpaperLayer(
-                false
-            );
+    const openMobileProducts = () => {
+        setShowBrandsDropdown(false);
+        setShowCompanyDropdown(false);
+        setShowFabricLayer(false);
+        setShowWallpaperLayer(false);
 
-            setShowFabricLayer(
-                true
-            );
-        };
+        setShowProductsDropdown(true);
+    };
 
 
-    const openMobileWallpaper =
-        () => {
-            setShowFabricLayer(
-                false
-            );
+    const openMobileCompany = () => {
+        setShowBrandsDropdown(false);
+        setShowProductsDropdown(false);
+        setShowFabricLayer(false);
+        setShowWallpaperLayer(false);
 
-            setShowWallpaperLayer(
-                true
-            );
-        };
+        setShowCompanyDropdown(true);
+    };
 
 
-    const backToMobileMain =
-        () => {
-            setShowFabricLayer(
-                false
-            );
-
-            setShowWallpaperLayer(
-                false
-            );
-
-            setShowProductsDropdown(
-                false
-            );
-        };
+    const openMobileFabric = () => {
+        setShowWallpaperLayer(false);
+        setShowFabricLayer(true);
+    };
 
 
-    const backToMobileProducts =
-        () => {
-            setShowFabricLayer(
-                false
-            );
+    const openMobileWallpaper = () => {
+        setShowFabricLayer(false);
+        setShowWallpaperLayer(true);
+    };
 
-            setShowWallpaperLayer(
-                false
-            );
-        };
+
+    const backToMobileMain = () => {
+        setShowBrandsDropdown(false);
+        setShowProductsDropdown(false);
+        setShowCompanyDropdown(false);
+        setShowFabricLayer(false);
+        setShowWallpaperLayer(false);
+    };
+
+
+    const backToMobileProducts = () => {
+        setShowFabricLayer(false);
+        setShowWallpaperLayer(false);
+    };
 
 
     /* ──────────────────────────────
@@ -2234,55 +2215,119 @@ export const Header = () => {
                             </button>
                         </div>
 
+                        {/* MARCAS MOBILE */}
+                        <div
+                            className={`
+        absolute
+        inset-0
+        z-10
+        h-full
+        bg-gradient-to-b
+        from-white
+        via-slate-50
+        to-slate-100
+        transition-transform
+        duration-500
+        ease-out
+
+        ${showBrandsDropdown
+                                    ? "translate-x-0"
+                                    : "translate-x-full pointer-events-none"
+                                }
+    `}
+                        >
+                            <div className="flex h-full flex-col overflow-y-auto px-6 py-7">
+
+                                {/* CABECERA */}
+                                <div className="mb-8">
+
+                                    <div className="mb-6 flex items-center justify-between">
+                                        <button
+                                            type="button"
+                                            onClick={backToMobileMain}
+                                            className="flex items-center gap-2 text-sm font-medium text-slate-500"
+                                        >
+                                            <ArrowLeft className="h-4 w-4" />
+
+                                            {t("navigation")}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={closeMobileMenu}
+                                            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600"
+                                            aria-label={t("closeMenu")}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+
+                                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                                        {t("navigation")}
+                                    </p>
+
+                                    <h2 className="mt-3 text-3xl font-semibold text-slate-900">
+                                        {t("brands")}
+                                    </h2>
+
+                                    <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600">
+                                        {t("drawer.brandsDescription")}
+                                    </p>
+                                </div>
+
+
+                                {/* MARCAS */}
+                                <div className="space-y-3">
+                                    {brandsLinks.map((link) => (
+                                        <button
+                                            key={link.key}
+                                            type="button"
+                                            onClick={() =>
+                                                handleLinkClick(
+                                                    link.path
+                                                )
+                                            }
+                                            className="
+                        group
+                        flex w-full
+                        items-center justify-between
+                        rounded-2xl
+                        border border-transparent
+                        bg-white/70
+                        px-4 py-4
+                        text-left
+                        transition-all
+                        duration-300
+                        hover:border-slate-200
+                        hover:bg-white
+                        hover:shadow-sm
+                    "
+                                        >
+                                            <span className="font-medium text-slate-800">
+                                                {link.label}
+                                            </span>
+
+                                            <ArrowRight className="h-4 w-4 text-slate-400" />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
 
                         {/* MARCAS MOBILE */}
                         <div className="border-b border-stone-200 py-4">
                             <button
                                 type="button"
-                                onClick={() =>
-                                    toggleDropdown(
-                                        "brands"
-                                    )
-                                }
+                                onClick={openMobileBrands}
                                 className="flex w-full items-center justify-between text-left font-semibold text-gray-800"
                             >
-                                {t(
-                                    "brands"
-                                )}
+                                <span>
+                                    {t("brands")}
+                                </span>
 
-                                {showBrandsDropdown ? (
-                                    <ChevronUp className="h-5 w-5" />
-                                ) : (
-                                    <ChevronDown className="h-5 w-5" />
-                                )}
+                                <ArrowRight className="h-5 w-5 text-stone-400" />
                             </button>
-
-                            {showBrandsDropdown && (
-                                <div className="mt-3 space-y-1 pl-4">
-                                    {brandsLinks.map(
-                                        (
-                                            link
-                                        ) => (
-                                            <button
-                                                key={
-                                                    link.key
-                                                }
-                                                type="button"
-                                                onClick={() =>
-                                                    handleLinkClick(
-                                                        link.path
-                                                    )
-                                                }
-                                                className="block w-full py-2 text-left text-sm text-gray-600"
-                                            >
-                                                {
-                                                    link.label
-                                                }
-                                            </button>
-                                        )
-                                    )}
-                                </div>
-                            )}
                         </div>
 
 
@@ -2329,50 +2374,138 @@ export const Header = () => {
                         <div className="border-b border-stone-200 py-4">
                             <button
                                 type="button"
-                                onClick={() =>
-                                    toggleDropdown(
-                                        "company"
-                                    )
-                                }
+                                onClick={openMobileCompany}
                                 className="flex w-full items-center justify-between text-left font-semibold text-gray-800"
                             >
-                                {t(
-                                    "company"
-                                )}
+                                <span>
+                                    {t("company")}
+                                </span>
 
-                                {showCompanyDropdown ? (
-                                    <ChevronUp className="h-5 w-5" />
-                                ) : (
-                                    <ChevronDown className="h-5 w-5" />
-                                )}
+                                <ArrowRight className="h-5 w-5 text-stone-400" />
                             </button>
+                        </div>
 
-                            {showCompanyDropdown && (
-                                <div className="mt-3 space-y-1 pl-4">
-                                    {companyLinks.map(
-                                        (
-                                            link
-                                        ) => (
-                                            <button
-                                                key={
-                                                    link.key
-                                                }
-                                                type="button"
-                                                onClick={() =>
-                                                    handleLinkClick(
-                                                        link.path
-                                                    )
-                                                }
-                                                className="block w-full py-2 text-left text-sm text-gray-600"
-                                            >
-                                                {
-                                                    link.label
-                                                }
-                                            </button>
-                                        )
-                                    )}
+                        {/* EMPRESA MOBILE */}
+                        <div
+                            className={`
+        absolute
+        inset-0
+        z-10
+        h-full
+        bg-gradient-to-b
+        from-white
+        via-slate-50
+        to-slate-100
+        transition-transform
+        duration-500
+        ease-out
+
+        ${showCompanyDropdown
+                                    ? "translate-x-0"
+                                    : "translate-x-full pointer-events-none"
+                                }
+    `}
+                        >
+                            <div className="flex h-full flex-col overflow-y-auto px-6 py-7">
+
+                                {/* CABECERA */}
+                                <div className="mb-8">
+
+                                    <div className="mb-6 flex items-center justify-between">
+                                        <button
+                                            type="button"
+                                            onClick={backToMobileMain}
+                                            className="flex items-center gap-2 text-sm font-medium text-slate-500"
+                                        >
+                                            <ArrowLeft className="h-4 w-4" />
+
+                                            {t("navigation")}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={closeMobileMenu}
+                                            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600"
+                                            aria-label={t("closeMenu")}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+
+                                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                                        {t("navigation")}
+                                    </p>
+
+                                    <h2 className="mt-3 text-3xl font-semibold text-slate-900">
+                                        {t("company")}
+                                    </h2>
+
+                                    <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600">
+                                        {t("drawer.companyDescription")}
+                                    </p>
                                 </div>
-                            )}
+
+
+                                {/* ENLACES EMPRESA */}
+                                <div className="space-y-3">
+                                    {companyLinks.map((link) => (
+                                        <button
+                                            key={link.key}
+                                            type="button"
+                                            onClick={() =>
+                                                handleLinkClick(
+                                                    link.path
+                                                )
+                                            }
+                                            className="
+                        group
+                        flex w-full
+                        items-center justify-between
+                        rounded-2xl
+                        border border-transparent
+                        bg-white/70
+                        px-4 py-4
+                        text-left
+                        transition-all
+                        duration-300
+                        hover:border-slate-200
+                        hover:bg-white
+                        hover:shadow-sm
+                    "
+                                        >
+                                            <span className="font-medium text-slate-800">
+                                                {link.label}
+                                            </span>
+
+                                            <ArrowRight className="h-4 w-4 text-slate-400" />
+                                        </button>
+                                    ))}
+                                </div>
+
+
+                                {/* CONTACTO INFERIOR */}
+                                <div className="mt-auto border-t border-slate-300 pt-6">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleLinkClick(
+                                                "/contact"
+                                            )
+                                        }
+                                        className="flex w-full items-center justify-between rounded-2xl px-4 py-4 text-left"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Mail className="h-5 w-5 text-black" />
+
+                                            <span className="font-semibold text-black">
+                                                {t("contact")}
+                                            </span>
+                                        </div>
+
+                                        <ArrowRight className="h-4 w-4 text-black" />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
 
