@@ -1,8 +1,15 @@
 // src/components/colecciones/pageColeccion.jsx
 
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
+import {
+    Link,
+    useLocation,
+    useNavigate,
+    useParams
+} from "react-router-dom";
+import {
+    ArrowLeft
+} from "lucide-react";
 import { CartProvider } from "../../components/CartContext";
 import { Header } from "../../components/header";
 import Footer from "../../components/footer";
@@ -1180,8 +1187,50 @@ export default function ColeccionPage() {
                 )}
 
                 {/* 1) NOMBRE + TEXTO */}
+                {/* 1) NOMBRE + TEXTO */}
                 <section className="pt-24 pb-10">
                     <div className="max-w-5xl mx-auto px-6">
+
+                        {/* VOLVER A COLECCIONES */}
+                        {/* VOLVER A COLECCIONES */}
+                        <Link
+                            to="/colecciones"
+                            className="
+        group
+        mb-8
+        inline-flex
+        items-center
+        gap-2
+        rounded-full
+        border
+        border-stone-200
+        bg-white
+        px-4
+        py-2.5
+        text-sm
+        font-medium
+        text-stone-600
+        shadow-sm
+        transition-all
+        duration-300
+        hover:border-stone-300
+        hover:text-stone-950
+        hover:shadow-md
+    "
+                        >
+                            <ArrowLeft
+                                className="
+            h-4
+            w-4
+            transition-transform
+            duration-300
+            group-hover:-translate-x-1
+        "
+                            />
+
+                            Volver a colecciones
+                        </Link>
+
                         <p className="text-xs uppercase tracking-[0.4em] text-gray-500">
                             Colección
                         </p>
@@ -1190,9 +1239,8 @@ export default function ColeccionPage() {
                             {coleccion}
                         </h1>
 
-                        <p className="mt-6 max-w-full text-lg text-gray-700 leading-relaxed whitespace-pre-line">
-                            {content.introTop ||
-                                editorial.introTop}
+                        <p className="mt-6 max-w-full text-lg text-gray-700 leading-relaxed">
+                            {content.introTop || editorial.introTop}
                         </p>
                     </div>
                 </section>
