@@ -80,7 +80,10 @@ function useMediaQuery(query) {
 
 const useIsLargeScreen = () => useMediaQuery('(min-width: 1024px)');
 
-export default function FiltroButton({ clearFiltersCallback }) {
+export default function FiltroButton({
+    clearFiltersCallback,
+    showFloatingButton = true
+}) {
     const { t } = useTranslation('buttonFiltro');
     const navigate = useNavigate();
     const location = useLocation();
@@ -167,24 +170,25 @@ export default function FiltroButton({ clearFiltersCallback }) {
     return (
         <>
             {/* BOTÓN FLOTANTE: oculto en móvil/tablet. Visible solo en ≥ lg */}
-            <div className="hidden lg:block fixed top-1/4 left-6 z-20 group">
-                <button
-                    onClick={openPanel}
-                    className="flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#26659E] transition"
-                    aria-label={t('openButton', 'Abrir filtros')}
-                >
-                    <SlidersHorizontal className="w-5 h-5 text-gray-700" />
-                    {hasAnyFilter && (
-                        <span className="absolute top-1 right-1 w-2 h-2 bg-[#26659E] rounded-full" />
-                    )}
-                </button>
+            {showFloatingButton && (
+                <div className="hidden lg:block fixed top-1/4 left-6 z-20 group">
+                    <button
+                        onClick={openPanel}
+                        className="flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#26659E] transition"
+                        aria-label={t('openButton', 'Abrir filtros')}
+                    >
+                        <SlidersHorizontal className="w-5 h-5 text-gray-700" />
+                        {hasAnyFilter && (
+                            <span className="absolute top-1 right-1 w-2 h-2 bg-[#26659E] rounded-full" />
+                        )}
+                    </button>
 
-                {/* TOOLTIP (solo se ve en desktop porque el wrapper está oculto en <lg) */}
-                <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap bg-[#26659E] text-white text-xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                    {t('tooltip', 'Encuentra lo que deseas')}
-                </span>
-            </div>
-
+                    {/* TOOLTIP (solo se ve en desktop porque el wrapper está oculto en <lg) */}
+                    <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap bg-[#26659E] text-white text-xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                        {t('tooltip', 'Encuentra lo que deseas')}
+                    </span>
+                </div>
+            )}
             {/* PANEL LATERAL (FilterPanel solo renderiza en >= lg internamente) */}
             <FilterPanel
                 isOpen={isPanelOpen}

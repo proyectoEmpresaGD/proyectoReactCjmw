@@ -5,7 +5,9 @@ import { useCart } from '../CartContext';
 import Modal from './modal';
 import Filtro from '../filters/buttonFiltro';
 import SubMenuCarousel from '../filters/SubMenuCarousel';
+import ScrollToTopButton from "../common/ScrollToTopButton";
 import CryptoJS from 'crypto-js';
+import DesktopFiltersSidebar from "../filters/DesktopFiltersSidebar";
 import { useTranslation } from 'react-i18next';
 import { getSingleUsageDisplayValue } from '../../utils/usageDisplay';
 import { cdnUrl } from '../../Constants/cdn';
@@ -219,6 +221,8 @@ const resolveSaleInfo = (product = {}) => {
     };
 };
 
+
+
 const CONTEXT_TOKEN_KEYS = [
     'search',
     'brand',
@@ -252,7 +256,10 @@ export default function CardProduct() {
     const observerRef = useRef(null);
     const controllerRef = useRef(null);
     const userHasScrolledRef = useRef(false);
-
+    const [
+        mobileFiltersOpen,
+        setMobileFiltersOpen
+    ] = useState(false);
     const getQueryString = useCallback(() => {
         if (location.search && location.search !== '?') return location.search;
 
@@ -1692,9 +1699,13 @@ export default function CardProduct() {
         !!typeParam;
 
     return (
-        <div className="relative px-4 pb-16 pt-10 lg:px-10" ref={containerRef}>
-            <div className="relative mx-auto max-w-7xl space-y-6">
-                <Filtro setFilteredProducts={handleFilteredProducts} page={page} />
+        <div className="relative px-4 pb-16 pt-28 lg:px-10" ref={containerRef}>
+            <div className="relative mx-auto max-w-[1800px] space-y-6">
+                <Filtro
+                    setFilteredProducts={handleFilteredProducts}
+                    page={page}
+                    showFloatingButton={false}
+                />
 
                 <SubMenuCarousel
                     onFilterClick={(sel) => {
@@ -1784,240 +1795,742 @@ export default function CardProduct() {
                     </div>
                 )}
 
-                <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
-                    <div className="relative w-full md:max-w-md">
-                        <input
-                            type="text"
-                            value={searchInput}
-                            onChange={onChangeSearchInput}
-                            onKeyDown={onKeyDownSearchInput}
-                            placeholder={t(
-                                'searchPlaceholder',
-                                'Busca por nombre, color o colección...'
-                            )}
-                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-700 transition focus:border-[#26659E] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#26659E]/20"
-                        />
-                        <svg
-                            className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z"
-                            />
-                        </svg>
-                        {searchInput && searchInput.length < 3 && (
-                            <div className="absolute left-3 top-full mt-1 text-xs text-slate-400">
-                                {t('minChars', 'Escribe al menos 3 caracteres para buscar')}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex w-full flex-wrap items-center gap-3 md:w-auto md:justify-end">
-                        <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-sm text-slate-600">
-                            <span className="hidden pl-1 font-medium text-slate-700 sm:inline">
-                                {t('sortBy', 'Ordenar')}:
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => setSortOrder('alpha-asc')}
-                                aria-pressed={sortOrder === 'alpha-asc'}
-                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${sortOrder === 'alpha-asc'
-                                    ? 'bg-[#26659E] text-white shadow-sm'
-                                    : 'hover:bg-white hover:text-[#26659E]'
-                                    }`}
-                            >
-                                <ArrowDownAZ aria-hidden="true" />
-                                <span className="hidden sm:inline">
-                                    {t('sortAsc', 'A → Z')}
-                                </span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setSortOrder('alpha-desc')}
-                                aria-pressed={sortOrder === 'alpha-desc'}
-                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${sortOrder === 'alpha-desc'
-                                    ? 'bg-[#26659E] text-white shadow-sm'
-                                    : 'hover:bg-white hover:text-[#26659E]'
-                                    }`}
-                            >
-                                <ArrowUpAZ aria-hidden="true" />
-                                <span className="hidden sm:inline">
-                                    {t('sortDesc', 'Z → A')}
-                                </span>
-                            </button>
-                        </div>
-
-                        <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-sm text-slate-600">
-                            <span className="hidden pl-1 font-medium text-slate-700 sm:inline">
-                                {t('viewMode', 'Vista')}:
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => setViewMode('grid4')}
-                                aria-pressed={viewMode === 'grid4'}
-                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${viewMode === 'grid4'
-                                    ? 'bg-[#26659E] text-white shadow-sm'
-                                    : 'hover:bg-white hover:text-[#26659E]'
-                                    }`}
-                            >
-                                <LayoutGrid aria-hidden="true" />
-                                <span className="hidden sm:inline">
-                                    {t('gridView', 'Cuadrícula')}
-                                </span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setViewMode('grid2')}
-                                aria-pressed={viewMode === 'grid2'}
-                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 transition ${viewMode === 'grid2'
-                                    ? 'bg-[#26659E] text-white shadow-sm'
-                                    : 'hover:bg-white hover:text-[#26659E]'
-                                    }`}
-                            >
-                                <List aria-hidden="true" />
-                                <span className="hidden sm:inline">
-                                    {t('listView', 'Listado')}
-                                </span>
-                            </button>
-                        </div>
-                    </div>
+                {/* BOTÓN FILTROS - MÓVIL */}
+                <div className="lg:hidden">
+                    <button
+                        type="button"
+                        onClick={() =>
+                            setMobileFiltersOpen(
+                                true
+                            )
+                        }
+                        className="
+            flex
+            w-full
+            items-center
+            justify-center
+            rounded-2xl
+            border
+            border-stone-200
+            bg-white
+            px-5
+            py-3.5
+            text-sm
+            font-semibold
+            text-stone-900
+            transition
+            active:scale-[0.99]
+        "
+                    >
+                        Filtros
+                    </button>
                 </div>
 
-                <div className={gridClassName}>
-                    {displayed.map((p, i) => {
-                        const saleInfo = p._saleInfo;
-                        const isChristmas = false;
+                <div
+                    className="
+                        lg:grid
+                        lg:grid-cols-[280px_minmax(0,1fr)]
+                        lg:items-start
+                        lg:gap-8
+                    "
+                >
+                    <DesktopFiltersSidebar
+                        mobileOpen={
+                            mobileFiltersOpen
+                        }
+                        onMobileClose={() =>
+                            setMobileFiltersOpen(
+                                false
+                            )
+                        }
+                    />
 
-                        return (
-                            <div key={`${p.codprodu}-${i}`} className={cardContainerClass}>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setSelectedProduct(p);
-                                        setModalOpen(true);
-                                        preloadHighResInto(p);
-                                    }}
-                                    className={cardImageWrapperClass}
+
+                    {/* CONTENIDO DEL CATÁLOGO */}
+                    <div className="min-w-0 space-y-6">
+
+                        {/* BUSCADOR + ORDEN + VISTA */}
+                        <div
+                            className="
+                flex
+                flex-col
+                gap-4
+                rounded-3xl
+                border
+                border-slate-200
+                bg-white
+                p-5
+                shadow-sm
+                md:flex-row
+                md:items-center
+                md:justify-between
+            "
+                        >
+                            <div className="relative w-full md:max-w-md">
+                                <input
+                                    type="text"
+                                    value={searchInput}
+                                    onChange={onChangeSearchInput}
+                                    onKeyDown={onKeyDownSearchInput}
+                                    placeholder={t(
+                                        "searchPlaceholder",
+                                        "Busca por nombre, color o colección..."
+                                    )}
+                                    className="
+                        w-full
+                        rounded-2xl
+                        border
+                        border-slate-200
+                        bg-slate-50
+                        py-3
+                        pl-11
+                        pr-4
+                        text-sm
+                        text-slate-700
+                        transition
+                        focus:border-[#26659E]
+                        focus:bg-white
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-[#26659E]/20
+                    "
+                                />
+
+                                <svg
+                                    className="
+                        pointer-events-none
+                        absolute
+                        left-4
+                        top-1/2
+                        h-5
+                        w-5
+                        -translate-y-1/2
+                        text-slate-400
+                    "
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
                                 >
-                                    <LazyImage
-                                        src={p.imageBaja || defaultImageUrl}
-                                        alt={p.nombre}
-                                        className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z"
                                     />
-                                    {saleInfo.isOnSale && (
-                                        <span
-                                            className={`pointer-events-none absolute left-3 top-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm ${isChristmas
-                                                ? 'bg-emerald-600'
-                                                : 'bg-rose-600'
-                                                }`}
+                                </svg>
+
+                                {searchInput &&
+                                    searchInput.length < 3 && (
+                                        <div
+                                            className="
+                                absolute
+                                left-3
+                                top-full
+                                mt-1
+                                text-xs
+                                text-slate-400
+                            "
                                         >
-                                            {saleInfo.discount != null
-                                                ? t('sale.discountBadge', {
-                                                    discount: saleInfo.discount,
-                                                    defaultValue: `-${saleInfo.discount}%`,
-                                                })
-                                                : t('sale.badge', 'En oferta')}
-                                        </span>
-                                    )}
-                                    <div className="pointer-events-none absolute inset-0 bg-black/0 transition duration-300 group-hover:bg-black/10" />
-                                    <div className="pointer-events-none absolute inset-x-4 bottom-4 rounded-full bg-white/90 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-[#26659E] opacity-0 shadow-sm transition duration-300 group-hover:opacity-100">
-                                        {t('touchToView', 'Toca para ver')}
-                                    </div>
-                                </button>
-
-                                <div className={cardBodyClass}>
-                                    {p.coleccion && (
-                                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-[#26659E]/80">
-                                            {p.coleccion}
-                                        </span>
-                                    )}
-
-                                    <h3
-                                        className="text-base font-semibold text-slate-900 leading-tight md:text-lg"
-                                        style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                        }}
-                                    >
-                                        {p.nombre}
-                                    </h3>
-
-                                    <div className="flex flex-wrap items-center gap-2 text-[0.7rem] text-slate-500 sm:text-xs">
-                                        {p.tonalidad && (
-                                            <span className={metaPillClass}>
-                                                <span
-                                                    className="h-2 w-2 rounded-full border border-slate-200"
-                                                    style={{
-                                                        backgroundColor: p.hexcolor || '#f1f5f9',
-                                                    }}
-                                                />
-                                                {p.tonalidad}
-                                            </span>
-                                        )}
-                                        {p.marca && (
-                                            <span className={metaPillClass}>
-                                                <span className="text-[0.65rem] font-semibold uppercase tracking-wide text-slate-400">
-                                                    {t('filters.brand', 'Marca')}:
-                                                </span>
-                                                {p.marca}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {saleInfo.isOnSale && (
-                                        <div className={saleStackClass}>
-                                            {saleInfo.salePrice && (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-1 text-rose-600">
-                                                    {t('sale.priceLabel', {
-                                                        price: saleInfo.salePrice,
-                                                        defaultValue: saleInfo.salePrice,
-                                                    })}
-                                                </span>
-                                            )}
-                                            {saleInfo.originalPrice && (
-                                                <span className="text-slate-400 line-through">
-                                                    {t('sale.originalLabel', {
-                                                        price: saleInfo.originalPrice,
-                                                        defaultValue: saleInfo.originalPrice,
-                                                    })}
-                                                </span>
+                                            {t(
+                                                "minChars",
+                                                "Escribe al menos 3 caracteres para buscar"
                                             )}
                                         </div>
                                     )}
+                            </div>
+
+
+                            <div
+                                className="
+                    flex
+                    w-full
+                    flex-wrap
+                    items-center
+                    gap-3
+                    md:w-auto
+                    md:justify-end
+                "
+                            >
+                                {/* ORDENAR */}
+                                <div
+                                    className="
+                        flex
+                        items-center
+                        gap-2
+                        rounded-full
+                        border
+                        border-slate-200
+                        bg-slate-50
+                        px-2
+                        py-1
+                        text-sm
+                        text-slate-600
+                    "
+                                >
+                                    <span
+                                        className="
+                            hidden
+                            pl-1
+                            font-medium
+                            text-slate-700
+                            sm:inline
+                        "
+                                    >
+                                        {t(
+                                            "sortBy",
+                                            "Ordenar"
+                                        )}
+                                        :
+                                    </span>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setSortOrder(
+                                                "alpha-asc"
+                                            )
+                                        }
+                                        aria-pressed={
+                                            sortOrder ===
+                                            "alpha-asc"
+                                        }
+                                        className={`
+                            inline-flex
+                            items-center
+                            gap-1
+                            rounded-full
+                            px-3
+                            py-1.5
+                            transition
+
+                            ${sortOrder ===
+                                                "alpha-asc"
+                                                ? "bg-[#26659E] text-white shadow-sm"
+                                                : "hover:bg-white hover:text-[#26659E]"
+                                            }
+                        `}
+                                    >
+                                        <ArrowDownAZ aria-hidden="true" />
+
+                                        <span className="hidden sm:inline">
+                                            {t(
+                                                "sortAsc",
+                                                "A → Z"
+                                            )}
+                                        </span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setSortOrder(
+                                                "alpha-desc"
+                                            )
+                                        }
+                                        aria-pressed={
+                                            sortOrder ===
+                                            "alpha-desc"
+                                        }
+                                        className={`
+                            inline-flex
+                            items-center
+                            gap-1
+                            rounded-full
+                            px-3
+                            py-1.5
+                            transition
+
+                            ${sortOrder ===
+                                                "alpha-desc"
+                                                ? "bg-[#26659E] text-white shadow-sm"
+                                                : "hover:bg-white hover:text-[#26659E]"
+                                            }
+                        `}
+                                    >
+                                        <ArrowUpAZ aria-hidden="true" />
+
+                                        <span className="hidden sm:inline">
+                                            {t(
+                                                "sortDesc",
+                                                "Z → A"
+                                            )}
+                                        </span>
+                                    </button>
+                                </div>
+
+
+                                {/* VISTA */}
+                                <div
+                                    className="
+                        flex
+                        items-center
+                        gap-2
+                        rounded-full
+                        border
+                        border-slate-200
+                        bg-slate-50
+                        px-2
+                        py-1
+                        text-sm
+                        text-slate-600
+                    "
+                                >
+                                    <span
+                                        className="
+                            hidden
+                            pl-1
+                            font-medium
+                            text-slate-700
+                            sm:inline
+                        "
+                                    >
+                                        {t(
+                                            "viewMode",
+                                            "Vista"
+                                        )}
+                                        :
+                                    </span>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setViewMode(
+                                                "grid4"
+                                            )
+                                        }
+                                        aria-pressed={
+                                            viewMode ===
+                                            "grid4"
+                                        }
+                                        className={`
+                            inline-flex
+                            items-center
+                            gap-1
+                            rounded-full
+                            px-3
+                            py-1.5
+                            transition
+
+                            ${viewMode ===
+                                                "grid4"
+                                                ? "bg-[#26659E] text-white shadow-sm"
+                                                : "hover:bg-white hover:text-[#26659E]"
+                                            }
+                        `}
+                                    >
+                                        <LayoutGrid aria-hidden="true" />
+
+                                        <span className="hidden sm:inline">
+                                            {t(
+                                                "gridView",
+                                                "Cuadrícula"
+                                            )}
+                                        </span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setViewMode(
+                                                "grid2"
+                                            )
+                                        }
+                                        aria-pressed={
+                                            viewMode ===
+                                            "grid2"
+                                        }
+                                        className={`
+                            inline-flex
+                            items-center
+                            gap-1
+                            rounded-full
+                            px-3
+                            py-1.5
+                            transition
+
+                            ${viewMode ===
+                                                "grid2"
+                                                ? "bg-[#26659E] text-white shadow-sm"
+                                                : "hover:bg-white hover:text-[#26659E]"
+                                            }
+                        `}
+                                    >
+                                        <List aria-hidden="true" />
+
+                                        <span className="hidden sm:inline">
+                                            {t(
+                                                "listView",
+                                                "Listado"
+                                            )}
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
-                        );
-                    })}
-                </div>
+                        </div>
 
-                {hasMore && <div ref={sentinelRef} />}
 
-                {!loading && displayed.length === 0 && !error && (
-                    <div className="mt-8 text-center text-gray-500">
-                        {t('noProductsFound')}
+                        {/* PRODUCTOS */}
+                        <div className={gridClassName}>
+                            {displayed.map(
+                                (p, i) => {
+                                    const saleInfo =
+                                        p._saleInfo;
+
+                                    const isChristmas =
+                                        false;
+
+                                    return (
+                                        <div
+                                            key={`${p.codprodu}-${i}`}
+                                            className={
+                                                cardContainerClass
+                                            }
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setSelectedProduct(
+                                                        p
+                                                    );
+
+                                                    setModalOpen(
+                                                        true
+                                                    );
+
+                                                    preloadHighResInto(
+                                                        p
+                                                    );
+                                                }}
+                                                className={
+                                                    cardImageWrapperClass
+                                                }
+                                            >
+                                                <LazyImage
+                                                    src={
+                                                        p.imageBaja ||
+                                                        defaultImageUrl
+                                                    }
+                                                    alt={
+                                                        p.nombre
+                                                    }
+                                                    className="
+                                        h-full
+                                        w-full
+                                        object-cover
+                                        transition
+                                        duration-500
+                                        ease-out
+                                        group-hover:scale-105
+                                    "
+                                                />
+
+                                                {saleInfo.isOnSale && (
+                                                    <span
+                                                        className={`
+                                            pointer-events-none
+                                            absolute
+                                            left-3
+                                            top-3
+                                            inline-flex
+                                            items-center
+                                            rounded-full
+                                            px-3
+                                            py-1
+                                            text-xs
+                                            font-semibold
+                                            uppercase
+                                            tracking-wide
+                                            text-white
+                                            shadow-sm
+
+                                            ${isChristmas
+                                                                ? "bg-emerald-600"
+                                                                : "bg-rose-600"
+                                                            }
+                                        `}
+                                                    >
+                                                        {saleInfo.discount !=
+                                                            null
+                                                            ? t(
+                                                                "sale.discountBadge",
+                                                                {
+                                                                    discount:
+                                                                        saleInfo.discount,
+
+                                                                    defaultValue: `-${saleInfo.discount}%`,
+                                                                }
+                                                            )
+                                                            : t(
+                                                                "sale.badge",
+                                                                "En oferta"
+                                                            )}
+                                                    </span>
+                                                )}
+
+                                                <div
+                                                    className="
+                                        pointer-events-none
+                                        absolute
+                                        inset-0
+                                        bg-black/0
+                                        transition
+                                        duration-300
+                                        group-hover:bg-black/10
+                                    "
+                                                />
+
+                                                <div
+                                                    className="
+                                        pointer-events-none
+                                        absolute
+                                        inset-x-4
+                                        bottom-4
+                                        rounded-full
+                                        bg-white/90
+                                        px-3
+                                        py-1.5
+                                        text-[0.7rem]
+                                        font-semibold
+                                        uppercase
+                                        tracking-[0.25em]
+                                        text-[#26659E]
+                                        opacity-0
+                                        shadow-sm
+                                        transition
+                                        duration-300
+                                        group-hover:opacity-100
+                                    "
+                                                >
+                                                    {t(
+                                                        "touchToView",
+                                                        "Toca para ver"
+                                                    )}
+                                                </div>
+                                            </button>
+
+
+                                            <div
+                                                className={
+                                                    cardBodyClass
+                                                }
+                                            >
+                                                {p.coleccion && (
+                                                    <span
+                                                        className="
+                                            text-[0.65rem]
+                                            font-semibold
+                                            uppercase
+                                            tracking-[0.28em]
+                                            text-[#26659E]/80
+                                        "
+                                                    >
+                                                        {
+                                                            p.coleccion
+                                                        }
+                                                    </span>
+                                                )}
+
+                                                <h3
+                                                    className="
+                                        text-base
+                                        font-semibold
+                                        leading-tight
+                                        text-slate-900
+                                        md:text-lg
+                                    "
+                                                    style={{
+                                                        display:
+                                                            "-webkit-box",
+
+                                                        WebkitLineClamp:
+                                                            2,
+
+                                                        WebkitBoxOrient:
+                                                            "vertical",
+
+                                                        overflow:
+                                                            "hidden",
+                                                    }}
+                                                >
+                                                    {p.nombre}
+                                                </h3>
+
+
+                                                <div
+                                                    className="
+                                        flex
+                                        flex-wrap
+                                        items-center
+                                        gap-2
+                                        text-[0.7rem]
+                                        text-slate-500
+                                        sm:text-xs
+                                    "
+                                                >
+                                                    {p.tonalidad && (
+                                                        <span
+                                                            className={
+                                                                metaPillClass
+                                                            }
+                                                        >
+                                                            <span
+                                                                className="
+                                                    h-2
+                                                    w-2
+                                                    rounded-full
+                                                    border
+                                                    border-slate-200
+                                                "
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        p.hexcolor ||
+                                                                        "#f1f5f9",
+                                                                }}
+                                                            />
+
+                                                            {
+                                                                p.tonalidad
+                                                            }
+                                                        </span>
+                                                    )}
+
+                                                    {p.marca && (
+                                                        <span
+                                                            className={
+                                                                metaPillClass
+                                                            }
+                                                        >
+                                                            <span
+                                                                className="
+                                                    text-[0.65rem]
+                                                    font-semibold
+                                                    uppercase
+                                                    tracking-wide
+                                                    text-slate-400
+                                                "
+                                                            >
+                                                                {t(
+                                                                    "filters.brand",
+                                                                    "Marca"
+                                                                )}
+                                                                :
+                                                            </span>
+
+                                                            {
+                                                                p.marca
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </div>
+
+
+                                                {saleInfo.isOnSale && (
+                                                    <div
+                                                        className={
+                                                            saleStackClass
+                                                        }
+                                                    >
+                                                        {saleInfo.salePrice && (
+                                                            <span
+                                                                className="
+                                                    inline-flex
+                                                    items-center
+                                                    gap-1
+                                                    rounded-full
+                                                    bg-rose-50
+                                                    px-2.5
+                                                    py-1
+                                                    text-rose-600
+                                                "
+                                                            >
+                                                                {t(
+                                                                    "sale.priceLabel",
+                                                                    {
+                                                                        price:
+                                                                            saleInfo.salePrice,
+
+                                                                        defaultValue:
+                                                                            saleInfo.salePrice,
+                                                                    }
+                                                                )}
+                                                            </span>
+                                                        )}
+
+                                                        {saleInfo.originalPrice && (
+                                                            <span className="text-slate-400 line-through">
+                                                                {t(
+                                                                    "sale.originalLabel",
+                                                                    {
+                                                                        price:
+                                                                            saleInfo.originalPrice,
+
+                                                                        defaultValue:
+                                                                            saleInfo.originalPrice,
+                                                                    }
+                                                                )}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                            )}
+                        </div>
+
+
+                        {/* SCROLL INFINITO */}
+                        {hasMore && (
+                            <div ref={sentinelRef} />
+                        )}
+
+
+                        {/* SIN RESULTADOS */}
+                        {!loading &&
+                            displayed.length === 0 &&
+                            !error && (
+                                <div className="mt-8 text-center text-gray-500">
+                                    {t(
+                                        "noProductsFound"
+                                    )}
+                                </div>
+                            )}
+
+
+                        {/* ERROR */}
+                        {!loading &&
+                            error && (
+                                <div className="mt-8 text-center text-red-500">
+                                    {error}
+                                </div>
+                            )}
+
+
+                        {/* MODAL */}
+                        {selectedProduct && (
+                            <Modal
+                                isOpen={
+                                    modalOpen
+                                }
+                                close={() =>
+                                    setModalOpen(
+                                        false
+                                    )
+                                }
+                                product={
+                                    selectedProduct
+                                }
+                                onApplyFilters={
+                                    handleFilteredProducts
+                                }
+                            />
+                        )}
                     </div>
-                )}
-                {!loading && error && (
-                    <div className="mt-8 text-center text-red-500">{error}</div>
-                )}
-
-                {selectedProduct && (
-                    <Modal
-                        isOpen={modalOpen}
-                        close={() => setModalOpen(false)}
-                        product={selectedProduct}
-                        onApplyFilters={handleFilteredProducts}
-                    />
-                )}
+                </div>
             </div>
+            <ScrollToTopButton />
         </div>
     );
 }

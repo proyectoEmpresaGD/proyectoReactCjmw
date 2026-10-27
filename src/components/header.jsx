@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import {
     Menu,
     Search,
+    User,
     ChevronDown,
     ChevronUp,
     SlidersHorizontal,
@@ -112,9 +113,16 @@ export const Header = () => {
     } = useMarca();
 
     const {
-        isAuthenticated
+        user,
+        isAuthenticated,
+        isAdmin,
+        logout
     } = useAuth();
 
+    const [
+        showUserDropdown,
+        setShowUserDropdown
+    ] = useState(false);
 
     /* ──────────────────────────────
        STATE
@@ -192,6 +200,11 @@ export const Header = () => {
        ────────────────────────────── */
 
     const searchRef = useRef(null);
+    const desktopUserRef =
+        useRef(null);
+
+    const mobileUserRef =
+        useRef(null);
     const languageRef = useRef(null);
 
     const menuRef = useRef(null);
@@ -217,6 +230,30 @@ export const Header = () => {
         "/flamencoHome": "FLA",
     };
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+
+            setShowUserDropdown(false);
+            setShowMenu(false);
+
+            navigate("/");
+        } catch (error) {
+            console.error(
+                "Error cerrando sesión de cliente:",
+                error
+            );
+        }
+    };
+
+    const handleUserNavigation = (
+        path
+    ) => {
+        setShowUserDropdown(false);
+        setShowMenu(false);
+
+        navigate(path);
+    };
 
     /* ──────────────────────────────
        LINKS
@@ -647,33 +684,16 @@ export const Header = () => {
 
     const closeAllDropdowns =
         useCallback(() => {
-            setShowBrandsDropdown(
-                false
-            );
+            setShowBrandsDropdown(false);
+            setShowProductsDropdown(false);
+            setShowFabricLayer(false);
+            setShowWallpaperLayer(false);
+            setShowCompanyDropdown(false);
 
-            setShowProductsDropdown(
-                false
-            );
+            setShowUserDropdown(false);
 
-            setShowFabricLayer(
-                false
-            );
-
-            setShowWallpaperLayer(
-                false
-            );
-
-            setShowCompanyDropdown(
-                false
-            );
-
-            setShowLanguageDropdown(
-                false
-            );
-
-            setShowDrawerLinks(
-                false
-            );
+            setShowLanguageDropdown(false);
+            setShowDrawerLinks(false);
         }, []);
 
 
@@ -712,6 +732,16 @@ export const Header = () => {
                     return;
                 }
 
+                const clickedInsideUser =
+                    desktopUserRef.current
+                        ?.contains(
+                            event.target
+                        ) ||
+                    mobileUserRef.current
+                        ?.contains(
+                            event.target
+                        );
+
                 if (
                     !searchRef.current
                         ?.contains(
@@ -733,6 +763,7 @@ export const Header = () => {
                         ?.contains(
                             event.target
                         ) &&
+                    !clickedInsideUser &&
                     !companyRef.current
                         ?.contains(
                             event.target
@@ -817,6 +848,9 @@ export const Header = () => {
 
     const toggleDropdown =
         (dropdown) => {
+            const isUserOpen =
+                showUserDropdown;
+
             const isBrandsOpen =
                 showBrandsDropdown;
 
@@ -855,6 +889,12 @@ export const Header = () => {
                 case "brands":
                     setShowBrandsDropdown(
                         !isBrandsOpen
+                    );
+                    break;
+
+                case "user":
+                    setShowUserDropdown(
+                        !isUserOpen
                     );
                     break;
 
@@ -1268,6 +1308,7 @@ export const Header = () => {
 
                     ${isHovered ||
                         showSearchBar ||
+                        showUserDropdown ||
                         showBrandsDropdown ||
                         showProductsDropdown ||
                         showCompanyDropdown ||
@@ -1505,7 +1546,7 @@ export const Header = () => {
                     <div className="flex items-center space-x-2 xl:space-x-4">
 
                         {/* FILTROS */}
-                        <div className="group relative">
+                        {/* <div className="group relative">
                             <button
                                 type="button"
                                 onClick={
@@ -1535,8 +1576,373 @@ export const Header = () => {
 
                                 <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-gray-900" />
                             </div>
-                        </div>
+                        </div> */}
+                        {/* USUARIO DESKTOP - OCULTO */}
+                        <div
+                            ref={desktopUserRef}
+                            className="relative hidden"
+                        >
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    toggleDropdown(
+                                        "user"
+                                    )
+                                }
+                                aria-label={
+                                    isAuthenticated
+                                        ? t(
+                                            "customerArea",
+                                            "Área de cliente"
+                                        )
+                                        : t(
+                                            "login",
+                                            "Iniciar sesión"
+                                        )
+                                }
+                                className={`
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+            rounded-full
+            transition
 
+            ${showUserDropdown
+                                        ? "bg-slate-900 text-white"
+                                        : "text-gray-800 hover:bg-gray-200"
+                                    }
+        `}
+                            >
+                                <User className="h-5 w-5" />
+                            </button>
+
+
+                            {showUserDropdown && (
+                                <div
+                                    className="
+                absolute
+                right-0
+                top-[calc(100%+12px)]
+                z-50
+                w-72
+                overflow-hidden
+                rounded-2xl
+                border
+                border-stone-200
+                bg-white
+                shadow-xl
+            "
+                                >
+                                    {isAuthenticated ? (
+                                        <>
+                                            {/* CLIENTE */}
+                                            <div
+                                                className="
+                            border-b
+                            border-stone-200
+                            px-5
+                            py-4
+                        "
+                                            >
+                                                <p
+                                                    className="
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.25em]
+                                text-stone-400
+                            "
+                                                >
+                                                    {t(
+                                                        "customerArea",
+                                                        "Área de cliente"
+                                                    )}
+                                                </p>
+
+                                                <p
+                                                    className="
+                                mt-2
+                                truncate
+                                text-sm
+                                font-semibold
+                                text-stone-900
+                            "
+                                                >
+                                                    {user?.activeCustomer
+                                                        ?.razclien ||
+                                                        user?.activeCustomer
+                                                            ?.nomcomer ||
+                                                        user?.nif}
+                                                </p>
+
+                                                {user?.nif && (
+                                                    <p
+                                                        className="
+                                    mt-1
+                                    text-xs
+                                    text-stone-500
+                                "
+                                                    >
+                                                        {t(
+                                                            "nifLabel",
+                                                            "NIF:"
+                                                        )}{" "}
+                                                        {user.nif}
+                                                    </p>
+                                                )}
+                                            </div>
+
+
+                                            {/* ADMIN */}
+                                            {isAdmin && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handleUserNavigation(
+                                                            "/admin/solicitudes"
+                                                        )
+                                                    }
+                                                    className="
+                                flex
+                                w-full
+                                items-center
+                                justify-between
+                                border-b
+                                border-stone-100
+                                px-5
+                                py-3.5
+                                text-left
+                                text-sm
+                                font-medium
+                                text-stone-700
+                                transition
+                                hover:bg-stone-50
+                                hover:text-stone-950
+                            "
+                                                >
+                                                    <span>
+                                                        {t(
+                                                            "adminPanel",
+                                                            "Panel de administración"
+                                                        )}
+                                                    </span>
+
+                                                    <ArrowRight className="h-4 w-4 text-stone-400" />
+                                                </button>
+                                            )}
+
+
+                                            {/* MIS DATOS */}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleUserNavigation(
+                                                        "/mis-datos"
+                                                    )
+                                                }
+                                                className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            border-b
+                            border-stone-100
+                            px-5
+                            py-3.5
+                            text-left
+                            text-sm
+                            text-stone-700
+                            transition
+                            hover:bg-stone-50
+                            hover:text-stone-950
+                        "
+                                            >
+                                                <span>
+                                                    {t(
+                                                        "myData",
+                                                        "Mis datos"
+                                                    )}
+                                                </span>
+
+                                                <ArrowRight className="h-4 w-4 text-stone-400" />
+                                            </button>
+
+
+                                            {/* FACTURAS */}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleUserNavigation(
+                                                        "/mis-facturas"
+                                                    )
+                                                }
+                                                className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            border-b
+                            border-stone-100
+                            px-5
+                            py-3.5
+                            text-left
+                            text-sm
+                            text-stone-700
+                            transition
+                            hover:bg-stone-50
+                            hover:text-stone-950
+                        "
+                                            >
+                                                <span>
+                                                    {t(
+                                                        "myInvoices",
+                                                        "Mis facturas"
+                                                    )}
+                                                </span>
+
+                                                <ArrowRight className="h-4 w-4 text-stone-400" />
+                                            </button>
+
+
+                                            {/* CERRAR SESIÓN */}
+                                            <button
+                                                type="button"
+                                                onClick={
+                                                    handleLogout
+                                                }
+                                                className="
+                            w-full
+                            px-5
+                            py-4
+                            text-left
+                            text-sm
+                            font-medium
+                            text-stone-500
+                            transition
+                            hover:bg-stone-50
+                            hover:text-stone-950
+                        "
+                                            >
+                                                {t(
+                                                    "logout",
+                                                    "Cerrar sesión"
+                                                )}
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div
+                                                className="
+                            border-b
+                            border-stone-200
+                            px-5
+                            py-4
+                        "
+                                            >
+                                                <p
+                                                    className="
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.25em]
+                                text-stone-400
+                            "
+                                                >
+                                                    {t(
+                                                        "customerArea",
+                                                        "Área de cliente"
+                                                    )}
+                                                </p>
+
+                                                <p
+                                                    className="
+                                mt-2
+                                text-sm
+                                leading-5
+                                text-stone-500
+                            "
+                                                >
+                                                    Accede a tu cuenta para
+                                                    consultar tus datos y
+                                                    facturas.
+                                                </p>
+                                            </div>
+
+
+                                            {/* LOGIN */}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleUserNavigation(
+                                                        "/login"
+                                                    )
+                                                }
+                                                className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            border-b
+                            border-stone-100
+                            px-5
+                            py-4
+                            text-left
+                            text-sm
+                            font-medium
+                            text-stone-800
+                            transition
+                            hover:bg-stone-50
+                        "
+                                            >
+                                                <span>
+                                                    {t(
+                                                        "login",
+                                                        "Iniciar sesión"
+                                                    )}
+                                                </span>
+
+                                                <ArrowRight className="h-4 w-4 text-stone-400" />
+                                            </button>
+
+
+                                            {/* REGISTRO */}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleUserNavigation(
+                                                        "/register"
+                                                    )
+                                                }
+                                                className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            px-5
+                            py-4
+                            text-left
+                            text-sm
+                            text-stone-700
+                            transition
+                            hover:bg-stone-50
+                        "
+                                            >
+                                                <span>
+                                                    {t(
+                                                        "createAccount",
+                                                        "Crear cuenta"
+                                                    )}
+                                                </span>
+
+                                                <ArrowRight className="h-4 w-4 text-stone-400" />
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                        </div>
 
                         {/* BUSCADOR */}
                         <div
@@ -2527,7 +2933,7 @@ export const Header = () => {
 
 
                         {/* FILTROS MOBILE */}
-                        <button
+                        {/* <button
                             type="button"
                             onClick={
                                 openFilters
@@ -2538,7 +2944,374 @@ export const Header = () => {
                                 "filtersButtonLabel",
                                 "Filtros"
                             )}
+                        </button> */}
+                    </div>
+
+                    {/* USUARIO MOBILE */}
+                    <div
+                        ref={mobileUserRef}
+                        className="relative"
+                    >
+                        <button
+                            type="button"
+                            onClick={() =>
+                                toggleDropdown(
+                                    "user"
+                                )
+                            }
+                            aria-label={
+                                isAuthenticated
+                                    ? t(
+                                        "customerArea",
+                                        "Área de cliente"
+                                    )
+                                    : t(
+                                        "login",
+                                        "Iniciar sesión"
+                                    )
+                            }
+                            className={`
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+            rounded-full
+            transition
+
+            ${showUserDropdown
+                                    ? "bg-slate-900 text-white"
+                                    : "text-gray-800 hover:bg-gray-200"
+                                }
+        `}
+                        >
+                            <User className="h-5 w-5" />
                         </button>
+
+
+                        {showUserDropdown && (
+                            <div
+                                className="
+                absolute
+                right-0
+                top-[calc(100%+12px)]
+                z-50
+                w-72
+                overflow-hidden
+                rounded-2xl
+                border
+                border-stone-200
+                bg-white
+                shadow-xl
+            "
+                            >
+                                {isAuthenticated ? (
+                                    <>
+                                        {/* CLIENTE */}
+                                        <div
+                                            className="
+                            border-b
+                            border-stone-200
+                            px-5
+                            py-4
+                        "
+                                        >
+                                            <p
+                                                className="
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.25em]
+                                text-stone-400
+                            "
+                                            >
+                                                {t(
+                                                    "customerArea",
+                                                    "Área de cliente"
+                                                )}
+                                            </p>
+
+                                            <p
+                                                className="
+                                mt-2
+                                truncate
+                                text-sm
+                                font-semibold
+                                text-stone-900
+                            "
+                                            >
+                                                {user?.activeCustomer
+                                                    ?.razclien ||
+                                                    user?.activeCustomer
+                                                        ?.nomcomer ||
+                                                    user?.nif}
+                                            </p>
+
+                                            {user?.nif && (
+                                                <p
+                                                    className="
+                                    mt-1
+                                    text-xs
+                                    text-stone-500
+                                "
+                                                >
+                                                    {t(
+                                                        "nifLabel",
+                                                        "NIF:"
+                                                    )}{" "}
+                                                    {user.nif}
+                                                </p>
+                                            )}
+                                        </div>
+
+
+                                        {/* ADMIN */}
+                                        {isAdmin && (
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleUserNavigation(
+                                                        "/admin/solicitudes"
+                                                    )
+                                                }
+                                                className="
+                                flex
+                                w-full
+                                items-center
+                                justify-between
+                                border-b
+                                border-stone-100
+                                px-5
+                                py-3.5
+                                text-left
+                                text-sm
+                                font-medium
+                                text-stone-700
+                                transition
+                                hover:bg-stone-50
+                                hover:text-stone-950
+                            "
+                                            >
+                                                <span>
+                                                    {t(
+                                                        "adminPanel",
+                                                        "Panel de administración"
+                                                    )}
+                                                </span>
+
+                                                <ArrowRight className="h-4 w-4 text-stone-400" />
+                                            </button>
+                                        )}
+
+
+                                        {/* MIS DATOS */}
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleUserNavigation(
+                                                    "/mis-datos"
+                                                )
+                                            }
+                                            className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            border-b
+                            border-stone-100
+                            px-5
+                            py-3.5
+                            text-left
+                            text-sm
+                            text-stone-700
+                            transition
+                            hover:bg-stone-50
+                            hover:text-stone-950
+                        "
+                                        >
+                                            <span>
+                                                {t(
+                                                    "myData",
+                                                    "Mis datos"
+                                                )}
+                                            </span>
+
+                                            <ArrowRight className="h-4 w-4 text-stone-400" />
+                                        </button>
+
+
+                                        {/* FACTURAS */}
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleUserNavigation(
+                                                    "/mis-facturas"
+                                                )
+                                            }
+                                            className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            border-b
+                            border-stone-100
+                            px-5
+                            py-3.5
+                            text-left
+                            text-sm
+                            text-stone-700
+                            transition
+                            hover:bg-stone-50
+                            hover:text-stone-950
+                        "
+                                        >
+                                            <span>
+                                                {t(
+                                                    "myInvoices",
+                                                    "Mis facturas"
+                                                )}
+                                            </span>
+
+                                            <ArrowRight className="h-4 w-4 text-stone-400" />
+                                        </button>
+
+
+                                        {/* CERRAR SESIÓN */}
+                                        <button
+                                            type="button"
+                                            onClick={
+                                                handleLogout
+                                            }
+                                            className="
+                            w-full
+                            px-5
+                            py-4
+                            text-left
+                            text-sm
+                            font-medium
+                            text-stone-500
+                            transition
+                            hover:bg-stone-50
+                            hover:text-stone-950
+                        "
+                                        >
+                                            {t(
+                                                "logout",
+                                                "Cerrar sesión"
+                                            )}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div
+                                            className="
+                            border-b
+                            border-stone-200
+                            px-5
+                            py-4
+                        "
+                                        >
+                                            <p
+                                                className="
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.25em]
+                                text-stone-400
+                            "
+                                            >
+                                                {t(
+                                                    "customerArea",
+                                                    "Área de cliente"
+                                                )}
+                                            </p>
+
+                                            <p
+                                                className="
+                                mt-2
+                                text-sm
+                                leading-5
+                                text-stone-500
+                            "
+                                            >
+                                                Accede a tu cuenta para
+                                                consultar tus datos y
+                                                facturas.
+                                            </p>
+                                        </div>
+
+
+                                        {/* LOGIN */}
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleUserNavigation(
+                                                    "/login"
+                                                )
+                                            }
+                                            className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            border-b
+                            border-stone-100
+                            px-5
+                            py-4
+                            text-left
+                            text-sm
+                            font-medium
+                            text-stone-800
+                            transition
+                            hover:bg-stone-50
+                        "
+                                        >
+                                            <span>
+                                                {t(
+                                                    "login",
+                                                    "Iniciar sesión"
+                                                )}
+                                            </span>
+
+                                            <ArrowRight className="h-4 w-4 text-stone-400" />
+                                        </button>
+
+
+                                        {/* REGISTRO */}
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleUserNavigation(
+                                                    "/register"
+                                                )
+                                            }
+                                            className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            px-5
+                            py-4
+                            text-left
+                            text-sm
+                            text-stone-700
+                            transition
+                            hover:bg-stone-50
+                        "
+                                        >
+                                            <span>
+                                                {t(
+                                                    "createAccount",
+                                                    "Crear cuenta"
+                                                )}
+                                            </span>
+
+                                            <ArrowRight className="h-4 w-4 text-stone-400" />
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
 
 
@@ -2772,6 +3545,7 @@ export const Header = () => {
                                     handleLinkClick(
                                         wallpaperMenu
                                             .all
+
                                             .path
                                     )
                                 }

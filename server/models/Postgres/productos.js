@@ -83,9 +83,6 @@ export class ProductModel {
 
   /**
    * Devuelve la condición SQL reutilizable para excluir marcas.
-   *
-   * No usa parámetros porque los códigos proceden exclusivamente de una
-   * constante interna del servidor.
    */
   static getExcludedBrandClause(column = '"codmarca"') {
     if (
@@ -115,7 +112,6 @@ export class ProductModel {
 
   /**
    * Normaliza el nombre de una colección para comparaciones internas.
-   * Ignora mayúsculas/minúsculas, espacios laterales y acentos.
    */
   static normalizeCollectionName(collection) {
     return String(collection ?? '')
@@ -126,7 +122,7 @@ export class ProductModel {
   }
 
   /**
-   * Comprueba si una colección está oculta en el catálogo público.
+   * Comprueba si una colección está oculta.
    */
   static isHiddenCollection(collection) {
     const normalizedCollection =
@@ -143,10 +139,7 @@ export class ProductModel {
   }
 
   /**
-   * Devuelve la condición SQL reutilizable para excluir colecciones ocultas.
-   *
-   * No usa parámetros porque los nombres proceden exclusivamente de
-   * catalogVisibility.js, una configuración interna del servidor.
+   * Condición SQL para excluir colecciones ocultas.
    */
   static getHiddenCollectionsClause(column = '"coleccion"') {
     if (
@@ -177,8 +170,7 @@ export class ProductModel {
   }
 
   /**
-   * Condición común para cualquier consulta pública de productos.
-   * Combina las marcas excluidas con las colecciones todavía no publicadas.
+   * Condición común del catálogo público.
    */
   static getPublicCatalogClause({
     brandColumn = '"codmarca"',
@@ -188,6 +180,41 @@ export class ProductModel {
       (${this.getExcludedBrandClause(brandColumn)})
       AND
       (${this.getHiddenCollectionsClause(collectionColumn)})
+    `;
+  }
+
+  /**
+   * Producto válido para filtros y catálogo filtrado.
+   *
+   * Requisitos:
+   * - nombre no nulo
+   * - nombre no vacío
+   * - nombre no compuesto únicamente por espacios
+   * - producto no obsoleto
+   */
+  static getFilterableProductClause({
+    nameColumn = '"nombre"',
+    obsoleteColumn = '"obsoleto"',
+  } = {}) {
+    return `
+      NULLIF(
+        TRIM(
+          COALESCE(
+            ${nameColumn}::text,
+            ''
+          )
+        ),
+        ''
+      ) IS NOT NULL
+
+      AND UPPER(
+        TRIM(
+          COALESCE(
+            ${obsoleteColumn}::text,
+            ''
+          )
+        )
+      ) <> 'S'
     `;
   }
 
@@ -284,7 +311,8 @@ export class ProductModel {
     codes,
     tariffCode = this.defaultTariffCode
   }) {
-    const resolvedTariffCode = this.normalizeTariffCode(tariffCode);
+    const resolvedTariffCode =
+      this.normalizeTariffCode(tariffCode);
 
     const brandExclusion =
       this.getPublicCatalogClause({
@@ -317,10 +345,6 @@ export class ProductModel {
   // 1) LECTURAS BÁSICAS / LISTADOS
   // ---------------------------------------------------------------------------
 
-  /**
-   * Listado paginado simple con DISTINCT ON nombre,
-   * con exclusiones por nombre y marca.
-   */
   static async getAll({
     CodFamil,
     CodSubFamil,
@@ -354,31 +378,57 @@ export class ProductModel {
           params.push(CodSubFamil);
         }
 
-        const exclusion = this.getExcludedNamesClause(index);
+        const exclusion =
+          this.getExcludedNamesClause(index);
 
         query += ` AND ${exclusion.clause}`;
-        params.push(...exclusion.values);
+
+        params.push(
+          ...exclusion.values
+        );
 
         index += exclusion.values.length;
 
-        query += ` LIMIT $${index++} OFFSET $${index++}`;
+        query += `
+          LIMIT $${index++}
+          OFFSET $${index++}
+        `;
 
-        params.push(requiredLimit, offset);
+        params.push(
+          requiredLimit,
+          offset
+        );
 
-        const { rows } = await pool.query(query, params);
+        const { rows } =
+          await pool.query(
+            query,
+            params
+          );
 
         if (rows.length === 0) {
           break;
         }
 
-        accumulatedProducts.push(...rows);
+        accumulatedProducts.push(
+          ...rows
+        );
+
         offset += rows.length;
       }
 
-      return accumulatedProducts.slice(0, requiredLimit);
+      return accumulatedProducts.slice(
+        0,
+        requiredLimit
+      );
     } catch (error) {
-      console.error('Error fetching products:', error);
-      throw new Error('Error fetching products');
+      console.error(
+        'Error fetching products:',
+        error
+      );
+
+      throw new Error(
+        'Error fetching products'
+      );
     }
   }
 
@@ -388,26 +438,31 @@ export class ProductModel {
     tariffCode = this.defaultTariffCode
   }) {
     const resolvedTariffCode =
-      this.normalizeTariffCode(tariffCode);
+      this.normalizeTariffCode(
+        tariffCode
+      );
 
     const cacheKey =
       `product:${id}:tarifa:${resolvedTariffCode}`;
 
     if (res?.cache) {
       const cached =
-        await res.cache.get(cacheKey);
+        await res.cache.get(
+          cacheKey
+        );
 
       if (cached) {
-        /*
-         * Importante:
-         * puede existir un producto CTL o de una colección oculta
-         * guardado en caché desde antes de introducir la exclusión.
-         */
         if (
-          this.isExcludedBrandCode(cached.codmarca) ||
-          this.isHiddenCollection(cached.coleccion)
+          this.isExcludedBrandCode(
+            cached.codmarca
+          ) ||
+          this.isHiddenCollection(
+            cached.coleccion
+          )
         ) {
-          await res.cache.del?.(cacheKey);
+          await res.cache.del?.(
+            cacheKey
+          );
         } else {
           res.set?.(
             'Cache-Control',
@@ -438,16 +493,21 @@ export class ProductModel {
       LIMIT 1;
     `;
 
-    const { rows } = await pool.query(
-      sql,
-      [id, resolvedTariffCode]
-    );
+    const { rows } =
+      await pool.query(
+        sql,
+        [
+          id,
+          resolvedTariffCode
+        ]
+      );
 
     if (!rows.length) {
       return null;
     }
 
-    const product = rows[0];
+    const product =
+      rows[0];
 
     if (res?.cache) {
       await res.cache.set(
@@ -481,20 +541,18 @@ export class ProductModel {
         AND ${exclusion.clause}
     `;
 
-    const { rows } = await pool.query(
-      query,
-      [
-        codfamil,
-        ...exclusion.values
-      ]
-    );
+    const { rows } =
+      await pool.query(
+        query,
+        [
+          codfamil,
+          ...exclusion.values
+        ]
+      );
 
     return rows;
   }
 
-  /**
-   * Devuelve productos por tipo de producto: papel | telas.
-   */
   static async getByType({
     type,
     limit = 16,
@@ -514,18 +572,30 @@ export class ProductModel {
     let index = 1;
 
     if (type === 'papel') {
-      query += ` AND "tipo" = 'WALLPAPER'`;
+      query += `
+        AND "tipo" = 'WALLPAPER'
+      `;
     } else if (type === 'telas') {
-      query += ` AND "tipo" <> 'WALLPAPER'`;
+      query += `
+        AND "tipo" <> 'WALLPAPER'
+      `;
     }
 
     const exclusion =
-      this.getExcludedNamesClause(index);
+      this.getExcludedNamesClause(
+        index
+      );
 
-    query += ` AND ${exclusion.clause}`;
-    params.push(...exclusion.values);
+    query += `
+      AND ${exclusion.clause}
+    `;
 
-    index += exclusion.values.length;
+    params.push(
+      ...exclusion.values
+    );
+
+    index +=
+      exclusion.values.length;
 
     query += `
       ORDER BY "nombre", "codprodu"
@@ -533,7 +603,10 @@ export class ProductModel {
       OFFSET $${index++}
     `;
 
-    params.push(limit, offset);
+    params.push(
+      limit,
+      offset
+    );
 
     const { rows } =
       await pool.query(
@@ -547,7 +620,9 @@ export class ProductModel {
     };
   }
 
-  static async getByCollectionExact(coleccion) {
+  static async getByCollectionExact(
+    coleccion
+  ) {
     const exclusion =
       this.getExcludedNamesClause(2);
 
@@ -564,13 +639,14 @@ export class ProductModel {
       ORDER BY "nombre", "codprodu"
     `;
 
-    const { rows } = await pool.query(
-      query,
-      [
-        coleccion,
-        ...exclusion.values
-      ]
-    );
+    const { rows } =
+      await pool.query(
+        query,
+        [
+          coleccion,
+          ...exclusion.values
+        ]
+      );
 
     return rows;
   }
@@ -620,14 +696,15 @@ export class ProductModel {
 
     const withImages =
       await Promise.all(
-        rows.map(product =>
-          this.attachImages(
-            product,
-            [
-              'PRODUCTO_BUENA',
-              'PRODUCTO_BAJA'
-            ]
-          )
+        rows.map(
+          product =>
+            this.attachImages(
+              product,
+              [
+                'PRODUCTO_BUENA',
+                'PRODUCTO_BAJA'
+              ]
+            )
         )
       );
 
@@ -662,14 +739,15 @@ export class ProductModel {
 
     const withImages =
       await Promise.all(
-        rows.map(product =>
-          this.attachImages(
-            product,
-            [
-              'PRODUCTO_BUENA',
-              'PRODUCTO_BAJA'
-            ]
-          )
+        rows.map(
+          product =>
+            this.attachImages(
+              product,
+              [
+                'PRODUCTO_BUENA',
+                'PRODUCTO_BAJA'
+              ]
+            )
         )
       );
 
@@ -725,24 +803,21 @@ export class ProductModel {
 
     const withImages =
       await Promise.all(
-        rows.map(product =>
-          this.attachImages(
-            product,
-            [
-              'PRODUCTO_BUENA',
-              'PRODUCTO_BAJA'
-            ]
-          )
+        rows.map(
+          product =>
+            this.attachImages(
+              product,
+              [
+                'PRODUCTO_BUENA',
+                'PRODUCTO_BAJA'
+              ]
+            )
         )
       );
 
     return withImages;
   }
 
-  /**
-   * Listado rápido de productos Especial Navidad.
-   * Usa prefijos de nombre: ADELFAS, GENESIS, etc.
-   */
   static async getHolidayProducts({
     limit = 16,
     offset = 0
@@ -770,9 +845,13 @@ export class ProductModel {
     let index = 1;
 
     const exclusion =
-      this.getExcludedNamesClause(index);
+      this.getExcludedNamesClause(
+        index
+      );
 
-    where += ` AND ${exclusion.clause}`;
+    where += `
+      AND ${exclusion.clause}
+    `;
 
     params.push(
       ...exclusion.values
@@ -795,7 +874,8 @@ export class ProductModel {
     params.push(patterns);
 
     const countQuery = `
-      SELECT COUNT(DISTINCT "codprodu")::int AS total
+      SELECT
+        COUNT(DISTINCT "codprodu")::int AS total
       FROM productos
       WHERE ${where}
     `;
@@ -834,11 +914,12 @@ export class ProductModel {
 
     const withImages =
       await Promise.all(
-        rows.map(product =>
-          this.attachImages(
-            product,
-            ['PRODUCTO_BAJA']
-          )
+        rows.map(
+          product =>
+            this.attachImages(
+              product,
+              ['PRODUCTO_BAJA']
+            )
         )
       );
 
@@ -940,10 +1021,14 @@ export class ProductModel {
           async product => {
             try {
               const img =
-                await ImagenModel.getByCodproduAndCodclaarchivo({
-                  codprodu: product.codprodu,
-                  codclaarchivo: 'PRODUCTO_BAJA',
-                });
+                await ImagenModel
+                  .getByCodproduAndCodclaarchivo({
+                    codprodu:
+                      product.codprodu,
+
+                    codclaarchivo:
+                      'PRODUCTO_BAJA',
+                  });
 
               return {
                 ...product,
@@ -964,6 +1049,7 @@ export class ProductModel {
     return {
       products:
         productsWithImages,
+
       total:
         productsWithImages.length
     };
@@ -984,9 +1070,10 @@ export class ProductModel {
       };
     }
 
-    const tokens = term
-      .split(/\s+/)
-      .filter(Boolean);
+    const tokens =
+      term
+        .split(/\s+/)
+        .filter(Boolean);
 
     const norms =
       tokens.map(
@@ -1006,14 +1093,16 @@ export class ProductModel {
 
     const tokenConditions =
       tokens
-        .map((_, index) => `
-          (
-            unaccent(upper(p.nombre))
-              LIKE unaccent(upper($${index + 1}))
-            OR unaccent(upper(p.tonalidad))
-              LIKE unaccent(upper($${index + 1}))
-          )
-        `)
+        .map(
+          (_, index) => `
+            (
+              unaccent(upper(p.nombre))
+                LIKE unaccent(upper($${index + 1}))
+              OR unaccent(upper(p.tonalidad))
+                LIKE unaccent(upper($${index + 1}))
+            )
+          `
+        )
         .join(' AND ');
 
     const brandExclusion =
@@ -1056,10 +1145,14 @@ export class ProductModel {
           async product => {
             try {
               const low =
-                await ImagenModel.getByCodproduAndCodclaarchivo({
-                  codprodu: product.codprodu,
-                  codclaarchivo: 'PRODUCTO_BAJA'
-                });
+                await ImagenModel
+                  .getByCodproduAndCodclaarchivo({
+                    codprodu:
+                      product.codprodu,
+
+                    codclaarchivo:
+                      'PRODUCTO_BAJA'
+                  });
 
               return {
                 ...product,
@@ -1081,7 +1174,8 @@ export class ProductModel {
       this.getPublicCatalogClause();
 
     const sqlCollections = `
-      SELECT DISTINCT upper(coleccion) AS coleccion
+      SELECT DISTINCT
+        upper(coleccion) AS coleccion
       FROM productos
       WHERE coleccion ILIKE $1
         AND nombre IS NOT NULL
@@ -1129,9 +1223,10 @@ export class ProductModel {
       };
     }
 
-    const tokens = term
-      .split(/\s+/)
-      .filter(Boolean);
+    const tokens =
+      term
+        .split(/\s+/)
+        .filter(Boolean);
 
     const norms =
       tokens.map(
@@ -1154,14 +1249,16 @@ export class ProductModel {
 
     const tokenConditions =
       tokens
-        .map((_, index) => `
-          (
-            unaccent(upper(p.nombre))
-              LIKE unaccent(upper($${index + 1}))
-            OR unaccent(upper(p.tonalidad))
-              LIKE unaccent(upper($${index + 1}))
-          )
-        `)
+        .map(
+          (_, index) => `
+            (
+              unaccent(upper(p.nombre))
+                LIKE unaccent(upper($${index + 1}))
+              OR unaccent(upper(p.tonalidad))
+                LIKE unaccent(upper($${index + 1}))
+            )
+          `
+        )
         .join(' AND ');
 
     const brandExclusion =
@@ -1258,10 +1355,6 @@ export class ProductModel {
     'DUNE'
   ];
 
-  /**
-   * Busca forros dentro de productos.
-   * Aplica tarifa dinámica recibida desde controlador.
-   */
   static async searchLiningsByNamesAndQuery({
     names = [],
     q = '',
@@ -1380,19 +1473,25 @@ export class ProductModel {
             return {
               id:
                 withImg.codprodu,
+
               codprodu:
                 withImg.codprodu,
+
               name:
                 withImg.nombre,
+
               collection:
                 withImg.coleccion,
+
               ancho:
                 product.ancho ??
                 null,
+
               pricePerMeter:
                 Number.isFinite(num)
                   ? num
                   : null,
+
               imageUrl:
                 withImg.imageBaja ||
                 null
@@ -1404,10 +1503,6 @@ export class ProductModel {
     return items;
   }
 
-  /**
-   * Recupera todos los productos WALLPAPER.
-   * Aplica tarifa dinámica recibida desde controlador.
-   */
   static async searchWallpapersAll({
     limit = 80,
     tariffCode = this.defaultTariffCode
@@ -1467,15 +1562,20 @@ export class ProductModel {
             return {
               id:
                 product.codprodu,
+
               codprodu:
                 product.codprodu,
+
               name:
                 product.nombre,
+
               collection:
                 product.coleccion,
+
               imageUrl:
                 withImg.imageBaja ||
                 null,
+
               price:
                 product.precioMetroRaw != null
                   ? Number(
@@ -1488,12 +1588,15 @@ export class ProductModel {
                       )
                   )
                   : null,
+
               width:
                 product.ancho ??
                 null,
+
               type:
                 product.tipo ??
                 null,
+
               style:
                 product.estilo ??
                 null
@@ -1505,7 +1608,9 @@ export class ProductModel {
     return items;
   }
 
-  static async getColorVariantsByProductId(productId) {
+  static async getColorVariantsByProductId(
+    productId
+  ) {
     const brandExclusion =
       this.getPublicCatalogClause();
 
@@ -1569,11 +1674,15 @@ export class ProductModel {
             return {
               id:
                 withImg.codprodu,
+
               name:
                 withImg.tonalidad ||
                 withImg.colorprincipal ||
                 'Color',
-              hex: null,
+
+              hex:
+                null,
+
               imageUrl:
                 withImg.imageBaja ||
                 null
@@ -1585,10 +1694,6 @@ export class ProductModel {
     return variants;
   }
 
-  /**
-   * Busca tejidos de tapicería.
-   * Aplica tarifa dinámica recibida desde controlador.
-   */
   static async searchUpholsteryByQuery({
     q = '',
     limit = 80,
@@ -1698,16 +1803,21 @@ export class ProductModel {
             return {
               id:
                 withImg.codprodu,
+
               codprodu:
                 withImg.codprodu,
+
               name:
                 withImg.nombre,
+
               collection:
                 withImg.coleccion,
+
               pricePerMeter:
                 Number.isFinite(num)
                   ? num
                   : null,
+
               imageUrl:
                 withImg.imageBaja ||
                 null
@@ -1719,10 +1829,6 @@ export class ProductModel {
     return items;
   }
 
-  /**
-   * Busca tejidos de cortina.
-   * Aplica tarifa dinámica recibida desde controlador.
-   */
   static async searchCurtainsByQuery({
     q = '',
     limit = 80,
@@ -1833,19 +1939,25 @@ export class ProductModel {
             return {
               id:
                 withImg.codprodu,
+
               codprodu:
                 withImg.codprodu,
+
               name:
                 withImg.nombre,
+
               collection:
                 withImg.coleccion,
+
               ancho:
                 product.ancho ??
                 null,
+
               pricePerMeter:
                 Number.isFinite(num)
                   ? num
                   : null,
+
               imageUrl:
                 withImg.imageBaja ||
                 null
@@ -1857,10 +1969,6 @@ export class ProductModel {
     return items;
   }
 
-  /**
-   * Forros destacados.
-   * Aplica tarifa dinámica recibida desde controlador.
-   */
   static async getLiningsFeatured({
     names = [],
     limit = 80,
@@ -1983,6 +2091,7 @@ export class ProductModel {
 
         return {
           ...row,
+
           pricePerMeter:
             Number.isFinite(num)
               ? num
@@ -1992,10 +2101,6 @@ export class ProductModel {
     );
   }
 
-  /**
-   * Colores/variantes para un producto.
-   * Aplica tarifa dinámica para devolver precio de variante.
-   */
   static async getColors(
     productId,
     tariffCode = this.defaultTariffCode
@@ -2040,12 +2145,21 @@ export class ProductModel {
         `
           SELECT
             p."codprodu" AS id,
+
             COALESCE(
-              NULLIF(TRIM(p."tonalidad"), ''),
-              NULLIF(TRIM(p."colorprincipal"), ''),
+              NULLIF(
+                TRIM(p."tonalidad"),
+                ''
+              ),
+              NULLIF(
+                TRIM(p."colorprincipal"),
+                ''
+              ),
               'Color'
             ) AS name,
+
             tp."pvp" AS "precioMetroRaw",
+
             (
               SELECT i.ficadjunto
               FROM imagenesproductoswebp i
@@ -2053,12 +2167,16 @@ export class ProductModel {
                 AND i.codclaarchivo = 'PRODUCTO_BAJA'
               LIMIT 1
             ) AS "imageUrl"
+
           FROM productos p
+
           LEFT JOIN tarprodu tp
             ON tp."codprodu" = p."codprodu"
            AND tp."codtarifa" = $2
+
           WHERE p."nombre" = $1
             AND ${variantBrandExclusion}
+
           ORDER BY
             (
               p."tonalidad" IS NULL
@@ -2088,12 +2206,19 @@ export class ProductModel {
           );
 
         return {
-          id: row.id,
-          name: row.name,
-          hex: null,
+          id:
+            row.id,
+
+          name:
+            row.name,
+
+          hex:
+            null,
+
           imageUrl:
             row.imageUrl ||
             null,
+
           pricePerMeter:
             Number.isFinite(num)
               ? num
@@ -2115,14 +2240,17 @@ export class ProductModel {
     limit = 16,
     offset = 0
   ) {
-    const toArray = value =>
-      Array.isArray(value)
-        ? value
-        : [];
+    const toArray =
+      value =>
+        Array.isArray(value)
+          ? value
+          : [];
 
     const normalizeStringList = (
       values,
-      { uppercase = false } = {}
+      {
+        uppercase = false
+      } = {}
     ) => {
       const seen =
         new Set();
@@ -2208,7 +2336,9 @@ export class ProductModel {
       brand:
         normalizeStringList(
           rawFilters.brand,
-          { uppercase: true }
+          {
+            uppercase: true
+          }
         ),
 
       collection:
@@ -2219,7 +2349,9 @@ export class ProductModel {
       color:
         normalizeStringList(
           rawFilters.color,
-          { uppercase: true }
+          {
+            uppercase: true
+          }
         ),
 
       codtipo:
@@ -2230,19 +2362,25 @@ export class ProductModel {
       fabricType:
         normalizeStringList(
           rawFilters.fabricType,
-          { uppercase: true }
+          {
+            uppercase: true
+          }
         ),
 
       fabricPattern:
         normalizeStringList(
           rawFilters.fabricPattern,
-          { uppercase: true }
+          {
+            uppercase: true
+          }
         ),
 
       uso:
         normalizeStringList(
           rawFilters.uso,
-          { uppercase: true }
+          {
+            uppercase: true
+          }
         ),
 
       mantenimiento:
@@ -2259,9 +2397,21 @@ export class ProductModel {
     const brandExclusion =
       this.getPublicCatalogClause();
 
+    const filterableProduct =
+      this.getFilterableProductClause();
+
+    /*
+     * IMPORTANTE:
+     * El mismo criterio usado para construir los filtros
+     * también se aplica al resultado del filtrado.
+     *
+     * Así nunca devolvemos productos:
+     * - sin nombre
+     * - con nombre vacío
+     * - obsoletos
+     */
     let where = `
-      "nombre" IS NOT NULL
-      AND "nombre" <> ''
+      ${filterableProduct}
       AND ${brandExclusion}
     `;
 
@@ -2272,8 +2422,9 @@ export class ProductModel {
       filters.brand.length
     ) {
       where += `
-        AND UPPER(TRIM("codmarca"))
-            = ANY($${index++})
+        AND UPPER(
+          TRIM("codmarca")
+        ) = ANY($${index++})
       `;
 
       params.push(
@@ -2285,9 +2436,10 @@ export class ProductModel {
       filters.codtipo.length
     ) {
       where += `
-        AND TRIM("codtipo"::text)
-            = ANY($${index++})
-    `;
+        AND TRIM(
+          "codtipo"::text
+        ) = ANY($${index++})
+      `;
 
       params.push(
         filters.codtipo
@@ -2298,8 +2450,10 @@ export class ProductModel {
       filters.collection.length
     ) {
       where += `
-        AND COALESCE(TRIM("coleccion"), '')
-            ILIKE ANY($${index++})
+        AND COALESCE(
+          TRIM("coleccion"),
+          ''
+        ) ILIKE ANY($${index++})
       `;
 
       params.push(
@@ -2314,8 +2468,9 @@ export class ProductModel {
       filters.color.length
     ) {
       where += `
-        AND UPPER(TRIM("colorprincipal"))
-            = ANY($${index++})
+        AND UPPER(
+          TRIM("colorprincipal")
+        ) = ANY($${index++})
       `;
 
       params.push(
@@ -2327,8 +2482,9 @@ export class ProductModel {
       filters.fabricType.length
     ) {
       where += `
-        AND UPPER(TRIM("tipo"))
-            = ANY($${index++})
+        AND UPPER(
+          TRIM("tipo")
+        ) = ANY($${index++})
       `;
 
       params.push(
@@ -2340,8 +2496,9 @@ export class ProductModel {
       filters.fabricPattern.length
     ) {
       where += `
-        AND UPPER(TRIM("estilo"))
-            = ANY($${index++})
+        AND UPPER(
+          TRIM("estilo")
+        ) = ANY($${index++})
       `;
 
       params.push(
@@ -2353,7 +2510,14 @@ export class ProductModel {
       filters.uso.length
     ) {
       const usageColumn =
-        `UPPER(COALESCE(TRIM("uso"), ''))`;
+        `
+          UPPER(
+            COALESCE(
+              TRIM("uso"),
+              ''
+            )
+          )
+        `;
 
       const usoConditions =
         filters.uso.map(
@@ -2401,7 +2565,9 @@ export class ProductModel {
     ) {
       where += `
         AND COALESCE(
-          TRIM("mantenimiento"::text),
+          TRIM(
+            "mantenimiento"::text
+          ),
           ''
         ) ILIKE ANY($${index++})
       `;
@@ -2432,7 +2598,9 @@ export class ProductModel {
 
     const countQuery = `
       SELECT
-        COUNT(DISTINCT "codprodu")::int AS total
+        COUNT(
+          DISTINCT "codprodu"
+        )::int AS total
       FROM productos
       WHERE ${where}
     `;
@@ -2478,10 +2646,14 @@ export class ProductModel {
   }
 
   /**
-   * Devuelve los valores distintos para construir los filtros del catálogo.
+   * Devuelve valores distintos para construir
+   * los filtros del catálogo.
    *
-   * Los datos de productos CTL y de colecciones ocultas tampoco se utilizan
-   * para construir colecciones, colores, tipos, estilos, usos, etc.
+   * Solo utiliza productos:
+   * - con nombre válido
+   * - no obsoletos
+   * - de marcas visibles
+   * - de colecciones visibles
    */
   static async getFilters() {
     const cleanValue =
@@ -2562,44 +2734,55 @@ export class ProductModel {
     const brandExclusion =
       this.getPublicCatalogClause();
 
+    const filterableProduct =
+      this.getFilterableProductClause();
+
     try {
       const { rows: brands } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(codmarca) AS codmarca
+            TRIM(codmarca)
+              AS codmarca
           FROM productos
           WHERE codmarca IS NOT NULL
             AND TRIM(codmarca) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
       const { rows: collections } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(coleccion) AS coleccion
+            TRIM(coleccion)
+              AS coleccion
           FROM productos
           WHERE coleccion IS NOT NULL
             AND TRIM(coleccion) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
       const { rows: fabricTypes } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(tipo) AS tipo
+            TRIM(tipo)
+              AS tipo
           FROM productos
           WHERE tipo IS NOT NULL
             AND TRIM(tipo) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
       const { rows: fabricPatterns } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(estilo) AS estilo
+            TRIM(estilo)
+              AS estilo
           FROM productos
           WHERE estilo IS NOT NULL
             AND TRIM(estilo) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
@@ -2609,36 +2792,43 @@ export class ProductModel {
             martindale
           FROM productos
           WHERE martindale IS NOT NULL
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
       const { rows: colors } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(colorprincipal) AS colorprincipal
+            TRIM(colorprincipal)
+              AS colorprincipal
           FROM productos
           WHERE colorprincipal IS NOT NULL
             AND TRIM(colorprincipal) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
       const { rows: tonalidades } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(tonalidad) AS tonalidad
+            TRIM(tonalidad)
+              AS tonalidad
           FROM productos
           WHERE tonalidad IS NOT NULL
             AND TRIM(tonalidad) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
       const { rows: usosRaw } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(uso) AS uso
+            TRIM(uso)
+              AS uso
           FROM productos
           WHERE uso IS NOT NULL
             AND TRIM(uso) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
@@ -2655,10 +2845,14 @@ export class ProductModel {
       const { rows: mantenimientos } =
         await pool.query(`
           SELECT DISTINCT
-            mantenimiento::text AS mantenimiento
+            mantenimiento::text
+              AS mantenimiento
           FROM productos
           WHERE mantenimiento IS NOT NULL
-            AND mantenimiento::text <> ''
+            AND TRIM(
+              mantenimiento::text
+            ) <> ''
+            AND ${filterableProduct}
             AND ${brandExclusion}
         `);
 
@@ -2754,11 +2948,15 @@ export class ProductModel {
     }
   }
 
-  static async getFiltersByBrand(brand) {
-    /*
-     * Si alguien intenta pedir explícitamente los filtros
-     * de CTL, devolvemos todo vacío.
-     */
+  /**
+   * Devuelve filtros disponibles para una marca concreta.
+   */
+  static async getFiltersByBrand(
+    brand
+  ) {
+    const filterableProduct =
+      this.getFilterableProductClause();
+
     if (
       this.isExcludedBrandCode(
         brand
@@ -2779,9 +2977,14 @@ export class ProductModel {
       const { rows: collections } =
         await pool.query(
           `
-            SELECT DISTINCT coleccion
+            SELECT DISTINCT
+              TRIM(coleccion)
+                AS coleccion
             FROM productos
             WHERE codmarca = $1
+              AND coleccion IS NOT NULL
+              AND TRIM(coleccion) <> ''
+              AND ${filterableProduct}
               AND ${brandExclusion}
           `,
           [brand]
@@ -2790,9 +2993,14 @@ export class ProductModel {
       const { rows: fabricTypes } =
         await pool.query(
           `
-            SELECT DISTINCT tipo
+            SELECT DISTINCT
+              TRIM(tipo)
+                AS tipo
             FROM productos
             WHERE codmarca = $1
+              AND tipo IS NOT NULL
+              AND TRIM(tipo) <> ''
+              AND ${filterableProduct}
               AND ${brandExclusion}
           `,
           [brand]
@@ -2801,9 +3009,14 @@ export class ProductModel {
       const { rows: fabricPatterns } =
         await pool.query(
           `
-            SELECT DISTINCT estilo
+            SELECT DISTINCT
+              TRIM(estilo)
+                AS estilo
             FROM productos
             WHERE codmarca = $1
+              AND estilo IS NOT NULL
+              AND TRIM(estilo) <> ''
+              AND ${filterableProduct}
               AND ${brandExclusion}
           `,
           [brand]
@@ -2812,9 +3025,12 @@ export class ProductModel {
       const { rows: martindale } =
         await pool.query(
           `
-            SELECT DISTINCT martindale
+            SELECT DISTINCT
+              martindale
             FROM productos
             WHERE codmarca = $1
+              AND martindale IS NOT NULL
+              AND ${filterableProduct}
               AND ${brandExclusion}
           `,
           [brand]
@@ -2822,28 +3038,40 @@ export class ProductModel {
 
       return {
         collections:
-          collections.map(
-            row =>
-              row.coleccion
-          ),
+          collections
+            .map(
+              row =>
+                row.coleccion
+            )
+            .filter(Boolean),
 
         fabricTypes:
-          fabricTypes.map(
-            row =>
-              row.tipo
-          ),
+          fabricTypes
+            .map(
+              row =>
+                row.tipo
+            )
+            .filter(Boolean),
 
         fabricPatterns:
-          fabricPatterns.map(
-            row =>
-              row.estilo
-          ),
+          fabricPatterns
+            .map(
+              row =>
+                row.estilo
+            )
+            .filter(Boolean),
 
         martindaleValues:
-          martindale.map(
-            row =>
-              row.martindale
-          ),
+          martindale
+            .map(
+              row =>
+                Number(
+                  row.martindale
+                )
+            )
+            .filter(
+              Number.isFinite
+            ),
       };
     } catch (error) {
       console.error(
