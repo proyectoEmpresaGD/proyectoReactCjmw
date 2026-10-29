@@ -1057,8 +1057,8 @@ export class ProductModel {
 
   static async searchQuick({
     query,
-    prodLimit = 8,
-    colLimit = 6
+    prodLimit = 20,
+    colLimit = 10
   }) {
     const term =
       (query || '').trim();
@@ -1069,6 +1069,24 @@ export class ProductModel {
         collections: []
       };
     }
+
+    const safeProdLimit =
+      Math.min(
+        Math.max(
+          Number(prodLimit) || 20,
+          1
+        ),
+        20
+      );
+
+    const safeColLimit =
+      Math.min(
+        Math.max(
+          Number(colLimit) || 10,
+          1
+        ),
+        10
+      );
 
     const tokens =
       term
@@ -1095,45 +1113,89 @@ export class ProductModel {
       tokens
         .map(
           (_, index) => `
-            (
-              unaccent(upper(p.nombre))
-                LIKE unaccent(upper($${index + 1}))
-              OR unaccent(upper(p.tonalidad))
-                LIKE unaccent(upper($${index + 1}))
+          (
+            unaccent(
+              upper(
+                COALESCE(
+                  p.nombre,
+                  ''
+                )
+              )
             )
-          `
+            LIKE
+            unaccent(
+              upper(
+                $${index + 1}
+              )
+            )
+
+            OR
+
+            unaccent(
+              upper(
+                COALESCE(
+                  p.tonalidad,
+                  ''
+                )
+              )
+            )
+            LIKE
+            unaccent(
+              upper(
+                $${index + 1}
+              )
+            )
+          )
+        `
         )
         .join(' AND ');
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const sqlProducts = `
-      SELECT DISTINCT ON (p.nombre)
-        p.codprodu,
-        p.nombre,
-        p.coleccion,
-        p.tonalidad
-      FROM productos p
-      WHERE (${tokenConditions})
-        AND p.nombre IS NOT NULL
-        AND p.nombre <> ''
-        AND ${brandExclusion}
-        AND ${exclusion.clause}
-      ORDER BY p.nombre, p.codprodu
-      LIMIT $${limitIndex}
-    `;
+    SELECT DISTINCT ON (
+      p.nombre
+    )
+      p.codprodu,
+      p.nombre,
+      p.coleccion,
+      p.tonalidad
+
+    FROM productos p
+
+    WHERE
+      (${tokenConditions})
+
+      AND p.nombre IS NOT NULL
+      AND TRIM(p.nombre) <> ''
+
+      AND ${brandExclusion}
+
+      AND ${exclusion.clause}
+
+    ORDER BY
+      p.nombre,
+      p.codprodu
+
+    LIMIT $${limitIndex}
+  `;
 
     const prodParams = [
       ...norms,
       ...exclusion.values,
-      prodLimit
+      safeProdLimit
     ];
 
-    const { rows: prodRows } =
+    const {
+      rows: prodRows
+    } =
       await pool.query(
         sqlProducts,
         prodParams
@@ -1156,6 +1218,7 @@ export class ProductModel {
 
               return {
                 ...product,
+
                 image:
                   low?.url ??
                   null
@@ -1170,24 +1233,62 @@ export class ProductModel {
         )
       );
 
+
     const collectionBrandExclusion =
-      this.getPublicCatalogClause();
+      this.getPublicCatalogClause({
+        brandColumn:
+          '"codmarca"',
+
+        collectionColumn:
+          '"coleccion"',
+      });
 
     const sqlCollections = `
-      SELECT DISTINCT
-        upper(coleccion) AS coleccion
-      FROM productos
-      WHERE coleccion ILIKE $1
-        AND nombre IS NOT NULL
-        AND nombre <> ''
-        AND ${collectionBrandExclusion}
-      LIMIT ${Number(colLimit)}
-    `;
+    SELECT DISTINCT
+      UPPER(
+        TRIM(
+          coleccion
+        )
+      ) AS coleccion
 
-    const { rows: colRows } =
+    FROM productos
+
+    WHERE
+      coleccion IS NOT NULL
+
+      AND TRIM(
+        coleccion
+      ) <> ''
+
+      AND unaccent(
+        upper(
+          coleccion
+        )
+      )
+      LIKE
+      unaccent(
+        upper(
+          $1
+        )
+      )
+
+      AND ${collectionBrandExclusion}
+
+    ORDER BY
+      coleccion
+
+    LIMIT $2
+  `;
+
+    const {
+      rows: colRows
+    } =
       await pool.query(
         sqlCollections,
-        [`%${term}%`]
+        [
+          `%${term}%`,
+          safeColLimit
+        ]
       );
 
     const collections =
@@ -1196,18 +1297,13 @@ export class ProductModel {
           row =>
             row.coleccion
         )
-        .filter(Boolean)
-        .slice(
-          0,
-          colLimit
-        );
+        .filter(Boolean);
 
     return {
       products,
       collections
     };
   }
-
   static async searchProducts({
     query,
     limit = 16,
@@ -1236,112 +1332,281 @@ export class ProductModel {
 
     const exclusion =
       this.getExcludedNamesClause(
-        tokens.length + 2
+        tokens.length + 1
       );
-
-    const limitIndex =
-      tokens.length + 1;
-
-    const offsetIndex =
-      tokens.length +
-      exclusion.values.length +
-      2;
 
     const tokenConditions =
       tokens
         .map(
           (_, index) => `
-            (
-              unaccent(upper(p.nombre))
-                LIKE unaccent(upper($${index + 1}))
-              OR unaccent(upper(p.tonalidad))
-                LIKE unaccent(upper($${index + 1}))
+        (
+          unaccent(
+            upper(
+              COALESCE(
+                p.nombre,
+                ''
+              )
             )
-          `
+          )
+          LIKE
+          unaccent(
+            upper(
+              $${index + 1}
+            )
+          )
+
+          OR
+
+          unaccent(
+            upper(
+              COALESCE(
+                p.tonalidad,
+                ''
+              )
+            )
+          )
+          LIKE
+          unaccent(
+            upper(
+              $${index + 1}
+            )
+          )
+
+          OR
+
+          unaccent(
+            upper(
+              COALESCE(
+                p.coleccion,
+                ''
+              )
+            )
+          )
+          LIKE
+          unaccent(
+            upper(
+              $${index + 1}
+            )
+          )
+        )
+      `
         )
         .join(' AND ');
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
-    const baseSql = `
-      SELECT p.*
-      FROM productos p
-      WHERE (${tokenConditions})
-        AND p.nombre IS NOT NULL
-        AND p.nombre <> ''
-        AND ${brandExclusion}
-        AND ${exclusion.clause}
-      ORDER BY p.nombre, p.codprodu
-      LIMIT $${limitIndex}
-      OFFSET $${offsetIndex}
-    `;
+    const whereClause = `
+    (${tokenConditions})
 
-    const params = [
+    AND p.nombre IS NOT NULL
+    AND TRIM(p.nombre) <> ''
+
+    AND ${brandExclusion}
+
+    AND ${exclusion.clause}
+  `;
+
+    const baseParams = [
       ...norms,
+      ...exclusion.values
+    ];
+
+
+    /*
+     * Total real de nombres diferentes
+     * que coinciden con la búsqueda.
+     */
+    const countQuery = `
+    SELECT
+      COUNT(
+        DISTINCT p.nombre
+      )::int AS total
+
+    FROM productos p
+
+    WHERE ${whereClause}
+  `;
+
+    const {
+      rows: countRows
+    } =
+      await pool.query(
+        countQuery,
+        baseParams
+      );
+
+    const total =
+      countRows[0]?.total || 0;
+
+
+    /*
+     * Una única referencia por nombre.
+     *
+     * IMPORTANTE:
+     * DISTINCT ON se aplica ANTES del
+     * LIMIT/OFFSET.
+     */
+    const limitIndex =
+      baseParams.length + 1;
+
+    const offsetIndex =
+      baseParams.length + 2;
+
+    const dataQuery = `
+    SELECT DISTINCT ON (
+      p.nombre
+    )
+      p.*
+
+    FROM productos p
+
+    WHERE ${whereClause}
+
+    ORDER BY
+      p.nombre,
+      p.codprodu
+
+    LIMIT $${limitIndex}
+    OFFSET $${offsetIndex}
+  `;
+
+    const dataParams = [
+      ...baseParams,
       limit,
-      ...exclusion.values,
       offset
     ];
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
-        baseSql,
-        params
+        dataQuery,
+        dataParams
       );
 
-    if (rows.length === 0) {
-      const fallbackExclusion =
-        this.getExcludedNamesClause(3);
 
-      const fallbackOffsetIndex =
-        3 +
-        fallbackExclusion.values.length;
+    /*
+     * Si no coincide ningún producto
+     * directamente, mantenemos el
+     * comportamiento anterior por colección.
+     */
+    if (
+      total === 0
+    ) {
+      const fallbackExclusion =
+        this.getExcludedNamesClause(
+          2
+        );
 
       const fallbackBrandExclusion =
         this.getPublicCatalogClause({
-          brandColumn: 'p."codmarca"',
-          collectionColumn: 'p."coleccion"',
+          brandColumn:
+            'p."codmarca"',
+
+          collectionColumn:
+            'p."coleccion"',
         });
 
-      const sqlCol = `
-        SELECT p.*
-        FROM productos p
-        WHERE lower(p.coleccion) = lower($1)
-          AND p.nombre IS NOT NULL
-          AND p.nombre <> ''
-          AND ${fallbackBrandExclusion}
-          AND ${fallbackExclusion.clause}
-        ORDER BY p.nombre, p.codprodu
-        LIMIT $2
-        OFFSET $${fallbackOffsetIndex}
-      `;
+      const fallbackWhere = `
+      lower(
+        TRIM(
+          p.coleccion
+        )
+      ) =
+      lower(
+        TRIM($1)
+      )
 
-      const paramsCol = [
+      AND p.nombre IS NOT NULL
+      AND TRIM(p.nombre) <> ''
+
+      AND ${fallbackBrandExclusion}
+
+      AND ${fallbackExclusion.clause}
+    `;
+
+      const fallbackBaseParams = [
         term,
-        limit,
-        ...fallbackExclusion.values,
-        offset
+        ...fallbackExclusion.values
       ];
 
-      const { rows: colRows } =
+      const {
+        rows: fallbackCountRows
+      } =
         await pool.query(
-          sqlCol,
-          paramsCol
+          `
+          SELECT
+            COUNT(
+              DISTINCT p.nombre
+            )::int AS total
+
+          FROM productos p
+
+          WHERE ${fallbackWhere}
+        `,
+          fallbackBaseParams
+        );
+
+      const fallbackTotal =
+        fallbackCountRows[0]?.total ||
+        0;
+
+      const fallbackLimitIndex =
+        fallbackBaseParams.length + 1;
+
+      const fallbackOffsetIndex =
+        fallbackBaseParams.length + 2;
+
+      const {
+        rows: collectionRows
+      } =
+        await pool.query(
+          `
+          SELECT DISTINCT ON (
+            p.nombre
+          )
+            p.*
+
+          FROM productos p
+
+          WHERE ${fallbackWhere}
+
+          ORDER BY
+            p.nombre,
+            p.codprodu
+
+          LIMIT $${fallbackLimitIndex}
+          OFFSET $${fallbackOffsetIndex}
+        `,
+          [
+            ...fallbackBaseParams,
+            limit,
+            offset
+          ]
         );
 
       return {
-        products: colRows,
-        total: colRows.length
+        products:
+          collectionRows,
+
+        total:
+          fallbackTotal
       };
     }
 
+
     return {
-      products: rows,
-      total: rows.length
+      products:
+        rows,
+
+      total
     };
   }
 

@@ -405,30 +405,59 @@ export class ProductController {
    */
   async searchQuick(req, res) {
     try {
-      const { query, prodLimit, colLimit } = req.query;
+      const {
+        query,
+        prodLimit = 20,
+        colLimit = 10
+      } = req.query;
 
-      if (!query || !query.trim()) {
-        return res.status(200).json({
-          products: [],
-          collections: []
-        });
+      if (
+        !query ||
+        !query.trim()
+      ) {
+        return res
+          .status(200)
+          .json({
+            products: [],
+            collections: []
+          });
       }
 
-      const data = await ProductModel.searchQuick({
-        query: query.trim(),
-        prodLimit: toInt(prodLimit, 8),
-        colLimit: toInt(colLimit, 6)
-      });
+      const data =
+        await ProductModel.searchQuick({
+          query:
+            query.trim(),
 
-      okCache(res, 120);
-      return res.json(data);
+          prodLimit:
+            Number(prodLimit),
+
+          colLimit:
+            Number(colLimit)
+        });
+
+      okCache(
+        res,
+        120
+      );
+
+      return res.json(
+        data
+      );
     } catch (error) {
-      console.error('Error in searchQuick:', error);
+      console.error(
+        "Error in searchQuick:",
+        error
+      );
 
-      return res.status(500).json({
-        error: 'Error searching quick',
-        details: error.message
-      });
+      return res
+        .status(500)
+        .json({
+          error:
+            "Error searching quick",
+
+          details:
+            error.message
+        });
     }
   }
 

@@ -5,6 +5,10 @@ import {
     useMemo,
     useCallback
 } from "react";
+import {
+    AnimatePresence,
+    motion,
+} from "framer-motion";
 import { useTranslation } from "react-i18next";
 import {
     Menu,
@@ -777,16 +781,7 @@ export const Header = () => {
                     closeAllDropdowns();
                 }
 
-                if (
-                    !searchRef.current
-                        ?.contains(
-                            event.target
-                        )
-                ) {
-                    setShowSearchBar(
-                        false
-                    );
-                }
+
             };
 
         document.addEventListener(
@@ -1294,19 +1289,31 @@ export const Header = () => {
 
     return (
         <>
+            <AnimatePresence>
+                {showSearchBar && (
+                    <SearchBar
+                        closeSearchBar={() =>
+                            setShowSearchBar(
+                                false
+                            )
+                        }
+                    />
+                )}
+            </AnimatePresence>
+
             <header
                 className={`
-                    fixed
-                    left-0
-                    top-0
-                    z-40
-                    w-full
-                    bg-white
-                    transition-all
-                    duration-500
-                    ease-in-out
+                fixed
+                left-0
+                top-0
+                z-[40]
+                w-full
+                bg-white
+                transition-all
+                duration-500
+                ease-in-out
 
-                    ${isHovered ||
+                ${isHovered ||
                         showSearchBar ||
                         showUserDropdown ||
                         showBrandsDropdown ||
@@ -1317,17 +1324,7 @@ export const Header = () => {
                         ? "shadow-md"
                         : "bg-transparent"
                     }
-                `}
-                onMouseEnter={() =>
-                    setIsHovered(
-                        true
-                    )
-                }
-                onMouseLeave={() =>
-                    setIsHovered(
-                        false
-                    )
-                }
+            `}
             >
 
                 {/* HEADER PRINCIPAL */}
@@ -1601,19 +1598,19 @@ export const Header = () => {
                                         )
                                 }
                                 className={`
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-full
-            transition
+                                            flex
+                                            h-10
+                                            w-10
+                                            items-center
+                                            justify-center
+                                            rounded-full
+                                            transition
 
-            ${showUserDropdown
+                                            ${showUserDropdown
                                         ? "bg-slate-900 text-white"
                                         : "text-gray-800 hover:bg-gray-200"
                                     }
-        `}
+                                `}
                             >
                                 <User className="h-5 w-5" />
                             </button>
@@ -1622,38 +1619,38 @@ export const Header = () => {
                             {showUserDropdown && (
                                 <div
                                     className="
-                absolute
-                right-0
-                top-[calc(100%+12px)]
-                z-50
-                w-72
-                overflow-hidden
-                rounded-2xl
-                border
-                border-stone-200
-                bg-white
-                shadow-xl
-            "
+                                        absolute
+                                        right-0
+                                        top-[calc(100%+12px)]
+                                        z-50
+                                        w-72
+                                        overflow-hidden
+                                        rounded-2xl
+                                        border
+                                        border-stone-200
+                                        bg-white
+                                        shadow-xl
+                                    "
                                 >
                                     {isAuthenticated ? (
                                         <>
                                             {/* CLIENTE */}
                                             <div
                                                 className="
-                            border-b
-                            border-stone-200
-                            px-5
-                            py-4
-                        "
+                                                        border-b
+                                                        border-stone-200
+                                                        px-5
+                                                        py-4
+                                                    "
                                             >
                                                 <p
                                                     className="
-                                text-[10px]
-                                font-semibold
-                                uppercase
-                                tracking-[0.25em]
-                                text-stone-400
-                            "
+                                                        text-[10px]
+                                                        font-semibold
+                                                        uppercase
+                                                        tracking-[0.25em]
+                                                        text-stone-400
+                                                    "
                                                 >
                                                     {t(
                                                         "customerArea",
@@ -1663,12 +1660,12 @@ export const Header = () => {
 
                                                 <p
                                                     className="
-                                mt-2
-                                truncate
-                                text-sm
-                                font-semibold
-                                text-stone-900
-                            "
+                                                        mt-2
+                                                        truncate
+                                                        text-sm
+                                                        font-semibold
+                                                        text-stone-900
+                                                    "
                                                 >
                                                     {user?.activeCustomer
                                                         ?.razclien ||
@@ -1680,10 +1677,10 @@ export const Header = () => {
                                                 {user?.nif && (
                                                     <p
                                                         className="
-                                    mt-1
-                                    text-xs
-                                    text-stone-500
-                                "
+                                                            mt-1
+                                                            text-xs
+                                                            text-stone-500
+                                                        "
                                                     >
                                                         {t(
                                                             "nifLabel",
@@ -1946,52 +1943,29 @@ export const Header = () => {
 
                         {/* BUSCADOR */}
                         <div
-                            ref={
-                                searchRef
-                            }
+                            ref={searchRef}
                             className="relative"
                         >
-                            <div className="group relative">
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        toggleDropdown(
-                                            "search"
-                                        )
-                                    }
-                                    className="text-gray-800 transition hover:text-[#26659E] focus:outline-none focus-visible:text-[#26659E]"
-                                    aria-label={t(
-                                        "search",
-                                        "Buscar"
-                                    )}
-                                >
-                                    <Search className="h-6 w-6" />
-                                </button>
-
-                                <div
-                                    role="tooltip"
-                                    className="pointer-events-none absolute left-1/2 top-full z-[100] mt-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 lg:block"
-                                >
-                                    {t(
-                                        "search",
-                                        "Buscar"
-                                    )}
-
-                                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-gray-900" />
-                                </div>
-                            </div>
-
-                            {showSearchBar && (
-                                <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-lg bg-white p-4 shadow-lg">
-                                    <SearchBar
-                                        closeSearchBar={() =>
-                                            setShowSearchBar(
-                                                false
-                                            )
-                                        }
-                                    />
-                                </div>
-                            )}
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    toggleDropdown(
+                                        "search"
+                                    )
+                                }
+                                aria-label={t(
+                                    "search",
+                                    "Buscar"
+                                )}
+                                className="
+            text-gray-800
+            transition
+            hover:text-stone-500
+            focus:outline-none
+        "
+                            >
+                                <Search className="h-6 w-6" />
+                            </button>
                         </div>
 
 

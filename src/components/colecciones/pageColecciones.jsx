@@ -2,20 +2,28 @@ import {
     useEffect,
     useMemo,
     useRef,
-    useState
+    useState,
 } from "react";
+
 import {
     ArrowRight,
-    ArrowUp
+    ArrowUp,
 } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import Header from "../header";
 import Footer from "../footer";
 import { CartProvider } from "../CartContext";
 
-import { coleccionesPorMarca } from "../../Constants/constants";
-import { cdnUrl } from "../../Constants/cdn";
+import {
+    coleccionesPorMarca,
+} from "../../Constants/constants";
+
+import {
+    cdnUrl,
+} from "../../Constants/cdn";
 
 
 const BRANDS = [
@@ -39,7 +47,8 @@ const BRANDS = [
         code: "CJM",
         name: "CJM",
         home: "/cjmHome",
-        logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png",
+        logo:
+            "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png",
         background:
             "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/09%20FOTOS%20AMBIENTE%20OPTIMIZADAS%20WEBP/CJM%20AMBIENTE/SET%20OF%20THREADS/ROKKI%20EVERGREEN.webp",
     },
@@ -62,6 +71,7 @@ const BRANDS = [
     },
 ];
 
+
 const normalizeKey = (value) =>
     String(value || "")
         .normalize("NFD")
@@ -70,10 +80,14 @@ const normalizeKey = (value) =>
         .replace(/[^A-Za-z0-9]/g, "")
         .toUpperCase();
 
+
 const wait = (ms) =>
-    new Promise((resolve) =>
-        setTimeout(resolve, ms)
-    );
+    new Promise((resolve) => {
+        setTimeout(
+            resolve,
+            ms
+        );
+    });
 
 
 const fetchJsonWithRetry = async (
@@ -92,9 +106,12 @@ const fetchJsonWithRetry = async (
     ) {
         try {
             const response =
-                await fetch(url, {
-                    signal,
-                });
+                await fetch(
+                    url,
+                    {
+                        signal,
+                    }
+                );
 
             if (!response.ok) {
                 throw new Error(
@@ -129,26 +146,36 @@ const fetchJsonWithRetry = async (
     throw lastError;
 };
 
+
 const ReliableImage = ({
     src,
     alt,
     priority = false,
     isLoading = false,
+    t,
 }) => {
-    const [retry, setRetry] =
-        useState(0);
+    const [
+        retry,
+        setRetry,
+    ] = useState(0);
 
-    const [imageLoaded, setImageLoaded] =
-        useState(false);
+    const [
+        imageLoaded,
+        setImageLoaded,
+    ] = useState(false);
 
-    const [failed, setFailed] =
-        useState(false);
+    const [
+        failed,
+        setFailed,
+    ] = useState(false);
+
 
     useEffect(() => {
         setRetry(0);
         setImageLoaded(false);
         setFailed(false);
     }, [src]);
+
 
     const imageSrc =
         useMemo(() => {
@@ -166,7 +193,11 @@ const ReliableImage = ({
                     : "?";
 
             return `${src}${separator}retry=${retry}`;
-        }, [src, retry]);
+        }, [
+            src,
+            retry,
+        ]);
+
 
     if (!imageSrc) {
         return (
@@ -185,11 +216,17 @@ const ReliableImage = ({
                 "
             >
                 {isLoading
-                    ? "Cargando imagen..."
-                    : "Imagen no disponible"}
+                    ? t(
+                        "image.loading"
+                    )
+                    : t(
+                        "image.unavailable"
+                    )
+                }
             </div>
         );
     }
+
 
     if (failed) {
         return (
@@ -207,13 +244,22 @@ const ReliableImage = ({
                     text-stone-400
                 "
             >
-                Imagen no disponible
+                {t(
+                    "image.unavailable"
+                )}
             </div>
         );
     }
 
+
     return (
-        <div className="relative h-full w-full">
+        <div
+            className="
+                relative
+                h-full
+                w-full
+            "
+        >
             {!imageLoaded && (
                 <div
                     className="
@@ -228,7 +274,9 @@ const ReliableImage = ({
                         text-stone-400
                     "
                 >
-                    Cargando imagen...
+                    {t(
+                        "image.loading"
+                    )}
                 </div>
             )}
 
@@ -248,21 +296,30 @@ const ReliableImage = ({
                 }
                 decoding="async"
                 onLoad={() => {
-                    setImageLoaded(true);
+                    setImageLoaded(
+                        true
+                    );
                 }}
                 onError={() => {
-                    setImageLoaded(false);
+                    setImageLoaded(
+                        false
+                    );
 
                     if (retry < 2) {
                         setRetry(
-                            (current) =>
-                                current + 1
+                            (
+                                current
+                            ) =>
+                                current +
+                                1
                         );
 
                         return;
                     }
 
-                    setFailed(true);
+                    setFailed(
+                        true
+                    );
                 }}
                 className="
                     h-full
@@ -278,6 +335,7 @@ const ReliableImage = ({
     );
 };
 
+
 const CollectionCard = ({
     brand,
     collection,
@@ -285,12 +343,18 @@ const CollectionCard = ({
     onClick,
     priority = false,
     isLoading = false,
+    t,
 }) => {
     return (
         <button
             type="button"
             onClick={onClick}
-            className="group block w-full text-left"
+            className="
+                group
+                block
+                w-full
+                text-left
+            "
         >
             <div
                 className="
@@ -299,14 +363,25 @@ const CollectionCard = ({
                     overflow-hidden
                     rounded-[1.25rem]
                     bg-stone-100
+
                     sm:rounded-[1.5rem]
                 "
             >
                 <ReliableImage
                     src={image}
-                    alt={`Colección ${collection}`}
-                    priority={priority}
-                    isLoading={isLoading}
+                    alt={t(
+                        "card.imageAlt",
+                        {
+                            collection,
+                        }
+                    )}
+                    priority={
+                        priority
+                    }
+                    isLoading={
+                        isLoading
+                    }
+                    t={t}
                 />
 
                 <div
@@ -326,6 +401,7 @@ const CollectionCard = ({
                         inset-x-0
                         bottom-0
                         p-3
+
                         sm:p-5
                     "
                 >
@@ -336,6 +412,7 @@ const CollectionCard = ({
                             uppercase
                             tracking-[0.22em]
                             text-white/70
+
                             sm:text-[10px]
                             sm:tracking-[0.28em]
                         "
@@ -350,6 +427,7 @@ const CollectionCard = ({
                             font-medium
                             leading-tight
                             text-white
+
                             sm:mt-2
                             sm:text-lg
                         "
@@ -370,6 +448,7 @@ const CollectionCard = ({
                             opacity-100
                             transition
                             duration-300
+
                             lg:mt-4
                             lg:gap-2
                             lg:text-xs
@@ -378,7 +457,9 @@ const CollectionCard = ({
                             lg:group-hover:opacity-100
                         "
                     >
-                        Ver colección
+                        {t(
+                            "card.view"
+                        )}
 
                         <ArrowRight
                             className="
@@ -404,13 +485,25 @@ const BrandColumn = ({
     loading,
     onCollectionClick,
     onBrandClick,
+    t,
 }) => {
     return (
-        <section className="min-w-0">
+        <section
+            className="
+                min-w-0
+            "
+        >
             <button
                 type="button"
-                onClick={onBrandClick}
-                className="group mb-7 w-full text-left"
+                onClick={
+                    onBrandClick
+                }
+                className="
+                    group
+                    mb-7
+                    w-full
+                    text-left
+                "
             >
                 <p
                     className="
@@ -420,7 +513,9 @@ const BrandColumn = ({
                         text-stone-400
                     "
                 >
-                    Colecciones
+                    {t(
+                        "sectionLabel"
+                    )}
                 </p>
 
                 <div
@@ -480,7 +575,11 @@ const BrandColumn = ({
                 </div>
             </button>
 
-            <div className="space-y-6">
+            <div
+                className="
+                    space-y-6
+                "
+            >
                 {collections.map(
                     (
                         collection,
@@ -488,14 +587,17 @@ const BrandColumn = ({
                     ) => (
                         <CollectionCard
                             key={`${brand.code}-${collection}`}
-                            brand={brand.name}
+                            brand={
+                                brand.name
+                            }
                             collection={
                                 collection
                             }
                             image={
                                 images?.[
                                 collection
-                                ] || null
+                                ] ||
+                                null
                             }
                             priority={
                                 index < 3
@@ -503,6 +605,7 @@ const BrandColumn = ({
                             isLoading={
                                 loading
                             }
+                            t={t}
                             onClick={() =>
                                 onCollectionClick(
                                     brand.code,
@@ -522,10 +625,19 @@ const MobileBrandSelector = ({
     brands,
     selectedBrand,
     onSelectBrand,
+    t,
 }) => {
     return (
-        <div className="lg:hidden">
-            <div className="mb-6">
+        <div
+            className="
+                lg:hidden
+            "
+        >
+            <div
+                className="
+                    mb-6
+                "
+            >
                 <p
                     className="
                         text-[10px]
@@ -535,7 +647,9 @@ const MobileBrandSelector = ({
                         text-stone-400
                     "
                 >
-                    Marcas
+                    {t(
+                        "mobile.brandsLabel"
+                    )}
                 </p>
 
                 <h2
@@ -547,7 +661,9 @@ const MobileBrandSelector = ({
                         text-stone-950
                     "
                 >
-                    Elige una marca
+                    {t(
+                        "mobile.chooseBrand"
+                    )}
                 </h2>
 
                 <p
@@ -559,25 +675,38 @@ const MobileBrandSelector = ({
                         text-stone-500
                     "
                 >
-                    Selecciona una marca para
-                    descubrir sus colecciones.
+                    {t(
+                        "mobile.chooseBrandDescription"
+                    )}
                 </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div
+                className="
+                    grid
+                    grid-cols-2
+                    gap-3
+                "
+            >
                 {brands.map(
-                    (brand, index) => {
+                    (
+                        brand,
+                        index
+                    ) => {
                         const isActive =
                             brand.code ===
                             selectedBrand;
 
                         const isLast =
                             index ===
-                            brands.length - 1;
+                            brands.length -
+                            1;
 
                         return (
                             <div
-                                key={brand.code}
+                                key={
+                                    brand.code
+                                }
                                 className={
                                     isLast
                                         ? "col-span-2 flex justify-center"
@@ -600,7 +729,6 @@ const MobileBrandSelector = ({
                                         aspect-[4/3]
                                         overflow-hidden
                                         rounded-2xl
-                                    
                                         text-left
                                         transition-all
                                         duration-300
@@ -617,7 +745,6 @@ const MobileBrandSelector = ({
                                         }
                                     `}
                                 >
-                                    {/* IMAGEN DE FONDO */}
                                     <img
                                         src={
                                             brand.background
@@ -638,7 +765,6 @@ const MobileBrandSelector = ({
                                         "
                                     />
 
-                                    {/* CAPA SUAVE PARA LEGIBILIDAD */}
                                     <div
                                         className="
                                             absolute
@@ -647,7 +773,6 @@ const MobileBrandSelector = ({
                                         "
                                     />
 
-                                    {/* LOGO */}
                                     <div
                                         className="
                                             absolute
@@ -662,31 +787,35 @@ const MobileBrandSelector = ({
                                             className="
                                                 flex
                                                 h-[56px]
-                                                w-[100%]
+                                                w-full
                                                 items-center
                                                 justify-center
                                                 rounded-xl
-                                                
                                                 px-4
                                                 py-3
                                             "
                                         >
                                             <img
-                                                src={brand.logo}
-                                                alt={brand.name}
+                                                src={
+                                                    brand.logo
+                                                }
+                                                alt={
+                                                    brand.name
+                                                }
                                                 className={`
-                                                h-auto
-                                                object-contain
-                                                ${brand.code === "CJM"
+                                                    h-auto
+                                                    object-contain
+
+                                                    ${brand.code ===
+                                                        "CJM"
                                                         ? "w-auto max-w-[65%] max-h-9"
-                                                        : "w-[100%] max-h-36"
+                                                        : "w-full max-h-36"
                                                     }
                                                 `}
                                             />
                                         </div>
                                     </div>
 
-                                    {/* MARCA ACTIVA */}
                                     {isActive && (
                                         <div
                                             className="
@@ -722,19 +851,26 @@ const MobileBrandSelector = ({
     );
 };
 
+
 const MobileCollections = ({
     brand,
     images,
     loading,
     onCollectionClick,
     onChangeBrand,
+    t,
 }) => {
     if (!brand) {
         return null;
     }
 
     return (
-        <section className="mt-10 lg:hidden">
+        <section
+            className="
+                mt-10
+                lg:hidden
+            "
+        >
             <div
                 className="
                     mb-6
@@ -757,7 +893,9 @@ const MobileCollections = ({
                             text-stone-400
                         "
                     >
-                        Colecciones
+                        {t(
+                            "sectionLabel"
+                        )}
                     </p>
 
                     <h2
@@ -779,14 +917,15 @@ const MobileCollections = ({
                             text-stone-400
                         "
                     >
-                        {
-                            brand.collections
-                                .length
-                        }{" "}
-                        {brand.collections
-                            .length === 1
-                            ? "colección"
-                            : "colecciones"}
+                        {t(
+                            "mobile.collectionCount",
+                            {
+                                count:
+                                    brand
+                                        .collections
+                                        .length,
+                            }
+                        )}
                     </p>
                 </div>
 
@@ -812,11 +951,21 @@ const MobileCollections = ({
                         hover:text-stone-950
                     "
                 >
-                    Cambiar
+                    {t(
+                        "mobile.changeBrand"
+                    )}
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div
+                className="
+                    grid
+                    grid-cols-2
+                    gap-3
+
+                    sm:gap-4
+                "
+            >
                 {brand.collections.map(
                     (
                         collection,
@@ -833,7 +982,8 @@ const MobileCollections = ({
                             image={
                                 images?.[
                                 collection
-                                ] || null
+                                ] ||
+                                null
                             }
                             priority={
                                 index < 6
@@ -841,6 +991,7 @@ const MobileCollections = ({
                             isLoading={
                                 loading
                             }
+                            t={t}
                             onClick={() =>
                                 onCollectionClick(
                                     brand.code,
@@ -857,69 +1008,91 @@ const MobileCollections = ({
 
 
 export default function ColeccionesPage() {
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
+
+    const { t } =
+        useTranslation(
+            "pageColecciones"
+        );
+
 
     const brandSelectorRef =
         useRef(null);
 
+
     const [
         imagesByBrand,
-        setImagesByBrand
+        setImagesByBrand,
     ] = useState({});
+
 
     const [
         loading,
-        setLoading
+        setLoading,
     ] = useState(true);
+
 
     const [
         selectedBrand,
-        setSelectedBrand
+        setSelectedBrand,
     ] = useState("ARE");
+
 
     const [
         showScrollTop,
-        setShowScrollTop
+        setShowScrollTop,
     ] = useState(false);
 
 
-    const brands = useMemo(
-        () =>
-            BRANDS.map(
-                (brand) => ({
-                    ...brand,
+    const brands =
+        useMemo(
+            () =>
+                BRANDS.map(
+                    (
+                        brand
+                    ) => ({
+                        ...brand,
 
-                    collections:
-                        coleccionesPorMarca[
-                        brand.code
-                        ] || [],
-                })
-            ),
-        []
-    );
+                        collections:
+                            coleccionesPorMarca[
+                            brand.code
+                            ] ||
+                            [],
+                    })
+                ),
+            []
+        );
 
 
-    const activeBrand = useMemo(
-        () =>
-            brands.find(
-                (brand) =>
-                    brand.code ===
-                    selectedBrand
-            ) || brands[0],
-        [
-            brands,
-            selectedBrand
-        ]
-    );
+    const activeBrand =
+        useMemo(
+            () =>
+                brands.find(
+                    (
+                        brand
+                    ) =>
+                        brand.code ===
+                        selectedBrand
+                ) ||
+                brands[0],
+            [
+                brands,
+                selectedBrand,
+            ]
+        );
 
 
     useEffect(() => {
         const controller =
             new AbortController();
 
+
         const loadCollections =
             async () => {
-                setLoading(true);
+                setLoading(
+                    true
+                );
 
                 try {
                     const results =
@@ -931,8 +1104,7 @@ export default function ColeccionesPage() {
                                     try {
                                         const data =
                                             await fetchJsonWithRetry(
-                                                `${import
-                                                    .meta
+                                                `${import.meta
                                                     .env
                                                     .VITE_API_BASE_URL
                                                 }/api/collections/previews/${encodeURIComponent(
@@ -942,16 +1114,21 @@ export default function ColeccionesPage() {
                                                     signal:
                                                         controller
                                                             .signal,
-                                                    retries: 2,
+
+                                                    retries:
+                                                        2,
                                                 }
                                             );
+
 
                                         const backendCollections =
                                             data?.collections ||
                                             {};
 
+
                                         const imagesByNormalizedName =
                                             {};
+
 
                                         Object.entries(
                                             backendCollections
@@ -973,8 +1150,10 @@ export default function ColeccionesPage() {
                                             }
                                         );
 
+
                                         const collectionImages =
                                             {};
+
 
                                         brand.collections.forEach(
                                             (
@@ -988,6 +1167,7 @@ export default function ColeccionesPage() {
                                                     ] ||
                                                     null;
 
+
                                                 collectionImages[
                                                     collection
                                                 ] =
@@ -999,9 +1179,11 @@ export default function ColeccionesPage() {
                                             }
                                         );
 
+
                                         return {
                                             code:
                                                 brand.code,
+
                                             images:
                                                 collectionImages,
                                         };
@@ -1015,20 +1197,25 @@ export default function ColeccionesPage() {
                                             throw error;
                                         }
 
+
                                         console.warn(
                                             `No se pudieron cargar las imágenes de ${brand.code}:`,
                                             error
                                         );
 
+
                                         return {
                                             code:
                                                 brand.code,
-                                            images: {},
+
+                                            images:
+                                                {},
                                         };
                                     }
                                 }
                             )
                         );
+
 
                     if (
                         controller
@@ -1038,8 +1225,10 @@ export default function ColeccionesPage() {
                         return;
                     }
 
+
                     const nextImages =
                         {};
+
 
                     results.forEach(
                         ({
@@ -1053,10 +1242,13 @@ export default function ColeccionesPage() {
                         }
                     );
 
+
                     setImagesByBrand(
                         nextImages
                     );
-                } catch (error) {
+                } catch (
+                error
+                ) {
                     if (
                         error?.name !==
                         "AbortError"
@@ -1079,30 +1271,39 @@ export default function ColeccionesPage() {
                 }
             };
 
+
         loadCollections();
+
 
         return () => {
             controller.abort();
         };
-    }, [brands]);
+    }, [
+        brands,
+    ]);
 
 
     useEffect(() => {
-        const handleScroll = () => {
-            setShowScrollTop(
-                window.scrollY > 400
-            );
-        };
+        const handleScroll =
+            () => {
+                setShowScrollTop(
+                    window.scrollY >
+                    400
+                );
+            };
+
 
         handleScroll();
+
 
         window.addEventListener(
             "scroll",
             handleScroll,
             {
-                passive: true
+                passive: true,
             }
         );
+
 
         return () => {
             window.removeEventListener(
@@ -1136,57 +1337,77 @@ export default function ColeccionesPage() {
     };
 
 
-    const handleChangeBrand = () => {
-        brandSelectorRef.current
-            ?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
+    const handleChangeBrand =
+        () => {
+            brandSelectorRef
+                .current
+                ?.scrollIntoView({
+                    behavior:
+                        "smooth",
+
+                    block:
+                        "start",
+                });
+        };
+
+
+    const scrollToTop =
+        () => {
+            window.scrollTo({
+                top: 0,
+                behavior:
+                    "smooth",
             });
-    };
-
-
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    };
+        };
 
 
     return (
         <CartProvider>
             <Header />
 
-            <main className="min-h-screen bg-[#faf9f7]">
+            <main
+                className="
+                    min-h-screen
+                    bg-[#faf9f7]
+                "
+            >
                 <section
                     className="
                         px-5
                         pb-16
                         pt-32
+
                         md:px-8
+
                         lg:px-10
                         lg:pt-36
                     "
                 >
-                    <div className="mx-auto max-w-[1800px]">
-
+                    <div
+                        className="
+                            mx-auto
+                            max-w-[1800px]
+                        "
+                    >
                         {/* CABECERA */}
                         <header
                             className="
                                 mb-10
                                 max-w-3xl
+
                                 lg:mb-20
                             "
                         >
                             <p
                                 className="
                                     text-xs
-                                    uppercase
                                     tracking-[0.4em]
                                     text-stone-400
                                 "
                             >
-                                CJMW
+                                {t(
+                                    "eyebrow"
+                                )}
                             </p>
 
                             <h1
@@ -1196,11 +1417,15 @@ export default function ColeccionesPage() {
                                     font-light
                                     tracking-[-0.04em]
                                     text-stone-950
+
                                     md:text-6xl
+
                                     lg:text-7xl
                                 "
                             >
-                                Colecciones
+                                {t(
+                                    "title"
+                                )}
                             </h1>
 
                             <p
@@ -1210,17 +1435,13 @@ export default function ColeccionesPage() {
                                     text-base
                                     leading-7
                                     text-stone-500
+
                                     md:text-lg
                                 "
                             >
-                                Descubre nuestras
-                                colecciones a través
-                                de cinco universos
-                                diferentes. Texturas,
-                                color, estampados y
-                                materiales pensados
-                                para transformar cada
-                                espacio.
+                                {t(
+                                    "description"
+                                )}
                             </p>
                         </header>
 
@@ -1235,6 +1456,7 @@ export default function ColeccionesPage() {
                                     gap-3
                                     text-sm
                                     text-stone-400
+
                                     lg:mb-10
                                 "
                             >
@@ -1248,77 +1470,101 @@ export default function ColeccionesPage() {
                                     "
                                 />
 
-                                Cargando colecciones...
+                                {t(
+                                    "loading"
+                                )}
                             </div>
                         )}
 
 
-                        {/* ─────────────────────────────
-                            MÓVIL / TABLET
-                            ───────────────────────────── */}
+                        {/* MÓVIL / TABLET */}
                         <div
                             ref={
                                 brandSelectorRef
                             }
-                            className="scroll-mt-24 lg:hidden"
+                            className="
+                                scroll-mt-24
+
+                                lg:hidden
+                            "
                         >
                             <MobileBrandSelector
-                                brands={brands}
+                                brands={
+                                    brands
+                                }
                                 selectedBrand={
                                     selectedBrand
                                 }
                                 onSelectBrand={
                                     handleBrandSelect
                                 }
+                                t={t}
                             />
                         </div>
 
 
                         <MobileCollections
-                            brand={activeBrand}
+                            brand={
+                                activeBrand
+                            }
                             images={
                                 imagesByBrand[
-                                activeBrand?.code
-                                ] || {}
+                                activeBrand
+                                    ?.code
+                                ] ||
+                                {}
                             }
-                            loading={loading}
+                            loading={
+                                loading
+                            }
                             onCollectionClick={
                                 handleCollectionClick
                             }
                             onChangeBrand={
                                 handleChangeBrand
                             }
+                            t={t}
                         />
 
-                        {/* ─────────────────────────────
-                            ESCRITORIO
-                            Mantiene el diseño actual
-                            ───────────────────────────── */}
+
+                        {/* ESCRITORIO */}
                         <div
                             className="
                                 hidden
                                 gap-12
+
                                 lg:grid
                                 lg:grid-cols-3
+
                                 xl:grid-cols-5
                                 xl:gap-5
+
                                 2xl:gap-7
                             "
                         >
                             {brands.map(
-                                (brand) => (
+                                (
+                                    brand
+                                ) => (
                                     <BrandColumn
-                                        key={brand.code}
-                                        brand={brand}
+                                        key={
+                                            brand.code
+                                        }
+                                        brand={
+                                            brand
+                                        }
                                         collections={
                                             brand.collections
                                         }
                                         images={
                                             imagesByBrand[
                                             brand.code
-                                            ] || {}
+                                            ] ||
+                                            {}
                                         }
-                                        loading={loading}
+                                        loading={
+                                            loading
+                                        }
                                         onCollectionClick={
                                             handleCollectionClick
                                         }
@@ -1327,6 +1573,7 @@ export default function ColeccionesPage() {
                                                 brand.home
                                             )
                                         }
+                                        t={t}
                                     />
                                 )
                             )}
@@ -1342,7 +1589,9 @@ export default function ColeccionesPage() {
                 onClick={
                     scrollToTop
                 }
-                aria-label="Volver arriba"
+                aria-label={t(
+                    "scrollTop"
+                )}
                 className={`
                     fixed
                     bottom-5
@@ -1362,15 +1611,21 @@ export default function ColeccionesPage() {
                     backdrop-blur
                     transition-all
                     duration-300
+
                     lg:hidden
 
                     ${showScrollTop
                         ? "translate-y-0 opacity-100"
-                        : "translate-y-4 opacity-0 pointer-events-none"
+                        : "pointer-events-none translate-y-4 opacity-0"
                     }
                 `}
             >
-                <ArrowUp className="h-5 w-5" />
+                <ArrowUp
+                    className="
+                        h-5
+                        w-5
+                    "
+                />
             </button>
 
             <Footer />

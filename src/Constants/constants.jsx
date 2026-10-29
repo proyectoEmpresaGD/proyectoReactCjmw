@@ -758,7 +758,141 @@ export const inactiveButtonClass = "bg-gray-100 text-gray-700 hover:bg-blue-100"
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!!!!!!!CARPETA ComponentesUsages!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+export const searchNewCollections = [
+    {
+        brand: "ARE",
+        collection: "THE ARTISAN",
+    },
+    {
+        brand: "ARE",
+        collection: "WABI SABI",
+    },
+    {
+        brand: "ARE",
+        collection: "KANNATURA VOL III",
+    },
+    {
+        brand: "ARE",
+        collection: "NOBUCK",
+    },
+    {
+        brand: "ARE",
+        collection: "GRASSLAND",
+    },
+    {
+        brand: "ARE",
+        collection: "ALPHONSE",
+    },
+
+];
+
+
+export const searchRecommendedCollections = [
+    {
+        brand: "BAS",
+        collection: "LE VOYAGE DES WOLOF",
+    },
+    {
+        brand: "BAS",
+        collection: "ESSENCES DU NIL",
+    },
+    {
+        brand: "BAS",
+        collection: "KASSUMAY",
+    },
+    {
+        brand: "BAS",
+        collection: "TRIBAL",
+    },
+    {
+        brand: "BAS",
+        collection: "UNIVERS",
+    },
+    {
+        brand: "FLA",
+        collection: "INDIENNE STRIPES",
+    },
+    {
+        brand: "FLA",
+        collection: "PALACIO DE LAS DUEÑAS",
+    },
+    {
+        brand: "FLA",
+        collection: "GRAZALEMA",
+    },
+    {
+        brand: "FLA",
+        collection: "MARRAKECH",
+    },
+    {
+        brand: "HAR",
+        collection: "BOHEMIAN",
+    },
+    {
+        brand: "HAR",
+        collection: "HUSKY",
+    },
+    {
+        brand: "HAR",
+        collection: "BOLONIA&VARADERO",
+    },
+    {
+        brand: "HAR",
+        collection: "CARIBBEAN PARTY",
+    },
+    {
+        brand: "HAR",
+        collection: "TORINO",
+    },
+    {
+        brand: "HAR",
+        collection: "DUKE",
+    },
+    {
+        brand: "ARE",
+        collection: "CRANE",
+    },
+    {
+        brand: "ARE",
+        collection: "TAKUMI",
+    },
+    {
+        brand: "ARE",
+        collection: "LIGHTHOUSE",
+    },
+    {
+        brand: "ARE",
+        collection: "MADAMA BUTTERFLY",
+    },
+    {
+        brand: "ARE",
+        collection: "SOBOKUNA",
+    },
+    {
+        brand: "ARE",
+        collection: "COSY",
+    },
+    {
+        brand: "ARE",
+        collection: "KANNATURA",
+    },
+    {
+        brand: "ARE",
+        collection: "KANNATURA VOL II",
+    },
+    {
+        brand: "CJM",
+        collection: "TOKIO",
+    },
+    {
+        brand: "CJM",
+        collection: "COLONY WALLPAPER",
+    },
+];
 
 //src/app/paginaprincipal.jsx
 

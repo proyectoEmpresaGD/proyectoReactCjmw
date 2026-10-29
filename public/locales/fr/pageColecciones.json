@@ -1,0 +1,24 @@
+{
+    "eyebrow": "CJM Group",
+    "title": "Collections",
+    "description": "Découvrez nos collections à travers cinq univers différents. Textures, couleurs, motifs et matières pensés pour transformer chaque espace.",
+    "loading": "Chargement des collections...",
+    "sectionLabel": "Collections",
+    "scrollTop": "Retour en haut",
+    "image": {
+        "loading": "Chargement de l’image...",
+        "unavailable": "Image indisponible"
+    },
+    "card": {
+        "imageAlt": "Collection {{collection}}",
+        "view": "Voir la collection"
+    },
+    "mobile": {
+        "brandsLabel": "Marques",
+        "chooseBrand": "Choisissez une marque",
+        "chooseBrandDescription": "Sélectionnez une marque pour découvrir ses collections.",
+        "collectionCount_one": "{{count}} collection",
+        "collectionCount_other": "{{count}} collections",
+        "changeBrand": "Changer"
+    }
+}

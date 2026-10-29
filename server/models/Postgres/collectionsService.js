@@ -32,70 +32,65 @@ function normalizeKey(s = '') {
 }
 
 async function readCollectionPreviewsJSON() {
-    const requireCandidates = [
+    const candidates = [
         path.join(
             __dirname,
-            'data',
-            'collectionPreviews.json'
+            "data",
+            "collectionPreviews.json"
         ),
 
         path.join(
             __dirname,
-            '..',
-            'data',
-            'collectionPreviews.json'
+            "..",
+            "data",
+            "collectionPreviews.json"
         ),
 
         path.resolve(
             process.cwd(),
-            'server',
-            'models',
-            'Postgres',
-            'data',
-            'collectionPreviews.json'
+            "server",
+            "models",
+            "Postgres",
+            "data",
+            "collectionPreviews.json"
         ),
 
         path.resolve(
             process.cwd(),
-            'server',
-            'models',
-            'data',
-            'collectionPreviews.json'
+            "server",
+            "models",
+            "data",
+            "collectionPreviews.json"
         ),
 
         path.resolve(
             process.cwd(),
-            'models',
-            'data',
-            'collectionPreviews.json'
-        )
+            "models",
+            "data",
+            "collectionPreviews.json"
+        ),
     ];
 
-    for (const p of requireCandidates) {
-        try {
-            const data = require(p);
-            return data;
-        } catch {
-            // probar siguiente ruta
-        }
-    }
 
-    for (const p of requireCandidates) {
+    for (const filePath of candidates) {
         try {
             const raw =
                 await fs.readFile(
-                    p,
-                    'utf8'
+                    filePath,
+                    "utf8"
                 );
 
-            return JSON.parse(raw);
+            return JSON.parse(
+                raw
+            );
         } catch {
-            // probar siguiente ruta
+            // Probar siguiente ruta.
         }
     }
 
+
     throw new Error(
-        'No se encontró collectionPreviews.json.'
+        "No se encontró collectionPreviews.json."
     );
 }
 
@@ -158,46 +153,102 @@ async function loadCollectionPreviews() {
 async function readCollectionsJSON() {
     // 1) Ruta absoluta por env
     if (process.env.COLLECTIONS_JSON_PATH) {
-        const p = process.env.COLLECTIONS_JSON_PATH;
-        const raw = await fs.readFile(p, 'utf8');
-        return JSON.parse(raw);
+        const p =
+            process.env.COLLECTIONS_JSON_PATH;
+
+        const raw =
+            await fs.readFile(
+                p,
+                "utf8"
+            );
+
+        return JSON.parse(
+            raw
+        );
     }
 
-    // 2) Inline Base64 por env (útil en serverless)
-    if (process.env.COLLECTIONS_JSON_INLINE) {
-        const raw = Buffer.from(process.env.COLLECTIONS_JSON_INLINE, 'base64').toString('utf8');
-        return JSON.parse(raw);
+
+    // 2) Inline Base64 por env
+    if (
+        process.env
+            .COLLECTIONS_JSON_INLINE
+    ) {
+        const raw =
+            Buffer.from(
+                process.env
+                    .COLLECTIONS_JSON_INLINE,
+                "base64"
+            ).toString(
+                "utf8"
+            );
+
+        return JSON.parse(
+            raw
+        );
     }
 
-    // 3) require() de rutas “bundled”
-    const requireCandidates = [
-        // junto al servicio
-        path.join(__dirname, 'data', 'collections.json'),
-        path.join(__dirname, '..', 'data', 'collections.json'),
-        // ubicaciones típicas del repo
-        path.resolve(process.cwd(), 'server', 'models', 'Postgres', 'data', 'collections.json'),
-        path.resolve(process.cwd(), 'server', 'models', 'data', 'collections.json'),
-        path.resolve(process.cwd(), 'models', 'data', 'collections.json')
+
+    // 3) Rutas locales/bundled
+    const candidates = [
+        path.join(
+            __dirname,
+            "data",
+            "collections.json"
+        ),
+
+        path.join(
+            __dirname,
+            "..",
+            "data",
+            "collections.json"
+        ),
+
+        path.resolve(
+            process.cwd(),
+            "server",
+            "models",
+            "Postgres",
+            "data",
+            "collections.json"
+        ),
+
+        path.resolve(
+            process.cwd(),
+            "server",
+            "models",
+            "data",
+            "collections.json"
+        ),
+
+        path.resolve(
+            process.cwd(),
+            "models",
+            "data",
+            "collections.json"
+        ),
     ];
 
-    for (const p of requireCandidates) {
+
+    for (const filePath of candidates) {
         try {
-            // Si existe, require lo resolverá tras el build
-            // (si falla, lanzará excepción; probamos la siguiente)
-            const data = require(p);
-            return data;
-        } catch { /* probar siguiente */ }
+            const raw =
+                await fs.readFile(
+                    filePath,
+                    "utf8"
+                );
+
+            return JSON.parse(
+                raw
+            );
+        } catch {
+            // Probar siguiente ruta.
+        }
     }
 
-    // 4) fs como último recurso
-    for (const p of requireCandidates) {
-        try {
-            const raw = await fs.readFile(p, 'utf8');
-            return JSON.parse(raw);
-        } catch { /* probar siguiente */ }
-    }
 
-    throw new Error('No se encontró collections.json en ninguna ruta conocida. Usa COLLECTIONS_JSON_PATH o COLLECTIONS_JSON_INLINE.');
+    throw new Error(
+        "No se encontró collections.json en ninguna ruta conocida. Usa COLLECTIONS_JSON_PATH o COLLECTIONS_JSON_INLINE."
+    );
 }
 
 async function loadCollections() {
