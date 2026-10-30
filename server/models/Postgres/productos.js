@@ -71,33 +71,129 @@ export class ProductModel {
   }
 
   /**
+   * Normaliza valores de estado como:
+   * S, N, s, n, null, espacios, etc.
+   */
+  static normalizeProductStatus(value) {
+    return String(value ?? '')
+      .trim()
+      .toUpperCase();
+  }
+
+  /**
+   * Un producto no debe formar parte del catálogo público
+   * si está marcado como obsoleto o dado de baja.
+   */
+  static isUnavailableProduct(product) {
+    return (
+      this.normalizeProductStatus(
+        product?.obsoleto
+      ) === 'S'
+    );
+  }
+
+  /**
+   * Obtiene el prefijo/alias SQL de una columna.
+   *
+   * Ejemplos:
+   * p."codmarca" -> p.
+   * "codmarca"   -> ''
+   */
+  static getColumnQualifier(column = '') {
+    const value =
+      String(column).trim();
+
+    const lastDot =
+      value.lastIndexOf('.');
+
+    if (lastDot === -1) {
+      return '';
+    }
+
+    return value.slice(
+      0,
+      lastDot + 1
+    );
+  }
+
+  /**
+   * Excluye productos obsoletos o dados de baja.
+   *
+   * Se usa COALESCE porque algunos registros antiguos
+   * pueden tener estos campos a NULL.
+   */
+  static getAvailableProductClause(
+    referenceColumn = '"codmarca"'
+  ) {
+    const qualifier =
+      this.getColumnQualifier(
+        referenceColumn
+      );
+
+    return `
+    COALESCE(
+      UPPER(
+        TRIM(
+          ${qualifier}"obsoleto"
+        )
+      ),
+      'N'
+    ) <> 'S'
+  `;
+  }
+
+  /**
    * Comprueba si una marca está completamente excluida de la web.
    */
   static isExcludedBrandCode(codmarca) {
-    const normalizedCode = this.normalizeBrandCode(codmarca);
+    const normalizedCode =
+      this.normalizeBrandCode(
+        codmarca
+      );
 
     return this.excludedBrandCodes.some(
-      code => this.normalizeBrandCode(code) === normalizedCode
+      code =>
+        this.normalizeBrandCode(
+          code
+        ) === normalizedCode
     );
   }
 
   /**
    * Devuelve la condición SQL reutilizable para excluir marcas.
    */
-  static getExcludedBrandClause(column = '"codmarca"') {
+  static getExcludedBrandClause(
+    column = '"codmarca"'
+  ) {
     if (
-      !Array.isArray(this.excludedBrandCodes) ||
+      !Array.isArray(
+        this.excludedBrandCodes
+      ) ||
       this.excludedBrandCodes.length === 0
     ) {
       return 'TRUE';
     }
 
-    const codes = this.excludedBrandCodes
-      .map(code => this.normalizeBrandCode(code))
-      .filter(Boolean)
-      .map(code => `'${code.replace(/'/g, "''")}'`);
+    const codes =
+      this.excludedBrandCodes
+        .map(
+          code =>
+            this.normalizeBrandCode(
+              code
+            )
+        )
+        .filter(Boolean)
+        .map(
+          code =>
+            `'${code.replace(
+              /'/g,
+              "''"
+            )}'`
+        );
 
-    if (codes.length === 0) {
+    if (
+      codes.length === 0
+    ) {
       return 'TRUE';
     }
 
@@ -113,48 +209,81 @@ export class ProductModel {
   /**
    * Normaliza el nombre de una colección para comparaciones internas.
    */
-  static normalizeCollectionName(collection) {
-    return String(collection ?? '')
+  static normalizeCollectionName(
+    collection
+  ) {
+    return String(
+      collection ?? ''
+    )
       .trim()
       .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '')
+      .replace(
+        /\p{Diacritic}/gu,
+        ''
+      )
       .toUpperCase();
   }
 
   /**
    * Comprueba si una colección está oculta.
    */
-  static isHiddenCollection(collection) {
+  static isHiddenCollection(
+    collection
+  ) {
     const normalizedCollection =
-      this.normalizeCollectionName(collection);
+      this.normalizeCollectionName(
+        collection
+      );
 
-    if (!normalizedCollection) {
+    if (
+      !normalizedCollection
+    ) {
       return false;
     }
 
     return hiddenCollections.some(
       hiddenCollection =>
-        this.normalizeCollectionName(hiddenCollection) === normalizedCollection
+        this.normalizeCollectionName(
+          hiddenCollection
+        ) === normalizedCollection
     );
   }
 
   /**
    * Condición SQL para excluir colecciones ocultas.
    */
-  static getHiddenCollectionsClause(column = '"coleccion"') {
+  static getHiddenCollectionsClause(
+    column = '"coleccion"'
+  ) {
     if (
-      !Array.isArray(hiddenCollections) ||
+      !Array.isArray(
+        hiddenCollections
+      ) ||
       hiddenCollections.length === 0
     ) {
       return 'TRUE';
     }
 
-    const collections = hiddenCollections
-      .map(collection => this.normalizeCollectionName(collection))
-      .filter(Boolean)
-      .map(collection => `'${collection.replace(/'/g, "''")}'`);
+    const collections =
+      hiddenCollections
+        .map(
+          collection =>
+            this.normalizeCollectionName(
+              collection
+            )
+        )
+        .filter(Boolean)
+        .map(
+          collection =>
+            `'${collection.replace(
+              /'/g,
+              "''"
+            )}'`
+        );
 
-    if (collections.length === 0) {
+    if (
+      collections.length === 0
+    ) {
       return 'TRUE';
     }
 
@@ -171,15 +300,39 @@ export class ProductModel {
 
   /**
    * Condición común del catálogo público.
+   *
+   * Incluye:
+   * - marcas visibles
+   * - colecciones visibles
+   * - productos no obsoletos
+   * - productos no dados de baja
    */
   static getPublicCatalogClause({
     brandColumn = '"codmarca"',
     collectionColumn = '"coleccion"',
   } = {}) {
     return `
-      (${this.getExcludedBrandClause(brandColumn)})
+      (
+        ${this.getExcludedBrandClause(
+      brandColumn
+    )}
+      )
+
       AND
-      (${this.getHiddenCollectionsClause(collectionColumn)})
+
+      (
+        ${this.getHiddenCollectionsClause(
+      collectionColumn
+    )}
+      )
+
+      AND
+
+      (
+        ${this.getAvailableProductClause(
+      brandColumn
+    )}
+      )
     `;
   }
 
@@ -218,27 +371,47 @@ export class ProductModel {
     `;
   }
 
-  static async getTariffCodeForCustomer(codclien) {
-    const customerCode = String(codclien ?? '').trim();
+  static async getTariffCodeForCustomer(
+    codclien
+  ) {
+    const customerCode =
+      String(
+        codclien ?? ''
+      ).trim();
 
-    if (!customerCode) {
+    if (
+      !customerCode
+    ) {
       return this.defaultTariffCode;
     }
 
-    const { rows } = await pool.query(
-      `
-        SELECT NULLIF(TRIM(c."codtarifa"), '') AS codtarifa
-        FROM clientes c
-        WHERE c."codclien" = $1
-        LIMIT 1;
-      `,
-      [customerCode]
-    );
+    const {
+      rows
+    } =
+      await pool.query(
+        `
+          SELECT
+            NULLIF(
+              TRIM(c."codtarifa"),
+              ''
+            ) AS codtarifa
+          FROM clientes c
+          WHERE c."codclien" = $1
+          LIMIT 1;
+        `,
+        [
+          customerCode
+        ]
+      );
 
-    return this.normalizeTariffCode(rows[0]?.codtarifa);
+    return this.normalizeTariffCode(
+      rows[0]?.codtarifa
+    );
   }
 
-  static getHolidayNameClause(startIndex = 1) {
+  static getHolidayNameClause(
+    startIndex = 1
+  ) {
     if (
       !this.holidayNamePrefixes ||
       this.holidayNamePrefixes.length === 0
@@ -249,53 +422,97 @@ export class ProductModel {
       };
     }
 
-    const patterns = this.holidayNamePrefixes.map(
-      prefix => `${prefix.toUpperCase()}%`
-    );
-
-    return {
-      clause: `UPPER(unaccent("nombre")) LIKE ANY($${startIndex})`,
-      values: [patterns],
-    };
-  }
-
-  static getExcludedNamesClause(startIndex = 1) {
-    const placeholders = this.excludedNames.map(
-      (_, index) => `$${index + startIndex}`
-    );
-
-    return {
-      clause: `"nombre" NOT IN (${placeholders.join(', ')})`,
-      values: [...this.excludedNames],
-    };
-  }
-
-  static async attachImages(product, tipos = ['PRODUCTO_BAJA']) {
-    const want = Array.isArray(tipos)
-      ? tipos
-      : [tipos];
-
-    try {
-      const lookups = await Promise.all(
-        want.map(codclaarchivo =>
-          ImagenModel.getByCodproduAndCodclaarchivo({
-            codprodu: product.codprodu,
-            codclaarchivo,
-          })
-        )
+    const patterns =
+      this.holidayNamePrefixes.map(
+        prefix =>
+          `${prefix.toUpperCase()}%`
       );
 
-      const result = { ...product };
+    return {
+      clause:
+        `UPPER(unaccent("nombre")) LIKE ANY($${startIndex})`,
 
-      lookups.forEach((img, index) => {
-        const quality = want[index];
+      values: [
+        patterns
+      ],
+    };
+  }
 
-        const key = quality === 'PRODUCTO_BUENA'
-          ? 'imageBuena'
-          : 'imageBaja';
+  static getExcludedNamesClause(
+    startIndex = 1
+  ) {
+    const placeholders =
+      this.excludedNames.map(
+        (
+          _,
+          index
+        ) =>
+          `$${index + startIndex}`
+      );
 
-        result[key] = img?.url ?? null;
-      });
+    return {
+      clause:
+        `"nombre" NOT IN (${placeholders.join(', ')})`,
+
+      values: [
+        ...this.excludedNames
+      ],
+    };
+  }
+
+  static async attachImages(
+    product,
+    tipos = [
+      'PRODUCTO_BAJA'
+    ]
+  ) {
+    const want =
+      Array.isArray(
+        tipos
+      )
+        ? tipos
+        : [
+          tipos
+        ];
+
+    try {
+      const lookups =
+        await Promise.all(
+          want.map(
+            codclaarchivo =>
+              ImagenModel
+                .getByCodproduAndCodclaarchivo({
+                  codprodu:
+                    product.codprodu,
+
+                  codclaarchivo,
+                })
+          )
+        );
+
+      const result = {
+        ...product
+      };
+
+      lookups.forEach(
+        (
+          img,
+          index
+        ) => {
+          const quality =
+            want[index];
+
+          const key =
+            quality ===
+              'PRODUCTO_BUENA'
+              ? 'imageBuena'
+              : 'imageBaja';
+
+          result[key] =
+            img?.url ??
+            null;
+        }
+      );
 
       return result;
     } catch {
@@ -309,34 +526,56 @@ export class ProductModel {
 
   static async getByCodes({
     codes,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+    this.defaultTariffCode
   }) {
     const resolvedTariffCode =
-      this.normalizeTariffCode(tariffCode);
+      this.normalizeTariffCode(
+        tariffCode
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const sql = `
       SELECT
         p.*,
         tp."pvp" AS "precioMetro"
+
       FROM productos p
+
       LEFT JOIN tarprodu tp
         ON tp."codprodu" = p."codprodu"
        AND tp."codtarifa" = $2
-      WHERE p."codprodu" = ANY($1::text[])
+
+      WHERE
+        p."codprodu" = ANY($1::text[])
+
         AND ${brandExclusion}
-      ORDER BY array_position($1::text[], p."codprodu");
+
+      ORDER BY
+        array_position(
+          $1::text[],
+          p."codprodu"
+        );
     `;
 
-    const { rows } = await pool.query(
-      sql,
-      [codes, resolvedTariffCode]
-    );
+    const {
+      rows
+    } =
+      await pool.query(
+        sql,
+        [
+          codes,
+          resolvedTariffCode
+        ]
+      );
 
     return rows;
   }
@@ -351,13 +590,17 @@ export class ProductModel {
     requiredLimit = 16,
     offset = 0
   }) {
-    const accumulatedProducts = [];
+    const accumulatedProducts =
+      [];
 
     const brandExclusion =
       this.getPublicCatalogClause();
 
     try {
-      while (accumulatedProducts.length < requiredLimit) {
+      while (
+        accumulatedProducts.length <
+        requiredLimit
+      ) {
         let query =
           'SELECT DISTINCT ON ("nombre") * ' +
           'FROM productos ' +
@@ -365,29 +608,48 @@ export class ProductModel {
           'AND "nombre" <> \'\' ' +
           `AND ${brandExclusion}`;
 
-        const params = [];
-        let index = 1;
+        const params =
+          [];
 
-        if (CodFamil) {
-          query += ` AND "codfamil" = $${index++}`;
-          params.push(CodFamil);
+        let index =
+          1;
+
+        if (
+          CodFamil
+        ) {
+          query +=
+            ` AND "codfamil" = $${index++}`;
+
+          params.push(
+            CodFamil
+          );
         }
 
-        if (CodSubFamil) {
-          query += ` AND "codsubfamil" = $${index++}`;
-          params.push(CodSubFamil);
+        if (
+          CodSubFamil
+        ) {
+          query +=
+            ` AND "codsubfamil" = $${index++}`;
+
+          params.push(
+            CodSubFamil
+          );
         }
 
         const exclusion =
-          this.getExcludedNamesClause(index);
+          this.getExcludedNamesClause(
+            index
+          );
 
-        query += ` AND ${exclusion.clause}`;
+        query +=
+          ` AND ${exclusion.clause}`;
 
         params.push(
           ...exclusion.values
         );
 
-        index += exclusion.values.length;
+        index +=
+          exclusion.values.length;
 
         query += `
           LIMIT $${index++}
@@ -399,13 +661,17 @@ export class ProductModel {
           offset
         );
 
-        const { rows } =
+        const {
+          rows
+        } =
           await pool.query(
             query,
             params
           );
 
-        if (rows.length === 0) {
+        if (
+          rows.length === 0
+        ) {
           break;
         }
 
@@ -413,14 +679,17 @@ export class ProductModel {
           ...rows
         );
 
-        offset += rows.length;
+        offset +=
+          rows.length;
       }
 
       return accumulatedProducts.slice(
         0,
         requiredLimit
       );
-    } catch (error) {
+    } catch (
+    error
+    ) {
       console.error(
         'Error fetching products:',
         error
@@ -435,7 +704,8 @@ export class ProductModel {
   static async getById({
     id,
     res,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+    this.defaultTariffCode
   }) {
     const resolvedTariffCode =
       this.normalizeTariffCode(
@@ -445,19 +715,26 @@ export class ProductModel {
     const cacheKey =
       `product:${id}:tarifa:${resolvedTariffCode}`;
 
-    if (res?.cache) {
+    if (
+      res?.cache
+    ) {
       const cached =
         await res.cache.get(
           cacheKey
         );
 
-      if (cached) {
+      if (
+        cached
+      ) {
         if (
           this.isExcludedBrandCode(
             cached.codmarca
           ) ||
           this.isHiddenCollection(
             cached.coleccion
+          ) ||
+          this.isUnavailableProduct(
+            cached
           )
         ) {
           await res.cache.del?.(
@@ -476,24 +753,35 @@ export class ProductModel {
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const sql = `
       SELECT
         p.*,
         tp."pvp" AS "precioMetro"
+
       FROM productos p
+
       LEFT JOIN tarprodu tp
         ON tp."codprodu" = p."codprodu"
        AND tp."codtarifa" = $2
-      WHERE p."codprodu" = $1
+
+      WHERE
+        p."codprodu" = $1
+
         AND ${brandExclusion}
+
       LIMIT 1;
     `;
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         sql,
         [
@@ -502,14 +790,18 @@ export class ProductModel {
         ]
       );
 
-    if (!rows.length) {
+    if (
+      !rows.length
+    ) {
       return null;
     }
 
     const product =
       rows[0];
 
-    if (res?.cache) {
+    if (
+      res?.cache
+    ) {
       await res.cache.set(
         cacheKey,
         product
@@ -524,9 +816,13 @@ export class ProductModel {
     return product;
   }
 
-  static async getByCodFamil(codfamil) {
+  static async getByCodFamil(
+    codfamil
+  ) {
     const exclusion =
-      this.getExcludedNamesClause(2);
+      this.getExcludedNamesClause(
+        2
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause();
@@ -534,14 +830,20 @@ export class ProductModel {
     const query = `
       SELECT *
       FROM productos
+
       WHERE "codfamil" = $1
+
         AND "nombre" IS NOT NULL
         AND "nombre" <> ''
+
         AND ${brandExclusion}
+
         AND ${exclusion.clause}
     `;
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         query,
         [
@@ -568,14 +870,23 @@ export class ProductModel {
       'AND "nombre" <> \'\' ' +
       `AND ${brandExclusion}`;
 
-    const params = [];
-    let index = 1;
+    const params =
+      [];
 
-    if (type === 'papel') {
+    let index =
+      1;
+
+    if (
+      type ===
+      'papel'
+    ) {
       query += `
         AND "tipo" = 'WALLPAPER'
       `;
-    } else if (type === 'telas') {
+    } else if (
+      type ===
+      'telas'
+    ) {
       query += `
         AND "tipo" <> 'WALLPAPER'
       `;
@@ -598,7 +909,10 @@ export class ProductModel {
       exclusion.values.length;
 
     query += `
-      ORDER BY "nombre", "codprodu"
+      ORDER BY
+        "nombre",
+        "codprodu"
+
       LIMIT $${index++}
       OFFSET $${index++}
     `;
@@ -608,15 +922,20 @@ export class ProductModel {
       offset
     );
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         query,
         params
       );
 
     return {
-      products: rows,
-      total: rows.length
+      products:
+        rows,
+
+      total:
+        rows.length
     };
   }
 
@@ -624,22 +943,35 @@ export class ProductModel {
     coleccion
   ) {
     const exclusion =
-      this.getExcludedNamesClause(2);
+      this.getExcludedNamesClause(
+        2
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause();
 
     const query = `
-      SELECT DISTINCT ON ("nombre") *
+      SELECT DISTINCT ON ("nombre")
+        *
+
       FROM productos
+
       WHERE coleccion = $1
+
         AND nombre IS NOT NULL
+
         AND ${brandExclusion}
+
         AND ${exclusion.clause}
-      ORDER BY "nombre", "codprodu"
+
+      ORDER BY
+        "nombre",
+        "codprodu"
     `;
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         query,
         [
@@ -656,29 +988,54 @@ export class ProductModel {
     excludeCodprodu
   }) {
     const exclusion =
-      this.getExcludedNamesClause(3);
+      this.getExcludedNamesClause(
+        3
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const query = `
-      SELECT DISTINCT ON (p.nombre)
+      SELECT DISTINCT ON (
+        p.nombre
+      )
         p.*
+
       FROM productos p
-      WHERE lower(p.coleccion) = lower($1)
+
+      WHERE
+        lower(
+          p.coleccion
+        ) =
+        lower($1)
+
         AND p.codprodu <> $2
+
         AND p.nombre IS NOT NULL
         AND p.nombre <> ''
+
         AND ${brandExclusion}
+
         AND ${exclusion.clause}
+
         AND EXISTS (
           SELECT 1
+
           FROM imagenesproductoswebp i
-          WHERE i.codprodu = p.codprodu
-            AND i.codclaarchivo = 'PRODUCTO_BUENA'
+
+          WHERE
+            i.codprodu =
+              p.codprodu
+
+            AND
+            i.codclaarchivo =
+              'PRODUCTO_BUENA'
         )
     `;
 
@@ -688,7 +1045,9 @@ export class ProductModel {
       ...exclusion.values
     ];
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         query,
         values
@@ -716,25 +1075,46 @@ export class ProductModel {
   }) {
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const sql = `
-      SELECT DISTINCT ON (p.nombre)
+      SELECT DISTINCT ON (
+        p.nombre
+      )
         p.*
+
       FROM productos p
-      WHERE TRIM(p.coleccion) ILIKE TRIM($1)
+
+      WHERE
+        TRIM(
+          p.coleccion
+        )
+        ILIKE
+        TRIM($1)
+
         AND p.nombre IS NOT NULL
         AND p.nombre <> ''
+
         AND ${brandExclusion}
-      ORDER BY p.nombre, p.codprodu;
+
+      ORDER BY
+        p.nombre,
+        p.codprodu;
     `;
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         sql,
-        [coleccion]
+        [
+          coleccion
+        ]
       );
 
     const withImages =
@@ -761,29 +1141,59 @@ export class ProductModel {
     limit = 4
   }) {
     const exclusion =
-      this.getExcludedNamesClause(5);
+      this.getExcludedNamesClause(
+        5
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const query = `
-      SELECT DISTINCT ON (p.nombre)
+      SELECT DISTINCT ON (
+        p.nombre
+      )
         p.*
+
       FROM productos p
-      WHERE lower(p.estilo) = lower($1)
-        AND lower(p.nombre) <> lower($2)
+
+      WHERE
+        lower(
+          p.estilo
+        ) =
+        lower($1)
+
+        AND
+        lower(
+          p.nombre
+        ) <>
+        lower($2)
+
         AND p.coleccion <> $3
+
         AND ${brandExclusion}
+
         AND ${exclusion.clause}
+
         AND EXISTS (
           SELECT 1
+
           FROM imagenesproductoswebp i
-          WHERE i.codprodu = p.codprodu
-            AND i.codclaarchivo = 'PRODUCTO_BAJA'
+
+          WHERE
+            i.codprodu =
+              p.codprodu
+
+            AND
+            i.codclaarchivo =
+              'PRODUCTO_BAJA'
         )
+
       LIMIT $4
     `;
 
@@ -795,7 +1205,9 @@ export class ProductModel {
       ...exclusion.values
     ];
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         query,
         values
@@ -838,11 +1250,15 @@ export class ProductModel {
     let where = `
       "nombre" IS NOT NULL
       AND "nombre" <> ''
+
       AND ${brandExclusion}
     `;
 
-    const params = [];
-    let index = 1;
+    const params =
+      [];
+
+    let index =
+      1;
 
     const exclusion =
       this.getExcludedNamesClause(
@@ -867,35 +1283,57 @@ export class ProductModel {
       );
 
     where += `
-      AND UPPER(unaccent("nombre"))
-          LIKE ANY($${index++})
+      AND
+      UPPER(
+        unaccent(
+          "nombre"
+        )
+      )
+      LIKE ANY($${index++})
     `;
 
-    params.push(patterns);
+    params.push(
+      patterns
+    );
 
     const countQuery = `
       SELECT
-        COUNT(DISTINCT "codprodu")::int AS total
+        COUNT(
+          DISTINCT "codprodu"
+        )::int AS total
+
       FROM productos
+
       WHERE ${where}
     `;
 
-    const { rows: countRows } =
+    const {
+      rows: countRows
+    } =
       await pool.query(
         countQuery,
         params
       );
 
     const total =
-      countRows[0]?.total || 0;
+      countRows[0]?.total ||
+      0;
 
     const dataQuery = `
-      SELECT DISTINCT ON ("nombre")
+      SELECT DISTINCT ON (
+        "nombre"
+      )
         *,
         TRUE AS "isChristmas"
+
       FROM productos
+
       WHERE ${where}
-      ORDER BY "nombre", "codprodu"
+
+      ORDER BY
+        "nombre",
+        "codprodu"
+
       LIMIT $${index++}
       OFFSET $${index++}
     `;
@@ -906,7 +1344,9 @@ export class ProductModel {
       offset
     ];
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         dataQuery,
         dataParams
@@ -918,13 +1358,17 @@ export class ProductModel {
           product =>
             this.attachImages(
               product,
-              ['PRODUCTO_BAJA']
+              [
+                'PRODUCTO_BAJA'
+              ]
             )
         )
       );
 
     return {
-      products: withImages,
+      products:
+        withImages,
+
       total
     };
   }
@@ -953,7 +1397,9 @@ export class ProductModel {
       `%${query}%`;
 
     const exclusion =
-      this.getExcludedNamesClause(2);
+      this.getExcludedNamesClause(
+        2
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause();
@@ -961,33 +1407,85 @@ export class ProductModel {
     const baseSql = `
       SELECT
         *,
+
         similarity(
           unaccent(
             upper(
-              nombre || ' ' || COALESCE(tonalidad, '')
+              nombre ||
+              ' ' ||
+              COALESCE(
+                tonalidad,
+                ''
+              )
             )
           ),
-          unaccent(upper($1))
-        ) AS sim
-      FROM productos
-      WHERE (
-        unaccent(upper(nombre))
-          LIKE unaccent(upper($1))
-        OR unaccent(upper(coleccion))
-          LIKE unaccent(upper($1))
-        OR unaccent(upper(tonalidad))
-          LIKE unaccent(upper($1))
-        OR unaccent(
-          upper(
-            nombre || ' ' || COALESCE(tonalidad, '')
+
+          unaccent(
+            upper($1)
           )
-        ) LIKE unaccent(upper($1))
+        ) AS sim
+
+      FROM productos
+
+      WHERE (
+        unaccent(
+          upper(nombre)
+        )
+        LIKE
+        unaccent(
+          upper($1)
+        )
+
+        OR
+
+        unaccent(
+          upper(coleccion)
+        )
+        LIKE
+        unaccent(
+          upper($1)
+        )
+
+        OR
+
+        unaccent(
+          upper(tonalidad)
+        )
+        LIKE
+        unaccent(
+          upper($1)
+        )
+
+        OR
+
+        unaccent(
+          upper(
+            nombre ||
+            ' ' ||
+            COALESCE(
+              tonalidad,
+              ''
+            )
+          )
+        )
+        LIKE
+        unaccent(
+          upper($1)
+        )
       )
+
         AND nombre IS NOT NULL
         AND nombre <> ''
+
         AND ${brandExclusion}
+
         AND ${exclusion.clause}
-      ORDER BY sim DESC, nombre, codprodu
+
+      ORDER BY
+        sim DESC,
+        nombre,
+        codprodu
+
       LIMIT $${2 + exclusion.values.length}
       OFFSET $${3 + exclusion.values.length}
     `;
@@ -999,7 +1497,9 @@ export class ProductModel {
       offset
     ];
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         baseSql,
         params
@@ -1032,6 +1532,7 @@ export class ProductModel {
 
               return {
                 ...product,
+
                 image:
                   img?.url ??
                   defaultImg
@@ -1039,7 +1540,9 @@ export class ProductModel {
             } catch {
               return {
                 ...product,
-                image: defaultImg
+
+                image:
+                  defaultImg
               };
             }
           }
@@ -1063,7 +1566,9 @@ export class ProductModel {
     const term =
       (query || '').trim();
 
-    if (!term) {
+    if (
+      !term
+    ) {
       return {
         products: [],
         collections: []
@@ -1073,7 +1578,9 @@ export class ProductModel {
     const safeProdLimit =
       Math.min(
         Math.max(
-          Number(prodLimit) || 20,
+          Number(
+            prodLimit
+          ) || 20,
           1
         ),
         20
@@ -1082,7 +1589,9 @@ export class ProductModel {
     const safeColLimit =
       Math.min(
         Math.max(
-          Number(colLimit) || 10,
+          Number(
+            colLimit
+          ) || 10,
           1
         ),
         10
@@ -1112,41 +1621,44 @@ export class ProductModel {
     const tokenConditions =
       tokens
         .map(
-          (_, index) => `
           (
-            unaccent(
-              upper(
-                COALESCE(
-                  p.nombre,
-                  ''
+            _,
+            index
+          ) => `
+            (
+              unaccent(
+                upper(
+                  COALESCE(
+                    p.nombre,
+                    ''
+                  )
+                )
+              )
+              LIKE
+              unaccent(
+                upper(
+                  $${index + 1}
+                )
+              )
+
+              OR
+
+              unaccent(
+                upper(
+                  COALESCE(
+                    p.tonalidad,
+                    ''
+                  )
+                )
+              )
+              LIKE
+              unaccent(
+                upper(
+                  $${index + 1}
                 )
               )
             )
-            LIKE
-            unaccent(
-              upper(
-                $${index + 1}
-              )
-            )
-
-            OR
-
-            unaccent(
-              upper(
-                COALESCE(
-                  p.tonalidad,
-                  ''
-                )
-              )
-            )
-            LIKE
-            unaccent(
-              upper(
-                $${index + 1}
-              )
-            )
-          )
-        `
+          `
         )
         .join(' AND ');
 
@@ -1160,32 +1672,32 @@ export class ProductModel {
       });
 
     const sqlProducts = `
-    SELECT DISTINCT ON (
-      p.nombre
-    )
-      p.codprodu,
-      p.nombre,
-      p.coleccion,
-      p.tonalidad
+      SELECT DISTINCT ON (
+        p.nombre
+      )
+        p.codprodu,
+        p.nombre,
+        p.coleccion,
+        p.tonalidad
 
-    FROM productos p
+      FROM productos p
 
-    WHERE
-      (${tokenConditions})
+      WHERE
+        (${tokenConditions})
 
-      AND p.nombre IS NOT NULL
-      AND TRIM(p.nombre) <> ''
+        AND p.nombre IS NOT NULL
+        AND TRIM(p.nombre) <> ''
 
-      AND ${brandExclusion}
+        AND ${brandExclusion}
 
-      AND ${exclusion.clause}
+        AND ${exclusion.clause}
 
-    ORDER BY
-      p.nombre,
-      p.codprodu
+      ORDER BY
+        p.nombre,
+        p.codprodu
 
-    LIMIT $${limitIndex}
-  `;
+      LIMIT $${limitIndex}
+    `;
 
     const prodParams = [
       ...norms,
@@ -1226,13 +1738,14 @@ export class ProductModel {
             } catch {
               return {
                 ...product,
-                image: null
+
+                image:
+                  null
               };
             }
           }
         )
       );
-
 
     const collectionBrandExclusion =
       this.getPublicCatalogClause({
@@ -1244,41 +1757,43 @@ export class ProductModel {
       });
 
     const sqlCollections = `
-    SELECT DISTINCT
-      UPPER(
+      SELECT DISTINCT
+        UPPER(
+          TRIM(
+            coleccion
+          )
+        ) AS coleccion
+
+      FROM productos
+
+      WHERE
+        coleccion IS NOT NULL
+
+        AND
         TRIM(
           coleccion
+        ) <> ''
+
+        AND
+        unaccent(
+          upper(
+            coleccion
+          )
         )
-      ) AS coleccion
+        LIKE
+        unaccent(
+          upper(
+            $1
+          )
+        )
 
-    FROM productos
+        AND ${collectionBrandExclusion}
 
-    WHERE
-      coleccion IS NOT NULL
-
-      AND TRIM(
+      ORDER BY
         coleccion
-      ) <> ''
 
-      AND unaccent(
-        upper(
-          coleccion
-        )
-      )
-      LIKE
-      unaccent(
-        upper(
-          $1
-        )
-      )
-
-      AND ${collectionBrandExclusion}
-
-    ORDER BY
-      coleccion
-
-    LIMIT $2
-  `;
+      LIMIT $2
+    `;
 
     const {
       rows: colRows
@@ -1304,6 +1819,7 @@ export class ProductModel {
       collections
     };
   }
+
   static async searchProducts({
     query,
     limit = 16,
@@ -1312,7 +1828,9 @@ export class ProductModel {
     const term =
       (query || '').trim();
 
-    if (!term) {
+    if (
+      !term
+    ) {
       return {
         products: [],
         total: 0
@@ -1338,58 +1856,61 @@ export class ProductModel {
     const tokenConditions =
       tokens
         .map(
-          (_, index) => `
-        (
-          unaccent(
-            upper(
-              COALESCE(
-                p.nombre,
-                ''
+          (
+            _,
+            index
+          ) => `
+            (
+              unaccent(
+                upper(
+                  COALESCE(
+                    p.nombre,
+                    ''
+                  )
+                )
+              )
+              LIKE
+              unaccent(
+                upper(
+                  $${index + 1}
+                )
+              )
+
+              OR
+
+              unaccent(
+                upper(
+                  COALESCE(
+                    p.tonalidad,
+                    ''
+                  )
+                )
+              )
+              LIKE
+              unaccent(
+                upper(
+                  $${index + 1}
+                )
+              )
+
+              OR
+
+              unaccent(
+                upper(
+                  COALESCE(
+                    p.coleccion,
+                    ''
+                  )
+                )
+              )
+              LIKE
+              unaccent(
+                upper(
+                  $${index + 1}
+                )
               )
             )
-          )
-          LIKE
-          unaccent(
-            upper(
-              $${index + 1}
-            )
-          )
-
-          OR
-
-          unaccent(
-            upper(
-              COALESCE(
-                p.tonalidad,
-                ''
-              )
-            )
-          )
-          LIKE
-          unaccent(
-            upper(
-              $${index + 1}
-            )
-          )
-
-          OR
-
-          unaccent(
-            upper(
-              COALESCE(
-                p.coleccion,
-                ''
-              )
-            )
-          )
-          LIKE
-          unaccent(
-            upper(
-              $${index + 1}
-            )
-          )
-        )
-      `
+          `
         )
         .join(' AND ');
 
@@ -1403,36 +1924,31 @@ export class ProductModel {
       });
 
     const whereClause = `
-    (${tokenConditions})
+      (${tokenConditions})
 
-    AND p.nombre IS NOT NULL
-    AND TRIM(p.nombre) <> ''
+      AND p.nombre IS NOT NULL
+      AND TRIM(p.nombre) <> ''
 
-    AND ${brandExclusion}
+      AND ${brandExclusion}
 
-    AND ${exclusion.clause}
-  `;
+      AND ${exclusion.clause}
+    `;
 
     const baseParams = [
       ...norms,
       ...exclusion.values
     ];
 
-
-    /*
-     * Total real de nombres diferentes
-     * que coinciden con la búsqueda.
-     */
     const countQuery = `
-    SELECT
-      COUNT(
-        DISTINCT p.nombre
-      )::int AS total
+      SELECT
+        COUNT(
+          DISTINCT p.nombre
+        )::int AS total
 
-    FROM productos p
+      FROM productos p
 
-    WHERE ${whereClause}
-  `;
+      WHERE ${whereClause}
+    `;
 
     const {
       rows: countRows
@@ -1443,16 +1959,9 @@ export class ProductModel {
       );
 
     const total =
-      countRows[0]?.total || 0;
+      countRows[0]?.total ||
+      0;
 
-
-    /*
-     * Una única referencia por nombre.
-     *
-     * IMPORTANTE:
-     * DISTINCT ON se aplica ANTES del
-     * LIMIT/OFFSET.
-     */
     const limitIndex =
       baseParams.length + 1;
 
@@ -1460,22 +1969,22 @@ export class ProductModel {
       baseParams.length + 2;
 
     const dataQuery = `
-    SELECT DISTINCT ON (
-      p.nombre
-    )
-      p.*
+      SELECT DISTINCT ON (
+        p.nombre
+      )
+        p.*
 
-    FROM productos p
+      FROM productos p
 
-    WHERE ${whereClause}
+      WHERE ${whereClause}
 
-    ORDER BY
-      p.nombre,
-      p.codprodu
+      ORDER BY
+        p.nombre,
+        p.codprodu
 
-    LIMIT $${limitIndex}
-    OFFSET $${offsetIndex}
-  `;
+      LIMIT $${limitIndex}
+      OFFSET $${offsetIndex}
+    `;
 
     const dataParams = [
       ...baseParams,
@@ -1491,12 +2000,6 @@ export class ProductModel {
         dataParams
       );
 
-
-    /*
-     * Si no coincide ningún producto
-     * directamente, mantenemos el
-     * comportamiento anterior por colección.
-     */
     if (
       total === 0
     ) {
@@ -1515,22 +2018,23 @@ export class ProductModel {
         });
 
       const fallbackWhere = `
-      lower(
-        TRIM(
-          p.coleccion
+        lower(
+          TRIM(
+            p.coleccion
+          )
         )
-      ) =
-      lower(
-        TRIM($1)
-      )
+        =
+        lower(
+          TRIM($1)
+        )
 
-      AND p.nombre IS NOT NULL
-      AND TRIM(p.nombre) <> ''
+        AND p.nombre IS NOT NULL
+        AND TRIM(p.nombre) <> ''
 
-      AND ${fallbackBrandExclusion}
+        AND ${fallbackBrandExclusion}
 
-      AND ${fallbackExclusion.clause}
-    `;
+        AND ${fallbackExclusion.clause}
+      `;
 
       const fallbackBaseParams = [
         term,
@@ -1538,19 +2042,20 @@ export class ProductModel {
       ];
 
       const {
-        rows: fallbackCountRows
+        rows:
+        fallbackCountRows
       } =
         await pool.query(
           `
-          SELECT
-            COUNT(
-              DISTINCT p.nombre
-            )::int AS total
+            SELECT
+              COUNT(
+                DISTINCT p.nombre
+              )::int AS total
 
-          FROM productos p
+            FROM productos p
 
-          WHERE ${fallbackWhere}
-        `,
+            WHERE ${fallbackWhere}
+          `,
           fallbackBaseParams
         );
 
@@ -1559,32 +2064,35 @@ export class ProductModel {
         0;
 
       const fallbackLimitIndex =
-        fallbackBaseParams.length + 1;
+        fallbackBaseParams.length +
+        1;
 
       const fallbackOffsetIndex =
-        fallbackBaseParams.length + 2;
+        fallbackBaseParams.length +
+        2;
 
       const {
-        rows: collectionRows
+        rows:
+        collectionRows
       } =
         await pool.query(
           `
-          SELECT DISTINCT ON (
-            p.nombre
-          )
-            p.*
+            SELECT DISTINCT ON (
+              p.nombre
+            )
+              p.*
 
-          FROM productos p
+            FROM productos p
 
-          WHERE ${fallbackWhere}
+            WHERE ${fallbackWhere}
 
-          ORDER BY
-            p.nombre,
-            p.codprodu
+            ORDER BY
+              p.nombre,
+              p.codprodu
 
-          LIMIT $${fallbackLimitIndex}
-          OFFSET $${fallbackOffsetIndex}
-        `,
+            LIMIT $${fallbackLimitIndex}
+            OFFSET $${fallbackOffsetIndex}
+          `,
           [
             ...fallbackBaseParams,
             limit,
@@ -1600,7 +2108,6 @@ export class ProductModel {
           fallbackTotal
       };
     }
-
 
     return {
       products:
@@ -1624,24 +2131,34 @@ export class ProductModel {
     names = [],
     q = '',
     limit = 80,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+    this.defaultTariffCode
   }) {
     const term =
-      `%${String(q || '').trim()}%`;
+      `%${String(
+        q || ''
+      ).trim()}%`;
 
     const exclusion =
-      this.getExcludedNamesClause(1);
+      this.getExcludedNamesClause(
+        1
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     let where = `
       p."nombre" IS NOT NULL
       AND p."nombre" <> ''
+
       AND ${brandExclusion}
+
       AND ${exclusion.clause}
     `;
 
@@ -1650,29 +2167,48 @@ export class ProductModel {
     ];
 
     let i =
-      exclusion.values.length + 1;
+      exclusion.values.length +
+      1;
 
     if (
       q &&
       q.trim()
     ) {
       where += `
-        AND unaccent(upper(p."nombre"))
-            LIKE unaccent(upper($${i++}))
+        AND
+        unaccent(
+          upper(
+            p."nombre"
+          )
+        )
+        LIKE
+        unaccent(
+          upper(
+            $${i++}
+          )
+        )
       `;
 
-      params.push(term);
+      params.push(
+        term
+      );
     }
 
     if (
-      Array.isArray(names) &&
+      Array.isArray(
+        names
+      ) &&
       names.length > 0
     ) {
       where += `
-        AND p."nombre" = ANY($${i++})
+        AND
+        p."nombre" =
+        ANY($${i++})
       `;
 
-      params.push(names);
+      params.push(
+        names
+      );
     }
 
     const resolvedTariffCode =
@@ -1688,7 +2224,9 @@ export class ProductModel {
     );
 
     const sql = `
-      SELECT DISTINCT ON (p."nombre")
+      SELECT DISTINCT ON (
+        p."nombre"
+      )
         p."codprodu",
         p."nombre",
         p."coleccion",
@@ -1696,18 +2234,32 @@ export class ProductModel {
         p."ancho",
         p."tipo",
         p."estilo"
+
       FROM productos p
+
       LEFT JOIN tarprodu tp
-        ON tp."codprodu" = p."codprodu"
-       AND tp."codtarifa" = $${tariffParamIndex}
+        ON tp."codprodu" =
+           p."codprodu"
+
+       AND tp."codtarifa" =
+           $${tariffParamIndex}
+
       WHERE ${where}
-      ORDER BY p."nombre", p."codprodu"
+
+      ORDER BY
+        p."nombre",
+        p."codprodu"
+
       LIMIT $${i}
     `;
 
-    params.push(limit);
+    params.push(
+      limit
+    );
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         sql,
         params
@@ -1720,7 +2272,9 @@ export class ProductModel {
             const withImg =
               await this.attachImages(
                 product,
-                ['PRODUCTO_BAJA']
+                [
+                  'PRODUCTO_BAJA'
+                ]
               );
 
             const num =
@@ -1728,11 +2282,10 @@ export class ProductModel {
                 String(
                   product.precioMetroRaw ??
                   ''
+                ).replace(
+                  ',',
+                  '.'
                 )
-                  .replace(
-                    ',',
-                    '.'
-                  )
               );
 
             return {
@@ -1753,7 +2306,9 @@ export class ProductModel {
                 null,
 
               pricePerMeter:
-                Number.isFinite(num)
+                Number.isFinite(
+                  num
+                )
                   ? num
                   : null,
 
@@ -1770,7 +2325,8 @@ export class ProductModel {
 
   static async searchWallpapersAll({
     limit = 80,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+    this.defaultTariffCode
   } = {}) {
     const resolvedTariffCode =
       this.normalizeTariffCode(
@@ -1779,12 +2335,17 @@ export class ProductModel {
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const sql = `
-      SELECT DISTINCT ON (p."nombre")
+      SELECT DISTINCT ON (
+        p."nombre"
+      )
         p."codprodu",
         p."nombre",
         p."coleccion",
@@ -1792,20 +2353,38 @@ export class ProductModel {
         p."ancho",
         p."tipo",
         p."estilo"
+
       FROM productos p
+
       LEFT JOIN tarprodu tp
-        ON tp."codprodu" = p."codprodu"
-       AND tp."codtarifa" = $2
+        ON tp."codprodu" =
+           p."codprodu"
+
+       AND tp."codtarifa" =
+           $2
+
       WHERE
-        p."tipo" = 'WALLPAPER'
-        AND p."nombre" IS NOT NULL
-        AND p."nombre" <> ''
+        p."tipo" =
+          'WALLPAPER'
+
+        AND
+        p."nombre" IS NOT NULL
+
+        AND
+        p."nombre" <> ''
+
         AND ${brandExclusion}
-      ORDER BY p."nombre", p."codprodu"
+
+      ORDER BY
+        p."nombre",
+        p."codprodu"
+
       LIMIT $1
     `;
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         sql,
         [
@@ -1821,7 +2400,9 @@ export class ProductModel {
             const withImg =
               await this.attachImages(
                 product,
-                ['PRODUCTO_BAJA']
+                [
+                  'PRODUCTO_BAJA'
+                ]
               );
 
             return {
@@ -1846,11 +2427,10 @@ export class ProductModel {
                   ? Number(
                     String(
                       product.precioMetroRaw
+                    ).replace(
+                      ',',
+                      '.'
                     )
-                      .replace(
-                        ',',
-                        '.'
-                      )
                   )
                   : null,
 
@@ -1879,18 +2459,28 @@ export class ProductModel {
     const brandExclusion =
       this.getPublicCatalogClause();
 
-    const { rows: baseRows } =
+    const {
+      rows: baseRows
+    } =
       await pool.query(
         `
           SELECT
             "codprodu",
             "nombre"
+
           FROM productos
-          WHERE "codprodu" = $1
-            AND ${brandExclusion}
+
+          WHERE
+            "codprodu" = $1
+
+            AND
+            ${brandExclusion}
+
           LIMIT 1
         `,
-        [productId]
+        [
+          productId
+        ]
       );
 
     if (
@@ -1904,11 +2494,16 @@ export class ProductModel {
 
     const variantBrandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         `
           SELECT
@@ -1916,14 +2511,24 @@ export class ProductModel {
             p."nombre",
             p."tonalidad",
             p."colorprincipal"
+
           FROM productos p
-          WHERE p."nombre" = $1
-            AND ${variantBrandExclusion}
+
+          WHERE
+            p."nombre" = $1
+
+            AND
+            ${variantBrandExclusion}
+
           ORDER BY
-            p."tonalidad" NULLS LAST,
+            p."tonalidad"
+              NULLS LAST,
+
             p."codprodu"
         `,
-        [base.nombre]
+        [
+          base.nombre
+        ]
       );
 
     const variants =
@@ -1933,7 +2538,9 @@ export class ProductModel {
             const withImg =
               await this.attachImages(
                 product,
-                ['PRODUCTO_BAJA']
+                [
+                  'PRODUCTO_BAJA'
+                ]
               );
 
             return {
@@ -1962,30 +2569,49 @@ export class ProductModel {
   static async searchUpholsteryByQuery({
     q = '',
     limit = 80,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+    this.defaultTariffCode
   }) {
     const term =
-      `%${String(q || '').trim()}%`;
+      `%${String(
+        q || ''
+      ).trim()}%`;
 
     const exclusion =
-      this.getExcludedNamesClause(1);
+      this.getExcludedNamesClause(
+        1
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     let where = `
       p."nombre" IS NOT NULL
       AND p."nombre" <> ''
+
       AND ${brandExclusion}
+
       AND ${exclusion.clause}
+
       AND (
-        CAST(p."mantenimiento" AS text)
-          ILIKE '%TAPICERIA%'
-        OR p."uso"
-          ILIKE '%TAPICERIA%'
+        CAST(
+          p."mantenimiento"
+          AS text
+        )
+        ILIKE
+        '%TAPICERIA%'
+
+        OR
+
+        p."uso"
+        ILIKE
+        '%TAPICERIA%'
       )
     `;
 
@@ -1994,18 +2620,31 @@ export class ProductModel {
     ];
 
     let i =
-      exclusion.values.length + 1;
+      exclusion.values.length +
+      1;
 
     if (
       q &&
       q.trim()
     ) {
       where += `
-        AND unaccent(upper(p."nombre"))
-            LIKE unaccent(upper($${i++}))
+        AND
+        unaccent(
+          upper(
+            p."nombre"
+          )
+        )
+        LIKE
+        unaccent(
+          upper(
+            $${i++}
+          )
+        )
       `;
 
-      params.push(term);
+      params.push(
+        term
+      );
     }
 
     const resolvedTariffCode =
@@ -2021,23 +2660,39 @@ export class ProductModel {
     );
 
     const sql = `
-      SELECT DISTINCT ON (p."nombre")
+      SELECT DISTINCT ON (
+        p."nombre"
+      )
         p."codprodu",
         p."nombre",
         p."coleccion",
         tp."pvp" AS "precioMetroRaw"
+
       FROM productos p
+
       LEFT JOIN tarprodu tp
-        ON tp."codprodu" = p."codprodu"
-       AND tp."codtarifa" = $${tariffParamIndex}
+        ON tp."codprodu" =
+           p."codprodu"
+
+       AND tp."codtarifa" =
+           $${tariffParamIndex}
+
       WHERE ${where}
-      ORDER BY p."nombre", p."codprodu"
+
+      ORDER BY
+        p."nombre",
+        p."codprodu"
+
       LIMIT $${i}
     `;
 
-    params.push(limit);
+    params.push(
+      limit
+    );
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         sql,
         params
@@ -2050,7 +2705,9 @@ export class ProductModel {
             const withImg =
               await this.attachImages(
                 product,
-                ['PRODUCTO_BAJA']
+                [
+                  'PRODUCTO_BAJA'
+                ]
               );
 
             const num =
@@ -2058,11 +2715,10 @@ export class ProductModel {
                 String(
                   product.precioMetroRaw ??
                   ''
+                ).replace(
+                  ',',
+                  '.'
                 )
-                  .replace(
-                    ',',
-                    '.'
-                  )
               );
 
             return {
@@ -2079,7 +2735,9 @@ export class ProductModel {
                 withImg.coleccion,
 
               pricePerMeter:
-                Number.isFinite(num)
+                Number.isFinite(
+                  num
+                )
                   ? num
                   : null,
 
@@ -2097,30 +2755,49 @@ export class ProductModel {
   static async searchCurtainsByQuery({
     q = '',
     limit = 80,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+    this.defaultTariffCode
   }) {
     const term =
-      `%${String(q || '').trim()}%`;
+      `%${String(
+        q || ''
+      ).trim()}%`;
 
     const exclusion =
-      this.getExcludedNamesClause(1);
+      this.getExcludedNamesClause(
+        1
+      );
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     let where = `
       p."nombre" IS NOT NULL
       AND p."nombre" <> ''
+
       AND ${brandExclusion}
+
       AND ${exclusion.clause}
+
       AND (
-        CAST(p."mantenimiento" AS text)
-          ILIKE '%CORTINA%'
-        OR p."uso"
-          ILIKE '%CORTINA%'
+        CAST(
+          p."mantenimiento"
+          AS text
+        )
+        ILIKE
+        '%CORTINA%'
+
+        OR
+
+        p."uso"
+        ILIKE
+        '%CORTINA%'
       )
     `;
 
@@ -2129,18 +2806,31 @@ export class ProductModel {
     ];
 
     let i =
-      exclusion.values.length + 1;
+      exclusion.values.length +
+      1;
 
     if (
       q &&
       q.trim()
     ) {
       where += `
-        AND unaccent(upper(p."nombre"))
-            LIKE unaccent(upper($${i++}))
+        AND
+        unaccent(
+          upper(
+            p."nombre"
+          )
+        )
+        LIKE
+        unaccent(
+          upper(
+            $${i++}
+          )
+        )
       `;
 
-      params.push(term);
+      params.push(
+        term
+      );
     }
 
     const resolvedTariffCode =
@@ -2156,24 +2846,40 @@ export class ProductModel {
     );
 
     const sql = `
-      SELECT DISTINCT ON (p."nombre")
+      SELECT DISTINCT ON (
+        p."nombre"
+      )
         p."codprodu",
         p."nombre",
         p."coleccion",
         p."ancho",
         tp."pvp" AS "precioMetroRaw"
+
       FROM productos p
+
       LEFT JOIN tarprodu tp
-        ON tp."codprodu" = p."codprodu"
-       AND tp."codtarifa" = $${tariffParamIndex}
+        ON tp."codprodu" =
+           p."codprodu"
+
+       AND tp."codtarifa" =
+           $${tariffParamIndex}
+
       WHERE ${where}
-      ORDER BY p."nombre", p."codprodu"
+
+      ORDER BY
+        p."nombre",
+        p."codprodu"
+
       LIMIT $${i}
     `;
 
-    params.push(limit);
+    params.push(
+      limit
+    );
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         sql,
         params
@@ -2186,7 +2892,9 @@ export class ProductModel {
             const withImg =
               await this.attachImages(
                 product,
-                ['PRODUCTO_BAJA']
+                [
+                  'PRODUCTO_BAJA'
+                ]
               );
 
             const num =
@@ -2194,11 +2902,10 @@ export class ProductModel {
                 String(
                   product.precioMetroRaw ??
                   ''
+                ).replace(
+                  ',',
+                  '.'
                 )
-                  .replace(
-                    ',',
-                    '.'
-                  )
               );
 
             return {
@@ -2219,7 +2926,9 @@ export class ProductModel {
                 null,
 
               pricePerMeter:
-                Number.isFinite(num)
+                Number.isFinite(
+                  num
+                )
                   ? num
                   : null,
 
@@ -2237,10 +2946,13 @@ export class ProductModel {
   static async getLiningsFeatured({
     names = [],
     limit = 80,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+    this.defaultTariffCode
   }) {
     if (
-      !Array.isArray(names) ||
+      !Array.isArray(
+        names
+      ) ||
       names.length === 0
     ) {
       return [];
@@ -2250,7 +2962,9 @@ export class ProductModel {
       names
         .map(
           name =>
-            String(name).trim()
+            String(
+              name
+            ).trim()
         )
         .filter(Boolean);
 
@@ -2267,38 +2981,72 @@ export class ProductModel {
 
     const brandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
     const sql = `
-      SELECT DISTINCT ON (p."nombre")
+      SELECT DISTINCT ON (
+        p."nombre"
+      )
         p."codprodu" AS id,
         p."nombre" AS name,
         p."ancho",
+
         tp."pvp" AS "pricePerMeter",
+
         (
-          SELECT i.ficadjunto
+          SELECT
+            i.ficadjunto
+
           FROM imagenesproductoswebp i
-          WHERE i.codprodu = p.codprodu
-            AND i.codclaarchivo = 'PRODUCTO_BAJA'
+
+          WHERE
+            i.codprodu =
+              p.codprodu
+
+            AND
+            i.codclaarchivo =
+              'PRODUCTO_BAJA'
+
           LIMIT 1
         ) AS "imageUrl"
+
       FROM productos p
+
       LEFT JOIN tarprodu tp
-        ON tp."codprodu" = p."codprodu"
-       AND tp."codtarifa" = $2
-      WHERE p."nombre" = ANY($1)
-        AND p."nombre" IS NOT NULL
-        AND p."nombre" <> ''
-        AND ${brandExclusion}
+        ON tp."codprodu" =
+           p."codprodu"
+
+       AND tp."codtarifa" =
+           $2
+
+      WHERE
+        p."nombre" =
+        ANY($1)
+
+        AND
+        p."nombre" IS NOT NULL
+
+        AND
+        p."nombre" <> ''
+
+        AND
+        ${brandExclusion}
+
       ORDER BY
         p."nombre",
         p."codprodu"
+
       LIMIT $3
     `;
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         sql,
         [
@@ -2311,22 +3059,29 @@ export class ProductModel {
     const order =
       new Map(
         list.map(
-          (name, index) => [
-            name.toUpperCase(),
+          (
+            name,
             index
-          ]
+          ) => [
+              name.toUpperCase(),
+              index
+            ]
         )
       );
 
     rows.sort(
-      (a, b) => {
+      (
+        a,
+        b
+      ) => {
         const ia =
           order.get(
             String(
               a.name ||
               ''
             ).toUpperCase()
-          ) ?? 1e9;
+          ) ??
+          1e9;
 
         const ib =
           order.get(
@@ -2334,7 +3089,8 @@ export class ProductModel {
               b.name ||
               ''
             ).toUpperCase()
-          ) ?? 1e9;
+          ) ??
+          1e9;
 
         return ia - ib;
       }
@@ -2347,18 +3103,19 @@ export class ProductModel {
             String(
               row.pricePerMeter ??
               ''
+            ).replace(
+              ',',
+              '.'
             )
-              .replace(
-                ',',
-                '.'
-              )
           );
 
         return {
           ...row,
 
           pricePerMeter:
-            Number.isFinite(num)
+            Number.isFinite(
+              num
+            )
               ? num
               : null
         };
@@ -2368,7 +3125,8 @@ export class ProductModel {
 
   static async getColors(
     productId,
-    tariffCode = this.defaultTariffCode
+    tariffCode =
+      this.defaultTariffCode
   ) {
     const resolvedTariffCode =
       this.normalizeTariffCode(
@@ -2381,13 +3139,22 @@ export class ProductModel {
     const base =
       await pool.query(
         `
-          SELECT "nombre"
+          SELECT
+            "nombre"
+
           FROM productos
-          WHERE "codprodu" = $1
-            AND ${brandExclusion}
+
+          WHERE
+            "codprodu" = $1
+
+            AND
+            ${brandExclusion}
+
           LIMIT 1
         `,
-        [productId]
+        [
+          productId
+        ]
       );
 
     if (
@@ -2401,11 +3168,16 @@ export class ProductModel {
 
     const variantBrandExclusion =
       this.getPublicCatalogClause({
-        brandColumn: 'p."codmarca"',
-        collectionColumn: 'p."coleccion"',
+        brandColumn:
+          'p."codmarca"',
+
+        collectionColumn:
+          'p."coleccion"',
       });
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         `
           SELECT
@@ -2413,42 +3185,70 @@ export class ProductModel {
 
             COALESCE(
               NULLIF(
-                TRIM(p."tonalidad"),
+                TRIM(
+                  p."tonalidad"
+                ),
                 ''
               ),
+
               NULLIF(
-                TRIM(p."colorprincipal"),
+                TRIM(
+                  p."colorprincipal"
+                ),
                 ''
               ),
+
               'Color'
             ) AS name,
 
             tp."pvp" AS "precioMetroRaw",
 
             (
-              SELECT i.ficadjunto
+              SELECT
+                i.ficadjunto
+
               FROM imagenesproductoswebp i
-              WHERE i.codprodu = p.codprodu
-                AND i.codclaarchivo = 'PRODUCTO_BAJA'
+
+              WHERE
+                i.codprodu =
+                  p.codprodu
+
+                AND
+                i.codclaarchivo =
+                  'PRODUCTO_BAJA'
+
               LIMIT 1
             ) AS "imageUrl"
 
           FROM productos p
 
           LEFT JOIN tarprodu tp
-            ON tp."codprodu" = p."codprodu"
-           AND tp."codtarifa" = $2
+            ON tp."codprodu" =
+               p."codprodu"
 
-          WHERE p."nombre" = $1
-            AND ${variantBrandExclusion}
+           AND tp."codtarifa" =
+               $2
+
+          WHERE
+            p."nombre" = $1
+
+            AND
+            ${variantBrandExclusion}
 
           ORDER BY
             (
               p."tonalidad" IS NULL
-              OR TRIM(p."tonalidad") = ''
+              OR
+              TRIM(
+                p."tonalidad"
+              ) = ''
             ) ASC,
-            p."tonalidad" NULLS LAST,
-            p."codprodu" ASC
+
+            p."tonalidad"
+              NULLS LAST,
+
+            p."codprodu"
+              ASC
         `,
         [
           nombre,
@@ -2463,11 +3263,10 @@ export class ProductModel {
             String(
               row.precioMetroRaw ??
               ''
+            ).replace(
+              ',',
+              '.'
             )
-              .replace(
-                ',',
-                '.'
-              )
           );
 
         return {
@@ -2485,7 +3284,9 @@ export class ProductModel {
             null,
 
           pricePerMeter:
-            Number.isFinite(num)
+            Number.isFinite(
+              num
+            )
               ? num
               : null,
         };
@@ -2507,7 +3308,9 @@ export class ProductModel {
   ) {
     const toArray =
       value =>
-        Array.isArray(value)
+        Array.isArray(
+          value
+        )
           ? value
           : [];
 
@@ -2520,9 +3323,12 @@ export class ProductModel {
       const seen =
         new Set();
 
-      const list = [];
+      const list =
+        [];
 
-      toArray(values).forEach(
+      toArray(
+        values
+      ).forEach(
         value => {
           if (
             value == null
@@ -2531,20 +3337,28 @@ export class ProductModel {
           }
 
           let str =
-            String(value).trim();
+            String(
+              value
+            ).trim();
 
-          if (!str) {
+          if (
+            !str
+          ) {
             return;
           }
 
-          if (uppercase) {
+          if (
+            uppercase
+          ) {
             str =
               str.toUpperCase();
           }
 
           const key =
             str
-              .normalize('NFD')
+              .normalize(
+                'NFD'
+              )
               .replace(
                 /\p{Diacritic}/gu,
                 ''
@@ -2552,13 +3366,20 @@ export class ProductModel {
               .toUpperCase();
 
           if (
-            seen.has(key)
+            seen.has(
+              key
+            )
           ) {
             return;
           }
 
-          seen.add(key);
-          list.push(str);
+          seen.add(
+            key
+          );
+
+          list.push(
+            str
+          );
         }
       );
 
@@ -2570,27 +3391,41 @@ export class ProductModel {
         const seen =
           new Set();
 
-        const list = [];
+        const list =
+          [];
 
-        toArray(values).forEach(
+        toArray(
+          values
+        ).forEach(
           value => {
             const num =
-              Number(value);
+              Number(
+                value
+              );
 
             if (
-              !Number.isFinite(num)
+              !Number.isFinite(
+                num
+              )
             ) {
               return;
             }
 
             if (
-              seen.has(num)
+              seen.has(
+                num
+              )
             ) {
               return;
             }
 
-            seen.add(num);
-            list.push(num);
+            seen.add(
+              num
+            );
+
+            list.push(
+              num
+            );
           }
         );
 
@@ -2602,7 +3437,8 @@ export class ProductModel {
         normalizeStringList(
           rawFilters.brand,
           {
-            uppercase: true
+            uppercase:
+              true
           }
         ),
 
@@ -2615,7 +3451,8 @@ export class ProductModel {
         normalizeStringList(
           rawFilters.color,
           {
-            uppercase: true
+            uppercase:
+              true
           }
         ),
 
@@ -2628,7 +3465,8 @@ export class ProductModel {
         normalizeStringList(
           rawFilters.fabricType,
           {
-            uppercase: true
+            uppercase:
+              true
           }
         ),
 
@@ -2636,7 +3474,8 @@ export class ProductModel {
         normalizeStringList(
           rawFilters.fabricPattern,
           {
-            uppercase: true
+            uppercase:
+              true
           }
         ),
 
@@ -2644,7 +3483,8 @@ export class ProductModel {
         normalizeStringList(
           rawFilters.uso,
           {
-            uppercase: true
+            uppercase:
+              true
           }
         ),
 
@@ -2665,31 +3505,31 @@ export class ProductModel {
     const filterableProduct =
       this.getFilterableProductClause();
 
-    /*
-     * IMPORTANTE:
-     * El mismo criterio usado para construir los filtros
-     * también se aplica al resultado del filtrado.
-     *
-     * Así nunca devolvemos productos:
-     * - sin nombre
-     * - con nombre vacío
-     * - obsoletos
-     */
     let where = `
       ${filterableProduct}
-      AND ${brandExclusion}
+
+      AND
+
+      ${brandExclusion}
     `;
 
-    const params = [];
-    let index = 1;
+    const params =
+      [];
+
+    let index =
+      1;
 
     if (
       filters.brand.length
     ) {
       where += `
-        AND UPPER(
-          TRIM("codmarca")
-        ) = ANY($${index++})
+        AND
+        UPPER(
+          TRIM(
+            "codmarca"
+          )
+        ) =
+        ANY($${index++})
       `;
 
       params.push(
@@ -2701,9 +3541,11 @@ export class ProductModel {
       filters.codtipo.length
     ) {
       where += `
-        AND TRIM(
+        AND
+        TRIM(
           "codtipo"::text
-        ) = ANY($${index++})
+        ) =
+        ANY($${index++})
       `;
 
       params.push(
@@ -2715,10 +3557,15 @@ export class ProductModel {
       filters.collection.length
     ) {
       where += `
-        AND COALESCE(
-          TRIM("coleccion"),
+        AND
+        COALESCE(
+          TRIM(
+            "coleccion"
+          ),
           ''
-        ) ILIKE ANY($${index++})
+        )
+        ILIKE
+        ANY($${index++})
       `;
 
       params.push(
@@ -2733,9 +3580,13 @@ export class ProductModel {
       filters.color.length
     ) {
       where += `
-        AND UPPER(
-          TRIM("colorprincipal")
-        ) = ANY($${index++})
+        AND
+        UPPER(
+          TRIM(
+            "colorprincipal"
+          )
+        ) =
+        ANY($${index++})
       `;
 
       params.push(
@@ -2747,9 +3598,13 @@ export class ProductModel {
       filters.fabricType.length
     ) {
       where += `
-        AND UPPER(
-          TRIM("tipo")
-        ) = ANY($${index++})
+        AND
+        UPPER(
+          TRIM(
+            "tipo"
+          )
+        ) =
+        ANY($${index++})
       `;
 
       params.push(
@@ -2761,9 +3616,13 @@ export class ProductModel {
       filters.fabricPattern.length
     ) {
       where += `
-        AND UPPER(
-          TRIM("estilo")
-        ) = ANY($${index++})
+        AND
+        UPPER(
+          TRIM(
+            "estilo"
+          )
+        ) =
+        ANY($${index++})
       `;
 
       params.push(
@@ -2774,15 +3633,16 @@ export class ProductModel {
     if (
       filters.uso.length
     ) {
-      const usageColumn =
-        `
-          UPPER(
-            COALESCE(
-              TRIM("uso"),
-              ''
-            )
+      const usageColumn = `
+        UPPER(
+          COALESCE(
+            TRIM(
+              "uso"
+            ),
+            ''
           )
-        `;
+        )
+      `;
 
       const usoConditions =
         filters.uso.map(
@@ -2796,7 +3656,8 @@ export class ProductModel {
 
             return `
               ${usageColumn}
-              LIKE ${placeholder}
+              LIKE
+              ${placeholder}
             `;
           }
         );
@@ -2806,7 +3667,9 @@ export class ProductModel {
       ) {
         where += `
           AND (
-            ${usoConditions.join(' OR ')}
+            ${usoConditions.join(
+          ' OR '
+        )}
           )
         `;
       }
@@ -2816,8 +3679,10 @@ export class ProductModel {
       filters.martindale.length
     ) {
       where += `
-        AND "martindale"
-            = ANY($${index++})
+        AND
+        "martindale"
+        =
+        ANY($${index++})
       `;
 
       params.push(
@@ -2829,12 +3694,15 @@ export class ProductModel {
       filters.mantenimiento.length
     ) {
       where += `
-        AND COALESCE(
+        AND
+        COALESCE(
           TRIM(
             "mantenimiento"::text
           ),
           ''
-        ) ILIKE ANY($${index++})
+        )
+        ILIKE
+        ANY($${index++})
       `;
 
       params.push(
@@ -2851,7 +3719,8 @@ export class ProductModel {
       );
 
     where += `
-      AND ${exclusion.clause}
+      AND
+      ${exclusion.clause}
     `;
 
     params.push(
@@ -2866,11 +3735,15 @@ export class ProductModel {
         COUNT(
           DISTINCT "codprodu"
         )::int AS total
+
       FROM productos
+
       WHERE ${where}
     `;
 
-    const { rows: countRows } =
+    const {
+      rows: countRows
+    } =
       await pool.query(
         countQuery,
         params
@@ -2881,13 +3754,19 @@ export class ProductModel {
       0;
 
     const dataQuery = `
-      SELECT DISTINCT ON ("nombre")
+      SELECT DISTINCT ON (
+        "nombre"
+      )
         *
+
       FROM productos
+
       WHERE ${where}
+
       ORDER BY
         "nombre",
         "codprodu"
+
       LIMIT $${index++}
       OFFSET $${index++}
     `;
@@ -2898,14 +3777,18 @@ export class ProductModel {
       offset
     ];
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         dataQuery,
         dataParams
       );
 
     return {
-      products: rows,
+      products:
+        rows,
+
       total
     };
   }
@@ -2917,6 +3800,7 @@ export class ProductModel {
    * Solo utiliza productos:
    * - con nombre válido
    * - no obsoletos
+   * - no dados de baja
    * - de marcas visibles
    * - de colecciones visibles
    */
@@ -2943,7 +3827,9 @@ export class ProductModel {
 
     const splitMultiValue =
       value =>
-        cleanValue(value)
+        cleanValue(
+          value
+        )
           .split(
             /[;|/,\n\r]+/
           )
@@ -2958,7 +3844,8 @@ export class ProductModel {
         const seen =
           new Set();
 
-        const list = [];
+        const list =
+          [];
 
         values.forEach(
           value => {
@@ -2967,7 +3854,9 @@ export class ProductModel {
                 value
               );
 
-            if (!cleaned) {
+            if (
+              !cleaned
+            ) {
               return;
             }
 
@@ -2983,13 +3872,20 @@ export class ProductModel {
                 .toUpperCase();
 
             if (
-              seen.has(key)
+              seen.has(
+                key
+              )
             ) {
               return;
             }
 
-            seen.add(key);
-            list.push(cleaned);
+            seen.add(
+              key
+            );
+
+            list.push(
+              cleaned
+            );
           }
         );
 
@@ -3003,98 +3899,205 @@ export class ProductModel {
       this.getFilterableProductClause();
 
     try {
-      const { rows: brands } =
+      const {
+        rows: brands
+      } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(codmarca)
-              AS codmarca
+            TRIM(
+              codmarca
+            ) AS codmarca
+
           FROM productos
-          WHERE codmarca IS NOT NULL
-            AND TRIM(codmarca) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            codmarca IS NOT NULL
+
+            AND
+            TRIM(
+              codmarca
+            ) <> ''
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
-      const { rows: collections } =
+      const {
+        rows: collections
+      } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(coleccion)
-              AS coleccion
+            TRIM(
+              coleccion
+            ) AS coleccion
+
           FROM productos
-          WHERE coleccion IS NOT NULL
-            AND TRIM(coleccion) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            coleccion IS NOT NULL
+
+            AND
+            TRIM(
+              coleccion
+            ) <> ''
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
-      const { rows: fabricTypes } =
+      const {
+        rows: fabricTypes
+      } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(tipo)
-              AS tipo
+            TRIM(
+              tipo
+            ) AS tipo
+
           FROM productos
-          WHERE tipo IS NOT NULL
-            AND TRIM(tipo) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            tipo IS NOT NULL
+
+            AND
+            TRIM(
+              tipo
+            ) <> ''
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
-      const { rows: fabricPatterns } =
+      const {
+        rows: fabricPatterns
+      } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(estilo)
-              AS estilo
+            TRIM(
+              estilo
+            ) AS estilo
+
           FROM productos
-          WHERE estilo IS NOT NULL
-            AND TRIM(estilo) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            estilo IS NOT NULL
+
+            AND
+            TRIM(
+              estilo
+            ) <> ''
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
-      const { rows: martindale } =
+      const {
+        rows: martindale
+      } =
         await pool.query(`
           SELECT DISTINCT
             martindale
+
           FROM productos
-          WHERE martindale IS NOT NULL
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            martindale IS NOT NULL
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
-      const { rows: colors } =
+      const {
+        rows: colors
+      } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(colorprincipal)
-              AS colorprincipal
+            TRIM(
+              colorprincipal
+            ) AS colorprincipal
+
           FROM productos
-          WHERE colorprincipal IS NOT NULL
-            AND TRIM(colorprincipal) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            colorprincipal IS NOT NULL
+
+            AND
+            TRIM(
+              colorprincipal
+            ) <> ''
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
-      const { rows: tonalidades } =
+      const {
+        rows: tonalidades
+      } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(tonalidad)
-              AS tonalidad
+            TRIM(
+              tonalidad
+            ) AS tonalidad
+
           FROM productos
-          WHERE tonalidad IS NOT NULL
-            AND TRIM(tonalidad) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            tonalidad IS NOT NULL
+
+            AND
+            TRIM(
+              tonalidad
+            ) <> ''
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
-      const { rows: usosRaw } =
+      const {
+        rows: usosRaw
+      } =
         await pool.query(`
           SELECT DISTINCT
-            TRIM(uso)
-              AS uso
+            TRIM(
+              uso
+            ) AS uso
+
           FROM productos
-          WHERE uso IS NOT NULL
-            AND TRIM(uso) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+          WHERE
+            uso IS NOT NULL
+
+            AND
+            TRIM(
+              uso
+            ) <> ''
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
       const usageValues =
@@ -3107,18 +4110,29 @@ export class ProductModel {
           )
         );
 
-      const { rows: mantenimientos } =
+      const {
+        rows: mantenimientos
+      } =
         await pool.query(`
           SELECT DISTINCT
             mantenimiento::text
               AS mantenimiento
+
           FROM productos
-          WHERE mantenimiento IS NOT NULL
-            AND TRIM(
+
+          WHERE
+            mantenimiento IS NOT NULL
+
+            AND
+            TRIM(
               mantenimiento::text
             ) <> ''
-            AND ${filterableProduct}
-            AND ${brandExclusion}
+
+            AND
+            ${filterableProduct}
+
+            AND
+            ${brandExclusion}
         `);
 
       const maintenanceValues =
@@ -3201,7 +4215,9 @@ export class ProductModel {
         mantenimientos:
           maintenanceValues,
       };
-    } catch (error) {
+    } catch (
+    error
+    ) {
       console.error(
         'Error fetching filters:',
         error
@@ -3239,66 +4255,133 @@ export class ProductModel {
       this.getPublicCatalogClause();
 
     try {
-      const { rows: collections } =
+      const {
+        rows: collections
+      } =
         await pool.query(
           `
             SELECT DISTINCT
-              TRIM(coleccion)
-                AS coleccion
+              TRIM(
+                coleccion
+              ) AS coleccion
+
             FROM productos
-            WHERE codmarca = $1
-              AND coleccion IS NOT NULL
-              AND TRIM(coleccion) <> ''
-              AND ${filterableProduct}
-              AND ${brandExclusion}
+
+            WHERE
+              codmarca = $1
+
+              AND
+              coleccion IS NOT NULL
+
+              AND
+              TRIM(
+                coleccion
+              ) <> ''
+
+              AND
+              ${filterableProduct}
+
+              AND
+              ${brandExclusion}
           `,
-          [brand]
+          [
+            brand
+          ]
         );
 
-      const { rows: fabricTypes } =
+      const {
+        rows: fabricTypes
+      } =
         await pool.query(
           `
             SELECT DISTINCT
-              TRIM(tipo)
-                AS tipo
+              TRIM(
+                tipo
+              ) AS tipo
+
             FROM productos
-            WHERE codmarca = $1
-              AND tipo IS NOT NULL
-              AND TRIM(tipo) <> ''
-              AND ${filterableProduct}
-              AND ${brandExclusion}
+
+            WHERE
+              codmarca = $1
+
+              AND
+              tipo IS NOT NULL
+
+              AND
+              TRIM(
+                tipo
+              ) <> ''
+
+              AND
+              ${filterableProduct}
+
+              AND
+              ${brandExclusion}
           `,
-          [brand]
+          [
+            brand
+          ]
         );
 
-      const { rows: fabricPatterns } =
+      const {
+        rows: fabricPatterns
+      } =
         await pool.query(
           `
             SELECT DISTINCT
-              TRIM(estilo)
-                AS estilo
+              TRIM(
+                estilo
+              ) AS estilo
+
             FROM productos
-            WHERE codmarca = $1
-              AND estilo IS NOT NULL
-              AND TRIM(estilo) <> ''
-              AND ${filterableProduct}
-              AND ${brandExclusion}
+
+            WHERE
+              codmarca = $1
+
+              AND
+              estilo IS NOT NULL
+
+              AND
+              TRIM(
+                estilo
+              ) <> ''
+
+              AND
+              ${filterableProduct}
+
+              AND
+              ${brandExclusion}
           `,
-          [brand]
+          [
+            brand
+          ]
         );
 
-      const { rows: martindale } =
+      const {
+        rows: martindale
+      } =
         await pool.query(
           `
             SELECT DISTINCT
               martindale
+
             FROM productos
-            WHERE codmarca = $1
-              AND martindale IS NOT NULL
-              AND ${filterableProduct}
-              AND ${brandExclusion}
+
+            WHERE
+              codmarca = $1
+
+              AND
+              martindale IS NOT NULL
+
+              AND
+              ${filterableProduct}
+
+              AND
+              ${brandExclusion}
           `,
-          [brand]
+          [
+            brand
+          ]
         );
 
       return {
@@ -3338,7 +4421,9 @@ export class ProductModel {
               Number.isFinite
             ),
       };
-    } catch (error) {
+    } catch (
+    error
+    ) {
       console.error(
         'Error fetching filters by brand:',
         error
@@ -3364,9 +4449,12 @@ export class ProductModel {
       CodFamil,
       Comentario,
       UrlImagen
-    } = input;
+    } =
+      input;
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         `
           INSERT INTO productos (
@@ -3394,7 +4482,9 @@ export class ProductModel {
         ]
       );
 
-    if (res?.cache) {
+    if (
+      res?.cache
+    ) {
       await res.cache.flushAll();
     }
 
@@ -3407,17 +4497,26 @@ export class ProductModel {
     res
   }) {
     const fields =
-      Object.keys(input)
+      Object.keys(
+        input
+      )
         .map(
-          (key, index) =>
+          (
+            key,
+            index
+          ) =>
             `"${key}" = $${index + 2}`
         )
         .join(', ');
 
     const values =
-      Object.values(input);
+      Object.values(
+        input
+      );
 
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         `
           UPDATE productos
@@ -3431,7 +4530,9 @@ export class ProductModel {
         ]
       );
 
-    if (res?.cache) {
+    if (
+      res?.cache
+    ) {
       await res.cache.del?.(
         `product:${id}`
       );
@@ -3446,17 +4547,23 @@ export class ProductModel {
     id,
     res
   }) {
-    const { rows } =
+    const {
+      rows
+    } =
       await pool.query(
         `
           DELETE FROM productos
           WHERE "codprodu" = $1
           RETURNING *;
         `,
-        [id]
+        [
+          id
+        ]
       );
 
-    if (res?.cache) {
+    if (
+      res?.cache
+    ) {
       await res.cache.del?.(
         `product:${id}`
       );

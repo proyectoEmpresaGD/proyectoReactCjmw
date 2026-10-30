@@ -1,0 +1,87 @@
+{
+  "eyebrow": "CJM Group",
+  "hero": {
+    "label": "Solicitud de acceso",
+    "title": "Tu espacio profesional empieza aquí.",
+    "description": "Solicita el alta para acceder a las herramientas y servicios reservados a clientes profesionales de CJM Group."
+  },
+  "form": {
+    "title": "Solicitar acceso",
+    "subtitle": "Completa tus datos. Revisaremos la solicitud antes de activar tu cuenta.",
+    "submit": "Enviar solicitud",
+    "submitting": "Enviando solicitud...",
+    "haveAccess": "¿Ya tienes acceso?",
+    "login": "Inicia sesión"
+  },
+  "sections": {
+    "access": {
+      "title": "Datos de acceso",
+      "description": "Usaremos este correo para las comunicaciones relacionadas con tu cuenta."
+    },
+    "personal": {
+      "title": "Datos personales"
+    },
+    "address": {
+      "title": "Dirección"
+    },
+    "customer": {
+      "title": "Validación de cliente",
+      "description": "Introduce un código de cliente válido que aparezca en una factura, pedido o presupuesto recibido."
+    }
+  },
+  "fields": {
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tuemail@empresa.com",
+    "confirmEmail": "Confirmar correo",
+    "confirmEmailPlaceholder": "Repite tu correo",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPassword": "Confirmar contraseña",
+    "confirmPasswordPlaceholder": "Repite tu contraseña",
+    "firstName": "Nombre",
+    "firstNamePlaceholder": "Nombre",
+    "lastName": "Apellidos",
+    "lastNamePlaceholder": "Apellidos",
+    "phone": "Teléfono",
+    "phonePlaceholder": "Teléfono",
+    "mobilePhone": "Móvil",
+    "mobilePhonePlaceholder": "Móvil",
+    "streetAddress": "Dirección",
+    "streetAddressPlaceholder": "Dirección",
+    "addressLine2": "Dirección adicional",
+    "addressLine2Placeholder": "Piso, nave, puerta, etc.",
+    "city": "Ciudad",
+    "cityPlaceholder": "Ciudad",
+    "stateProvince": "Provincia",
+    "stateProvincePlaceholder": "Provincia",
+    "postcode": "Código postal",
+    "postcodePlaceholder": "Código postal",
+    "country": "País",
+    "countryPlaceholder": "País",
+    "codclien": "Código de cliente",
+    "codclienPlaceholder": "Código de cliente"
+  },
+  "validation": {
+    "emailRequired": "El correo es obligatorio.",
+    "emailInvalid": "El correo no es válido.",
+    "confirmEmailRequired": "Debes confirmar el correo.",
+    "emailsNotMatch": "Los correos no coinciden.",
+    "firstNameRequired": "El nombre es obligatorio.",
+    "lastNameRequired": "Los apellidos son obligatorios.",
+    "passwordRequired": "La contraseña es obligatoria.",
+    "passwordMinLength": "La contraseña debe tener al menos 8 caracteres.",
+    "confirmPasswordRequired": "Debes confirmar la contraseña.",
+    "passwordsNotMatch": "Las contraseñas no coinciden.",
+    "codclienRequired": "El código de cliente es obligatorio."
+  },
+  "success": {
+    "title": "Solicitud enviada",
+    "message": "Solicitud registrada correctamente. Queda pendiente de revisión por un administrador.",
+    "description": "Cuando tu solicitud sea aprobada, recibirás un correo para verificar tu identidad y activar tu acceso.",
+    "back": "Volver al login"
+  },
+  "errors": {
+    "invalidField": "Campo no válido.",
+    "submit": "No se pudo enviar la solicitud de registro."
+  }
+}

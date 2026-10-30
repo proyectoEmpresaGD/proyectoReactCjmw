@@ -13,9 +13,9 @@ import {
 } from 'framer-motion';
 
 import {
+    ArrowUpRight,
     CheckCircle2,
     ChevronDown,
-    ChevronRight,
     Clock3,
     Filter,
     PackageCheck,
@@ -152,32 +152,66 @@ function orderMatchesSearch(
         );
 }
 
+
+
 function SearchInput({
     value,
     onChange,
 }) {
     return (
-        <label className="flex h-12 w-full items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 text-sm text-stone-500 shadow-sm transition focus-within:border-stone-400 focus-within:ring-2 focus-within:ring-stone-100 md:max-w-[305px]">
+        <label
+            className="
+                flex
+                h-12
+                min-w-0
+                flex-1
+                items-center
+                gap-3
+                border-b
+                border-stone-300
+                px-1
+                text-sm
+                text-stone-500
+                transition
+
+                focus-within:border-stone-950
+
+                md:min-w-[260px]
+            "
+        >
+            <Search
+                className="
+                    h-4
+                    w-4
+                    shrink-0
+                    text-stone-400
+                "
+            />
+
             <input
                 type="search"
-                value={
-                    value
-                }
-                onChange={(
-                    event
-                ) =>
+                value={value}
+                onChange={event =>
                     onChange(
                         event.target.value
                     )
                 }
                 placeholder="Buscar pedido"
-                className="min-w-0 flex-1 bg-transparent text-stone-800 outline-none placeholder:text-stone-400"
-            />
+                className="
+                    min-w-0
+                    flex-1
+                    bg-transparent
+                    text-sm
+                    text-stone-900
+                    outline-none
 
-            <Search className="h-5 w-5 shrink-0 text-stone-700" />
+                    placeholder:text-stone-400
+                "
+            />
         </label>
     );
 }
+
 
 function SelectFilter({
     value,
@@ -185,30 +219,69 @@ function SelectFilter({
     children,
 }) {
     return (
-        <label className="relative flex h-12 w-full items-center rounded-xl border border-stone-200 bg-white px-4 text-sm text-stone-700 shadow-sm transition focus-within:border-stone-400 focus-within:ring-2 focus-within:ring-stone-100 md:max-w-[305px]">
-            <Filter className="mr-3 h-4 w-4 shrink-0 text-stone-500" />
+        <label
+            className="
+                relative
+                flex
+                h-12
+                min-w-[190px]
+                items-center
+                gap-2
+                border-b
+                border-stone-300
+                px-1
+                text-sm
+                text-stone-700
+                transition
+
+                focus-within:border-stone-950
+            "
+        >
+            <Filter
+                className="
+                    h-4
+                    w-4
+                    shrink-0
+                    text-stone-400
+                "
+            />
 
             <select
-                value={
-                    value
-                }
-                onChange={(
-                    event
-                ) =>
+                value={value}
+                onChange={event =>
                     onChange(
                         event.target.value
                     )
                 }
                 aria-label="Filtrar por periodo"
-                className="w-full cursor-pointer appearance-none bg-transparent pr-8 font-medium outline-none"
+                className="
+                    w-full
+                    cursor-pointer
+                    appearance-none
+                    bg-transparent
+                    pr-7
+                    text-sm
+                    font-medium
+                    outline-none
+                "
             >
                 {children}
             </select>
 
-            <ChevronDown className="pointer-events-none absolute right-4 h-4 w-4 text-stone-700" />
+            <ChevronDown
+                className="
+                    pointer-events-none
+                    absolute
+                    right-1
+                    h-4
+                    w-4
+                    text-stone-400
+                "
+            />
         </label>
     );
 }
+
 
 function StatusFilter({
     value,
@@ -218,32 +291,37 @@ function StatusFilter({
         {
             value:
                 ORDER_FILTERS.all,
-
             label:
-                'Todos',
+                "Todos",
         },
-
         {
             value:
                 ORDER_FILTERS.served,
-
             label:
-                'Pedidos servidos',
+                "Servidos",
         },
-
         {
             value:
                 ORDER_FILTERS.pending,
-
             label:
-                'Pendientes de servir',
+                "Pendientes",
         },
     ];
 
+
     return (
-        <div className="flex flex-wrap gap-2">
+        <div
+            className="
+                flex
+                flex-wrap
+                gap-1
+                rounded-full
+                bg-[#f1eee8]
+                p-1
+            "
+        >
             {filters.map(
-                (filter) => {
+                filter => {
                     const active =
                         value ===
                         filter.value;
@@ -261,8 +339,8 @@ function StatusFilter({
                             }
                             className={
                                 active
-                                    ? 'rounded-lg bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm'
-                                    : 'rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold text-stone-600 shadow-sm transition hover:bg-stone-50 hover:text-stone-900'
+                                    ? "rounded-full bg-stone-950 px-4 py-2 text-xs font-medium text-white"
+                                    : "rounded-full px-4 py-2 text-xs font-medium text-stone-500 transition hover:text-stone-950"
                             }
                         >
                             {
@@ -276,57 +354,62 @@ function StatusFilter({
     );
 }
 
+
 function OrderStatus({
     order,
 }) {
-    if (
+    const served =
         order.estado ===
-        ORDER_FILTERS.served
-    ) {
-        return (
-            <div>
-                <div className="flex items-center gap-2 text-emerald-700">
-                    <CheckCircle2 className="h-5 w-5" />
+        ORDER_FILTERS.served;
 
-                    <span className="font-semibold">
-                        Pedido servido
-                    </span>
-                </div>
-
-                <p className="mt-2 text-xs leading-5 text-stone-500">
-                    El pedido tiene albarán asociado.
-                </p>
-            </div>
-        );
-    }
 
     return (
-        <div>
-            <div className="flex items-center gap-2 text-amber-700">
-                <Clock3 className="h-5 w-5" />
+        <span
+            className={
+                served
+                    ? "inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700"
+                    : "inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700"
+            }
+        >
+            {served ? (
+                <CheckCircle2
+                    className="
+                        h-3.5
+                        w-3.5
+                    "
+                />
+            ) : (
+                <Clock3
+                    className="
+                        h-3.5
+                        w-3.5
+                    "
+                />
+            )}
 
-                <span className="font-semibold">
-                    Pendiente de servir
-                </span>
-            </div>
-
-            <p className="mt-2 text-xs leading-5 text-stone-500">
-                Todavía no tiene albarán asociado.
-            </p>
-        </div>
+            {served
+                ? "Pedido servido"
+                : "Pendiente de servir"}
+        </span>
     );
 }
+
 
 function OrderCard({
     order,
     index,
     onView,
 }) {
+    const served =
+        order.estado ===
+        ORDER_FILTERS.served;
+
+
     return (
         <motion.article
             initial={{
                 opacity: 0,
-                y: 12,
+                y: 10,
             }}
             animate={{
                 opacity: 1,
@@ -335,112 +418,251 @@ function OrderCard({
             transition={{
                 delay:
                     index *
-                    0.03,
-
+                    0.025,
                 duration:
                     0.25,
             }}
-            className="rounded-xl border border-stone-200 bg-white shadow-sm transition hover:border-stone-300 hover:shadow-md"
+            className="
+                group
+                overflow-hidden
+                rounded-[26px]
+                border
+                border-stone-300/80
+                bg-white
+                transition
+
+                hover:border-stone-400
+                hover:shadow-[0_18px_50px_rgba(28,25,23,0.07)]
+            "
         >
-            <div className="p-5 lg:px-6 lg:py-5">
-                <div className="flex items-center gap-2">
-                    {order.servido ? (
-                        <PackageCheck className="h-5 w-5 shrink-0 text-stone-900" />
-                    ) : (
-                        <Clock3 className="h-5 w-5 shrink-0 text-stone-900" />
-                    )}
+            <div
+                className="
+                    grid
+                    gap-5
+                    p-5
 
-                    <h3 className="text-lg font-bold tracking-tight text-stone-900">
-                        {order.servido
-                            ? 'Pedido servido'
-                            : 'Pedido pendiente de servir'}
-                    </h3>
-                </div>
+                    sm:p-6
 
-                <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr_1fr_230px] lg:items-start">
-                    <div className="grid gap-4">
+                    xl:grid-cols-[minmax(0,1fr)_180px]
+                    xl:items-center
+                "
+            >
+                <div
+                    className="
+                        min-w-0
+                    "
+                >
+                    <div
+                        className="
+                            flex
+                            flex-wrap
+                            items-center
+                            gap-3
+                        "
+                    >
+                        <OrderStatus
+                            order={
+                                order
+                            }
+                        />
+
+                        <span
+                            className="
+                                text-xs
+                                text-stone-400
+                            "
+                        >
+                            Año{" "}
+                            {order.ejercicio ||
+                                "-"}
+                        </span>
+                    </div>
+
+                    <div
+                        className="
+                            mt-4
+                            grid
+                            gap-5
+
+                            md:grid-cols-[1.1fr_0.9fr_0.7fr]
+                        "
+                    >
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
+                            <p
+                                className="
+                                    text-[10px]
+                                    font-semibold
+                                    uppercase
+                                    tracking-[0.16em]
+                                    text-stone-400
+                                "
+                            >
                                 Nº de pedido
                             </p>
 
-                            <p className="mt-1 text-base font-semibold leading-6 text-stone-900">
+                            <h3
+                                className="
+                                    mt-1
+                                    text-xl
+                                    font-light
+                                    tracking-[-0.03em]
+                                    text-stone-950
+                                "
+                            >
                                 {getOrderLabel(
                                     order
                                 )}
-                            </p>
+                            </h3>
                         </div>
 
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Fecha pedido
-                            </p>
+                        <MetaItem
+                            label="Fecha"
+                            value={formatDate(
+                                order.fecha
+                            )}
+                        />
 
-                            <p className="mt-1 text-sm font-medium leading-6 text-stone-700">
-                                {formatDate(
-                                    order.fecha
-                                )}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="grid gap-4">
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Importe
-                            </p>
-
-                            <p className="mt-1 text-base font-bold leading-6 text-stone-900">
-                                {formatCurrency(
-                                    order.importe
-                                )}
-                            </p>
-                        </div>
-
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Año
-                            </p>
-
-                            <p className="mt-1 text-sm font-medium leading-6 text-stone-700">
-                                {order.ejercicio ||
-                                    '-'}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                            Estado
-                        </p>
-
-                        <div className="mt-2">
-                            <OrderStatus
-                                order={
-                                    order
-                                }
-                            />
-                        </div>
-                    </div>
-
-                    <div className="lg:min-w-[230px]">
-                        <button
-                            type="button"
-                            onClick={
-                                onView
+                        <MetaItem
+                            label="Estado"
+                            value={
+                                served
+                                    ? "Servido"
+                                    : "Pendiente"
                             }
-                            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-stone-900 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-300"
-                        >
-                            Ver pedido
-
-                            <ChevronRight className="h-4 w-4" />
-                        </button>
+                        />
                     </div>
                 </div>
+
+
+                <div
+                    className="
+                        border-t
+                        border-stone-200
+                        pt-4
+
+                        xl:border-l
+                        xl:border-t-0
+                        xl:pl-7
+                        xl:pt-0
+                    "
+                >
+                    <p
+                        className="
+                            text-[10px]
+                            font-semibold
+                            uppercase
+                            tracking-[0.18em]
+                            text-stone-400
+                        "
+                    >
+                        Importe
+                    </p>
+
+                    <p
+                        className="
+                            mt-2
+                            text-2xl
+                            font-light
+                            tracking-[-0.03em]
+                            text-stone-950
+                        "
+                    >
+                        {formatCurrency(
+                            order.importe
+                        )}
+                    </p>
+                </div>
+            </div>
+
+
+            <div
+                className="
+                    flex
+                    justify-end
+                    border-t
+                    border-stone-200
+                    bg-[#fbfaf8]
+                    px-5
+                    py-4
+
+                    sm:px-6
+                "
+            >
+                <button
+                    type="button"
+                    onClick={
+                        onView
+                    }
+                    className="
+                        group/button
+                        inline-flex
+                        h-10
+                        items-center
+                        justify-center
+                        gap-2
+                        rounded-full
+                        bg-stone-950
+                        px-5
+                        text-sm
+                        font-medium
+                        text-white
+                        transition
+
+                        hover:bg-stone-800
+                    "
+                >
+                    Ver pedido
+
+                    <ArrowUpRight
+                        className="
+                            h-3.5
+                            w-3.5
+                            transition-transform
+
+                            group-hover/button:-translate-y-0.5
+                            group-hover/button:translate-x-0.5
+                        "
+                    />
+                </button>
             </div>
         </motion.article>
     );
 }
+
+
+function MetaItem({
+    label,
+    value,
+}) {
+    return (
+        <div>
+            <p
+                className="
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.16em]
+                    text-stone-400
+                "
+            >
+                {label}
+            </p>
+
+            <p
+                className="
+                    mt-1
+                    text-sm
+                    font-medium
+                    leading-6
+                    text-stone-700
+                "
+            >
+                {value}
+            </p>
+        </div>
+    );
+}
+
 
 export default function OrdersSection() {
     const navigate =
@@ -659,72 +881,161 @@ export default function OrdersSection() {
     }
 
     return (
-        <section className="grid gap-6">
-            <div>
-                <h1 className="text-2xl font-bold tracking-tight text-stone-900 md:text-3xl">
-                    Mis pedidos
-                </h1>
+        <section
+            className="
+                grid
+                gap-5
+            "
+        >
+            <div
+                className="
+                    rounded-[24px]
+                    border
+                    border-stone-300/80
+                    bg-white
+                    p-4
 
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-500">
-                    Consulta tus pedidos servidos y los que todavía están pendientes de servir.
-                </p>
-            </div>
+                    sm:p-5
+                "
+            >
+                <div
+                    className="
+                        flex
+                        flex-col
+                        gap-4
 
-            <StatusFilter
-                value={
-                    statusFilter
-                }
-                onChange={
-                    setStatusFilter
-                }
-            />
-
-            <div className="flex flex-col gap-3 md:flex-row md:flex-wrap">
-                <SearchInput
-                    value={
-                        searchTerm
-                    }
-                    onChange={
-                        setSearchTerm
-                    }
-                />
-
-                <SelectFilter
-                    value={
-                        ejercicio
-                    }
-                    onChange={
-                        setEjercicio
-                    }
+                        xl:flex-row
+                        xl:items-center
+                        xl:justify-between
+                    "
                 >
-                    <option value="">
-                        Periodo: Todo el historial
-                    </option>
+                    <div
+                        className="
+                            flex
+                            items-center
+                            gap-3
+                        "
+                    >
+                        <span
+                            className="
+                                flex
+                                h-9
+                                w-9
+                                items-center
+                                justify-center
+                                rounded-full
+                                bg-[#f1eee8]
+                                text-stone-700
+                            "
+                        >
+                            <PackageCheck
+                                className="
+                                    h-4
+                                    w-4
+                                "
+                            />
+                        </span>
 
-                    {availableYears.map(
-                        (
-                            year
-                        ) => (
-                            <option
-                                key={
-                                    year
-                                }
-                                value={
-                                    year
-                                }
+                        <div>
+                            <p
+                                className="
+                                    text-sm
+                                    font-medium
+                                    text-stone-900
+                                "
                             >
-                                Periodo:{' '}
-                                {
-                                    year
-                                }
-                            </option>
-                        )
-                    )}
-                </SelectFilter>
+                                Pedidos
+                            </p>
+
+                            <p
+                                className="
+                                    mt-0.5
+                                    text-xs
+                                    text-stone-400
+                                "
+                            >
+                                {filteredOrders.length}{" "}
+                                {filteredOrders.length ===
+                                1
+                                    ? "pedido visible"
+                                    : "pedidos visibles"}
+                            </p>
+                        </div>
+                    </div>
+
+                    <StatusFilter
+                        value={
+                            statusFilter
+                        }
+                        onChange={
+                            setStatusFilter
+                        }
+                    />
+                </div>
+
+
+                <div
+                    className="
+                        mt-4
+                        flex
+                        flex-col
+                        gap-3
+                        border-t
+                        border-stone-200
+                        pt-4
+
+                        md:flex-row
+                        md:flex-wrap
+                    "
+                >
+                    <SearchInput
+                        value={
+                            searchTerm
+                        }
+                        onChange={
+                            setSearchTerm
+                        }
+                    />
+
+                    <SelectFilter
+                        value={
+                            ejercicio
+                        }
+                        onChange={
+                            setEjercicio
+                        }
+                    >
+                        <option value="">
+                            Todo el historial
+                        </option>
+
+                        {availableYears.map(
+                            year => (
+                                <option
+                                    key={
+                                        year
+                                    }
+                                    value={
+                                        year
+                                    }
+                                >
+                                    Año{" "}
+                                    {year}
+                                </option>
+                            )
+                        )}
+                    </SelectFilter>
+                </div>
             </div>
+
 
             {loading && (
-                <div className="grid gap-4 pt-4">
+                <div
+                    className="
+                        grid
+                        gap-4
+                    "
+                >
                     {Array.from({
                         length:
                             3,
@@ -737,42 +1048,97 @@ export default function OrdersSection() {
                                 key={
                                     index
                                 }
-                                className="h-40 animate-pulse rounded-xl border border-stone-200 bg-stone-100"
+                                className="
+                                    h-44
+                                    animate-pulse
+                                    rounded-[26px]
+                                    border
+                                    border-stone-200
+                                    bg-white/70
+                                "
                             />
                         )
                     )}
                 </div>
             )}
 
+
             {error && (
-                <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                    {
-                        error
-                    }
+                <div
+                    className="
+                        border-l-2
+                        border-red-400
+                        bg-red-50
+                        px-5
+                        py-4
+                        text-sm
+                        leading-6
+                        text-red-700
+                    "
+                >
+                    {error}
                 </div>
             )}
+
 
             {!loading &&
                 !error &&
                 !filteredOrders.length && (
-                    <div className="rounded-lg border border-dashed border-stone-300 bg-white px-5 py-12 text-center shadow-sm">
-                        <PackageCheck className="mx-auto h-8 w-8 text-stone-400" />
+                    <div
+                        className="
+                            rounded-[26px]
+                            border
+                            border-dashed
+                            border-stone-300
+                            bg-white/60
+                            px-6
+                            py-14
+                            text-center
+                        "
+                    >
+                        <PackageCheck
+                            className="
+                                mx-auto
+                                h-7
+                                w-7
+                                text-stone-300
+                            "
+                        />
 
-                        <p className="mt-4 text-sm font-semibold text-stone-800">
+                        <p
+                            className="
+                                mt-4
+                                text-sm
+                                font-medium
+                                text-stone-800
+                            "
+                        >
                             No hay pedidos con los filtros actuales.
                         </p>
 
-                        <p className="mt-2 text-sm text-stone-500">
+                        <p
+                            className="
+                                mt-2
+                                text-sm
+                                text-stone-500
+                            "
+                        >
                             Prueba a cambiar el periodo, el estado o la búsqueda.
                         </p>
                     </div>
                 )}
 
+
             {!loading &&
                 !error &&
                 filteredOrders.length >
-                0 && (
-                    <div className="grid gap-4">
+                    0 && (
+                    <div
+                        className="
+                            grid
+                            gap-4
+                        "
+                    >
                         {filteredOrders.map(
                             (
                                 order,

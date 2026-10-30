@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import {
+    ArrowUpRight,
     CheckCircle2,
     ChevronDown,
     FileText,
     Filter,
     ImageOff,
+    ReceiptText,
     Search,
     ShoppingBag,
 } from 'lucide-react';
@@ -284,72 +286,182 @@ async function loadInvoiceWithPreview(
     }
 }
 
+
+
 function SearchInput({
     value,
     onChange,
 }) {
     return (
-        <label className="flex h-12 w-full items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 text-sm text-stone-500 shadow-sm transition focus-within:border-stone-400 focus-within:ring-2 focus-within:ring-stone-100 md:max-w-[305px]">
+        <label
+            className="
+                flex
+                h-12
+                min-w-0
+                flex-1
+                items-center
+                gap-3
+                border-b
+                border-stone-300
+                px-1
+                text-sm
+                text-stone-500
+                transition
+
+                focus-within:border-stone-950
+
+                md:min-w-[260px]
+            "
+        >
+            <Search
+                className="
+                    h-4
+                    w-4
+                    shrink-0
+                    text-stone-400
+                "
+            />
+
             <input
                 type="search"
                 value={value}
-                onChange={(event) =>
+                onChange={event =>
                     onChange(
                         event.target.value
                     )
                 }
-                placeholder="Buscar"
-                className="min-w-0 flex-1 bg-transparent text-stone-800 outline-none placeholder:text-stone-400"
-            />
+                placeholder="Buscar por factura, referencia o año"
+                className="
+                    min-w-0
+                    flex-1
+                    bg-transparent
+                    text-sm
+                    text-stone-900
+                    outline-none
 
-            <Search className="h-5 w-5 shrink-0 text-stone-700" />
+                    placeholder:text-stone-400
+                "
+            />
         </label>
     );
 }
 
+
 function SelectFilter({
-    icon: Icon,
     value,
     onChange,
     children,
     ariaLabel,
+    icon: Icon = Filter,
 }) {
     return (
-        <label className="relative flex h-12 w-full items-center rounded-xl border border-stone-200 bg-white px-4 text-sm text-stone-700 shadow-sm transition focus-within:border-stone-400 focus-within:ring-2 focus-within:ring-stone-100 md:max-w-[305px]">
-            {Icon && (
-                <Icon className="mr-3 h-4 w-4 shrink-0 text-stone-500" />
-            )}
+        <label
+            className="
+                relative
+                flex
+                h-12
+                min-w-[190px]
+                items-center
+                gap-2
+                border-b
+                border-stone-300
+                px-1
+                text-sm
+                text-stone-700
+                transition
+
+                focus-within:border-stone-950
+            "
+        >
+            <Icon
+                className="
+                    h-4
+                    w-4
+                    shrink-0
+                    text-stone-400
+                "
+            />
 
             <select
                 value={value}
-                onChange={(event) =>
+                onChange={event =>
                     onChange(
                         event.target.value
                     )
                 }
-                aria-label={
-                    ariaLabel
-                }
-                className="w-full cursor-pointer appearance-none bg-transparent pr-8 font-medium outline-none"
+                aria-label={ariaLabel}
+                className="
+                    w-full
+                    cursor-pointer
+                    appearance-none
+                    bg-transparent
+                    pr-7
+                    text-sm
+                    font-medium
+                    outline-none
+                "
             >
                 {children}
             </select>
 
-            <ChevronDown className="pointer-events-none absolute right-4 h-4 w-4 text-stone-700" />
+            <ChevronDown
+                className="
+                    pointer-events-none
+                    absolute
+                    right-1
+                    h-4
+                    w-4
+                    text-stone-400
+                "
+            />
         </label>
     );
 }
+
 
 function InvoiceProductPreview({
     images = [],
 }) {
     if (!images.length) {
         return (
-            <div className="flex h-[108px] w-[108px] items-center justify-center rounded-md border border-stone-200 bg-stone-50">
-                <div className="flex flex-col items-center gap-1 text-stone-400">
-                    <ImageOff className="h-7 w-7" />
+            <div
+                className="
+                    flex
+                    aspect-square
+                    w-full
+                    items-center
+                    justify-center
+                    overflow-hidden
+                    rounded-[20px]
+                    bg-[#f1eee8]
 
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.12em]">
+                    sm:w-[132px]
+                "
+            >
+                <div
+                    className="
+                        flex
+                        flex-col
+                        items-center
+                        gap-2
+                        text-stone-400
+                    "
+                >
+                    <ImageOff
+                        className="
+                            h-6
+                            w-6
+                        "
+                    />
+
+                    <span
+                        className="
+                            text-[9px]
+                            font-semibold
+                            uppercase
+                            tracking-[0.14em]
+                        "
+                    >
                         Sin imagen
                     </span>
                 </div>
@@ -357,44 +469,81 @@ function InvoiceProductPreview({
         );
     }
 
+
     if (
-        images.length === 1
+        images.length ===
+        1
     ) {
         return (
-            <div className="h-[108px] w-[108px] overflow-hidden rounded-md border border-stone-200 bg-stone-50">
+            <div
+                className="
+                    aspect-square
+                    w-full
+                    overflow-hidden
+                    rounded-[20px]
+                    bg-stone-100
+
+                    sm:w-[132px]
+                "
+            >
                 <img
-                    src={
-                        images[0].src
-                    }
-                    alt={
-                        images[0].alt
-                    }
+                    src={images[0].src}
+                    alt={images[0].alt}
                     loading="lazy"
-                    className="h-full w-full object-cover"
+                    className="
+                        h-full
+                        w-full
+                        object-cover
+                        transition-transform
+                        duration-700
+
+                        group-hover:scale-[1.03]
+                    "
                 />
             </div>
         );
     }
 
+
     return (
-        <div className="grid h-[108px] w-[108px] grid-cols-2 gap-1 rounded-md border border-stone-200 bg-stone-50 p-1">
+        <div
+            className="
+                grid
+                aspect-square
+                w-full
+                grid-cols-2
+                gap-1
+                overflow-hidden
+                rounded-[20px]
+                bg-stone-100
+                p-1
+
+                sm:w-[132px]
+            "
+        >
             {images.map(
-                (image) => (
+                image => (
                     <div
-                        key={
-                            image.src
-                        }
-                        className="overflow-hidden rounded bg-white"
+                        key={image.src}
+                        className="
+                            overflow-hidden
+                            rounded-[8px]
+                            bg-white
+                        "
                     >
                         <img
-                            src={
-                                image.src
-                            }
-                            alt={
-                                image.alt
-                            }
+                            src={image.src}
+                            alt={image.alt}
                             loading="lazy"
-                            className="h-full w-full object-cover"
+                            className="
+                                h-full
+                                w-full
+                                object-cover
+                                transition-transform
+                                duration-700
+
+                                group-hover:scale-[1.04]
+                            "
                         />
                     </div>
                 )
@@ -402,6 +551,7 @@ function InvoiceProductPreview({
         </div>
     );
 }
+
 
 function InvoiceCard({
     invoice,
@@ -414,122 +564,328 @@ function InvoiceCard({
         <motion.article
             initial={{
                 opacity: 0,
-                y: 12,
+                y: 10,
             }}
             animate={{
                 opacity: 1,
                 y: 0,
             }}
             transition={{
-                delay: index * 0.03,
-                duration: 0.25,
+                delay:
+                    index *
+                    0.025,
+                duration:
+                    0.25,
             }}
-            className="rounded-xl border border-stone-200 bg-white shadow-sm transition hover:border-stone-300 hover:shadow-md"
+            className="
+                group
+                overflow-hidden
+                rounded-[26px]
+                border
+                border-stone-300/80
+                bg-white
+                transition
+
+                hover:border-stone-400
+                hover:shadow-[0_18px_50px_rgba(28,25,23,0.07)]
+            "
         >
-            <div className="p-5 lg:px-6 lg:py-5">
-                <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-stone-900" />
+            <div
+                className="
+                    grid
+                    gap-5
+                    p-5
 
-                    <h3 className="text-lg font-bold tracking-tight text-stone-900">
-                        {cardTitle}
+                    sm:grid-cols-[132px_minmax(0,1fr)]
+                    sm:p-6
+
+                    xl:grid-cols-[132px_minmax(0,1fr)_190px]
+                    xl:items-center
+                "
+            >
+                <InvoiceProductPreview
+                    images={
+                        invoice.previewImages
+                    }
+                />
+
+
+                <div
+                    className="
+                        min-w-0
+                    "
+                >
+                    <div
+                        className="
+                            flex
+                            flex-wrap
+                            items-center
+                            gap-2
+                        "
+                    >
+                        <span
+                            className="
+                                inline-flex
+                                items-center
+                                gap-1.5
+                                rounded-full
+                                bg-[#f1eee8]
+                                px-3
+                                py-1
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.14em]
+                                text-stone-600
+                            "
+                        >
+                            <CheckCircle2
+                                className="
+                                    h-3.5
+                                    w-3.5
+                                "
+                            />
+
+                            {cardTitle}
+                        </span>
+
+                        <span
+                            className="
+                                text-xs
+                                text-stone-400
+                            "
+                        >
+                            {invoice.ejercicio ||
+                                "-"}
+                        </span>
+                    </div>
+
+                    <h3
+                        className="
+                            mt-4
+                            break-words
+                            text-xl
+                            font-light
+                            tracking-[-0.03em]
+                            text-stone-950
+
+                            sm:text-2xl
+                        "
+                    >
+                        {getInvoiceLabel(
+                            invoice
+                        )}
                     </h3>
+
+                    <div
+                        className="
+                            mt-4
+                            grid
+                            gap-x-8
+                            gap-y-3
+                            text-sm
+
+                            md:grid-cols-2
+                        "
+                    >
+                        <MetaItem
+                            label="Fecha"
+                            value={formatDate(
+                                invoice.fecha
+                            )}
+                        />
+
+                        <MetaItem
+                            label="Referencia"
+                            value={
+                                invoice.referencia ||
+                                "-"
+                            }
+                        />
+                    </div>
                 </div>
 
-                <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr_1fr_230px] lg:items-start">
-                    <div className="grid gap-4">
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Nº de factura
-                            </p>
 
-                            <p className="mt-1 text-base font-semibold leading-6 text-stone-900">
-                                {getInvoiceLabel(
-                                    invoice
-                                )}
-                            </p>
-                        </div>
+                <div
+                    className="
+                        border-t
+                        border-stone-200
+                        pt-4
 
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Fecha factura
-                            </p>
+                        sm:col-start-2
 
-                            <p className="mt-1 text-sm font-medium leading-6 text-stone-700">
-                                {formatDate(
-                                    invoice.fecha
-                                )}
-                            </p>
-                        </div>
-                    </div>
+                        xl:col-start-auto
+                        xl:border-l
+                        xl:border-t-0
+                        xl:pl-7
+                        xl:pt-0
+                    "
+                >
+                    <p
+                        className="
+                            text-[10px]
+                            font-semibold
+                            uppercase
+                            tracking-[0.18em]
+                            text-stone-400
+                        "
+                    >
+                        Importe total
+                    </p>
 
-                    <div className="grid gap-4">
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Importe
-                            </p>
-
-                            <p className="mt-1 text-base font-bold leading-6 text-stone-900">
-                                {formatCurrency(
-                                    invoice.imptotal
-                                )}
-                            </p>
-                        </div>
-
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Año
-                            </p>
-
-                            <p className="mt-1 text-sm font-medium leading-6 text-stone-700">
-                                {invoice.ejercicio ||
-                                    '-'}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="grid gap-4">
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
-                                Referencia
-                            </p>
-
-                            <p className="mt-1 break-words text-sm font-medium leading-6 text-stone-800">
-                                {invoice.referencia ||
-                                    '-'}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2 lg:min-w-[230px]">
-                        <button
-                            type="button"
-                            onClick={
-                                onViewInvoice
-                            }
-                            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-stone-900 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-300"
-                        >
-                            <FileText className="h-4 w-4" />
-
-                            Ver factura
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={
-                                onViewOrders
-                            }
-                            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md border border-stone-300 bg-white px-5 text-sm font-semibold text-stone-800 shadow-sm transition hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-stone-200"
-                        >
-                            <ShoppingBag className="h-4 w-4" />
-
-                            Ver pedidos asociados
-                        </button>
-                    </div>
+                    <p
+                        className="
+                            mt-2
+                            text-2xl
+                            font-light
+                            tracking-[-0.03em]
+                            text-stone-950
+                        "
+                    >
+                        {formatCurrency(
+                            invoice.imptotal
+                        )}
+                    </p>
                 </div>
+            </div>
+
+
+            <div
+                className="
+                    flex
+                    flex-col
+                    gap-2
+                    border-t
+                    border-stone-200
+                    bg-[#fbfaf8]
+                    px-5
+                    py-4
+
+                    sm:flex-row
+                    sm:items-center
+                    sm:justify-end
+                    sm:px-6
+                "
+            >
+                <button
+                    type="button"
+                    onClick={
+                        onViewOrders
+                    }
+                    className="
+                        inline-flex
+                        h-10
+                        items-center
+                        justify-center
+                        gap-2
+                        px-4
+                        text-sm
+                        font-medium
+                        text-stone-600
+                        transition
+
+                        hover:text-stone-950
+                    "
+                >
+                    <ShoppingBag
+                        className="
+                            h-4
+                            w-4
+                        "
+                    />
+
+                    Ver pedidos asociados
+                </button>
+
+                <button
+                    type="button"
+                    onClick={
+                        onViewInvoice
+                    }
+                    className="
+                        group/button
+                        inline-flex
+                        h-10
+                        items-center
+                        justify-center
+                        gap-2
+                        rounded-full
+                        bg-stone-950
+                        px-5
+                        text-sm
+                        font-medium
+                        text-white
+                        transition
+
+                        hover:bg-stone-800
+                    "
+                >
+                    <FileText
+                        className="
+                            h-4
+                            w-4
+                        "
+                    />
+
+                    Ver factura
+
+                    <ArrowUpRight
+                        className="
+                            h-3.5
+                            w-3.5
+                            transition-transform
+
+                            group-hover/button:-translate-y-0.5
+                            group-hover/button:translate-x-0.5
+                        "
+                    />
+                </button>
             </div>
         </motion.article>
     );
 }
+
+
+function MetaItem({
+    label,
+    value,
+}) {
+    return (
+        <div
+            className="
+                min-w-0
+            "
+        >
+            <p
+                className="
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.16em]
+                    text-stone-400
+                "
+            >
+                {label}
+            </p>
+
+            <p
+                className="
+                    mt-1
+                    truncate
+                    text-sm
+                    font-medium
+                    text-stone-700
+                "
+                title={
+                    value
+                }
+            >
+                {value}
+            </p>
+        </div>
+    );
+}
+
 
 export default function InvoicesSection({
     mode = 'orders',
@@ -802,90 +1158,179 @@ export default function InvoicesSection({
     }
 
     return (
-        <section className="grid gap-6">
-            <div>
-                <h1 className="text-2xl font-bold tracking-tight text-stone-900 md:text-3xl">
-                    {
-                        config.title
-                    }
-                </h1>
+        <section
+            className="
+                grid
+                gap-5
+            "
+        >
+            <div
+                className="
+                    flex
+                    flex-col
+                    gap-4
+                    rounded-[24px]
+                    border
+                    border-stone-300/80
+                    bg-white
+                    p-4
 
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-500">
-                    {
-                        config.description
-                    }
-                </p>
-            </div>
+                    sm:p-5
 
-            <div className="flex flex-col gap-3 md:flex-row md:flex-wrap">
-                <SearchInput
-                    value={
-                        searchTerm
-                    }
-                    onChange={
-                        setSearchTerm
-                    }
-                />
-
-                <SelectFilter
-                    value={
-                        ejercicio
-                    }
-                    onChange={
-                        setEjercicio
-                    }
-                    ariaLabel="Filtrar por periodo"
-                    icon={
-                        Filter
-                    }
+                    xl:flex-row
+                    xl:items-center
+                    xl:justify-between
+                "
+            >
+                <div
+                    className="
+                        min-w-0
+                    "
                 >
-                    <option value="">
-                        Periodo: Todo el
-                        historial
-                    </option>
+                    <div
+                        className="
+                            flex
+                            items-center
+                            gap-2
+                        "
+                    >
+                        <span
+                            className="
+                                flex
+                                h-9
+                                w-9
+                                items-center
+                                justify-center
+                                rounded-full
+                                bg-[#f1eee8]
+                                text-stone-700
+                            "
+                        >
+                            <ReceiptText
+                                className="
+                                    h-4
+                                    w-4
+                                "
+                            />
+                        </span>
 
-                    {availableYears.map(
-                        (
-                            year
-                        ) => (
-                            <option
-                                key={
-                                    year
-                                }
-                                value={
-                                    year
-                                }
+                        <div>
+                            <p
+                                className="
+                                    text-sm
+                                    font-medium
+                                    text-stone-900
+                                "
                             >
-                                Periodo:{' '}
-                                {
-                                    year
-                                }
-                            </option>
-                        )
-                    )}
-                </SelectFilter>
+                                {config.title}
+                            </p>
 
-                <SelectFilter
-                    value={
-                        invoiceType
-                    }
-                    onChange={
-                        setInvoiceType
-                    }
-                    ariaLabel="Filtrar por tipo"
+                            <p
+                                className="
+                                    mt-0.5
+                                    text-xs
+                                    text-stone-400
+                                "
+                            >
+                                {filteredInvoices.length}{" "}
+                                {filteredInvoices.length ===
+                                1
+                                    ? "documento"
+                                    : "documentos"}{" "}
+                                visibles
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div
+                    className="
+                        flex
+                        flex-1
+                        flex-col
+                        gap-3
+
+                        md:flex-row
+                        md:flex-wrap
+
+                        xl:max-w-[760px]
+                        xl:justify-end
+                    "
                 >
-                    <option value="all">
-                        Todos
-                    </option>
+                    <SearchInput
+                        value={
+                            searchTerm
+                        }
+                        onChange={
+                            setSearchTerm
+                        }
+                    />
 
-                    <option value="invoices">
-                        Facturas
-                    </option>
-                </SelectFilter>
+                    <SelectFilter
+                        value={
+                            ejercicio
+                        }
+                        onChange={
+                            setEjercicio
+                        }
+                        ariaLabel="Filtrar por periodo"
+                        icon={
+                            Filter
+                        }
+                    >
+                        <option value="">
+                            Todo el historial
+                        </option>
+
+                        {availableYears.map(
+                            year => (
+                                <option
+                                    key={
+                                        year
+                                    }
+                                    value={
+                                        year
+                                    }
+                                >
+                                    Año{" "}
+                                    {year}
+                                </option>
+                            )
+                        )}
+                    </SelectFilter>
+
+                    <SelectFilter
+                        value={
+                            invoiceType
+                        }
+                        onChange={
+                            setInvoiceType
+                        }
+                        ariaLabel="Filtrar por tipo"
+                        icon={
+                            FileText
+                        }
+                    >
+                        <option value="all">
+                            Todos
+                        </option>
+
+                        <option value="invoices">
+                            Facturas
+                        </option>
+                    </SelectFilter>
+                </div>
             </div>
+
 
             {loading && (
-                <div className="grid gap-8 pt-6">
+                <div
+                    className="
+                        grid
+                        gap-4
+                    "
+                >
                     {Array.from({
                         length: 3,
                     }).map(
@@ -897,31 +1342,89 @@ export default function InvoicesSection({
                                 key={
                                     index
                                 }
-                                className="h-40 animate-pulse rounded-lg border border-stone-200 bg-stone-100"
+                                className="
+                                    h-56
+                                    animate-pulse
+                                    rounded-[26px]
+                                    border
+                                    border-stone-200
+                                    bg-white/70
+
+                                    sm:h-48
+                                "
                             />
                         )
                     )}
                 </div>
             )}
 
+
             {error && (
-                <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                <div
+                    className="
+                        border-l-2
+                        border-red-400
+                        bg-red-50
+                        px-5
+                        py-4
+                        text-sm
+                        leading-6
+                        text-red-700
+                    "
+                >
                     {error}
                 </div>
             )}
 
+
             {!loading &&
                 !error &&
                 filteredInvoices.length ===
-                0 && (
-                    <div className="rounded-lg border border-dashed border-stone-300 bg-white px-5 py-12 text-center shadow-sm">
-                        <p className="text-sm font-semibold text-stone-800">
+                    0 && (
+                    <div
+                        className="
+                            rounded-[26px]
+                            border
+                            border-dashed
+                            border-stone-300
+                            bg-white/60
+                            px-6
+                            py-14
+                            text-center
+                        "
+                    >
+                        <ReceiptText
+                            className="
+                                mx-auto
+                                h-7
+                                w-7
+                                text-stone-300
+                            "
+                        />
+
+                        <p
+                            className="
+                                mt-4
+                                text-sm
+                                font-medium
+                                text-stone-800
+                            "
+                        >
                             {
                                 config.emptyTitle
                             }
                         </p>
 
-                        <p className="mt-2 text-sm text-stone-500">
+                        <p
+                            className="
+                                mx-auto
+                                mt-2
+                                max-w-md
+                                text-sm
+                                leading-6
+                                text-stone-500
+                            "
+                        >
                             {
                                 config.emptyDescription
                             }
@@ -929,11 +1432,17 @@ export default function InvoicesSection({
                     </div>
                 )}
 
+
             {!loading &&
                 !error &&
                 filteredInvoices.length >
-                0 && (
-                    <div className="grid gap-8">
+                    0 && (
+                    <div
+                        className="
+                            grid
+                            gap-4
+                        "
+                    >
                         {filteredInvoices.map(
                             (
                                 invoice,

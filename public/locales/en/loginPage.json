@@ -1,7 +1,48 @@
 {
-    "verification": {
-        "successMessage": "Your account has been successfully verified. You can now log in.",
-        "errorMessage": "Your account could not be verified. The link may have expired.",
-        "close": "Close"
-    }
+  "eyebrow": "CJM Group",
+  "hero": {
+    "label": "Professional area",
+    "title": "An access point designed to support every project.",
+    "description": "Review your information, manage your relationship with CJM Group and access tools reserved for professional clients."
+  },
+  "form": {
+    "title": "Welcome back",
+    "subtitle": "Sign in with your credentials to access your private area.",
+    "email": "Email address",
+    "emailPlaceholder": "you@company.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "forgotPassword": "Forgot your password?",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "noAccess": "Don't have access yet?",
+    "requestAccess": "Request access"
+  },
+  "verification": {
+    "successMessage": "Your account has been successfully verified. You can now log in.",
+    "errorMessage": "Your account could not be verified. The link may have expired.",
+    "close": "Close"
+  },
+  "forgot": {
+    "eyebrow": "Access recovery",
+    "title": "Reset your password",
+    "description": "Enter the email linked to your account. If it is registered, you will receive a link to create a new password.",
+    "email": "Email address",
+    "emailPlaceholder": "you@company.com",
+    "submit": "Send link",
+    "loading": "Sending...",
+    "success": "If the email is registered, you will receive a password reset link. Please also check your spam folder.",
+    "error": "We could not send the request. Please try again.",
+    "back": "Back",
+    "close": "Close password recovery"
+  },
+  "errors": {
+    "accountDenied": "Your request was denied. If you believe this is an error, please contact us.",
+    "accountNotApproved": "Your request is still pending approval.",
+    "accountInactive": "Your account is not active yet.",
+    "emailNotVerified": "Your account has been approved, but you still need to verify your email address.",
+    "generic": "Unable to sign in."
+  }
 }

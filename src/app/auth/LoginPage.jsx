@@ -1,82 +1,192 @@
-import { useEffect, useState } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import { Header } from '../../components/header';
-import Footer from '../../components/footer';
-import LoginForm from '../../components/auth/LoginForm';
-import { useAuth } from '../../context/AuthContext';
-import { CartProvider } from '../../components/CartContext';
-import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import {
+    Navigate,
+    useNavigate,
+    useSearchParams,
+} from "react-router-dom";
 
-const VERIFIED_MESSAGE_KEY = 'login_verified_message';
-const VERIFIED_SUCCESS = '1';
-const VERIFIED_ERROR = '0';
-//esto es una prueba
+import { CartProvider } from "../../components/CartContext";
+import Footer from "../../components/footer";
+import { Header } from "../../components/header";
+import LoginForm from "../../components/auth/LoginForm";
+import { useAuth } from "../../context/AuthContext";
+
+
+const VERIFIED_MESSAGE_KEY =
+    "login_verified_message";
+
+const VERIFIED_SUCCESS =
+    "1";
+
+const VERIFIED_ERROR =
+    "0";
+
+
 export default function LoginPage() {
-  const { isAuthenticated, loading } = useAuth();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const verified = searchParams.get('verified');
-  const { t } = useTranslation("loginPage");
-  const [verificationStatus, setVerificationStatus] = useState(() => {
-    return sessionStorage.getItem(VERIFIED_MESSAGE_KEY);
-  });
+    const {
+        isAuthenticated,
+        loading,
+    } = useAuth();
 
-  useEffect(() => {
-    if (!verified) return;
+    const navigate =
+        useNavigate();
 
-    sessionStorage.setItem(VERIFIED_MESSAGE_KEY, verified);
-    setVerificationStatus(verified);
-    navigate('/login', { replace: true });
-  }, [verified, navigate]);
+    const [
+        searchParams,
+    ] = useSearchParams();
 
-  const handleDismissVerificationMessage = () => {
-    sessionStorage.removeItem(VERIFIED_MESSAGE_KEY);
-    setVerificationStatus(null);
-  };
+    const verified =
+        searchParams.get(
+            "verified"
+        );
 
-  if (!loading && isAuthenticated && !verificationStatus) {
-    return <Navigate to="/mis-datos" replace />;
-  }
+    const [
+        verificationStatus,
+        setVerificationStatus,
+    ] = useState(() =>
+        sessionStorage.getItem(
+            VERIFIED_MESSAGE_KEY
+        )
+    );
 
-  return (
-    <CartProvider>
-      <div className="min-h-screen mt-[5%] bg-stone-50">
-        <Header />
-        <main className="mx-auto md:max-w-[60%] max-w-[95%] px-4 py-16">
-          {verificationStatus === VERIFIED_SUCCESS && (
-            <div className="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-              <div className="flex items-start justify-between gap-4">
-                <p>{t("verification.successMessage")}</p>
-                <button
-                  type="button"
-                  onClick={handleDismissVerificationMessage}
-                  className="shrink-0 text-green-700 underline underline-offset-2"
+
+    useEffect(() => {
+        if (!verified) {
+            return;
+        }
+
+        sessionStorage.setItem(
+            VERIFIED_MESSAGE_KEY,
+            verified
+        );
+
+        setVerificationStatus(
+            verified
+        );
+
+        navigate(
+            "/login",
+            {
+                replace: true,
+            }
+        );
+    }, [
+        verified,
+        navigate,
+    ]);
+
+
+    const handleDismissVerificationMessage =
+        () => {
+            sessionStorage.removeItem(
+                VERIFIED_MESSAGE_KEY
+            );
+
+            setVerificationStatus(
+                null
+            );
+        };
+
+
+    if (
+        !loading &&
+        isAuthenticated &&
+        !verificationStatus
+    ) {
+        return (
+            <Navigate
+                to="/mis-datos"
+                replace
+            />
+        );
+    }
+
+
+    return (
+        <CartProvider>
+            <div
+                className="
+                    min-h-screen
+                    bg-[#f5f3ef]
+                    text-stone-950
+                "
+            >
+                <Header />
+
+                <main
+                    className="
+                        relative
+                        overflow-hidden
+                        px-4
+                        pb-16
+                        pt-[92px]
+
+                        sm:px-6
+                        sm:pb-20
+                        sm:pt-[104px]
+
+                        lg:px-8
+                        lg:pb-24
+                        lg:pt-[120px]
+                    "
                 >
-                  {t("verification.close")}
-                </button>
-              </div>
-            </div>
-          )}
+                    <div
+                        aria-hidden="true"
+                        className="
+                            pointer-events-none
+                            absolute
+                            -left-40
+                            top-24
+                            h-96
+                            w-96
+                            rounded-full
+                            bg-white/80
+                            blur-3xl
+                        "
+                    />
 
-          {verificationStatus === VERIFIED_ERROR && (
-            <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-              <div className="flex items-start justify-between gap-4">
-                <p>{t("verification.errorMessage")}</p>
-                <button
-                  type="button"
-                  onClick={handleDismissVerificationMessage}
-                  className="shrink-0 text-red-700 underline underline-offset-2"
-                >
-                  {t("verification.close")}
-                </button>
-              </div>
-            </div>
-          )}
+                    <div
+                        aria-hidden="true"
+                        className="
+                            pointer-events-none
+                            absolute
+                            -right-32
+                            bottom-10
+                            h-80
+                            w-80
+                            rounded-full
+                            bg-stone-200/70
+                            blur-3xl
+                        "
+                    />
 
-          <LoginForm />
-        </main>
-        <Footer />
-      </div>
-    </CartProvider>
-  );
+                    <div
+                        className="
+                            relative
+                            mx-auto
+                            w-full
+                            max-w-[1380px]
+                        "
+                    >
+                        <LoginForm
+                            verificationStatus={
+                                verificationStatus
+                            }
+                            verificationSuccessValue={
+                                VERIFIED_SUCCESS
+                            }
+                            verificationErrorValue={
+                                VERIFIED_ERROR
+                            }
+                            onDismissVerification={
+                                handleDismissVerificationMessage
+                            }
+                        />
+                    </div>
+                </main>
+
+                <Footer />
+            </div>
+        </CartProvider>
+    );
 }

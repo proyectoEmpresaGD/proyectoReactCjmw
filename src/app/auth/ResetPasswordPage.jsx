@@ -1,190 +1,476 @@
-import { useState } from "react";
-import { resetPassword } from "../../services/authClient";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-export default function ResetPasswordPage() {
-    const navigate = useNavigate();
-    const { t } = useTranslation("resetPasswordPage");
-    const [password, setPassword] = useState("");
-    const [repeatPassword, setRepeatPassword] = useState("");
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
-    const [loading, setLoading] = useState(false);
+import {
+    useState,
+} from "react";
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+import {
+    useNavigate,
+} from "react-router-dom";
+
+import {
+    ArrowRight,
+} from "lucide-react";
+
+import {
+    useTranslation,
+} from "react-i18next";
+
+import {
+    CartProvider,
+} from "../../components/CartContext";
+
+import Footer from "../../components/footer";
+import { Header } from "../../components/header";
+import AuthCard from "../../components/auth/AuthCard";
+
+import {
+    resetPassword,
+} from "../../services/authClient";
+
+
+export default function ResetPasswordPage() {
+    const navigate =
+        useNavigate();
+
+    const {
+        t,
+    } = useTranslation(
+        "resetPasswordPage"
+    );
+
+    const [
+        password,
+        setPassword,
+    ] = useState("");
+
+    const [
+        repeatPassword,
+        setRepeatPassword,
+    ] = useState("");
+
+    const [
+        error,
+        setError,
+    ] = useState("");
+
+    const [
+        success,
+        setSuccess,
+    ] = useState("");
+
+    const [
+        loading,
+        setLoading,
+    ] = useState(false);
+
+
+    const handleSubmit = async (
+        event
+    ) => {
+        event.preventDefault();
 
         setError("");
         setSuccess("");
 
-        if (!password || !repeatPassword) {
-            setError(t("errors.emptyFields"));
+
+        if (
+            !password ||
+            !repeatPassword
+        ) {
+            setError(
+                t(
+                    "errors.emptyFields"
+                )
+            );
+
             return;
         }
 
-        if (password.length < 8) {
-            setError(t("errors.minLength"));
+
+        if (
+            password.length <
+            8
+        ) {
+            setError(
+                t(
+                    "errors.minLength"
+                )
+            );
+
             return;
         }
 
-        if (password !== repeatPassword) {
-            setError(t("errors.passwordsNotMatch"));
+
+        if (
+            password !==
+            repeatPassword
+        ) {
+            setError(
+                t(
+                    "errors.passwordsNotMatch"
+                )
+            );
+
             return;
         }
+
 
         try {
-            setLoading(true);
+            setLoading(
+                true
+            );
 
-            await resetPassword({ password });
+            await resetPassword({
+                password,
+            });
 
-            setSuccess(t("success"));
+            setSuccess(
+                t(
+                    "success"
+                )
+            );
 
-            setTimeout(() => {
-                navigate("/login");
-            }, 1800);
+            window.setTimeout(
+                () => {
+                    navigate(
+                        "/login"
+                    );
+                },
+                1800
+            );
         } catch {
-            setError(t("errors.invalidLink"));
+            setError(
+                t(
+                    "errors.invalidLink"
+                )
+            );
         } finally {
-            setLoading(false);
+            setLoading(
+                false
+            );
         }
     };
 
+
     return (
-        <div className="min-h-screen bg-stone-100">
-            <header className="border-b border-stone-200 bg-white">
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-stone-900 text-sm font-semibold text-white">
+        <CartProvider>
+            <div
+                className="
+                    min-h-screen
+                    bg-[#f5f3ef]
+                    text-stone-950
+                "
+            >
+                <Header />
 
-                        </div>
-                        <div>
-                            <p className="text-lg font-semibold text-stone-900">CJMW</p>
-                            <p className="text-sm text-stone-500">{t("header.subtitle")}</p>
-                        </div>
-                    </div>
+                <main
+                    className="
+                        relative
+                        overflow-hidden
+                        px-4
+                        pb-16
+                        pt-[92px]
 
-                    <button
-                        type="button"
-                        onClick={() => navigate("/login")}
-                        className="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                        sm:px-6
+                        sm:pb-20
+                        sm:pt-[104px]
+
+                        lg:px-8
+                        lg:pb-24
+                        lg:pt-[120px]
+                    "
+                >
+                    <div
+                        className="
+                            relative
+                            mx-auto
+                            w-full
+                            max-w-[1380px]
+                        "
                     >
-                        {t("header.backToLogin")}
-                    </button>
-                </div>
-            </header>
+                        <AuthCard
+                            eyebrow={t(
+                                "form.title"
+                            )}
+                            title={t(
+                                "form.heading"
+                            )}
+                            subtitle={t(
+                                "form.description"
+                            )}
+                            sideLabel={t(
+                                "security.title"
+                            )}
+                            sideTitle={t(
+                                "security.heading"
+                            )}
+                            sideDescription={t(
+                                "security.description"
+                            )}
+                        >
+                            <form
+                                onSubmit={
+                                    handleSubmit
+                                }
+                                className="
+                                    space-y-6
+                                "
+                            >
+                                <PasswordField
+                                    id="password"
+                                    label={t(
+                                        "form.password"
+                                    )}
+                                    placeholder={t(
+                                        "form.passwordPlaceholder"
+                                    )}
+                                    value={
+                                        password
+                                    }
+                                    onChange={
+                                        setPassword
+                                    }
+                                />
 
-            <main className="mx-auto flex min-h-[calc(100vh-76px)] max-w-7xl items-center justify-center px-6 py-10">
-                <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-stone-200 lg:grid-cols-2">
-                    <div className="hidden bg-stone-900 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-                        <div>
-                            <p className="mb-3 text-sm uppercase tracking-[0.2em] text-stone-300">
-                                {t("security.title")}
-                            </p>
+                                <PasswordField
+                                    id="repeatPassword"
+                                    label={t(
+                                        "form.repeatPassword"
+                                    )}
+                                    placeholder={t(
+                                        "form.repeatPasswordPlaceholder"
+                                    )}
+                                    value={
+                                        repeatPassword
+                                    }
+                                    onChange={
+                                        setRepeatPassword
+                                    }
+                                />
 
-                            <h1 className="max-w-md text-4xl font-semibold leading-tight">
-                                {t("security.heading")}
-                            </h1>
 
-                            <p className="mt-5 max-w-md text-sm leading-7 text-stone-300">
-                                {t("security.description")}
-                            </p>
-                        </div>
-
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                            <p className="text-sm font-medium text-white">{t("recommendation.title")}</p>
-                            <p className="mt-2 text-sm leading-6 text-stone-300">
-                                {t("recommendation.text")}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-center p-6 sm:p-10">
-                        <div className="w-full max-w-md">
-                            <div className="mb-8">
-                                <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-400">
-                                    {t("form.title")}
-                                </p>
-
-                                <h2 className="mt-2 text-3xl font-semibold text-stone-900">
-                                    {t("form.heading")}
-                                </h2>
-
-                                <p className="mt-3 text-sm leading-6 text-stone-500">
-                                    {t("form.description")}
-                                </p>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="space-y-5">
-                                <div>
-                                    <label
-                                        htmlFor="password"
-                                        className="mb-2 block text-sm font-medium text-stone-700"
+                                <div
+                                    className="
+                                        border-l-2
+                                        border-stone-300
+                                        bg-stone-50
+                                        px-4
+                                        py-3
+                                    "
+                                >
+                                    <p
+                                        className="
+                                            text-xs
+                                            font-semibold
+                                            uppercase
+                                            tracking-[0.14em]
+                                            text-stone-500
+                                        "
                                     >
-                                        {t("form.password")}
-                                    </label>
+                                        {t(
+                                            "recommendation.title"
+                                        )}
+                                    </p>
 
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        placeholder={t("form.passwordPlaceholder")}
-                                        required
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-900"
-                                    />
+                                    <p
+                                        className="
+                                            mt-1.5
+                                            text-xs
+                                            leading-5
+                                            text-stone-500
+                                        "
+                                    >
+                                        {t(
+                                            "recommendation.text"
+                                        )}
+                                    </p>
                                 </div>
 
-                                <div>
-                                    <label
-                                        htmlFor="repeatPassword"
-                                        className="mb-2 block text-sm font-medium text-stone-700"
+
+                                {error ? (
+                                    <div
+                                        role="alert"
+                                        className="
+                                            border-l-2
+                                            border-red-400
+                                            bg-red-50
+                                            px-4
+                                            py-3
+                                            text-sm
+                                            text-red-700
+                                        "
                                     >
-                                        {t("form.repeatPassword")}
-                                    </label>
-
-                                    <input
-                                        id="repeatPassword"
-                                        type="password"
-                                        placeholder={t("form.repeatPasswordPlaceholder")}
-                                        required
-                                        value={repeatPassword}
-                                        onChange={(e) => setRepeatPassword(e.target.value)}
-                                        className="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-900"
-                                    />
-                                </div>
-
-                                {error && (
-                                    <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-                                        <p className="text-sm font-medium text-red-600">{error}</p>
+                                        {
+                                            error
+                                        }
                                     </div>
-                                )}
+                                ) : null}
 
-                                {success && (
-                                    <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3">
-                                        <p className="text-sm font-medium text-green-700">{success}</p>
+
+                                {success ? (
+                                    <div
+                                        className="
+                                            border-l-2
+                                            border-emerald-400
+                                            bg-emerald-50
+                                            px-4
+                                            py-3
+                                            text-sm
+                                            text-emerald-800
+                                        "
+                                    >
+                                        {
+                                            success
+                                        }
                                     </div>
-                                )}
+                                ) : null}
+
 
                                 <button
                                     type="submit"
-                                    disabled={loading}
-                                    className="w-full rounded-xl bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-70"
+                                    disabled={
+                                        loading
+                                    }
+                                    className="
+                                        group
+                                        flex
+                                        w-full
+                                        items-center
+                                        justify-between
+                                        bg-stone-950
+                                        px-5
+                                        py-4
+                                        text-sm
+                                        font-medium
+                                        text-white
+                                        transition
+
+                                        hover:bg-stone-800
+
+                                        disabled:cursor-not-allowed
+                                        disabled:opacity-60
+                                    "
                                 >
-                                    {loading ? t("form.loading") : t("form.submit")}
+                                    <span>
+                                        {loading
+                                            ? t(
+                                                "form.loading"
+                                            )
+                                            : t(
+                                                "form.submit"
+                                            )}
+                                    </span>
+
+                                    <ArrowRight
+                                        className="
+                                            h-4
+                                            w-4
+                                            transition-transform
+                                            group-hover:translate-x-1
+                                        "
+                                    />
                                 </button>
                             </form>
 
+
                             <button
                                 type="button"
-                                onClick={() => navigate("/login")}
-                                className="mt-5 w-full text-sm font-medium text-stone-500 transition hover:text-stone-800"
+                                onClick={() =>
+                                    navigate(
+                                        "/login"
+                                    )
+                                }
+                                className="
+                                    mt-6
+                                    text-sm
+                                    font-medium
+                                    text-stone-500
+                                    underline
+                                    decoration-stone-300
+                                    underline-offset-4
+                                    transition
+
+                                    hover:text-stone-950
+                                    hover:decoration-stone-950
+                                "
                             >
-                                {t("form.back")}
+                                {t(
+                                    "form.back"
+                                )}
                             </button>
-                        </div>
+                        </AuthCard>
                     </div>
-                </div>
-            </main>
+                </main>
+
+                <Footer />
+            </div>
+        </CartProvider>
+    );
+}
+
+
+function PasswordField({
+    id,
+    label,
+    placeholder,
+    value,
+    onChange,
+}) {
+    return (
+        <div>
+            <label
+                htmlFor={
+                    id
+                }
+                className="
+                    mb-2
+                    block
+                    text-xs
+                    font-medium
+                    uppercase
+                    tracking-[0.14em]
+                    text-stone-500
+                "
+            >
+                {label}
+            </label>
+
+            <input
+                id={
+                    id
+                }
+                type="password"
+                value={
+                    value
+                }
+                onChange={(
+                    event
+                ) =>
+                    onChange(
+                        event.target
+                            .value
+                    )
+                }
+                placeholder={
+                    placeholder
+                }
+                autoComplete="new-password"
+                required
+                className="
+                    w-full
+                    border-b
+                    border-stone-300
+                    bg-transparent
+                    py-3
+                    text-[15px]
+                    text-stone-950
+                    outline-none
+                    transition
+
+                    placeholder:text-stone-350
+
+                    focus:border-stone-950
+                "
+            />
         </div>
     );
 }

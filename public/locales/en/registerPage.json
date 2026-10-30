@@ -1,0 +1,87 @@
+{
+  "eyebrow": "CJM Group",
+  "hero": {
+    "label": "Access request",
+    "title": "Your professional space starts here.",
+    "description": "Request access to the tools and services reserved for CJM Group professional clients."
+  },
+  "form": {
+    "title": "Request access",
+    "subtitle": "Complete your details. We will review the request before activating your account.",
+    "submit": "Submit request",
+    "submitting": "Submitting request...",
+    "haveAccess": "Already have access?",
+    "login": "Sign in"
+  },
+  "sections": {
+    "access": {
+      "title": "Access details",
+      "description": "We will use this email for communications related to your account."
+    },
+    "personal": {
+      "title": "Personal details"
+    },
+    "address": {
+      "title": "Address"
+    },
+    "customer": {
+      "title": "Customer validation",
+      "description": "Enter a valid customer code shown on an invoice, order or quotation you have received."
+    }
+  },
+  "fields": {
+    "email": "Email address",
+    "emailPlaceholder": "you@company.com",
+    "confirmEmail": "Confirm email",
+    "confirmEmailPlaceholder": "Repeat your email",
+    "password": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "firstName": "First name",
+    "firstNamePlaceholder": "First name",
+    "lastName": "Last name",
+    "lastNamePlaceholder": "Last name",
+    "phone": "Phone",
+    "phonePlaceholder": "Phone",
+    "mobilePhone": "Mobile",
+    "mobilePhonePlaceholder": "Mobile",
+    "streetAddress": "Address",
+    "streetAddressPlaceholder": "Address",
+    "addressLine2": "Additional address",
+    "addressLine2Placeholder": "Floor, unit, door, etc.",
+    "city": "City",
+    "cityPlaceholder": "City",
+    "stateProvince": "State / Province",
+    "stateProvincePlaceholder": "State / Province",
+    "postcode": "Postcode",
+    "postcodePlaceholder": "Postcode",
+    "country": "Country",
+    "countryPlaceholder": "Country",
+    "codclien": "Customer code",
+    "codclienPlaceholder": "Customer code"
+  },
+  "validation": {
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Email is not valid.",
+    "confirmEmailRequired": "Please confirm your email.",
+    "emailsNotMatch": "Email addresses do not match.",
+    "firstNameRequired": "First name is required.",
+    "lastNameRequired": "Last name is required.",
+    "passwordRequired": "Password is required.",
+    "passwordMinLength": "Password must be at least 8 characters.",
+    "confirmPasswordRequired": "Please confirm your password.",
+    "passwordsNotMatch": "Passwords do not match.",
+    "codclienRequired": "Customer code is required."
+  },
+  "success": {
+    "title": "Request submitted",
+    "message": "Your request has been registered and is pending administrator review.",
+    "description": "Once approved, you will receive an email to verify your identity and activate access.",
+    "back": "Back to login"
+  },
+  "errors": {
+    "invalidField": "Invalid field.",
+    "submit": "We could not submit the registration request."
+  }
+}

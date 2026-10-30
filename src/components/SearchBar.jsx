@@ -3023,7 +3023,7 @@ const SearchBar = ({
 
 
                             {/* HISTORIAL */}
-                            {history.length >
+                            {/* {history.length >
                                 0 && (
                                     <section
                                         className="
@@ -3091,7 +3091,7 @@ const SearchBar = ({
                                             )}
                                         </div>
                                     </section>
-                                )}
+                                )} */}
                         </motion.div>
                     )}
 

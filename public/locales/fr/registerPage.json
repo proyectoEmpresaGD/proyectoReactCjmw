@@ -1,0 +1,87 @@
+{
+  "eyebrow": "CJM Group",
+  "hero": {
+    "label": "Demande d'accès",
+    "title": "Votre espace professionnel commence ici.",
+    "description": "Demandez l'accès aux outils et services réservés aux clients professionnels de CJM Group."
+  },
+  "form": {
+    "title": "Demander un accès",
+    "subtitle": "Complétez vos informations. Nous examinerons la demande avant d'activer votre compte.",
+    "submit": "Envoyer la demande",
+    "submitting": "Envoi de la demande...",
+    "haveAccess": "Vous avez déjà accès ?",
+    "login": "Se connecter"
+  },
+  "sections": {
+    "access": {
+      "title": "Données d'accès",
+      "description": "Nous utiliserons cet e-mail pour les communications liées à votre compte."
+    },
+    "personal": {
+      "title": "Informations personnelles"
+    },
+    "address": {
+      "title": "Adresse"
+    },
+    "customer": {
+      "title": "Validation client",
+      "description": "Saisissez un code client valide figurant sur une facture, une commande ou un devis reçu."
+    }
+  },
+  "fields": {
+    "email": "Adresse e-mail",
+    "emailPlaceholder": "vous@entreprise.com",
+    "confirmEmail": "Confirmer l'e-mail",
+    "confirmEmailPlaceholder": "Répétez votre e-mail",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "8 caractères minimum",
+    "confirmPassword": "Confirmer le mot de passe",
+    "confirmPasswordPlaceholder": "Répétez votre mot de passe",
+    "firstName": "Prénom",
+    "firstNamePlaceholder": "Prénom",
+    "lastName": "Nom",
+    "lastNamePlaceholder": "Nom",
+    "phone": "Téléphone",
+    "phonePlaceholder": "Téléphone",
+    "mobilePhone": "Portable",
+    "mobilePhonePlaceholder": "Portable",
+    "streetAddress": "Adresse",
+    "streetAddressPlaceholder": "Adresse",
+    "addressLine2": "Complément d'adresse",
+    "addressLine2Placeholder": "Étage, unité, porte, etc.",
+    "city": "Ville",
+    "cityPlaceholder": "Ville",
+    "stateProvince": "Région / Province",
+    "stateProvincePlaceholder": "Région / Province",
+    "postcode": "Code postal",
+    "postcodePlaceholder": "Code postal",
+    "country": "Pays",
+    "countryPlaceholder": "Pays",
+    "codclien": "Code client",
+    "codclienPlaceholder": "Code client"
+  },
+  "validation": {
+    "emailRequired": "L'adresse e-mail est obligatoire.",
+    "emailInvalid": "L'adresse e-mail n'est pas valide.",
+    "confirmEmailRequired": "Vous devez confirmer l'adresse e-mail.",
+    "emailsNotMatch": "Les adresses e-mail ne correspondent pas.",
+    "firstNameRequired": "Le prénom est obligatoire.",
+    "lastNameRequired": "Le nom est obligatoire.",
+    "passwordRequired": "Le mot de passe est obligatoire.",
+    "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères.",
+    "confirmPasswordRequired": "Vous devez confirmer le mot de passe.",
+    "passwordsNotMatch": "Les mots de passe ne correspondent pas.",
+    "codclienRequired": "Le code client est obligatoire."
+  },
+  "success": {
+    "title": "Demande envoyée",
+    "message": "Votre demande a été enregistrée et reste en attente de validation par un administrateur.",
+    "description": "Une fois approuvée, vous recevrez un e-mail pour vérifier votre identité et activer l'accès.",
+    "back": "Retour à la connexion"
+  },
+  "errors": {
+    "invalidField": "Champ non valide.",
+    "submit": "Impossible d'envoyer la demande d'inscription."
+  }
+}

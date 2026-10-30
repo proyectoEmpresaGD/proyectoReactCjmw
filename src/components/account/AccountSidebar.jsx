@@ -1,170 +1,369 @@
-import { NavLink } from 'react-router-dom';
-import clsx from 'clsx';
+import {
+    Link,
+    useLocation,
+} from "react-router-dom";
+
 import {
     ChevronRight,
+    FileText,
     History,
     PackageCheck,
     UserRound,
-    FileText
-} from 'lucide-react';
+} from "lucide-react";
 
-const sidebarGroups = [
+import clsx from "clsx";
+
+
+const accountNavigation = [
     {
-        title:
-            'Mi cuenta',
-
+        group: "Mi cuenta",
         items: [
             {
-                label:
-                    'Mis datos',
-
-                path:
-                    '/mis-datos',
-
-                icon:
-                    UserRound,
-
+                label: "Mis datos",
+                path: "/mis-datos",
+                icon: UserRound,
                 description:
-                    'Empresa y dirección',
+                    "Empresa y dirección",
+                activePrefixes: [
+                    "/mis-datos",
+                ],
             },
         ],
     },
-
     {
-        title:
-            'Documentos',
-
+        group: "Documentos",
         items: [
             {
-                label:
-                    'Mis facturas',
-
-                path:
-                    '/mis-facturas',
-
-                icon:
-                    FileText,
-
+                label: "Mis facturas",
+                path: "/mis-facturas",
+                icon: FileText,
                 description:
-                    'Facturas emitidas',
+                    "Facturas emitidas",
+                activePrefixes: [
+                    "/mis-facturas",
+                    "/account/invoices",
+                ],
             },
-
+            {
+                label: "Mis pedidos",
+                path: "/mis-pedidos",
+                icon: PackageCheck,
+                description:
+                    "Servidos y pendientes",
+                activePrefixes: [
+                    "/mis-pedidos",
+                    "/account/orders",
+                ],
+            },
             {
                 label:
-                    'Mis pedidos',
-
+                    "Historial devoluciones",
                 path:
-                    '/mis-pedidos',
-
-                icon:
-                    PackageCheck,
-
+                    "/historial-devoluciones",
+                icon: History,
                 description:
-                    'Servidos y pendientes',
-            },
-
-            {
-                label:
-                    'Historial devoluciones',
-
-                path:
-                    '/historial-devoluciones',
-
-                icon:
-                    History,
-
-                description:
-                    'Facturas de devolución',
+                    "Documentos de devolución",
+                activePrefixes: [
+                    "/historial-devoluciones",
+                ],
             },
         ],
     },
 ];
 
-export default function AccountSidebar() {
+
+function isItemActive(
+    pathname,
+    item
+) {
+    return item.activePrefixes.some(
+        prefix =>
+            pathname === prefix ||
+            pathname.startsWith(
+                `${prefix}/`
+            )
+    );
+}
+
+
+export default function AccountSidebar({
+    customer,
+}) {
+    const {
+        pathname,
+    } = useLocation();
+
+
     return (
-        <aside className="lg:sticky lg:top-28 lg:self-start">
-            <div className="rounded-[1.25rem] border border-stone-200 bg-white p-3 shadow-sm">
-                <div className="border-b border-stone-200 px-3 pb-4 pt-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
-                        Área cliente
-                    </p>
+        <aside
+            className="
+                min-w-0
+            "
+        >
+            <div
+                className="
+                    -mx-4
+                    overflow-x-auto
+                    px-4
+                    pb-1
 
-                    <h2 className="mt-1 text-lg font-bold tracking-tight text-stone-900">
-                        Panel privado
-                    </h2>
-                </div>
+                    sm:-mx-6
+                    sm:px-6
 
-                <nav className="mt-4 grid gap-5">
-                    {sidebarGroups.map((group) => (
-                        <div key={group.title}>
-                            <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
-                                {group.title}
-                            </p>
+                    lg:hidden
+                "
+            >
+                <nav
+                    className="
+                        flex
+                        min-w-max
+                        gap-2
+                    "
+                >
+                    {accountNavigation
+                        .flatMap(
+                            group =>
+                                group.items
+                        )
+                        .map(
+                            item => {
+                                const Icon =
+                                    item.icon;
 
-                            <div className="grid gap-1">
-                                {group.items.map((item) => {
-                                    const Icon = item.icon;
+                                const active =
+                                    isItemActive(
+                                        pathname,
+                                        item
+                                    );
 
-                                    return (
-                                        <NavLink
-                                            key={item.path}
-                                            to={item.path}
-                                            className={({ isActive }) =>
-                                                clsx(
-                                                    'group flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition',
-                                                    isActive
-                                                        ? 'bg-stone-900 text-white shadow-sm'
-                                                        : 'text-stone-600 hover:bg-stone-100 hover:text-stone-950'
-                                                )
-                                            }
-                                        >
-                                            {({ isActive }) => (
-                                                <>
-                                                    <span
+                                return (
+                                    <Link
+                                        key={
+                                            item.path
+                                        }
+                                        to={
+                                            item.path
+                                        }
+                                        className={clsx(
+                                            "inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition",
+                                            active
+                                                ? "border-stone-950 bg-stone-950 text-white"
+                                                : "border-stone-300 bg-white/70 text-stone-600 hover:border-stone-500 hover:text-stone-950"
+                                        )}
+                                    >
+                                        <Icon
+                                            className="
+                                                h-4
+                                                w-4
+                                            "
+                                        />
+
+                                        {
+                                            item.label
+                                        }
+                                    </Link>
+                                );
+                            }
+                        )}
+                </nav>
+            </div>
+
+
+            <div
+                className="
+                    hidden
+
+                    lg:sticky
+                    lg:top-[112px]
+                    lg:block
+                "
+            >
+                <div
+                    className="
+                        overflow-hidden
+                        rounded-[26px]
+                        border
+                        border-stone-300/80
+                        bg-white/80
+                    "
+                >
+                    <div
+                        className="
+                            bg-stone-950
+                            px-5
+                            py-6
+                            text-white
+                        "
+                    >
+                        <p
+                            className="
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.24em]
+                                text-stone-400
+                            "
+                        >
+                            Panel privado
+                        </p>
+
+                        <p
+                            className="
+                                mt-3
+                                line-clamp-2
+                                text-base
+                                font-medium
+                                leading-6
+                                text-white
+                            "
+                        >
+                            {customer?.razclien ||
+                                customer?.nomcomer ||
+                                "Mi cuenta"}
+                        </p>
+
+                        <p
+                            className="
+                                mt-2
+                                text-xs
+                                text-stone-400
+                            "
+                        >
+                            Código{" "}
+                            {customer?.codclien ||
+                                "-"}
+                        </p>
+                    </div>
+
+
+                    <nav
+                        className="
+                            px-3
+                            py-4
+                        "
+                    >
+                        {accountNavigation.map(
+                            group => (
+                                <div
+                                    key={
+                                        group.group
+                                    }
+                                    className="first:mt-0 [&:not(:first-child)]:mt-5"
+                                >
+                                    <p
+                                        className="
+                                            mb-2
+                                            px-3
+                                            text-[10px]
+                                            font-semibold
+                                            uppercase
+                                            tracking-[0.2em]
+                                            text-stone-400
+                                        "
+                                    >
+                                        {
+                                            group.group
+                                        }
+                                    </p>
+
+                                    <div
+                                        className="
+                                            space-y-1
+                                        "
+                                    >
+                                        {group.items.map(
+                                            item => {
+                                                const Icon =
+                                                    item.icon;
+
+                                                const active =
+                                                    isItemActive(
+                                                        pathname,
+                                                        item
+                                                    );
+
+                                                return (
+                                                    <Link
+                                                        key={
+                                                            item.path
+                                                        }
+                                                        to={
+                                                            item.path
+                                                        }
                                                         className={clsx(
-                                                            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition',
-                                                            isActive
-                                                                ? 'bg-white/10 text-white'
-                                                                : 'bg-stone-100 text-stone-500 group-hover:bg-white group-hover:text-stone-900'
+                                                            "group flex items-center gap-3 rounded-[16px] px-3 py-3 transition",
+                                                            active
+                                                                ? "bg-[#f1eee8] text-stone-950"
+                                                                : "text-stone-500 hover:bg-stone-50 hover:text-stone-950"
                                                         )}
                                                     >
-                                                        <Icon className="h-4 w-4" />
-                                                    </span>
-
-                                                    <span className="min-w-0 flex-1">
-                                                        <span className="block font-semibold">
-                                                            {item.label}
+                                                        <span
+                                                            className={clsx(
+                                                                "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
+                                                                active
+                                                                    ? "border-stone-950 bg-stone-950 text-white"
+                                                                    : "border-stone-200 bg-white text-stone-500 group-hover:border-stone-300"
+                                                            )}
+                                                        >
+                                                            <Icon
+                                                                className="
+                                                                    h-4
+                                                                    w-4
+                                                                "
+                                                            />
                                                         </span>
 
                                                         <span
-                                                            className={clsx(
-                                                                'mt-0.5 block truncate text-xs',
-                                                                isActive
-                                                                    ? 'text-stone-300'
-                                                                    : 'text-stone-400'
-                                                            )}
+                                                            className="
+                                                                min-w-0
+                                                                flex-1
+                                                            "
                                                         >
-                                                            {item.description}
-                                                        </span>
-                                                    </span>
+                                                            <span
+                                                                className="
+                                                                    block
+                                                                    text-sm
+                                                                    font-medium
+                                                                "
+                                                            >
+                                                                {
+                                                                    item.label
+                                                                }
+                                                            </span>
 
-                                                    <ChevronRight
-                                                        className={clsx(
-                                                            'h-4 w-4 shrink-0 transition',
-                                                            isActive
-                                                                ? 'text-white'
-                                                                : 'text-stone-300 group-hover:text-stone-600'
-                                                        )}
-                                                    />
-                                                </>
-                                            )}
-                                        </NavLink>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    ))}
-                </nav>
+                                                            <span
+                                                                className="
+                                                                    mt-0.5
+                                                                    block
+                                                                    truncate
+                                                                    text-[11px]
+                                                                    text-stone-400
+                                                                "
+                                                            >
+                                                                {
+                                                                    item.description
+                                                                }
+                                                            </span>
+                                                        </span>
+
+                                                        <ChevronRight
+                                                            className={clsx(
+                                                                "h-4 w-4 shrink-0 transition",
+                                                                active
+                                                                    ? "text-stone-900"
+                                                                    : "text-stone-300 group-hover:translate-x-0.5 group-hover:text-stone-500"
+                                                            )}
+                                                        />
+                                                    </Link>
+                                                );
+                                            }
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        )}
+                    </nav>
+                </div>
             </div>
         </aside>
     );

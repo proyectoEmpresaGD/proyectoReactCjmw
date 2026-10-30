@@ -1,14 +1,20 @@
 {
-    "title": "Account verification",
-    "subtitle": "We are processing your account activation.",
-    "loading": "Verifying your email...",
-    "success": "Email verified successfully. Redirecting to login...",
-    "errors": {
-        "invalidLink": "The verification link is invalid or incomplete.",
-        "failed": "Email verification failed. The link may have expired or already been used."
-    },
-    "buttons": {
-        "login": "Go to login",
-        "home": "Back to home"
-    }
+  "eyebrow": "CJM Group",
+  "hero": {
+    "label": "Account activation",
+    "title": "Your access, protected from the very beginning.",
+    "description": "We verify your email before activating access to help keep your professional account secure."
+  },
+  "title": "Account verification",
+  "subtitle": "We are processing your account activation.",
+  "loading": "Verifying your email...",
+  "success": "Email verified successfully. Redirecting to login...",
+  "errors": {
+    "invalidLink": "The verification link is invalid or incomplete.",
+    "failed": "Email verification failed. The link may have expired or already been used."
+  },
+  "buttons": {
+    "login": "Go to login",
+    "home": "Back to home"
+  }
 }

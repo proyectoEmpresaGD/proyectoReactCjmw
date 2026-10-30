@@ -215,14 +215,14 @@ function OrderDetailContent() {
         ]);
 
     return (
-        <div className="grid gap-6">
+        <div className="grid gap-5">
             <div>
                 <button
                     type="button"
                     onClick={() =>
                         navigate(-1)
                     }
-                    className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm transition hover:bg-stone-50"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-stone-500 transition hover:text-stone-950"
                 >
                     <ArrowLeft className="h-4 w-4" />
 
@@ -232,15 +232,15 @@ function OrderDetailContent() {
 
             {loading && (
                 <div className="grid gap-4">
-                    <div className="h-32 animate-pulse rounded-2xl bg-stone-100" />
+                    <div className="h-32 animate-pulse rounded-[26px] bg-white/70" />
 
-                    <div className="h-64 animate-pulse rounded-2xl bg-stone-100" />
+                    <div className="h-64 animate-pulse rounded-[26px] bg-white/70" />
                 </div>
             )}
 
             {!loading &&
                 error && (
-                    <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
+                    <div className="border-l-2 border-red-400 bg-red-50 px-5 py-4 text-sm text-red-700">
                         {error}
                     </div>
                 )}
@@ -249,9 +249,9 @@ function OrderDetailContent() {
                 !error &&
                 order && (
                     <>
-                        <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+                        <section className="rounded-[26px] border border-stone-300/80 bg-white p-6 sm:p-8">
                             <div className="flex items-start gap-4">
-                                <div className="rounded-xl bg-stone-900 p-3 text-white">
+                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-stone-950 text-white">
                                     <Package className="h-6 w-6" />
                                 </div>
 
@@ -260,7 +260,7 @@ function OrderDetailContent() {
                                         Pedido
                                     </p>
 
-                                    <h1 className="mt-1 text-3xl font-bold text-stone-900">
+                                    <h1 className="mt-2 text-3xl font-light tracking-[-0.035em] text-stone-950">
                                         {getOrderLabel(
                                             order
                                         )}
@@ -300,9 +300,9 @@ function OrderDetailContent() {
                             </div>
                         </section>
 
-                        <section className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
-                            <div className="border-b border-stone-200 px-6 py-5">
-                                <h2 className="text-xl font-bold text-stone-900">
+                        <section className="overflow-hidden rounded-[26px] border border-stone-300/80 bg-white">
+                            <div className="border-b border-stone-200 px-6 py-5 sm:px-8">
+                                <h2 className="text-xl font-light tracking-[-0.025em] text-stone-950">
                                     Artículos del pedido
                                 </h2>
 
@@ -315,29 +315,29 @@ function OrderDetailContent() {
 
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-stone-200">
-                                    <thead className="bg-stone-50">
+                                    <thead className="bg-[#fbfaf8]">
                                         <tr>
-                                            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-stone-500">
+                                            <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
                                                 Código
                                             </th>
 
-                                            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-stone-500">
+                                            <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
                                                 Descripción
                                             </th>
 
-                                            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-stone-500">
+                                            <th className="px-5 py-3 text-right text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
                                                 Cantidad
                                             </th>
 
-                                            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-stone-500">
+                                            <th className="px-5 py-3 text-right text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
                                                 Precio
                                             </th>
 
-                                            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-stone-500">
+                                            <th className="px-5 py-3 text-right text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
                                                 Dto.
                                             </th>
 
-                                            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-stone-500">
+                                            <th className="px-5 py-3 text-right text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
                                                 Importe
                                             </th>
                                         </tr>
@@ -355,29 +355,29 @@ function OrderDetailContent() {
                                                         }
                                                         className="hover:bg-stone-50"
                                                     >
-                                                        <td className="whitespace-nowrap px-4 py-4 text-sm font-medium text-stone-900">
+                                                        <td className="whitespace-nowrap px-5 py-4 text-sm font-medium text-stone-900">
                                                             {line.codprodu ||
                                                                 '-'}
                                                         </td>
 
-                                                        <td className="min-w-[320px] px-4 py-4 text-sm text-stone-700">
+                                                        <td className="min-w-[320px] px-5 py-4 text-sm text-stone-700">
                                                             {line.desprodu ||
                                                                 '-'}
                                                         </td>
 
-                                                        <td className="whitespace-nowrap px-4 py-4 text-right text-sm text-stone-700">
+                                                        <td className="whitespace-nowrap px-5 py-4 text-right text-sm text-stone-600">
                                                             {formatNumber(
                                                                 line.cantidad
                                                             )}
                                                         </td>
 
-                                                        <td className="whitespace-nowrap px-4 py-4 text-right text-sm text-stone-700">
+                                                        <td className="whitespace-nowrap px-5 py-4 text-right text-sm text-stone-600">
                                                             {formatCurrency(
                                                                 line.precio
                                                             )}
                                                         </td>
 
-                                                        <td className="whitespace-nowrap px-4 py-4 text-right text-sm text-stone-700">
+                                                        <td className="whitespace-nowrap px-5 py-4 text-right text-sm text-stone-600">
                                                             {Number(
                                                                 line.dt1 ||
                                                                 0
@@ -388,7 +388,7 @@ function OrderDetailContent() {
                                                                 : '-'}
                                                         </td>
 
-                                                        <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-stone-900">
+                                                        <td className="whitespace-nowrap px-5 py-4 text-right text-sm font-medium text-stone-950">
                                                             {formatCurrency(
                                                                 line.importe
                                                             )}
@@ -401,37 +401,37 @@ function OrderDetailContent() {
                             </div>
                         </section>
 
-                        <section className="grid gap-4 sm:grid-cols-3">
-                            <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+                        <section className="grid overflow-hidden rounded-[26px] border border-stone-300/80 bg-white sm:grid-cols-3">
+                            <div className="border-b border-stone-200 p-5 sm:border-b-0 sm:border-r sm:last:border-r-0">
                                 <p className="text-sm text-stone-500">
                                     Cantidad total
                                 </p>
 
-                                <p className="mt-2 text-2xl font-bold text-stone-900">
+                                <p className="mt-2 text-2xl font-light tracking-[-0.03em] text-stone-950">
                                     {formatNumber(
                                         totals.units
                                     )}
                                 </p>
                             </div>
 
-                            <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+                            <div className="border-b border-stone-200 p-5 sm:border-b-0 sm:border-r sm:last:border-r-0">
                                 <p className="text-sm text-stone-500">
                                     Importe bruto
                                 </p>
 
-                                <p className="mt-2 text-2xl font-bold text-stone-900">
+                                <p className="mt-2 text-2xl font-light tracking-[-0.03em] text-stone-950">
                                     {formatCurrency(
                                         totals.gross
                                     )}
                                 </p>
                             </div>
 
-                            <div className="rounded-2xl border border-stone-900 bg-stone-900 p-5 text-white shadow-sm">
+                            <div className="bg-stone-950 p-5 text-white">
                                 <p className="text-sm text-stone-300">
                                     Total pedido
                                 </p>
 
-                                <p className="mt-2 text-2xl font-bold">
+                                <p className="mt-2 text-2xl font-light tracking-[-0.03em]">
                                     {formatCurrency(
                                         totals.total
                                     )}

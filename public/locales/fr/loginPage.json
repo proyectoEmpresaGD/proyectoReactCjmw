@@ -1,7 +1,48 @@
 {
-    "verification": {
-        "successMessage": "Votre compte a été vérifié avec succès. Vous pouvez maintenant vous connecter.",
-        "errorMessage": "Votre compte n’a pas pu être vérifié. Le lien a peut-être expiré.",
-        "close": "Fermer"
-    }
+  "eyebrow": "CJM Group",
+  "hero": {
+    "label": "Espace professionnel",
+    "title": "Un accès pensé pour accompagner chaque projet.",
+    "description": "Consultez vos informations, gérez votre relation avec CJM Group et accédez aux outils réservés aux clients professionnels."
+  },
+  "form": {
+    "title": "Bon retour",
+    "subtitle": "Connectez-vous avec vos identifiants pour accéder à votre espace privé.",
+    "email": "Adresse e-mail",
+    "emailPlaceholder": "vous@entreprise.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "Saisissez votre mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion...",
+    "noAccess": "Vous n'avez pas encore accès ?",
+    "requestAccess": "Demander un accès"
+  },
+  "verification": {
+    "successMessage": "Votre compte a été vérifié avec succès. Vous pouvez maintenant vous connecter.",
+    "errorMessage": "Votre compte n’a pas pu être vérifié. Le lien a peut-être expiré.",
+    "close": "Fermer"
+  },
+  "forgot": {
+    "eyebrow": "Récupération d'accès",
+    "title": "Récupérer le mot de passe",
+    "description": "Saisissez l'adresse e-mail associée à votre compte. Si elle est enregistrée, vous recevrez un lien pour créer un nouveau mot de passe.",
+    "email": "Adresse e-mail",
+    "emailPlaceholder": "vous@entreprise.com",
+    "submit": "Envoyer le lien",
+    "loading": "Envoi...",
+    "success": "Si l'adresse est enregistrée, vous recevrez un lien de réinitialisation. Pensez également à vérifier vos courriers indésirables.",
+    "error": "Nous n'avons pas pu envoyer la demande. Réessayez.",
+    "back": "Retour",
+    "close": "Fermer la récupération du mot de passe"
+  },
+  "errors": {
+    "accountDenied": "Votre demande a été refusée. Si vous pensez qu'il s'agit d'une erreur, contactez-nous.",
+    "accountNotApproved": "Votre demande est toujours en attente d'approbation.",
+    "accountInactive": "Votre compte n'est pas encore actif.",
+    "emailNotVerified": "Votre compte a été approuvé, mais vous devez encore vérifier votre adresse e-mail.",
+    "generic": "Impossible de se connecter."
+  }
 }

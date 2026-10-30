@@ -58,7 +58,7 @@ function ProductImage({ linea }) {
 
     if (!linea.imagenProducto) {
         return (
-            <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border border-stone-200 bg-stone-100 text-stone-400">
+            <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-[16px] bg-[#f1eee8] text-stone-400">
                 <ImageOff className="h-5 w-5" />
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em]">
                     Sin imagen
@@ -68,7 +68,7 @@ function ProductImage({ linea }) {
     }
 
     return (
-        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
+        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-[16px] bg-stone-100">
             <img
                 src={linea.imagenProducto}
                 alt={imageAlt}
@@ -84,7 +84,7 @@ function ProductImage({ linea }) {
 
 function ProductLineCard({ linea }) {
     return (
-        <article className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+        <article className="rounded-[20px] border border-stone-200 bg-white p-4">
             <div className="flex gap-4">
                 <ProductImage linea={linea} />
 
@@ -115,7 +115,7 @@ function ProductLineCard({ linea }) {
                         </div>
 
                         <div className="shrink-0 rounded-xl bg-stone-900 px-4 py-3 text-white lg:min-w-[140px] lg:text-right">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-300">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-400">
                                 Importe
                             </p>
                             <p className="mt-1 text-base font-semibold">
@@ -169,7 +169,7 @@ function ProductLineCard({ linea }) {
 
 function DeliveryNoteBlock({ albaran }) {
     return (
-        <section className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+        <section className="rounded-[22px] border border-stone-200 bg-[#fbfaf8] p-5">
             <div className="mb-4 flex flex-col gap-3 border-b border-stone-200 pb-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
@@ -289,31 +289,31 @@ export default function AccountInvoiceDetailPage() {
 
     return (
         <CartProvider>
-            <div className="min-h-screen mt-[5%] bg-[radial-gradient(circle_at_top,#f5f5f4,white_40%,#fafaf9)]">
+            <div className="min-h-screen bg-[#f4f2ee] text-stone-950">
                 <Header />
 
-                <main className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
+                <main className="mx-auto w-full max-w-[1480px] px-4 pb-20 pt-[96px] sm:px-6 sm:pt-[108px] lg:px-8 lg:pb-28 lg:pt-[124px]">
                     <button
                         type="button"
                         onClick={() => navigate('/mis-facturas')}
-                        className="mb-6 inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm transition hover:bg-stone-50"
+                        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-stone-500 transition hover:text-stone-950"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Volver a mis facturas
                     </button>
 
                     {loading || authLoading ? (
-                        <div className="rounded-[1.75rem] border border-stone-200 bg-white p-6 shadow-sm">
+                        <div className="rounded-[26px] border border-stone-300/80 bg-white p-6 sm:p-8">
                             <div className="h-8 w-64 animate-pulse rounded-xl bg-stone-100" />
                             <div className="mt-5 h-28 animate-pulse rounded-2xl bg-stone-100" />
                             <div className="mt-4 h-28 animate-pulse rounded-2xl bg-stone-100" />
                         </div>
                     ) : error ? (
-                        <div className="rounded-[1.75rem] border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
+                        <div className="border-l-2 border-red-400 bg-red-50 px-5 py-4 text-sm text-red-700">
                             {error}
                         </div>
                     ) : !invoice ? (
-                        <div className="rounded-[1.75rem] border border-stone-200 bg-white p-6 text-sm text-stone-600 shadow-sm">
+                        <div className="rounded-[26px] border border-stone-300/80 bg-white p-6 text-sm text-stone-600">
                             No se ha encontrado la factura.
                         </div>
                     ) : (
@@ -323,15 +323,15 @@ export default function AccountInvoiceDetailPage() {
                             transition={{ duration: 0.3 }}
                             className="grid gap-6"
                         >
-                            <section className="rounded-[1.75rem] border border-stone-200 bg-white p-6 shadow-[0_20px_55px_rgba(28,25,23,0.08)]">
+                            <section className="rounded-[28px] border border-stone-300/80 bg-white p-6 sm:p-8">
                                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                                     <div>
-                                        <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                                        <div className="inline-flex items-center gap-2 rounded-full bg-[#f1eee8] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-600">
                                             <FileText className="h-3.5 w-3.5" />
                                             Detalle de factura
                                         </div>
 
-                                        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-stone-900">
+                                        <h1 className="mt-4 text-3xl font-light tracking-[-0.04em] text-stone-950 sm:text-4xl">
                                             {invoice.sfactura ||
                                                 `${invoice.codserfacventa || ''}${invoice.nfacventa || ''}`}
                                         </h1>
@@ -349,7 +349,7 @@ export default function AccountInvoiceDetailPage() {
                                             type="button"
                                             onClick={handleDownloadPdf}
                                             disabled={pdfLoading}
-                                            className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-stone-900 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                            className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-stone-950 px-5 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
                                         >
                                             <Download className="h-4 w-4" />
                                             {pdfLoading
@@ -365,7 +365,7 @@ export default function AccountInvoiceDetailPage() {
                                     </div>
 
                                     <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[520px]">
-                                        <div className="rounded-2xl bg-stone-50 px-4 py-3">
+                                        <div className="border-l border-stone-200 px-4 py-2 first:border-l-0">
                                             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-400">
                                                 Base
                                             </p>
@@ -374,7 +374,7 @@ export default function AccountInvoiceDetailPage() {
                                             </p>
                                         </div>
 
-                                        <div className="rounded-2xl bg-stone-50 px-4 py-3">
+                                        <div className="border-l border-stone-200 px-4 py-2 first:border-l-0">
                                             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-400">
                                                 IVA
                                             </p>
@@ -383,8 +383,8 @@ export default function AccountInvoiceDetailPage() {
                                             </p>
                                         </div>
 
-                                        <div className="rounded-2xl bg-stone-900 px-4 py-3 text-white">
-                                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-300">
+                                        <div className="bg-stone-950 px-4 py-3 text-white">
+                                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-400">
                                                 Total
                                             </p>
                                             <p className="mt-1 font-semibold">
@@ -394,7 +394,7 @@ export default function AccountInvoiceDetailPage() {
                                     </div>
                                 </div>
 
-                                <div className="mt-6 grid gap-3 rounded-2xl border border-stone-200 bg-stone-50 p-4 md:grid-cols-3">
+                                <div className="mt-7 grid gap-5 border-t border-stone-200 pt-6 md:grid-cols-3">
 
 
                                     <div>
@@ -417,7 +417,7 @@ export default function AccountInvoiceDetailPage() {
                                 </div>
 
                                 {invoice.comentario && (
-                                    <div className="mt-4 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                                    <div className="mt-5 border-l-2 border-stone-300 bg-[#fbfaf8] px-4 py-3">
                                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
                                             Comentario
                                         </p>
@@ -429,16 +429,16 @@ export default function AccountInvoiceDetailPage() {
                                 )}
                             </section>
 
-                            <section className="rounded-[1.75rem] border border-stone-200 bg-white p-6 shadow-[0_20px_55px_rgba(28,25,23,0.08)]">
+                            <section className="rounded-[28px] border border-stone-300/80 bg-white p-6 sm:p-8">
                                 <div className="mb-5 flex items-center gap-2">
                                     <ReceiptText className="h-5 w-5 text-stone-600" />
-                                    <h2 className="text-xl font-semibold text-stone-900">
+                                    <h2 className="text-xl font-light tracking-[-0.025em] text-stone-950">
                                         Albaranes y productos
                                     </h2>
                                 </div>
 
                                 {!invoice.albaranes?.length ? (
-                                    <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50 px-5 py-8 text-center text-sm text-stone-500">
+                                    <div className="rounded-[22px] border border-dashed border-stone-300 bg-[#fbfaf8] px-5 py-10 text-center text-sm text-stone-500">
                                         Esta factura no tiene albaranes asociados.
                                     </div>
                                 ) : (

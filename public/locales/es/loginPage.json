@@ -1,7 +1,48 @@
 {
-    "verification": {
-        "successMessage": "Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.",
-        "errorMessage": "No se ha podido verificar tu cuenta. El enlace puede haber caducado.",
-        "close": "Cerrar"
-    }
+  "eyebrow": "CJM Group",
+  "hero": {
+    "label": "Área profesional",
+    "title": "Un acceso pensado para acompañar cada proyecto.",
+    "description": "Consulta tu información, gestiona tu relación con CJM Group y accede a las herramientas reservadas para clientes profesionales."
+  },
+  "form": {
+    "title": "Bienvenido de nuevo",
+    "subtitle": "Accede con tus credenciales para entrar en tu área privada.",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tuemail@empresa.com",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Introduce tu contraseña",
+    "forgotPassword": "¿Has olvidado tu contraseña?",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "submit": "Iniciar sesión",
+    "submitting": "Entrando...",
+    "noAccess": "¿Todavía no tienes acceso?",
+    "requestAccess": "Solicita tu alta"
+  },
+  "verification": {
+    "successMessage": "Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.",
+    "errorMessage": "No se ha podido verificar tu cuenta. El enlace puede haber caducado.",
+    "close": "Cerrar"
+  },
+  "forgot": {
+    "eyebrow": "Recuperación de acceso",
+    "title": "Recuperar contraseña",
+    "description": "Introduce el correo asociado a tu cuenta. Si está registrado, recibirás un enlace para crear una nueva contraseña.",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tuemail@empresa.com",
+    "submit": "Enviar enlace",
+    "loading": "Enviando...",
+    "success": "Si el correo está registrado, recibirás un enlace para cambiar tu contraseña. Revisa también la carpeta de correo no deseado.",
+    "error": "No hemos podido enviar la solicitud. Inténtalo de nuevo.",
+    "back": "Volver",
+    "close": "Cerrar recuperación de contraseña"
+  },
+  "errors": {
+    "accountDenied": "Tu solicitud ha sido denegada. Si crees que es un error, contacta con nosotros.",
+    "accountNotApproved": "Tu solicitud todavía está pendiente de aprobación.",
+    "accountInactive": "Tu cuenta todavía no está activa.",
+    "emailNotVerified": "Tu cuenta ha sido aprobada, pero todavía debes verificar tu correo electrónico.",
+    "generic": "No se pudo iniciar sesión."
+  }
 }

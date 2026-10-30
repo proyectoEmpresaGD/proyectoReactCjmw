@@ -1,173 +1,581 @@
-import { useState } from "react";
+import {
+    useState,
+} from "react";
 
-function formatDate(value) {
-    if (!value) return "-";
+import {
+    ChevronDown,
+    ChevronUp,
+    FileClock,
+} from "lucide-react";
 
-    return new Intl.DateTimeFormat("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    }).format(new Date(value));
+
+function formatDate(
+    value
+) {
+    if (!value) {
+        return "-";
+    }
+
+    return new Intl.DateTimeFormat(
+        "es-ES",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        }
+    ).format(
+        new Date(
+            value
+        )
+    );
 }
 
-function formatCurrency(value) {
-    const numericValue = Number(value || 0);
 
-    return new Intl.NumberFormat("es-ES", {
-        style: "currency",
-        currency: "EUR",
-    }).format(numericValue);
+function formatCurrency(
+    value
+) {
+    return new Intl.NumberFormat(
+        "es-ES",
+        {
+            style: "currency",
+            currency: "EUR",
+        }
+    ).format(
+        Number(
+            value ||
+                0
+        )
+    );
 }
 
-export default function DeliveryNotesSection({ deliveryNotes = [] }) {
-    const [openDeliveryNoteId, setOpenDeliveryNoteId] = useState(null);
 
-    if (!deliveryNotes.length) {
+export default function DeliveryNotesSection({
+    deliveryNotes = [],
+}) {
+    const [
+        openDeliveryNoteId,
+        setOpenDeliveryNoteId,
+    ] = useState(null);
+
+
+    if (
+        !deliveryNotes.length
+    ) {
         return (
-            <section className="mt-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                <h2 className="text-lg font-semibold text-slate-900">
-                    Albaranes sin factura
-                </h2>
+            <section
+                className="
+                    flex
+                    flex-col
+                    gap-4
+                    rounded-[26px]
+                    border
+                    border-stone-300/80
+                    bg-white/55
+                    px-6
+                    py-7
 
-                <p className="mt-2 text-sm text-slate-500">
-                    No tienes albaranes pendientes de factura.
-                </p>
+                    sm:flex-row
+                    sm:items-center
+                    sm:justify-between
+                "
+            >
+                <div
+                    className="
+                        flex
+                        items-start
+                        gap-4
+                    "
+                >
+                    <span
+                        className="
+                            flex
+                            h-10
+                            w-10
+                            shrink-0
+                            items-center
+                            justify-center
+                            rounded-full
+                            bg-white
+                            text-stone-500
+                        "
+                    >
+                        <FileClock
+                            className="
+                                h-4
+                                w-4
+                            "
+                        />
+                    </span>
+
+                    <div>
+                        <h2
+                            className="
+                                text-sm
+                                font-medium
+                                text-stone-900
+                            "
+                        >
+                            Albaranes sin factura
+                        </h2>
+
+                        <p
+                            className="
+                                mt-1
+                                text-sm
+                                leading-6
+                                text-stone-500
+                            "
+                        >
+                            No tienes albaranes pendientes de factura.
+                        </p>
+                    </div>
+                </div>
+
+                <span
+                    className="
+                        w-fit
+                        rounded-full
+                        bg-emerald-50
+                        px-3
+                        py-1.5
+                        text-xs
+                        font-medium
+                        text-emerald-700
+                    "
+                >
+                    Todo al día
+                </span>
             </section>
         );
     }
 
-    return (
-        <section className="mt-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4">
-                <h2 className="text-lg font-semibold text-slate-900">
-                    Albaranes sin factura
-                </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
-                    Albaranes del cliente que todavía no tienen factura asociada.
+    return (
+        <section
+            className="
+                overflow-hidden
+                rounded-[26px]
+                border
+                border-stone-300/80
+                bg-white
+            "
+        >
+            <div
+                className="
+                    border-b
+                    border-stone-200
+                    px-6
+                    py-5
+                "
+            >
+                <p
+                    className="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-[0.22em]
+                        text-stone-400
+                    "
+                >
+                    Pendientes
                 </p>
+
+                <div
+                    className="
+                        mt-2
+                        flex
+                        items-end
+                        justify-between
+                        gap-4
+                    "
+                >
+                    <div>
+                        <h2
+                            className="
+                                text-xl
+                                font-light
+                                tracking-[-0.025em]
+                                text-stone-950
+                            "
+                        >
+                            Albaranes sin factura
+                        </h2>
+
+                        <p
+                            className="
+                                mt-1
+                                text-sm
+                                text-stone-500
+                            "
+                        >
+                            Documentos que todavía no tienen factura asociada.
+                        </p>
+                    </div>
+
+                    <span
+                        className="
+                            text-sm
+                            font-medium
+                            text-stone-500
+                        "
+                    >
+                        {
+                            deliveryNotes.length
+                        }
+                    </span>
+                </div>
             </div>
 
-            <div className="space-y-3">
-                {deliveryNotes.map((deliveryNote) => {
-                    const deliveryNoteId = [
-                        deliveryNote.ejercicio,
-                        deliveryNote.codseralbventa,
-                        deliveryNote.nalbventa,
-                    ].join("-");
 
-                    const isOpen = openDeliveryNoteId === deliveryNoteId;
+            <div>
+                {deliveryNotes.map(
+                    deliveryNote => {
+                        const deliveryNoteId =
+                            [
+                                deliveryNote.ejercicio,
+                                deliveryNote.codseralbventa,
+                                deliveryNote.nalbventa,
+                            ].join(
+                                "-"
+                            );
 
-                    return (
-                        <article
-                            key={deliveryNoteId}
-                            className="rounded-lg border border-slate-200"
-                        >
-                            <button
-                                type="button"
-                                className="flex w-full flex-col gap-3 p-4 text-left md:flex-row md:items-center md:justify-between"
-                                onClick={() =>
-                                    setOpenDeliveryNoteId(isOpen ? null : deliveryNoteId)
+                        const isOpen =
+                            openDeliveryNoteId ===
+                            deliveryNoteId;
+
+
+                        return (
+                            <article
+                                key={
+                                    deliveryNoteId
                                 }
+                                className="
+                                    border-b
+                                    border-stone-200
+                                    last:border-b-0
+                                "
                             >
-                                <div>
-                                    <p className="text-sm font-semibold text-slate-900">
-                                        Albarán {deliveryNote.codseralbventa}
-                                        /
-                                        {deliveryNote.nalbventa}
-                                    </p>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setOpenDeliveryNoteId(
+                                            isOpen
+                                                ? null
+                                                : deliveryNoteId
+                                        )
+                                    }
+                                    className="
+                                        flex
+                                        w-full
+                                        flex-col
+                                        gap-4
+                                        px-6
+                                        py-5
+                                        text-left
+                                        transition
 
-                                    <p className="mt-1 text-sm text-slate-500">
-                                        Fecha: {formatDate(deliveryNote.fecha)}
-                                    </p>
+                                        hover:bg-[#fbfaf8]
 
-                                    {deliveryNote.referencia && (
-                                        <p className="mt-1 text-sm text-slate-500">
-                                            Ref: {deliveryNote.referencia}
+                                        md:flex-row
+                                        md:items-center
+                                        md:justify-between
+                                    "
+                                >
+                                    <div>
+                                        <p
+                                            className="
+                                                text-base
+                                                font-medium
+                                                text-stone-900
+                                            "
+                                        >
+                                            Albarán{" "}
+                                            {
+                                                deliveryNote.codseralbventa
+                                            }
+                                            {
+                                                deliveryNote.nalbventa
+                                            }
                                         </p>
-                                    )}
-                                </div>
 
-                                <div className="text-left md:text-right">
-                                    <p className="text-sm text-slate-500">
-                                        Total
-                                    </p>
+                                        <div
+                                            className="
+                                                mt-2
+                                                flex
+                                                flex-wrap
+                                                gap-x-5
+                                                gap-y-1
+                                                text-xs
+                                                text-stone-500
+                                            "
+                                        >
+                                            <span>
+                                                {formatDate(
+                                                    deliveryNote.fecha
+                                                )}
+                                            </span>
 
-                                    <p className="text-base font-semibold text-slate-900">
-                                        {formatCurrency(
-                                            deliveryNote.imptotalbaran ||
-                                            deliveryNote.imptotal
-                                        )}
-                                    </p>
-                                </div>
-                            </button>
-
-                            {isOpen && (
-                                <div className="border-t border-slate-200 p-4">
-                                    {!deliveryNote.lineas?.length ? (
-                                        <p className="text-sm text-slate-500">
-                                            Este albarán no tiene líneas asociadas.
-                                        </p>
-                                    ) : (
-                                        <div className="overflow-x-auto">
-                                            <table className="min-w-full text-sm">
-                                                <thead>
-                                                    <tr className="border-b border-slate-200 text-left text-slate-500">
-                                                        <th className="py-2 pr-4 font-medium">
-                                                            Código
-                                                        </th>
-                                                        <th className="py-2 pr-4 font-medium">
-                                                            Producto
-                                                        </th>
-                                                        <th className="py-2 pr-4 text-right font-medium">
-                                                            Cantidad
-                                                        </th>
-                                                        <th className="py-2 pr-4 text-right font-medium">
-                                                            Precio
-                                                        </th>
-                                                        <th className="py-2 text-right font-medium">
-                                                            Importe
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody>
-                                                    {deliveryNote.lineas.map((linea) => (
-                                                        <tr
-                                                            key={linea.linea}
-                                                            className="border-b border-slate-100 last:border-0"
-                                                        >
-                                                            <td className="py-2 pr-4 text-slate-600">
-                                                                {linea.codprodu || "-"}
-                                                            </td>
-
-                                                            <td className="py-2 pr-4 text-slate-900">
-                                                                {linea.desprodu || "-"}
-                                                            </td>
-
-                                                            <td className="py-2 pr-4 text-right text-slate-600">
-                                                                {linea.cantidad ?? "-"}{" "}
-                                                                {linea.unidadventa || ""}
-                                                            </td>
-
-                                                            <td className="py-2 pr-4 text-right text-slate-600">
-                                                                {formatCurrency(linea.precio)}
-                                                            </td>
-
-                                                            <td className="py-2 text-right font-medium text-slate-900">
-                                                                {formatCurrency(linea.importe)}
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                            {deliveryNote.referencia && (
+                                                <span>
+                                                    Ref.{" "}
+                                                    {
+                                                        deliveryNote.referencia
+                                                    }
+                                                </span>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            )}
-                        </article>
-                    );
-                })}
+                                    </div>
+
+                                    <div
+                                        className="
+                                            flex
+                                            items-center
+                                            justify-between
+                                            gap-5
+
+                                            md:justify-end
+                                        "
+                                    >
+                                        <div
+                                            className="
+                                                md:text-right
+                                            "
+                                        >
+                                            <p
+                                                className="
+                                                    text-[10px]
+                                                    font-semibold
+                                                    uppercase
+                                                    tracking-[0.15em]
+                                                    text-stone-400
+                                                "
+                                            >
+                                                Total
+                                            </p>
+
+                                            <p
+                                                className="
+                                                    mt-1
+                                                    text-lg
+                                                    font-light
+                                                    text-stone-950
+                                                "
+                                            >
+                                                {formatCurrency(
+                                                    deliveryNote.imptotalbaran ||
+                                                        deliveryNote.imptotal
+                                                )}
+                                            </p>
+                                        </div>
+
+                                        {isOpen ? (
+                                            <ChevronUp
+                                                className="
+                                                    h-4
+                                                    w-4
+                                                    text-stone-400
+                                                "
+                                            />
+                                        ) : (
+                                            <ChevronDown
+                                                className="
+                                                    h-4
+                                                    w-4
+                                                    text-stone-400
+                                                "
+                                            />
+                                        )}
+                                    </div>
+                                </button>
+
+
+                                {isOpen && (
+                                    <div
+                                        className="
+                                            border-t
+                                            border-stone-200
+                                            bg-[#fbfaf8]
+                                            px-6
+                                            py-5
+                                        "
+                                    >
+                                        {!deliveryNote.lineas
+                                            ?.length ? (
+                                            <p
+                                                className="
+                                                    text-sm
+                                                    text-stone-500
+                                                "
+                                            >
+                                                Este albarán no tiene líneas asociadas.
+                                            </p>
+                                        ) : (
+                                            <div
+                                                className="
+                                                    overflow-x-auto
+                                                "
+                                            >
+                                                <table
+                                                    className="
+                                                        min-w-full
+                                                        text-sm
+                                                    "
+                                                >
+                                                    <thead>
+                                                        <tr
+                                                            className="
+                                                                border-b
+                                                                border-stone-300
+                                                                text-left
+                                                                text-[10px]
+                                                                font-semibold
+                                                                uppercase
+                                                                tracking-[0.14em]
+                                                                text-stone-400
+                                                            "
+                                                        >
+                                                            <th
+                                                                className="
+                                                                    py-3
+                                                                    pr-5
+                                                                    font-semibold
+                                                                "
+                                                            >
+                                                                Código
+                                                            </th>
+
+                                                            <th
+                                                                className="
+                                                                    py-3
+                                                                    pr-5
+                                                                    font-semibold
+                                                                "
+                                                            >
+                                                                Producto
+                                                            </th>
+
+                                                            <th
+                                                                className="
+                                                                    py-3
+                                                                    pr-5
+                                                                    text-right
+                                                                    font-semibold
+                                                                "
+                                                            >
+                                                                Cantidad
+                                                            </th>
+
+                                                            <th
+                                                                className="
+                                                                    py-3
+                                                                    pr-5
+                                                                    text-right
+                                                                    font-semibold
+                                                                "
+                                                            >
+                                                                Precio
+                                                            </th>
+
+                                                            <th
+                                                                className="
+                                                                    py-3
+                                                                    text-right
+                                                                    font-semibold
+                                                                "
+                                                            >
+                                                                Importe
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        {deliveryNote.lineas.map(
+                                                            linea => (
+                                                                <tr
+                                                                    key={
+                                                                        linea.linea
+                                                                    }
+                                                                    className="
+                                                                        border-b
+                                                                        border-stone-200
+                                                                        last:border-0
+                                                                    "
+                                                                >
+                                                                    <td
+                                                                        className="
+                                                                            py-3
+                                                                            pr-5
+                                                                            text-stone-500
+                                                                        "
+                                                                    >
+                                                                        {linea.codprodu ||
+                                                                            "-"}
+                                                                    </td>
+
+                                                                    <td
+                                                                        className="
+                                                                            py-3
+                                                                            pr-5
+                                                                            font-medium
+                                                                            text-stone-900
+                                                                        "
+                                                                    >
+                                                                        {linea.desprodu ||
+                                                                            "-"}
+                                                                    </td>
+
+                                                                    <td
+                                                                        className="
+                                                                            py-3
+                                                                            pr-5
+                                                                            text-right
+                                                                            text-stone-500
+                                                                        "
+                                                                    >
+                                                                        {linea.cantidad ??
+                                                                            "-"}{" "}
+                                                                        {linea.unidadventa ||
+                                                                            ""}
+                                                                    </td>
+
+                                                                    <td
+                                                                        className="
+                                                                            py-3
+                                                                            pr-5
+                                                                            text-right
+                                                                            text-stone-500
+                                                                        "
+                                                                    >
+                                                                        {formatCurrency(
+                                                                            linea.precio
+                                                                        )}
+                                                                    </td>
+
+                                                                    <td
+                                                                        className="
+                                                                            py-3
+                                                                            text-right
+                                                                            font-medium
+                                                                            text-stone-900
+                                                                        "
+                                                                    >
+                                                                        {formatCurrency(
+                                                                            linea.importe
+                                                                        )}
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        )}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </article>
+                        );
+                    }
+                )}
             </div>
         </section>
     );

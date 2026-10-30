@@ -761,7 +761,6 @@ export const inactiveButtonClass = "bg-gray-100 text-gray-700 hover:bg-blue-100"
 //!!!!!!!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
 export const searchNewCollections = [
     {
         brand: "ARE",

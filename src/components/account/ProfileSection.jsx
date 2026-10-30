@@ -1,142 +1,484 @@
-import { motion } from 'framer-motion';
 import {
+    motion,
+} from "framer-motion";
+
+import {
+    BadgeCheck,
     Building2,
     CreditCard,
     Mail,
     MapPin,
     Phone,
     ReceiptText,
-    UserRound,
-} from 'lucide-react';
+} from "lucide-react";
+
 
 const profileFields = [
     {
-        key: 'razclien',
-        label: 'Razón social',
+        key: "razclien",
+        label: "Razón social",
         icon: Building2,
-        getValue: (customer) => customer.razclien || customer.nomcomer || '-',
+        getValue: customer =>
+            customer.razclien ||
+            customer.nomcomer ||
+            "-",
     },
     {
-        key: 'nif',
-        label: 'NIF',
+        key: "nif",
+        label: "NIF",
         icon: ReceiptText,
-        getValue: (customer) => customer.nif || '-',
+        getValue: customer =>
+            customer.nif ||
+            "-",
     },
     {
-        key: 'email',
-        label: 'Email',
+        key: "email",
+        label: "Email",
         icon: Mail,
-        getValue: (customer) => customer.email || '-',
+        getValue: customer =>
+            customer.email ||
+            "-",
     },
     {
-        key: 'telefono',
-        label: 'Teléfono',
+        key: "telefono",
+        label: "Teléfono",
         icon: Phone,
-        getValue: (customer) => customer.tlfno || customer.movil || '-',
+        getValue: customer =>
+            customer.tlfno ||
+            customer.movil ||
+            "-",
     },
     {
-        key: 'direccion',
-        label: 'Dirección',
+        key: "direccion",
+        label: "Dirección",
         icon: MapPin,
-        getValue: (customer) => customer.direccion || customer.dirclien || '-',
+        getValue: customer =>
+            customer.direccion ||
+            customer.dirclien ||
+            "-",
     },
     {
-        key: 'poblacion',
-        label: 'Población',
+        key: "poblacion",
+        label: "Población",
         icon: MapPin,
-        getValue: (customer) => customer.poblacion || '-',
+        getValue: customer =>
+            customer.poblacion ||
+            "-",
     },
     {
-        key: 'provincia',
-        label: 'Provincia',
+        key: "provincia",
+        label: "Provincia",
         icon: MapPin,
-        getValue: (customer) => customer.provincia || '-',
+        getValue: customer =>
+            customer.provincia ||
+            "-",
     },
     {
-        key: 'cp',
-        label: 'Código postal',
+        key: "cp",
+        label: "Código postal",
         icon: MapPin,
-        getValue: (customer) => customer.codpostal || customer.cp || '-',
+        getValue: customer =>
+            customer.codpostal ||
+            customer.cp ||
+            "-",
     },
     {
-        key: 'pais',
-        label: 'País',
+        key: "pais",
+        label: "País",
         icon: MapPin,
-        getValue: (customer) => customer.pais || '-',
+        getValue: customer =>
+            customer.pais ||
+            "-",
     },
 ];
 
-export default function ProfileSection({ customer }) {
+
+export default function ProfileSection({
+    customer,
+}) {
     return (
-        <section className="grid gap-5">
-            <motion.article
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35 }}
-                className="relative overflow-hidden rounded-[1.75rem] border border-stone-200/80 bg-white/90 p-6 shadow-[0_20px_55px_rgba(28,25,23,0.08)] backdrop-blur"
+        <div
+            className="
+                grid
+                gap-5
+            "
+        >
+            <motion.section
+                initial={{
+                    opacity: 0,
+                    y: 12,
+                }}
+                animate={{
+                    opacity: 1,
+                    y: 0,
+                }}
+                transition={{
+                    duration: 0.3,
+                }}
+                className="
+                    overflow-hidden
+                    rounded-[28px]
+                    border
+                    border-stone-300/80
+                    bg-white
+                "
             >
-                <div className="pointer-events-none absolute right-0 top-0 h-28 w-28 rounded-full bg-stone-100 blur-3xl" />
+                <div
+                    className="
+                        grid
 
-                <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                    <div>
-                        <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-stone-500">
-                            <UserRound className="h-3.5 w-3.5" />
-                            Mis datos
-                        </div>
+                        xl:grid-cols-[1.1fr_0.9fr]
+                    "
+                >
+                    <div
+                        className="
+                            p-6
 
-                        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-stone-900">
-                            {customer.razclien || customer.nomcomer || 'Cliente'}
+                            sm:p-8
+                        "
+                    >
+                        <p
+                            className="
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.25em]
+                                text-stone-400
+                            "
+                        >
+                            Cliente vinculado
+                        </p>
+
+                        <h2
+                            className="
+                                mt-3
+                                max-w-2xl
+                                text-2xl
+                                font-light
+                                tracking-[-0.035em]
+                                text-stone-950
+
+                                sm:text-3xl
+                            "
+                        >
+                            {customer.razclien ||
+                                customer.nomcomer ||
+                                "Cliente"}
                         </h2>
 
-                        <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-500">
-                            Aquí se muestran los datos principales asociados a tu cuenta de cliente.
-                        </p>
+                        <div
+                            className="
+                                mt-5
+                                flex
+                                flex-wrap
+                                gap-x-6
+                                gap-y-3
+                                text-sm
+                                text-stone-500
+                            "
+                        >
+                            <span>
+                                Código{" "}
+                                <strong
+                                    className="
+                                        font-medium
+                                        text-stone-900
+                                    "
+                                >
+                                    {customer.codclien ||
+                                        "-"}
+                                </strong>
+                            </span>
+
+                            <span>
+                                Empresa{" "}
+                                <strong
+                                    className="
+                                        font-medium
+                                        text-stone-900
+                                    "
+                                >
+                                    {customer.empresa ||
+                                        "-"}
+                                </strong>
+                            </span>
+                        </div>
                     </div>
 
-                    <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-right">
-                        <p className="text-xs uppercase tracking-[0.25em] text-stone-500">Estado</p>
-                        <p className="mt-1 text-sm font-medium text-emerald-700">Perfil vinculado correctamente</p>
-                    </div>
-                </div>
-            </motion.article>
+                    <div
+                        className="
+                            flex
+                            items-center
+                            bg-stone-950
+                            p-6
+                            text-white
 
-            <motion.article
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="rounded-[1.75rem] border border-stone-200 bg-white p-6 shadow-[0_20px_55px_rgba(28,25,23,0.08)]"
-            >
-                <div className="border-b border-stone-200 pb-5">
-                    <h3 className="text-xl font-semibold tracking-tight text-stone-900">Datos del cliente</h3>
-                    <p className="mt-2 text-sm text-stone-500">
-                        Información principal de contacto, localización y condiciones del cliente.
-                    </p>
-                </div>
-
-                <dl className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {profileFields.map((item, index) => {
-                        const Icon = item.icon;
-
-                        return (
-                            <motion.div
-                                key={item.key}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.03, duration: 0.25 }}
-                                className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4"
+                            sm:p-8
+                        "
+                    >
+                        <div>
+                            <div
+                                className="
+                                    flex
+                                    h-11
+                                    w-11
+                                    items-center
+                                    justify-center
+                                    rounded-full
+                                    bg-white/10
+                                "
                             >
-                                <dt className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-stone-500">
-                                    <Icon className="h-4 w-4" />
-                                    {item.label}
-                                </dt>
-                                <dd className="mt-3 break-words text-sm font-medium text-stone-800">
-                                    {item.getValue(customer)}
-                                </dd>
-                            </motion.div>
-                        );
-                    })}
+                                <BadgeCheck
+                                    className="
+                                        h-5
+                                        w-5
+                                    "
+                                />
+                            </div>
+
+                            <p
+                                className="
+                                    mt-5
+                                    text-[10px]
+                                    font-semibold
+                                    uppercase
+                                    tracking-[0.23em]
+                                    text-stone-400
+                                "
+                            >
+                                Estado de la cuenta
+                            </p>
+
+                            <p
+                                className="
+                                    mt-2
+                                    text-lg
+                                    font-light
+                                    text-white
+                                "
+                            >
+                                Perfil vinculado correctamente
+                            </p>
+
+                            <p
+                                className="
+                                    mt-2
+                                    max-w-md
+                                    text-sm
+                                    leading-6
+                                    text-stone-400
+                                "
+                            >
+                                Estos datos proceden de tu ficha de cliente.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </motion.section>
+
+
+            <motion.section
+                initial={{
+                    opacity: 0,
+                    y: 12,
+                }}
+                animate={{
+                    opacity: 1,
+                    y: 0,
+                }}
+                transition={{
+                    duration: 0.3,
+                    delay: 0.04,
+                }}
+                className="
+                    rounded-[28px]
+                    border
+                    border-stone-300/80
+                    bg-white
+                    p-6
+
+                    sm:p-8
+                "
+            >
+                <div
+                    className="
+                        border-b
+                        border-stone-200
+                        pb-5
+                    "
+                >
+                    <p
+                        className="
+                            text-[10px]
+                            font-semibold
+                            uppercase
+                            tracking-[0.24em]
+                            text-stone-400
+                        "
+                    >
+                        Información
+                    </p>
+
+                    <h3
+                        className="
+                            mt-2
+                            text-xl
+                            font-light
+                            tracking-[-0.025em]
+                            text-stone-950
+                        "
+                    >
+                        Datos del cliente
+                    </h3>
+                </div>
+
+                <dl
+                    className="
+                        grid
+
+                        md:grid-cols-2
+
+                        xl:grid-cols-3
+                    "
+                >
+                    {profileFields.map(
+                        (
+                            item,
+                            index
+                        ) => {
+                            const Icon =
+                                item.icon;
+
+                            return (
+                                <motion.div
+                                    key={
+                                        item.key
+                                    }
+                                    initial={{
+                                        opacity: 0,
+                                        y: 8,
+                                    }}
+                                    animate={{
+                                        opacity: 1,
+                                        y: 0,
+                                    }}
+                                    transition={{
+                                        delay:
+                                            0.03 *
+                                            index,
+                                        duration:
+                                            0.22,
+                                    }}
+                                    className="
+                                        border-b
+                                        border-stone-200
+                                        py-5
+
+                                        md:px-5
+                                        md:[&:nth-child(odd)]:pl-0
+
+                                        xl:[&:nth-child(3n+1)]:pl-0
+                                    "
+                                >
+                                    <dt
+                                        className="
+                                            flex
+                                            items-center
+                                            gap-2
+                                            text-[10px]
+                                            font-semibold
+                                            uppercase
+                                            tracking-[0.16em]
+                                            text-stone-400
+                                        "
+                                    >
+                                        <Icon
+                                            className="
+                                                h-3.5
+                                                w-3.5
+                                            "
+                                        />
+
+                                        {
+                                            item.label
+                                        }
+                                    </dt>
+
+                                    <dd
+                                        className="
+                                            mt-2
+                                            break-words
+                                            text-sm
+                                            font-medium
+                                            leading-6
+                                            text-stone-800
+                                        "
+                                    >
+                                        {item.getValue(
+                                            customer
+                                        )}
+                                    </dd>
+                                </motion.div>
+                            );
+                        }
+                    )}
                 </dl>
-            </motion.article>
-        </section>
+
+                {(customer.codtarifa ||
+                    customer.codforpago) && (
+                    <div
+                        className="
+                            mt-6
+                            flex
+                            items-start
+                            gap-3
+                            border-l-2
+                            border-stone-300
+                            bg-[#faf9f7]
+                            px-4
+                            py-3
+                        "
+                    >
+                        <CreditCard
+                            className="
+                                mt-0.5
+                                h-4
+                                w-4
+                                shrink-0
+                                text-stone-500
+                            "
+                        />
+
+                        <div>
+                            <p
+                                className="
+                                    text-xs
+                                    font-medium
+                                    text-stone-800
+                                "
+                            >
+                                Condiciones comerciales
+                            </p>
+
+                            <p
+                                className="
+                                    mt-1
+                                    text-xs
+                                    leading-5
+                                    text-stone-500
+                                "
+                            >
+                                Tarifa{" "}
+                                {customer.codtarifa ||
+                                    "-"}{" "}
+                                · Forma de pago{" "}
+                                {customer.codforpago ||
+                                    "-"}
+                            </p>
+                        </div>
+                    </div>
+                )}
+            </motion.section>
+        </div>
     );
 }

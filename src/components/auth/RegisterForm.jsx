@@ -1,431 +1,1215 @@
-import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import AuthCard from './AuthCard';
-import { authClient } from '../../services/authClient';
+import {
+    useMemo,
+    useState,
+} from "react";
+
+import {
+    Link,
+} from "react-router-dom";
+
+import {
+    ArrowRight,
+    CheckCircle2,
+} from "lucide-react";
+
+import {
+    useTranslation,
+} from "react-i18next";
+
+import {
+    authClient,
+} from "../../services/authClient";
+
+import AuthCard from "./AuthCard";
+
 
 const initialForm = {
-  email: '',
-  confirmEmail: '',
-  firstName: '',
-  lastName: '',
-  password: '',
-  confirmPassword: '',
-  phone: '',
-  mobilePhone: '',
-  streetAddress: '',
-  addressLine2: '',
-  city: '',
-  stateProvince: '',
-  postcode: '',
-  country: '',
-  codclien: '',
+    email: "",
+    confirmEmail: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    mobilePhone: "",
+    streetAddress: "",
+    addressLine2: "",
+    city: "",
+    stateProvince: "",
+    postcode: "",
+    country: "",
+    codclien: "",
 };
 
+
 export default function RegisterForm() {
-  const [form, setForm] = useState(initialForm);
-  const [fieldErrors, setFieldErrors] = useState({});
-  const [serverError, setServerError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+    const {
+        t,
+    } = useTranslation(
+        "registerPage"
+    );
 
-  const isSubmitted = useMemo(() => Boolean(successMessage), [successMessage]);
+    const [
+        form,
+        setForm,
+    ] = useState(
+        initialForm
+    );
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+    const [
+        fieldErrors,
+        setFieldErrors,
+    ] = useState({});
 
-    setForm((current) => ({
-      ...current,
-      [name]:
-        name === 'email' || name === 'confirmEmail'
-          ? value.trim().toLowerCase()
-          : name === 'codclien'
-            ? value.trim().toUpperCase()
-            : value,
-    }));
+    const [
+        serverError,
+        setServerError,
+    ] = useState("");
 
-    setFieldErrors((current) => ({
-      ...current,
-      [name]: '',
-    }));
+    const [
+        successMessage,
+        setSuccessMessage,
+    ] = useState("");
 
-    setServerError('');
-  };
+    const [
+        submitting,
+        setSubmitting,
+    ] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setServerError('');
-    setSuccessMessage('');
 
-    const validationErrors = validateForm(form);
-    setFieldErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length > 0) {
-      return;
-    }
-
-    setSubmitting(true);
-
-    try {
-      const response = await authClient.registerRequest({
-        email: form.email,
-        confirmEmail: form.confirmEmail,
-        firstName: form.firstName,
-        lastName: form.lastName,
-        password: form.password,
-        confirmPassword: form.confirmPassword,
-        phone: form.phone,
-        mobilePhone: form.mobilePhone,
-        streetAddress: form.streetAddress,
-        addressLine2: form.addressLine2,
-        city: form.city,
-        stateProvince: form.stateProvince,
-        postcode: form.postcode,
-        country: form.country,
-        codclien: form.codclien,
-      });
-
-      setSuccessMessage(
-        response?.message ||
-        'Solicitud registrada correctamente. Queda pendiente de revisión por un administrador.'
-      );
-      setForm(initialForm);
-      setFieldErrors({});
-    } catch (error) {
-      const apiErrors = Array.isArray(error?.data?.errors) ? error.data.errors : [];
-
-      if (apiErrors.length > 0) {
-        setFieldErrors(
-          apiErrors.reduce((acc, item) => {
-            if (item?.field) {
-              acc[item.field] = item.message || 'Campo no válido.';
-            }
-            return acc;
-          }, {})
+    const isSubmitted =
+        useMemo(
+            () =>
+                Boolean(
+                    successMessage
+                ),
+            [
+                successMessage,
+            ]
         );
-      }
 
-      setServerError(error?.message || 'No se pudo enviar la solicitud de registro.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
-  return (
-    <AuthCard
-      title="Solicitar acceso"
-      subtitle="Rellena tus datos y un administrador revisará tu solicitud antes de activar el acceso."
-    >
-      {isSubmitted ? (
-        <div className="space-y-4">
-          <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-            {successMessage}
-          </div>
+    const handleChange = (
+        event
+    ) => {
+        const {
+            name,
+            value,
+        } = event.target;
 
-          <p className="text-sm text-stone-600">
-            Cuando tu solicitud sea aprobada, recibirás un correo para verificar tu identidad y
-            activar tu acceso.
-          </p>
+        setForm(
+            (
+                current
+            ) => ({
+                ...current,
 
-          <Link
-            to="/login"
-            className="inline-flex rounded-lg bg-stone-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
-          >
-            Volver al login
-          </Link>
-        </div>
-      ) : (
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <section className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
-                Datos de acceso
-              </h3>
-            </div>
+                [name]:
+                    name ===
+                        "email" ||
+                    name ===
+                        "confirmEmail"
+                        ? value.toLowerCase()
+                        : name ===
+                          "codclien"
+                        ? value.toUpperCase()
+                        : value,
+            })
+        );
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                label="Correo electrónico"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                error={fieldErrors.email}
-                placeholder="tuemail@empresa.com"
-                required
-              />
+        setFieldErrors(
+            (
+                current
+            ) => ({
+                ...current,
+                [name]: "",
+            })
+        );
 
-              <FormField
-                label="Confirmar correo electrónico"
-                name="confirmEmail"
-                type="email"
-                value={form.confirmEmail}
-                onChange={handleChange}
-                error={fieldErrors.confirmEmail}
-                placeholder="Repite tu correo"
-                required
-              />
-            </div>
+        setServerError("");
+    };
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                label="Contraseña"
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={handleChange}
-                error={fieldErrors.password}
-                placeholder="Mínimo 8 caracteres"
-                required
-              />
 
-              <FormField
-                label="Confirmar contraseña"
-                name="confirmPassword"
-                type="password"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                error={fieldErrors.confirmPassword}
-                placeholder="Repite tu contraseña"
-                required
-              />
-            </div>
-          </section>
+    const handleSubmit = async (
+        event
+    ) => {
+        event.preventDefault();
 
-          <section className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
-                Datos personales
-              </h3>
-            </div>
+        setServerError("");
+        setSuccessMessage("");
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                label="Nombre"
-                name="firstName"
-                value={form.firstName}
-                onChange={handleChange}
-                error={fieldErrors.firstName}
-                placeholder="Nombre"
-                required
-              />
+        const validationErrors =
+            validateForm(
+                form,
+                t
+            );
 
-              <FormField
-                label="Apellidos"
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                error={fieldErrors.lastName}
-                placeholder="Apellidos"
-                required
-              />
-            </div>
+        setFieldErrors(
+            validationErrors
+        );
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                label="Teléfono"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                error={fieldErrors.phone}
-                placeholder="Teléfono"
-              />
+        if (
+            Object.keys(
+                validationErrors
+            ).length > 0
+        ) {
+            return;
+        }
 
-              <FormField
-                label="Móvil"
-                name="mobilePhone"
-                value={form.mobilePhone}
-                onChange={handleChange}
-                error={fieldErrors.mobilePhone}
-                placeholder="Móvil"
-              />
-            </div>
-          </section>
+        setSubmitting(
+            true
+        );
 
-          <section className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
-                Dirección
-              </h3>
-            </div>
+        try {
+            const response =
+                await authClient.registerRequest({
+                    email:
+                        form.email
+                            .trim()
+                            .toLowerCase(),
 
-            <FormField
-              label="Dirección"
-              name="streetAddress"
-              value={form.streetAddress}
-              onChange={handleChange}
-              error={fieldErrors.streetAddress}
-              placeholder="Dirección"
-            />
+                    confirmEmail:
+                        form.confirmEmail
+                            .trim()
+                            .toLowerCase(),
 
-            <FormField
-              label="Dirección adicional"
-              name="addressLine2"
-              value={form.addressLine2}
-              onChange={handleChange}
-              error={fieldErrors.addressLine2}
-              placeholder="Piso, nave, puerta, etc."
-            />
+                    firstName:
+                        form.firstName
+                            .trim(),
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                label="Ciudad"
-                name="city"
-                value={form.city}
-                onChange={handleChange}
-                error={fieldErrors.city}
-                placeholder="Ciudad"
-              />
+                    lastName:
+                        form.lastName
+                            .trim(),
 
-              <FormField
-                label="Provincia"
-                name="stateProvince"
-                value={form.stateProvince}
-                onChange={handleChange}
-                error={fieldErrors.stateProvince}
-                placeholder="Provincia"
-              />
-            </div>
+                    password:
+                        form.password,
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                label="Código postal"
-                name="postcode"
-                value={form.postcode}
-                onChange={handleChange}
-                error={fieldErrors.postcode}
-                placeholder="Código postal"
-              />
+                    confirmPassword:
+                        form.confirmPassword,
 
-              <FormField
-                label="País"
-                name="country"
-                value={form.country}
-                onChange={handleChange}
-                error={fieldErrors.country}
-                placeholder="País"
-              />
-            </div>
-          </section>
+                    phone:
+                        form.phone.trim(),
 
-          <section className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
-                Validación de cliente
-              </h3>
-              <p className="mt-1 text-sm text-stone-600">
-                Introduce un código de cliente válido que aparezca en una factura, pedido o
-                presupuesto recibido.
-              </p>
-            </div>
+                    mobilePhone:
+                        form.mobilePhone.trim(),
 
-            <FormField
-              label="Código de cliente"
-              name="codclien"
-              value={form.codclien}
-              onChange={handleChange}
-              error={fieldErrors.codclien}
-              placeholder="Código de cliente"
-              required
-            />
-          </section>
+                    streetAddress:
+                        form.streetAddress.trim(),
 
-          {serverError ? <p className="text-sm text-red-600">{serverError}</p> : null}
+                    addressLine2:
+                        form.addressLine2.trim(),
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full rounded-lg bg-stone-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {submitting ? 'Enviando solicitud...' : 'Enviar solicitud'}
-          </button>
+                    city:
+                        form.city.trim(),
 
-          <p className="text-sm text-stone-600">
-            ¿Ya tienes acceso?{' '}
-            <Link to="/login" className="font-medium text-stone-900 underline">
-              Inicia sesión aquí
-            </Link>
-          </p>
-        </form>
-      )}
-    </AuthCard>
-  );
+                    stateProvince:
+                        form.stateProvince.trim(),
+
+                    postcode:
+                        form.postcode.trim(),
+
+                    country:
+                        form.country.trim(),
+
+                    codclien:
+                        form.codclien
+                            .trim()
+                            .toUpperCase(),
+                });
+
+
+            setSuccessMessage(
+                response?.message ||
+                    t(
+                        "success.message"
+                    )
+            );
+
+            setForm(
+                initialForm
+            );
+
+            setFieldErrors(
+                {}
+            );
+        } catch (
+            error
+        ) {
+            const apiErrors =
+                Array.isArray(
+                    error?.data
+                        ?.errors
+                )
+                    ? error.data
+                          .errors
+                    : [];
+
+
+            if (
+                apiErrors.length >
+                0
+            ) {
+                setFieldErrors(
+                    apiErrors.reduce(
+                        (
+                            acc,
+                            item
+                        ) => {
+                            if (
+                                item?.field
+                            ) {
+                                acc[
+                                    item.field
+                                ] =
+                                    item.message ||
+                                    t(
+                                        "errors.invalidField"
+                                    );
+                            }
+
+                            return acc;
+                        },
+                        {}
+                    )
+                );
+            }
+
+
+            setServerError(
+                error?.message ||
+                    t(
+                        "errors.submit"
+                    )
+            );
+        } finally {
+            setSubmitting(
+                false
+            );
+        }
+    };
+
+
+    return (
+        <AuthCard
+            eyebrow={t(
+                "eyebrow"
+            )}
+            title={t(
+                "form.title"
+            )}
+            subtitle={t(
+                "form.subtitle"
+            )}
+            sideLabel={t(
+                "hero.label"
+            )}
+            sideTitle={t(
+                "hero.title"
+            )}
+            sideDescription={t(
+                "hero.description"
+            )}
+        >
+            {isSubmitted ? (
+                <div>
+                    <div
+                        className="
+                            flex
+                            h-12
+                            w-12
+                            items-center
+                            justify-center
+                            rounded-full
+                            bg-emerald-50
+                            text-emerald-700
+                        "
+                    >
+                        <CheckCircle2
+                            className="
+                                h-6
+                                w-6
+                            "
+                        />
+                    </div>
+
+                    <h2
+                        className="
+                            mt-6
+                            text-2xl
+                            font-light
+                            tracking-[-0.03em]
+                            text-stone-950
+                        "
+                    >
+                        {t(
+                            "success.title"
+                        )}
+                    </h2>
+
+                    <p
+                        className="
+                            mt-3
+                            text-sm
+                            leading-7
+                            text-stone-600
+                        "
+                    >
+                        {
+                            successMessage
+                        }
+                    </p>
+
+                    <p
+                        className="
+                            mt-3
+                            text-sm
+                            leading-7
+                            text-stone-500
+                        "
+                    >
+                        {t(
+                            "success.description"
+                        )}
+                    </p>
+
+                    <Link
+                        to="/login"
+                        className="
+                            group
+                            mt-8
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            bg-stone-950
+                            px-5
+                            py-4
+                            text-sm
+                            font-medium
+                            text-white
+                            transition
+
+                            hover:bg-stone-800
+                        "
+                    >
+                        <span>
+                            {t(
+                                "success.back"
+                            )}
+                        </span>
+
+                        <ArrowRight
+                            className="
+                                h-4
+                                w-4
+                                transition-transform
+                                group-hover:translate-x-1
+                            "
+                        />
+                    </Link>
+                </div>
+            ) : (
+                <form
+                    onSubmit={
+                        handleSubmit
+                    }
+                    className="
+                        space-y-9
+                    "
+                >
+                    <FormSection
+                        number="01"
+                        title={t(
+                            "sections.access.title"
+                        )}
+                        description={t(
+                            "sections.access.description"
+                        )}
+                    >
+                        <div
+                            className="
+                                grid
+                                gap-5
+
+                                sm:grid-cols-2
+                            "
+                        >
+                            <FormField
+                                label={t(
+                                    "fields.email"
+                                )}
+                                name="email"
+                                type="email"
+                                value={
+                                    form.email
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.email
+                                }
+                                placeholder={t(
+                                    "fields.emailPlaceholder"
+                                )}
+                                autoComplete="email"
+                                required
+                            />
+
+                            <FormField
+                                label={t(
+                                    "fields.confirmEmail"
+                                )}
+                                name="confirmEmail"
+                                type="email"
+                                value={
+                                    form.confirmEmail
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.confirmEmail
+                                }
+                                placeholder={t(
+                                    "fields.confirmEmailPlaceholder"
+                                )}
+                                autoComplete="email"
+                                required
+                            />
+                        </div>
+
+                        <div
+                            className="
+                                grid
+                                gap-5
+
+                                sm:grid-cols-2
+                            "
+                        >
+                            <FormField
+                                label={t(
+                                    "fields.password"
+                                )}
+                                name="password"
+                                type="password"
+                                value={
+                                    form.password
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.password
+                                }
+                                placeholder={t(
+                                    "fields.passwordPlaceholder"
+                                )}
+                                autoComplete="new-password"
+                                required
+                            />
+
+                            <FormField
+                                label={t(
+                                    "fields.confirmPassword"
+                                )}
+                                name="confirmPassword"
+                                type="password"
+                                value={
+                                    form.confirmPassword
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.confirmPassword
+                                }
+                                placeholder={t(
+                                    "fields.confirmPasswordPlaceholder"
+                                )}
+                                autoComplete="new-password"
+                                required
+                            />
+                        </div>
+                    </FormSection>
+
+
+                    <FormSection
+                        number="02"
+                        title={t(
+                            "sections.personal.title"
+                        )}
+                    >
+                        <div
+                            className="
+                                grid
+                                gap-5
+
+                                sm:grid-cols-2
+                            "
+                        >
+                            <FormField
+                                label={t(
+                                    "fields.firstName"
+                                )}
+                                name="firstName"
+                                value={
+                                    form.firstName
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.firstName
+                                }
+                                placeholder={t(
+                                    "fields.firstNamePlaceholder"
+                                )}
+                                autoComplete="given-name"
+                                required
+                            />
+
+                            <FormField
+                                label={t(
+                                    "fields.lastName"
+                                )}
+                                name="lastName"
+                                value={
+                                    form.lastName
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.lastName
+                                }
+                                placeholder={t(
+                                    "fields.lastNamePlaceholder"
+                                )}
+                                autoComplete="family-name"
+                                required
+                            />
+                        </div>
+
+                        <div
+                            className="
+                                grid
+                                gap-5
+
+                                sm:grid-cols-2
+                            "
+                        >
+                            <FormField
+                                label={t(
+                                    "fields.phone"
+                                )}
+                                name="phone"
+                                value={
+                                    form.phone
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.phone
+                                }
+                                placeholder={t(
+                                    "fields.phonePlaceholder"
+                                )}
+                                autoComplete="tel"
+                            />
+
+                            <FormField
+                                label={t(
+                                    "fields.mobilePhone"
+                                )}
+                                name="mobilePhone"
+                                value={
+                                    form.mobilePhone
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.mobilePhone
+                                }
+                                placeholder={t(
+                                    "fields.mobilePhonePlaceholder"
+                                )}
+                                autoComplete="tel"
+                            />
+                        </div>
+                    </FormSection>
+
+
+                    <FormSection
+                        number="03"
+                        title={t(
+                            "sections.address.title"
+                        )}
+                    >
+                        <FormField
+                            label={t(
+                                "fields.streetAddress"
+                            )}
+                            name="streetAddress"
+                            value={
+                                form.streetAddress
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            error={
+                                fieldErrors.streetAddress
+                            }
+                            placeholder={t(
+                                "fields.streetAddressPlaceholder"
+                            )}
+                            autoComplete="street-address"
+                        />
+
+                        <FormField
+                            label={t(
+                                "fields.addressLine2"
+                            )}
+                            name="addressLine2"
+                            value={
+                                form.addressLine2
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            error={
+                                fieldErrors.addressLine2
+                            }
+                            placeholder={t(
+                                "fields.addressLine2Placeholder"
+                            )}
+                        />
+
+                        <div
+                            className="
+                                grid
+                                gap-5
+
+                                sm:grid-cols-2
+                            "
+                        >
+                            <FormField
+                                label={t(
+                                    "fields.city"
+                                )}
+                                name="city"
+                                value={
+                                    form.city
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.city
+                                }
+                                placeholder={t(
+                                    "fields.cityPlaceholder"
+                                )}
+                                autoComplete="address-level2"
+                            />
+
+                            <FormField
+                                label={t(
+                                    "fields.stateProvince"
+                                )}
+                                name="stateProvince"
+                                value={
+                                    form.stateProvince
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.stateProvince
+                                }
+                                placeholder={t(
+                                    "fields.stateProvincePlaceholder"
+                                )}
+                                autoComplete="address-level1"
+                            />
+                        </div>
+
+                        <div
+                            className="
+                                grid
+                                gap-5
+
+                                sm:grid-cols-2
+                            "
+                        >
+                            <FormField
+                                label={t(
+                                    "fields.postcode"
+                                )}
+                                name="postcode"
+                                value={
+                                    form.postcode
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.postcode
+                                }
+                                placeholder={t(
+                                    "fields.postcodePlaceholder"
+                                )}
+                                autoComplete="postal-code"
+                            />
+
+                            <FormField
+                                label={t(
+                                    "fields.country"
+                                )}
+                                name="country"
+                                value={
+                                    form.country
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.country
+                                }
+                                placeholder={t(
+                                    "fields.countryPlaceholder"
+                                )}
+                                autoComplete="country-name"
+                            />
+                        </div>
+                    </FormSection>
+
+
+                    <FormSection
+                        number="04"
+                        title={t(
+                            "sections.customer.title"
+                        )}
+                        description={t(
+                            "sections.customer.description"
+                        )}
+                    >
+                        <FormField
+                            label={t(
+                                "fields.codclien"
+                            )}
+                            name="codclien"
+                            value={
+                                form.codclien
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            error={
+                                fieldErrors.codclien
+                            }
+                            placeholder={t(
+                                "fields.codclienPlaceholder"
+                            )}
+                            required
+                        />
+                    </FormSection>
+
+
+                    {serverError ? (
+                        <div
+                            role="alert"
+                            className="
+                                border-l-2
+                                border-red-400
+                                bg-red-50
+                                px-4
+                                py-3
+                                text-sm
+                                leading-6
+                                text-red-700
+                            "
+                        >
+                            {
+                                serverError
+                            }
+                        </div>
+                    ) : null}
+
+
+                    <button
+                        type="submit"
+                        disabled={
+                            submitting
+                        }
+                        className="
+                            group
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            bg-stone-950
+                            px-5
+                            py-4
+                            text-sm
+                            font-medium
+                            text-white
+                            transition
+
+                            hover:bg-stone-800
+
+                            disabled:cursor-not-allowed
+                            disabled:opacity-60
+                        "
+                    >
+                        <span>
+                            {submitting
+                                ? t(
+                                    "form.submitting"
+                                )
+                                : t(
+                                    "form.submit"
+                                )}
+                        </span>
+
+                        <ArrowRight
+                            className="
+                                h-4
+                                w-4
+                                transition-transform
+                                group-hover:translate-x-1
+                            "
+                        />
+                    </button>
+
+
+                    <p
+                        className="
+                            text-sm
+                            leading-6
+                            text-stone-500
+                        "
+                    >
+                        {t(
+                            "form.haveAccess"
+                        )}{" "}
+                        <Link
+                            to="/login"
+                            className="
+                                font-medium
+                                text-stone-950
+                                underline
+                                decoration-stone-300
+                                underline-offset-4
+                                transition
+
+                                hover:decoration-stone-950
+                            "
+                        >
+                            {t(
+                                "form.login"
+                            )}
+                        </Link>
+                    </p>
+                </form>
+            )}
+        </AuthCard>
+    );
 }
+
+
+function FormSection({
+    number,
+    title,
+    description,
+    children,
+}) {
+    return (
+        <section>
+            <div
+                className="
+                    mb-5
+                    flex
+                    items-start
+                    gap-4
+                    border-b
+                    border-stone-200
+                    pb-4
+                "
+            >
+                <span
+                    className="
+                        pt-0.5
+                        text-[10px]
+                        font-semibold
+                        tracking-[0.16em]
+                        text-stone-350
+                    "
+                >
+                    {number}
+                </span>
+
+                <div>
+                    <h3
+                        className="
+                            text-sm
+                            font-medium
+                            text-stone-950
+                        "
+                    >
+                        {title}
+                    </h3>
+
+                    {description ? (
+                        <p
+                            className="
+                                mt-1.5
+                                max-w-lg
+                                text-xs
+                                leading-5
+                                text-stone-500
+                            "
+                        >
+                            {
+                                description
+                            }
+                        </p>
+                    ) : null}
+                </div>
+            </div>
+
+            <div
+                className="
+                    space-y-5
+                "
+            >
+                {children}
+            </div>
+        </section>
+    );
+}
+
 
 function FormField({
-  label,
-  name,
-  type = 'text',
-  value,
-  onChange,
-  error,
-  placeholder,
-  required = false,
+    label,
+    name,
+    type = "text",
+    value,
+    onChange,
+    error,
+    placeholder,
+    autoComplete,
+    required = false,
 }) {
-  return (
-    <div>
-      <label className="mb-1 block text-sm font-medium text-stone-700" htmlFor={name}>
-        {label}
-      </label>
+    return (
+        <div>
+            <label
+                htmlFor={
+                    name
+                }
+                className="
+                    mb-2
+                    block
+                    text-xs
+                    font-medium
+                    uppercase
+                    tracking-[0.12em]
+                    text-stone-500
+                "
+            >
+                {label}
+            </label>
 
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        className={`w-full rounded-lg border px-4 py-3 outline-none transition ${error ? 'border-red-400 focus:border-red-500' : 'border-stone-300 focus:border-stone-500'
-          }`}
-      />
+            <input
+                id={
+                    name
+                }
+                name={
+                    name
+                }
+                type={
+                    type
+                }
+                value={
+                    value
+                }
+                onChange={
+                    onChange
+                }
+                placeholder={
+                    placeholder
+                }
+                autoComplete={
+                    autoComplete
+                }
+                required={
+                    required
+                }
+                className={`
+                    w-full
+                    border-b
+                    bg-transparent
+                    py-3
+                    text-[15px]
+                    text-stone-950
+                    outline-none
+                    transition
 
-      {error ? <p className="mt-1 text-sm text-red-600">{error}</p> : null}
-    </div>
-  );
+                    placeholder:text-stone-350
+
+                    ${
+                        error
+                            ? "border-red-400 focus:border-red-500"
+                            : "border-stone-300 focus:border-stone-950"
+                    }
+                `}
+            />
+
+            {error ? (
+                <p
+                    className="
+                        mt-2
+                        text-xs
+                        leading-5
+                        text-red-600
+                    "
+                >
+                    {error}
+                </p>
+            ) : null}
+        </div>
+    );
 }
 
-function validateForm(form) {
-  const errors = {};
 
-  if (!form.email.trim()) {
-    errors.email = 'El correo es obligatorio.';
-  } else if (!isValidEmail(form.email)) {
-    errors.email = 'El correo no es válido.';
-  }
+function validateForm(
+    form,
+    t
+) {
+    const errors =
+        {};
 
-  if (!form.confirmEmail.trim()) {
-    errors.confirmEmail = 'Debes confirmar el correo.';
-  } else if (form.email.trim().toLowerCase() !== form.confirmEmail.trim().toLowerCase()) {
-    errors.confirmEmail = 'Los correos no coinciden.';
-  }
 
-  if (!form.firstName.trim()) {
-    errors.firstName = 'El nombre es obligatorio.';
-  }
+    if (
+        !form.email.trim()
+    ) {
+        errors.email =
+            t(
+                "validation.emailRequired"
+            );
+    } else if (
+        !isValidEmail(
+            form.email
+        )
+    ) {
+        errors.email =
+            t(
+                "validation.emailInvalid"
+            );
+    }
 
-  if (!form.lastName.trim()) {
-    errors.lastName = 'Los apellidos son obligatorios.';
-  }
 
-  if (!form.password) {
-    errors.password = 'La contraseña es obligatoria.';
-  } else if (form.password.length < 8) {
-    errors.password = 'La contraseña debe tener al menos 8 caracteres.';
-  }
+    if (
+        !form.confirmEmail
+            .trim()
+    ) {
+        errors.confirmEmail =
+            t(
+                "validation.confirmEmailRequired"
+            );
+    } else if (
+        form.email
+            .trim()
+            .toLowerCase() !==
+        form.confirmEmail
+            .trim()
+            .toLowerCase()
+    ) {
+        errors.confirmEmail =
+            t(
+                "validation.emailsNotMatch"
+            );
+    }
 
-  if (!form.confirmPassword) {
-    errors.confirmPassword = 'Debes confirmar la contraseña.';
-  } else if (form.password !== form.confirmPassword) {
-    errors.confirmPassword = 'Las contraseñas no coinciden.';
-  }
 
-  if (!form.codclien.trim()) {
-    errors.codclien = 'El código de cliente es obligatorio.';
-  }
+    if (
+        !form.firstName
+            .trim()
+    ) {
+        errors.firstName =
+            t(
+                "validation.firstNameRequired"
+            );
+    }
 
-  return errors;
+
+    if (
+        !form.lastName
+            .trim()
+    ) {
+        errors.lastName =
+            t(
+                "validation.lastNameRequired"
+            );
+    }
+
+
+    if (
+        !form.password
+    ) {
+        errors.password =
+            t(
+                "validation.passwordRequired"
+            );
+    } else if (
+        form.password
+            .length < 8
+    ) {
+        errors.password =
+            t(
+                "validation.passwordMinLength"
+            );
+    }
+
+
+    if (
+        !form.confirmPassword
+    ) {
+        errors.confirmPassword =
+            t(
+                "validation.confirmPasswordRequired"
+            );
+    } else if (
+        form.password !==
+        form.confirmPassword
+    ) {
+        errors.confirmPassword =
+            t(
+                "validation.passwordsNotMatch"
+            );
+    }
+
+
+    if (
+        !form.codclien
+            .trim()
+    ) {
+        errors.codclien =
+            t(
+                "validation.codclienRequired"
+            );
+    }
+
+
+    return errors;
 }
 
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+function isValidEmail(
+    email
+) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        email
+    );
 }
