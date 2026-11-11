@@ -1,0 +1,125 @@
+{
+    "brands": {
+        "arena": {
+            "eyebrow": "Materia · Naturaleza · Equilibrio",
+            "description": "Texturas serenas, materiales naturales y una mirada equilibrada al interior contemporáneo."
+        },
+        "bassari": {
+            "eyebrow": "Viaje · Color · Expresión",
+            "description": "Una visión sofisticada del color, el viaje y la decoración con una identidad profundamente expresiva."
+        },
+        "cjm": {
+            "eyebrow": "Diseño · Versatilidad · Proyecto",
+            "description": "Diseño versátil y contemporáneo pensado para proyectos, espacios y profesionales del interior."
+        },
+        "flamenco": {
+            "eyebrow": "Arte · Historia · Carácter",
+            "description": "Arte, historia y carácter se encuentran en tejidos y estampados con una personalidad inconfundible."
+        },
+        "harbour": {
+            "eyebrow": "Luz · Frescura · Mediterráneo",
+            "description": "Luz, frescura y espíritu mediterráneo en colecciones naturales, relajadas y llenas de color."
+        }
+    },
+    "hero": {
+        "discoverBrand": "Descubrir marca",
+        "viewCollections": "Ver colecciones",
+        "discoverFiveBrands": "Descubrir las cinco marcas"
+    },
+    "group": {
+        "label": "CJM Group",
+        "titleLine1": "Diseñamos espacios",
+        "titleLine2": "a través del tejido.",
+        "description": "Cinco marcas, cinco maneras de entender el interior. Desde la serenidad de los materiales naturales hasta el color, el dibujo y la textura, CJM Group reúne universos distintos bajo una misma cultura de diseño.",
+        "pillars": {
+            "design": {
+                "title": "Diseño",
+                "description": "Colecciones con identidad propia, pensadas para transformar el espacio desde el detalle."
+            },
+            "matter": {
+                "title": "Materia",
+                "description": "Texturas, tramas y acabados que convierten el tejido en el punto de partida del proyecto."
+            },
+            "color": {
+                "title": "Color",
+                "description": "Paletas que recorren lo natural, lo sofisticado y lo expresivo a través de nuestras marcas."
+            }
+        }
+    },
+    "collections": {
+        "kicker": "Últimos lanzamientos",
+        "titleLine1": "Nuevas",
+        "titleLine2": "colecciones.",
+        "description": "Una selección de los últimos lanzamientos para descubrir nuevas combinaciones de color, materia y dibujo.",
+        "viewAll": "Ver todas las colecciones",
+        "dragToExplore": "Arrastra para explorar",
+        "previous": "Colecciones anteriores",
+        "next": "Siguientes colecciones"
+    },
+    "spaces": {
+        "kicker": "Inspiración para el espacio",
+        "titleLine1": "Explora por",
+        "titleLine2": "ambiente.",
+        "description": "Distintos espacios, distintas formas de usar la materia. Descubre ambientes y entra directamente en el universo de cada marca.",
+        "items": {
+            "living": {
+                "title": "Salón",
+                "description": "Espacios con carácter donde estampado, color y textura conviven con la arquitectura."
+            },
+            "natural": {
+                "title": "Natural",
+                "description": "Una mirada serena al interior a través de tonos minerales, fibras y texturas equilibradas."
+            },
+            "outdoor": {
+                "title": "Exterior",
+                "description": "Color, frescura y una actitud relajada para espacios luminosos y ambientes abiertos."
+            }
+        }
+    },
+    "materials": {
+        "kicker": "Materia & textura",
+        "titleLine1": "El detalle",
+        "titleLine2": "importa.",
+        "description": "El tejido se descubre de cerca: en la trama, el relieve, el dibujo y la manera en que responde a la luz.",
+        "exploreFabrics": "Explorar tejidos",
+        "items": {
+            "naturalWeaves": {
+                "title": "Tramas naturales",
+                "description": "Superficies serenas y tacto visual para interiores donde la materia tiene protagonismo."
+            },
+            "prints": {
+                "title": "Estampados",
+                "description": "Dibujo, escala y color como herramientas para construir una atmósfera propia."
+            },
+            "textures": {
+                "title": "Texturas",
+                "description": "Relieve, profundidad y mezcla de hilos para aportar dimensión al proyecto."
+            }
+        }
+    },
+    "moodboards": {
+        "kicker": "Inspiración",
+        "titleLine1": "Paletas, capas",
+        "titleLine2": "y combinaciones.",
+        "intro": "Una mirada editorial a cómo combinar color, textura y materia dentro de un mismo espacio.",
+        "items": {
+            "palettes": {
+                "title": "Paletas",
+                "description": "Combinaciones de color pensadas para construir ambientes equilibrados, expresivos y llenos de personalidad."
+            },
+            "layers": {
+                "title": "Capas",
+                "description": "Tejidos, texturas y motivos que se superponen para aportar profundidad y riqueza visual al espacio."
+            },
+            "combinations": {
+                "title": "Combinaciones",
+                "description": "Mezclas de materia, dibujo y color que muestran nuevas formas de combinar nuestras colecciones."
+            }
+        }
+    },
+    "closing": {
+        "title": "Encuentra el tejido que transforma tu próximo espacio.",
+        "description": "Explora nuestras colecciones y descubre nuevas combinaciones de materia, color y diseño.",
+        "cta": "Explorar colecciones"
+    }
+}

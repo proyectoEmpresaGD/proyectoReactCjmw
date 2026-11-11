@@ -14,6 +14,7 @@ import {
     Menu,
     Search,
     User,
+    BookOpen,
     ChevronDown,
     ChevronUp,
     SlidersHorizontal,
@@ -21,7 +22,15 @@ import {
     ArrowLeft,
     X,
     Globe,
-    Mail
+    Mail,
+    LogIn,
+    LogOut,
+    UserPlus,
+    FileText,
+    PackageCheck,
+    History,
+    ShieldCheck,
+    UserRound,
 } from "lucide-react";
 import {
     Link,
@@ -103,6 +112,940 @@ const getHeaderLogoSrc = (
         : fallbackLogo;
 };
 
+const HeaderUserMenu = ({
+    containerRef,
+    open,
+    onToggle,
+    isAuthenticated,
+    isAdmin,
+    user,
+    onNavigate,
+    onLogout,
+    t,
+}) => {
+    const customerName =
+        user?.activeCustomer?.razclien ||
+        user?.activeCustomer?.nomcomer ||
+        user?.nif ||
+        t(
+            "customer",
+            "Cliente"
+        );
+
+
+    const customerLinks = [
+        {
+            key: "data",
+            label: t(
+                "myData",
+                "Mis datos"
+            ),
+            description: t(
+                "userMenu.dataDescription",
+                "Información de tu cuenta"
+            ),
+            path: "/mis-datos",
+            icon: UserRound,
+        },
+        {
+            key:
+                "library",
+
+            label:
+                t(
+                    "myLibrary",
+                    "Mi biblioteca"
+                ),
+
+            description:
+                t(
+                    "userMenu.libraryDescription",
+                    "Tus libros y perchas"
+                ),
+
+            path:
+                "/mi-biblioteca",
+
+            icon:
+                BookOpen,
+        },
+        {
+            key: "invoices",
+            label: t(
+                "myInvoices",
+                "Mis facturas"
+            ),
+            description: t(
+                "userMenu.invoicesDescription",
+                "Consulta y descarga documentos"
+            ),
+            path: "/mis-facturas",
+            icon: FileText,
+        },
+        {
+            key: "orders",
+            label: t(
+                "myOrders",
+                "Mis pedidos"
+            ),
+            description: t(
+                "userMenu.ordersDescription",
+                "Consulta el estado de tus pedidos"
+            ),
+            path: "/mis-pedidos",
+            icon: PackageCheck,
+        },
+        {
+            key: "returns",
+            label: t(
+                "myReturns",
+                "Devoluciones"
+            ),
+            description: t(
+                "userMenu.returnsDescription",
+                "Historial de devoluciones"
+            ),
+            path:
+                "/historial-devoluciones",
+            icon: History,
+        },
+    ];
+
+
+    return (
+        <div
+            ref={
+                containerRef
+            }
+            className="
+                relative
+            "
+        >
+            {/*Boton de login activarlo cuando este preparado para utilizarlo*/}
+            {/* <button
+                type="button"
+                onClick={
+                    onToggle
+                }
+                aria-expanded={
+                    open
+                }
+                aria-haspopup="menu"
+                aria-label={
+                    isAuthenticated
+                        ? t(
+                            "customerArea",
+                            "Área de cliente"
+                        )
+                        : t(
+                            "login",
+                            "Iniciar sesión"
+                        )
+                }
+                className={`
+                    relative
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-full
+                    transition-all
+                    duration-300
+
+                    ${open
+                        ? `
+                                bg-stone-950
+                                text-white
+                                shadow-[0_8px_24px_rgba(28,25,23,0.18)]
+                            `
+                        : `
+                                text-stone-800
+
+                                hover:bg-stone-100
+                                hover:text-stone-950
+                            `
+                    }
+                `}
+            >
+                <motion.div
+                    animate={{
+                        scale:
+                            open
+                                ? 0.92
+                                : 1,
+                    }}
+                    transition={{
+                        duration: 0.2,
+                    }}
+                >
+                    <User
+                        className="
+                            h-5
+                            w-5
+                        "
+                    />
+                </motion.div>
+
+
+                {isAuthenticated && (
+                    <span
+                        className="
+                            absolute
+                            right-0.5
+                            top-0.5
+                            h-2
+                            w-2
+                            rounded-full
+                            border-2
+                            border-white
+                            bg-emerald-500
+                        "
+                    />
+                )}
+            </button> */}
+
+            <AnimatePresence>
+                {open && (
+                    <motion.div
+                        role="menu"
+                        initial={{
+                            opacity: 0,
+                            y: -10,
+                            scale: 0.97,
+                        }}
+                        animate={{
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                        }}
+                        exit={{
+                            opacity: 0,
+                            y: -8,
+                            scale: 0.98,
+                        }}
+                        transition={{
+                            duration: 0.28,
+                            ease: [
+                                0.22,
+                                1,
+                                0.36,
+                                1,
+                            ],
+                        }}
+                        className="
+                absolute
+                right-0
+                top-[calc(100%+14px)]
+                z-[120]
+                w-[calc(100vw-32px)]
+                max-w-[370px]
+                origin-top-right
+                overflow-hidden
+                rounded-[28px]
+                border
+                border-stone-200/80
+                bg-[#fbfaf8]
+                shadow-[0_28px_90px_rgba(28,25,23,0.18)]
+            "
+                    >
+                        {isAuthenticated ? (
+                            <>
+                                <div
+                                    className="
+                            relative
+                            overflow-hidden
+                            bg-stone-950
+                            px-6
+                            py-6
+                            text-white
+                        "
+                                >
+                                    <div
+                                        aria-hidden="true"
+                                        className="
+                                absolute
+                                -right-16
+                                -top-20
+                                h-48
+                                w-48
+                                rounded-full
+                                bg-white/5
+                                blur-2xl
+                            "
+                                    />
+
+
+                                    <div
+                                        className="
+                                relative
+                            "
+                                    >
+                                        <div
+                                            className="
+                                    flex
+                                    items-center
+                                    justify-between
+                                    gap-5
+                                "
+                                        >
+                                            <div
+                                                className="
+                                        flex
+                                        min-w-0
+                                        items-center
+                                        gap-3
+                                    "
+                                            >
+                                                <div
+                                                    className="
+                                            flex
+                                            h-11
+                                            w-11
+                                            shrink-0
+                                            items-center
+                                            justify-center
+                                            rounded-full
+                                            border
+                                            border-white/15
+                                            bg-white/10
+                                        "
+                                                >
+                                                    <User
+                                                        className="
+                                                h-5
+                                                w-5
+                                            "
+                                                    />
+                                                </div>
+
+
+                                                <div
+                                                    className="
+                                            min-w-0
+                                        "
+                                                >
+                                                    <p
+                                                        className="
+                                                text-[9px]
+                                                font-semibold
+                                                uppercase
+                                                tracking-[0.26em]
+                                                text-white/45
+                                            "
+                                                    >
+                                                        {t(
+                                                            "customerArea",
+                                                            "Área cliente"
+                                                        )}
+                                                    </p>
+
+                                                    <p
+                                                        className="
+                                                mt-1
+                                                truncate
+                                                text-sm
+                                                font-medium
+                                                text-white
+                                            "
+                                                    >
+                                                        {
+                                                            customerName
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+
+
+                                            <span
+                                                className="
+                                        flex
+                                        shrink-0
+                                        items-center
+                                        gap-1.5
+                                        text-[10px]
+                                        font-medium
+                                        text-emerald-300
+                                    "
+                                            >
+                                                <span
+                                                    className="
+                                            h-1.5
+                                            w-1.5
+                                            rounded-full
+                                            bg-emerald-300
+                                        "
+                                                />
+
+                                                {t(
+                                                    "active",
+                                                    "Activo"
+                                                )}
+                                            </span>
+                                        </div>
+
+
+                                        {user?.nif && (
+                                            <p
+                                                className="
+                                        mt-5
+                                        border-t
+                                        border-white/10
+                                        pt-4
+                                        text-xs
+                                        text-white/45
+                                    "
+                                            >
+                                                {t(
+                                                    "nifLabel",
+                                                    "NIF:"
+                                                )}{" "}
+
+                                                <span
+                                                    className="
+                                            text-white/70
+                                        "
+                                                >
+                                                    {
+                                                        user.nif
+                                                    }
+                                                </span>
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+
+                                <div
+                                    className="
+                            px-3
+                            py-3
+                        "
+                                >
+                                    {customerLinks.map(
+                                        (
+                                            item
+                                        ) => {
+                                            const Icon =
+                                                item.icon;
+
+                                            return (
+                                                <button
+                                                    key={
+                                                        item.key
+                                                    }
+                                                    type="button"
+                                                    onClick={() =>
+                                                        onNavigate(
+                                                            item.path
+                                                        )
+                                                    }
+                                                    className="
+                                            group
+                                            flex
+                                            w-full
+                                            items-center
+                                            gap-3
+                                            rounded-2xl
+                                            px-3
+                                            py-3
+                                            text-left
+                                            transition-colors
+                                            duration-200
+
+                                            hover:bg-white
+                                        "
+                                                >
+                                                    <div
+                                                        className="
+                                                flex
+                                                h-10
+                                                w-10
+                                                shrink-0
+                                                items-center
+                                                justify-center
+                                                rounded-full
+                                                bg-stone-100
+                                                text-stone-500
+                                                transition
+
+                                                group-hover:bg-stone-950
+                                                group-hover:text-white
+                                            "
+                                                    >
+                                                        <Icon
+                                                            className="
+                                                    h-4
+                                                    w-4
+                                                "
+                                                        />
+                                                    </div>
+
+
+                                                    <div
+                                                        className="
+                                                min-w-0
+                                                flex-1
+                                            "
+                                                    >
+                                                        <p
+                                                            className="
+                                                    text-sm
+                                                    font-medium
+                                                    text-stone-900
+                                                "
+                                                        >
+                                                            {
+                                                                item.label
+                                                            }
+                                                        </p>
+
+                                                        <p
+                                                            className="
+                                                    mt-0.5
+                                                    truncate
+                                                    text-[11px]
+                                                    text-stone-400
+                                                "
+                                                        >
+                                                            {
+                                                                item.description
+                                                            }
+                                                        </p>
+                                                    </div>
+
+
+                                                    <ArrowRight
+                                                        className="
+                                                h-4
+                                                w-4
+                                                shrink-0
+                                                text-stone-300
+                                                transition-transform
+                                                duration-300
+
+                                                group-hover:translate-x-1
+                                                group-hover:text-stone-700
+                                            "
+                                                    />
+                                                </button>
+                                            );
+                                        }
+                                    )}
+
+
+                                    {isAdmin && (
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                onNavigate(
+                                                    "/admin/solicitudes"
+                                                )
+                                            }
+                                            className="
+                                    group
+                                    mt-2
+                                    flex
+                                    w-full
+                                    items-center
+                                    gap-3
+                                    border-t
+                                    border-stone-200
+                                    px-3
+                                    pb-2
+                                    pt-4
+                                    text-left
+                                "
+                                        >
+                                            <ShieldCheck
+                                                className="
+                                        h-4
+                                        w-4
+                                        text-stone-400
+                                    "
+                                            />
+
+                                            <span
+                                                className="
+                                        flex-1
+                                        text-xs
+                                        font-medium
+                                        text-stone-600
+                                        transition
+
+                                        group-hover:text-stone-950
+                                    "
+                                            >
+                                                {t(
+                                                    "adminPanel",
+                                                    "Administración"
+                                                )}
+                                            </span>
+
+                                            <ArrowRight
+                                                className="
+                                        h-3.5
+                                        w-3.5
+                                        text-stone-300
+                                        transition-transform
+
+                                        group-hover:translate-x-1
+                                    "
+                                            />
+                                        </button>
+                                    )}
+                                </div>
+
+
+                                <div
+                                    className="
+                            border-t
+                            border-stone-200
+                            bg-white
+                            px-4
+                            py-3
+                        "
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            onLogout
+                                        }
+                                        className="
+                                group
+                                flex
+                                w-full
+                                items-center
+                                justify-between
+                                rounded-xl
+                                px-2
+                                py-2
+                                text-xs
+                                font-medium
+                                text-stone-500
+                                transition
+
+                                hover:bg-red-50
+                                hover:text-red-700
+                            "
+                                    >
+                                        <span
+                                            className="
+                                    flex
+                                    items-center
+                                    gap-2
+                                "
+                                        >
+                                            <LogOut
+                                                className="
+                                        h-4
+                                        w-4
+                                    "
+                                            />
+
+                                            {t(
+                                                "logout",
+                                                "Cerrar sesión"
+                                            )}
+                                        </span>
+
+                                        <ArrowRight
+                                            className="
+                                    h-3.5
+                                    w-3.5
+                                    transition-transform
+
+                                    group-hover:translate-x-1
+                                "
+                                        />
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div
+                                    className="
+                            relative
+                            overflow-hidden
+                            bg-stone-950
+                            px-6
+                            pb-7
+                            pt-6
+                            text-white
+                        "
+                                >
+                                    <div
+                                        aria-hidden="true"
+                                        className="
+                                absolute
+                                -right-16
+                                -top-16
+                                h-52
+                                w-52
+                                rounded-full
+                                bg-white/5
+                                blur-2xl
+                            "
+                                    />
+
+
+                                    <div
+                                        className="
+                                relative
+                            "
+                                    >
+                                        <div
+                                            className="
+                                    flex
+                                    h-11
+                                    w-11
+                                    items-center
+                                    justify-center
+                                    rounded-full
+                                    border
+                                    border-white/15
+                                    bg-white/10
+                                "
+                                        >
+                                            <User
+                                                className="
+                                        h-5
+                                        w-5
+                                    "
+                                            />
+                                        </div>
+
+
+                                        <p
+                                            className="
+                                    mt-6
+                                    text-[9px]
+                                    font-semibold
+                                    uppercase
+                                    tracking-[0.3em]
+                                    text-white/45
+                                "
+                                        >
+                                            CJM Group
+                                        </p>
+
+                                        <h2
+                                            className="
+                                    mt-2
+                                    text-2xl
+                                    font-light
+                                    tracking-[-0.035em]
+                                "
+                                        >
+                                            {t(
+                                                "userMenu.title",
+                                                "Área profesional"
+                                            )}
+                                        </h2>
+
+                                        <p
+                                            className="
+                                    mt-3
+                                    max-w-[280px]
+                                    text-xs
+                                    leading-5
+                                    text-white/55
+                                "
+                                        >
+                                            {t(
+                                                "userMenu.description",
+                                                "Accede a tus datos, facturas, pedidos y documentación."
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                                <div
+                                    className="
+                            p-5
+                        "
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            onNavigate(
+                                                "/login"
+                                            )
+                                        }
+                                        className="
+                                group
+                                flex
+                                w-full
+                                items-center
+                                justify-between
+                                bg-stone-950
+                                px-5
+                                py-4
+                                text-sm
+                                font-medium
+                                text-white
+                                transition-colors
+
+                                hover:bg-stone-800
+                            "
+                                    >
+                                        <span
+                                            className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                "
+                                        >
+                                            <LogIn
+                                                className="
+                                        h-4
+                                        w-4
+                                    "
+                                            />
+
+                                            {t(
+                                                "login",
+                                                "Iniciar sesión"
+                                            )}
+                                        </span>
+
+                                        <ArrowRight
+                                            className="
+                                    h-4
+                                    w-4
+                                    transition-transform
+                                    duration-300
+
+                                    group-hover:translate-x-1
+                                "
+                                        />
+                                    </button>
+
+
+                                    <div
+                                        className="
+                                my-5
+                                flex
+                                items-center
+                                gap-3
+                            "
+                                    >
+                                        <span
+                                            className="
+                                    h-px
+                                    flex-1
+                                    bg-stone-200
+                                "
+                                        />
+
+                                        <span
+                                            className="
+                                    text-[10px]
+                                    uppercase
+                                    tracking-[0.16em]
+                                    text-stone-350
+                                "
+                                        >
+                                            {t(
+                                                "userMenu.newCustomer",
+                                                "Nuevo cliente"
+                                            )}
+                                        </span>
+
+                                        <span
+                                            className="
+                                    h-px
+                                    flex-1
+                                    bg-stone-200
+                                "
+                                        />
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            onNavigate(
+                                                "/register"
+                                            )
+                                        }
+                                        className="
+                                group
+                                flex
+                                w-full
+                                items-center
+                                justify-between
+                                border
+                                border-stone-300
+                                bg-white
+                                px-5
+                                py-4
+                                text-sm
+                                font-medium
+                                text-stone-900
+                                transition
+
+                                hover:border-stone-950
+                            "
+                                    >
+                                        <span
+                                            className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                "
+                                        >
+                                            <UserPlus
+                                                className="
+                                        h-4
+                                        w-4
+                                    "
+                                            />
+
+                                            {t(
+                                                "register",
+                                                "Solicitar acceso"
+                                            )}
+                                        </span>
+
+                                        <ArrowRight
+                                            className="
+                                    h-4
+                                    w-4
+                                    text-stone-400
+                                    transition-transform
+                                    duration-300
+
+                                    group-hover:translate-x-1
+                                "
+                                        />
+                                    </button>
+
+
+                                    <p
+                                        className="
+                                mt-5
+                                text-center
+                                text-[11px]
+                                leading-5
+                                text-stone-400
+                            "
+                                    >
+                                        {t(
+                                            "userMenu.professionalAccess",
+                                            "Acceso reservado a clientes profesionales de CJM Group."
+                                        )}
+                                    </p>
+                                </div>
+                            </>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
 
 export const Header = () => {
     const { t, i18n } =
@@ -118,6 +1061,7 @@ export const Header = () => {
 
     const {
         user,
+        customers,
         isAuthenticated,
         isAdmin,
         logout
@@ -1576,369 +2520,43 @@ export const Header = () => {
                         </div> */}
                         {/* USUARIO DESKTOP - OCULTO */}
                         <div
-                            ref={desktopUserRef}
-                            className="relative hidden"
+                            className="
+                                relative
+                                hidden
+                                lg:block
+                            "
                         >
-                            <button
-                                type="button"
-                                onClick={() =>
+                            <HeaderUserMenu
+                                containerRef={
+                                    desktopUserRef
+                                }
+                                open={
+                                    showUserDropdown
+                                }
+                                onToggle={() =>
                                     toggleDropdown(
                                         "user"
                                     )
                                 }
-                                aria-label={
+                                isAuthenticated={
                                     isAuthenticated
-                                        ? t(
-                                            "customerArea",
-                                            "Área de cliente"
-                                        )
-                                        : t(
-                                            "login",
-                                            "Iniciar sesión"
-                                        )
                                 }
-                                className={`
-                                            flex
-                                            h-10
-                                            w-10
-                                            items-center
-                                            justify-center
-                                            rounded-full
-                                            transition
-
-                                            ${showUserDropdown
-                                        ? "bg-slate-900 text-white"
-                                        : "text-gray-800 hover:bg-gray-200"
-                                    }
-                                `}
-                            >
-                                <User className="h-5 w-5" />
-                            </button>
-
-
-                            {showUserDropdown && (
-                                <div
-                                    className="
-                                        absolute
-                                        right-0
-                                        top-[calc(100%+12px)]
-                                        z-50
-                                        w-72
-                                        overflow-hidden
-                                        rounded-2xl
-                                        border
-                                        border-stone-200
-                                        bg-white
-                                        shadow-xl
-                                    "
-                                >
-                                    {isAuthenticated ? (
-                                        <>
-                                            {/* CLIENTE */}
-                                            <div
-                                                className="
-                                                        border-b
-                                                        border-stone-200
-                                                        px-5
-                                                        py-4
-                                                    "
-                                            >
-                                                <p
-                                                    className="
-                                                        text-[10px]
-                                                        font-semibold
-                                                        uppercase
-                                                        tracking-[0.25em]
-                                                        text-stone-400
-                                                    "
-                                                >
-                                                    {t(
-                                                        "customerArea",
-                                                        "Área de cliente"
-                                                    )}
-                                                </p>
-
-                                                <p
-                                                    className="
-                                                        mt-2
-                                                        truncate
-                                                        text-sm
-                                                        font-semibold
-                                                        text-stone-900
-                                                    "
-                                                >
-                                                    {user?.activeCustomer
-                                                        ?.razclien ||
-                                                        user?.activeCustomer
-                                                            ?.nomcomer ||
-                                                        user?.nif}
-                                                </p>
-
-                                                {user?.nif && (
-                                                    <p
-                                                        className="
-                                                            mt-1
-                                                            text-xs
-                                                            text-stone-500
-                                                        "
-                                                    >
-                                                        {t(
-                                                            "nifLabel",
-                                                            "NIF:"
-                                                        )}{" "}
-                                                        {user.nif}
-                                                    </p>
-                                                )}
-                                            </div>
-
-
-                                            {/* ADMIN */}
-                                            {isAdmin && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleUserNavigation(
-                                                            "/admin/solicitudes"
-                                                        )
-                                                    }
-                                                    className="
-                                flex
-                                w-full
-                                items-center
-                                justify-between
-                                border-b
-                                border-stone-100
-                                px-5
-                                py-3.5
-                                text-left
-                                text-sm
-                                font-medium
-                                text-stone-700
-                                transition
-                                hover:bg-stone-50
-                                hover:text-stone-950
-                            "
-                                                >
-                                                    <span>
-                                                        {t(
-                                                            "adminPanel",
-                                                            "Panel de administración"
-                                                        )}
-                                                    </span>
-
-                                                    <ArrowRight className="h-4 w-4 text-stone-400" />
-                                                </button>
-                                            )}
-
-
-                                            {/* MIS DATOS */}
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleUserNavigation(
-                                                        "/mis-datos"
-                                                    )
-                                                }
-                                                className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            border-b
-                            border-stone-100
-                            px-5
-                            py-3.5
-                            text-left
-                            text-sm
-                            text-stone-700
-                            transition
-                            hover:bg-stone-50
-                            hover:text-stone-950
-                        "
-                                            >
-                                                <span>
-                                                    {t(
-                                                        "myData",
-                                                        "Mis datos"
-                                                    )}
-                                                </span>
-
-                                                <ArrowRight className="h-4 w-4 text-stone-400" />
-                                            </button>
-
-
-                                            {/* FACTURAS */}
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleUserNavigation(
-                                                        "/mis-facturas"
-                                                    )
-                                                }
-                                                className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            border-b
-                            border-stone-100
-                            px-5
-                            py-3.5
-                            text-left
-                            text-sm
-                            text-stone-700
-                            transition
-                            hover:bg-stone-50
-                            hover:text-stone-950
-                        "
-                                            >
-                                                <span>
-                                                    {t(
-                                                        "myInvoices",
-                                                        "Mis facturas"
-                                                    )}
-                                                </span>
-
-                                                <ArrowRight className="h-4 w-4 text-stone-400" />
-                                            </button>
-
-
-                                            {/* CERRAR SESIÓN */}
-                                            <button
-                                                type="button"
-                                                onClick={
-                                                    handleLogout
-                                                }
-                                                className="
-                            w-full
-                            px-5
-                            py-4
-                            text-left
-                            text-sm
-                            font-medium
-                            text-stone-500
-                            transition
-                            hover:bg-stone-50
-                            hover:text-stone-950
-                        "
-                                            >
-                                                {t(
-                                                    "logout",
-                                                    "Cerrar sesión"
-                                                )}
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div
-                                                className="
-                            border-b
-                            border-stone-200
-                            px-5
-                            py-4
-                        "
-                                            >
-                                                <p
-                                                    className="
-                                text-[10px]
-                                font-semibold
-                                uppercase
-                                tracking-[0.25em]
-                                text-stone-400
-                            "
-                                                >
-                                                    {t(
-                                                        "customerArea",
-                                                        "Área de cliente"
-                                                    )}
-                                                </p>
-
-                                                <p
-                                                    className="
-                                mt-2
-                                text-sm
-                                leading-5
-                                text-stone-500
-                            "
-                                                >
-                                                    Accede a tu cuenta para
-                                                    consultar tus datos y
-                                                    facturas.
-                                                </p>
-                                            </div>
-
-
-                                            {/* LOGIN */}
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleUserNavigation(
-                                                        "/login"
-                                                    )
-                                                }
-                                                className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            border-b
-                            border-stone-100
-                            px-5
-                            py-4
-                            text-left
-                            text-sm
-                            font-medium
-                            text-stone-800
-                            transition
-                            hover:bg-stone-50
-                        "
-                                            >
-                                                <span>
-                                                    {t(
-                                                        "login",
-                                                        "Iniciar sesión"
-                                                    )}
-                                                </span>
-
-                                                <ArrowRight className="h-4 w-4 text-stone-400" />
-                                            </button>
-
-
-                                            {/* REGISTRO */}
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleUserNavigation(
-                                                        "/register"
-                                                    )
-                                                }
-                                                className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            px-5
-                            py-4
-                            text-left
-                            text-sm
-                            text-stone-700
-                            transition
-                            hover:bg-stone-50
-                        "
-                                            >
-                                                <span>
-                                                    {t(
-                                                        "createAccount",
-                                                        "Crear cuenta"
-                                                    )}
-                                                </span>
-
-                                                <ArrowRight className="h-4 w-4 text-stone-400" />
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                            )}
+                                isAdmin={
+                                    isAdmin
+                                }
+                                user={
+                                    user
+                                }
+                                onNavigate={
+                                    handleUserNavigation
+                                }
+                                onLogout={
+                                    handleLogout
+                                }
+                                t={
+                                    t
+                                }
+                            />
                         </div>
 
                         {/* BUSCADOR */}
@@ -2923,369 +3541,42 @@ export const Header = () => {
 
                     {/* USUARIO MOBILE */}
                     <div
-                        ref={mobileUserRef}
-                        className="relative"
+                        className="
+                            relative
+                            lg:hidden
+                        "
                     >
-                        <button
-                            type="button"
-                            onClick={() =>
+                        <HeaderUserMenu
+                            containerRef={
+                                mobileUserRef
+                            }
+                            open={
+                                showUserDropdown
+                            }
+                            onToggle={() =>
                                 toggleDropdown(
                                     "user"
                                 )
                             }
-                            aria-label={
+                            isAuthenticated={
                                 isAuthenticated
-                                    ? t(
-                                        "customerArea",
-                                        "Área de cliente"
-                                    )
-                                    : t(
-                                        "login",
-                                        "Iniciar sesión"
-                                    )
                             }
-                            className={`
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-full
-            transition
-
-            ${showUserDropdown
-                                    ? "bg-slate-900 text-white"
-                                    : "text-gray-800 hover:bg-gray-200"
-                                }
-        `}
-                        >
-                            <User className="h-5 w-5" />
-                        </button>
-
-
-                        {showUserDropdown && (
-                            <div
-                                className="
-                absolute
-                right-0
-                top-[calc(100%+12px)]
-                z-50
-                w-72
-                overflow-hidden
-                rounded-2xl
-                border
-                border-stone-200
-                bg-white
-                shadow-xl
-            "
-                            >
-                                {isAuthenticated ? (
-                                    <>
-                                        {/* CLIENTE */}
-                                        <div
-                                            className="
-                            border-b
-                            border-stone-200
-                            px-5
-                            py-4
-                        "
-                                        >
-                                            <p
-                                                className="
-                                text-[10px]
-                                font-semibold
-                                uppercase
-                                tracking-[0.25em]
-                                text-stone-400
-                            "
-                                            >
-                                                {t(
-                                                    "customerArea",
-                                                    "Área de cliente"
-                                                )}
-                                            </p>
-
-                                            <p
-                                                className="
-                                mt-2
-                                truncate
-                                text-sm
-                                font-semibold
-                                text-stone-900
-                            "
-                                            >
-                                                {user?.activeCustomer
-                                                    ?.razclien ||
-                                                    user?.activeCustomer
-                                                        ?.nomcomer ||
-                                                    user?.nif}
-                                            </p>
-
-                                            {user?.nif && (
-                                                <p
-                                                    className="
-                                    mt-1
-                                    text-xs
-                                    text-stone-500
-                                "
-                                                >
-                                                    {t(
-                                                        "nifLabel",
-                                                        "NIF:"
-                                                    )}{" "}
-                                                    {user.nif}
-                                                </p>
-                                            )}
-                                        </div>
-
-
-                                        {/* ADMIN */}
-                                        {isAdmin && (
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleUserNavigation(
-                                                        "/admin/solicitudes"
-                                                    )
-                                                }
-                                                className="
-                                flex
-                                w-full
-                                items-center
-                                justify-between
-                                border-b
-                                border-stone-100
-                                px-5
-                                py-3.5
-                                text-left
-                                text-sm
-                                font-medium
-                                text-stone-700
-                                transition
-                                hover:bg-stone-50
-                                hover:text-stone-950
-                            "
-                                            >
-                                                <span>
-                                                    {t(
-                                                        "adminPanel",
-                                                        "Panel de administración"
-                                                    )}
-                                                </span>
-
-                                                <ArrowRight className="h-4 w-4 text-stone-400" />
-                                            </button>
-                                        )}
-
-
-                                        {/* MIS DATOS */}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleUserNavigation(
-                                                    "/mis-datos"
-                                                )
-                                            }
-                                            className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            border-b
-                            border-stone-100
-                            px-5
-                            py-3.5
-                            text-left
-                            text-sm
-                            text-stone-700
-                            transition
-                            hover:bg-stone-50
-                            hover:text-stone-950
-                        "
-                                        >
-                                            <span>
-                                                {t(
-                                                    "myData",
-                                                    "Mis datos"
-                                                )}
-                                            </span>
-
-                                            <ArrowRight className="h-4 w-4 text-stone-400" />
-                                        </button>
-
-
-                                        {/* FACTURAS */}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleUserNavigation(
-                                                    "/mis-facturas"
-                                                )
-                                            }
-                                            className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            border-b
-                            border-stone-100
-                            px-5
-                            py-3.5
-                            text-left
-                            text-sm
-                            text-stone-700
-                            transition
-                            hover:bg-stone-50
-                            hover:text-stone-950
-                        "
-                                        >
-                                            <span>
-                                                {t(
-                                                    "myInvoices",
-                                                    "Mis facturas"
-                                                )}
-                                            </span>
-
-                                            <ArrowRight className="h-4 w-4 text-stone-400" />
-                                        </button>
-
-
-                                        {/* CERRAR SESIÓN */}
-                                        <button
-                                            type="button"
-                                            onClick={
-                                                handleLogout
-                                            }
-                                            className="
-                            w-full
-                            px-5
-                            py-4
-                            text-left
-                            text-sm
-                            font-medium
-                            text-stone-500
-                            transition
-                            hover:bg-stone-50
-                            hover:text-stone-950
-                        "
-                                        >
-                                            {t(
-                                                "logout",
-                                                "Cerrar sesión"
-                                            )}
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <div
-                                            className="
-                            border-b
-                            border-stone-200
-                            px-5
-                            py-4
-                        "
-                                        >
-                                            <p
-                                                className="
-                                text-[10px]
-                                font-semibold
-                                uppercase
-                                tracking-[0.25em]
-                                text-stone-400
-                            "
-                                            >
-                                                {t(
-                                                    "customerArea",
-                                                    "Área de cliente"
-                                                )}
-                                            </p>
-
-                                            <p
-                                                className="
-                                mt-2
-                                text-sm
-                                leading-5
-                                text-stone-500
-                            "
-                                            >
-                                                Accede a tu cuenta para
-                                                consultar tus datos y
-                                                facturas.
-                                            </p>
-                                        </div>
-
-
-                                        {/* LOGIN */}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleUserNavigation(
-                                                    "/login"
-                                                )
-                                            }
-                                            className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            border-b
-                            border-stone-100
-                            px-5
-                            py-4
-                            text-left
-                            text-sm
-                            font-medium
-                            text-stone-800
-                            transition
-                            hover:bg-stone-50
-                        "
-                                        >
-                                            <span>
-                                                {t(
-                                                    "login",
-                                                    "Iniciar sesión"
-                                                )}
-                                            </span>
-
-                                            <ArrowRight className="h-4 w-4 text-stone-400" />
-                                        </button>
-
-
-                                        {/* REGISTRO */}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleUserNavigation(
-                                                    "/register"
-                                                )
-                                            }
-                                            className="
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            px-5
-                            py-4
-                            text-left
-                            text-sm
-                            text-stone-700
-                            transition
-                            hover:bg-stone-50
-                        "
-                                        >
-                                            <span>
-                                                {t(
-                                                    "createAccount",
-                                                    "Crear cuenta"
-                                                )}
-                                            </span>
-
-                                            <ArrowRight className="h-4 w-4 text-stone-400" />
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        )}
+                            isAdmin={
+                                isAdmin
+                            }
+                            user={
+                                user
+                            }
+                            onNavigate={
+                                handleUserNavigation
+                            }
+                            onLogout={
+                                handleLogout
+                            }
+                            t={
+                                t
+                            }
+                        />
                     </div>
 
 

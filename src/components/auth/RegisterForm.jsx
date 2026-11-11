@@ -49,6 +49,7 @@ export default function RegisterForm() {
         "registerPage"
     );
 
+
     const [
         form,
         setForm,
@@ -97,33 +98,32 @@ export default function RegisterForm() {
             value,
         } = event.target;
 
+
         setForm(
-            (
-                current
-            ) => ({
+            current => ({
                 ...current,
 
                 [name]:
                     name ===
                         "email" ||
-                    name ===
+                        name ===
                         "confirmEmail"
                         ? value.toLowerCase()
                         : name ===
-                          "codclien"
-                        ? value.toUpperCase()
-                        : value,
+                            "codclien"
+                            ? value.toUpperCase()
+                            : value,
             })
         );
 
+
         setFieldErrors(
-            (
-                current
-            ) => ({
+            current => ({
                 ...current,
                 [name]: "",
             })
         );
+
 
         setServerError("");
     };
@@ -137,92 +137,108 @@ export default function RegisterForm() {
         setServerError("");
         setSuccessMessage("");
 
+
         const validationErrors =
             validateForm(
                 form,
                 t
             );
 
+
         setFieldErrors(
             validationErrors
         );
 
+
         if (
             Object.keys(
                 validationErrors
-            ).length > 0
+            ).length >
+            0
         ) {
             return;
         }
+
 
         setSubmitting(
             true
         );
 
+
         try {
             const response =
-                await authClient.registerRequest({
-                    email:
-                        form.email
-                            .trim()
-                            .toLowerCase(),
+                await authClient
+                    .registerRequest({
+                        email:
+                            form.email
+                                .trim()
+                                .toLowerCase(),
 
-                    confirmEmail:
-                        form.confirmEmail
-                            .trim()
-                            .toLowerCase(),
+                        confirmEmail:
+                            form.confirmEmail
+                                .trim()
+                                .toLowerCase(),
 
-                    firstName:
-                        form.firstName
-                            .trim(),
+                        firstName:
+                            form.firstName
+                                .trim(),
 
-                    lastName:
-                        form.lastName
-                            .trim(),
+                        lastName:
+                            form.lastName
+                                .trim(),
 
-                    password:
-                        form.password,
+                        password:
+                            form.password,
 
-                    confirmPassword:
-                        form.confirmPassword,
+                        confirmPassword:
+                            form.confirmPassword,
 
-                    phone:
-                        form.phone.trim(),
+                        phone:
+                            form.phone
+                                .trim(),
 
-                    mobilePhone:
-                        form.mobilePhone.trim(),
+                        mobilePhone:
+                            form.mobilePhone
+                                .trim(),
 
-                    streetAddress:
-                        form.streetAddress.trim(),
+                        streetAddress:
+                            form.streetAddress
+                                .trim(),
 
-                    addressLine2:
-                        form.addressLine2.trim(),
+                        addressLine2:
+                            form.addressLine2
+                                .trim(),
 
-                    city:
-                        form.city.trim(),
+                        city:
+                            form.city
+                                .trim(),
 
-                    stateProvince:
-                        form.stateProvince.trim(),
+                        stateProvince:
+                            form.stateProvince
+                                .trim(),
 
-                    postcode:
-                        form.postcode.trim(),
+                        postcode:
+                            form.postcode
+                                .trim(),
 
-                    country:
-                        form.country.trim(),
+                        country:
+                            form.country
+                                .trim(),
 
-                    codclien:
-                        form.codclien
-                            .trim()
-                            .toUpperCase(),
-                });
+                        codclien:
+                            form.codclien
+                                .trim()
+                                .toUpperCase(),
+                    });
 
 
             setSuccessMessage(
                 response?.message ||
-                    t(
-                        "success.message"
-                    )
+                t(
+                    "success.message"
+                )
             );
+
 
             setForm(
                 initialForm
@@ -232,7 +248,7 @@ export default function RegisterForm() {
                 {}
             );
         } catch (
-            error
+        error
         ) {
             const apiErrors =
                 Array.isArray(
@@ -240,7 +256,7 @@ export default function RegisterForm() {
                         ?.errors
                 )
                     ? error.data
-                          .errors
+                        .errors
                     : [];
 
 
@@ -266,6 +282,7 @@ export default function RegisterForm() {
                                     );
                             }
 
+
                             return acc;
                         },
                         {}
@@ -276,9 +293,9 @@ export default function RegisterForm() {
 
             setServerError(
                 error?.message ||
-                    t(
-                        "errors.submit"
-                    )
+                t(
+                    "errors.submit"
+                )
             );
         } finally {
             setSubmitting(
@@ -288,28 +305,35 @@ export default function RegisterForm() {
     };
 
 
-    return (
-        <AuthCard
-            eyebrow={t(
-                "eyebrow"
-            )}
-            title={t(
-                "form.title"
-            )}
-            subtitle={t(
-                "form.subtitle"
-            )}
-            sideLabel={t(
-                "hero.label"
-            )}
-            sideTitle={t(
-                "hero.title"
-            )}
-            sideDescription={t(
-                "hero.description"
-            )}
-        >
-            {isSubmitted ? (
+    /*
+     * -------------------------------------------------------------------------
+     * REGISTRO COMPLETADO
+     * -------------------------------------------------------------------------
+     */
+    if (
+        isSubmitted
+    ) {
+        return (
+            <AuthCard
+                eyebrow={t(
+                    "eyebrow"
+                )}
+                title={t(
+                    "success.title"
+                )}
+                subtitle={t(
+                    "success.description"
+                )}
+                sideLabel={t(
+                    "hero.label"
+                )}
+                sideTitle={t(
+                    "hero.title"
+                )}
+                sideDescription={t(
+                    "hero.description"
+                )}
+            >
                 <div>
                     <div
                         className="
@@ -331,23 +355,10 @@ export default function RegisterForm() {
                         />
                     </div>
 
-                    <h2
-                        className="
-                            mt-6
-                            text-2xl
-                            font-light
-                            tracking-[-0.03em]
-                            text-stone-950
-                        "
-                    >
-                        {t(
-                            "success.title"
-                        )}
-                    </h2>
 
                     <p
                         className="
-                            mt-3
+                            mt-6
                             text-sm
                             leading-7
                             text-stone-600
@@ -358,18 +369,6 @@ export default function RegisterForm() {
                         }
                     </p>
 
-                    <p
-                        className="
-                            mt-3
-                            text-sm
-                            leading-7
-                            text-stone-500
-                        "
-                    >
-                        {t(
-                            "success.description"
-                        )}
-                    </p>
 
                     <Link
                         to="/login"
@@ -397,303 +396,345 @@ export default function RegisterForm() {
                             )}
                         </span>
 
+
                         <ArrowRight
                             className="
                                 h-4
                                 w-4
                                 transition-transform
+
                                 group-hover:translate-x-1
                             "
                         />
                     </Link>
                 </div>
-            ) : (
-                <form
-                    onSubmit={
-                        handleSubmit
-                    }
+            </AuthCard>
+        );
+    }
+
+
+    /*
+     * -------------------------------------------------------------------------
+     * FORMULARIO
+     * -------------------------------------------------------------------------
+     *
+     * Un único <form> contiene las dos
+     * columnas del AuthCard.
+     */
+    return (
+        <form
+            onSubmit={
+                handleSubmit
+            }
+            className="
+                w-full
+            "
+        >
+            <AuthCard
+                eyebrow={t(
+                    "eyebrow"
+                )}
+                title={t(
+                    "form.title"
+                )}
+                subtitle={t(
+                    "form.subtitle"
+                )}
+                sideLabel={t(
+                    "hero.label"
+                )}
+                sideTitle={t(
+                    "hero.title"
+                )}
+                sideDescription={t(
+                    "hero.description"
+                )}
+                sideContent={
+                    <div
+                        className="
+                            space-y-9
+                        "
+                    >
+                        {/* ACCESO */}
+                        <FormSection
+                            number="01"
+                            title={t(
+                                "sections.access.title"
+                            )}
+                            description={t(
+                                "sections.access.description"
+                            )}
+                        >
+                            <div
+                                className="
+                                    grid
+                                    gap-x-7
+                                    gap-y-5
+
+                                    sm:grid-cols-2
+                                "
+                            >
+                                <FormField
+                                    label={t(
+                                        "fields.email"
+                                    )}
+                                    name="email"
+                                    type="email"
+                                    value={
+                                        form.email
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.email
+                                    }
+                                    placeholder={t(
+                                        "fields.emailPlaceholder"
+                                    )}
+                                    autoComplete="email"
+                                    required
+                                />
+
+
+                                <FormField
+                                    label={t(
+                                        "fields.confirmEmail"
+                                    )}
+                                    name="confirmEmail"
+                                    type="email"
+                                    value={
+                                        form.confirmEmail
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.confirmEmail
+                                    }
+                                    placeholder={t(
+                                        "fields.confirmEmailPlaceholder"
+                                    )}
+                                    autoComplete="email"
+                                    required
+                                />
+
+
+                                <FormField
+                                    label={t(
+                                        "fields.password"
+                                    )}
+                                    name="password"
+                                    type="password"
+                                    value={
+                                        form.password
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.password
+                                    }
+                                    placeholder={t(
+                                        "fields.passwordPlaceholder"
+                                    )}
+                                    autoComplete="new-password"
+                                    required
+                                />
+
+
+                                <FormField
+                                    label={t(
+                                        "fields.confirmPassword"
+                                    )}
+                                    name="confirmPassword"
+                                    type="password"
+                                    value={
+                                        form.confirmPassword
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.confirmPassword
+                                    }
+                                    placeholder={t(
+                                        "fields.confirmPasswordPlaceholder"
+                                    )}
+                                    autoComplete="new-password"
+                                    required
+                                />
+                            </div>
+                        </FormSection>
+
+
+                        {/* DATOS PERSONALES */}
+                        <FormSection
+                            number="02"
+                            title={t(
+                                "sections.personal.title"
+                            )}
+                        >
+                            <div
+                                className="
+                                    grid
+                                    gap-x-7
+                                    gap-y-5
+
+                                    sm:grid-cols-2
+                                "
+                            >
+                                <FormField
+                                    label={t(
+                                        "fields.firstName"
+                                    )}
+                                    name="firstName"
+                                    value={
+                                        form.firstName
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.firstName
+                                    }
+                                    placeholder={t(
+                                        "fields.firstNamePlaceholder"
+                                    )}
+                                    autoComplete="given-name"
+                                    required
+                                />
+
+
+                                <FormField
+                                    label={t(
+                                        "fields.lastName"
+                                    )}
+                                    name="lastName"
+                                    value={
+                                        form.lastName
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.lastName
+                                    }
+                                    placeholder={t(
+                                        "fields.lastNamePlaceholder"
+                                    )}
+                                    autoComplete="family-name"
+                                    required
+                                />
+
+
+                                <FormField
+                                    label={t(
+                                        "fields.phone"
+                                    )}
+                                    name="phone"
+                                    value={
+                                        form.phone
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.phone
+                                    }
+                                    placeholder={t(
+                                        "fields.phonePlaceholder"
+                                    )}
+                                    autoComplete="tel"
+                                />
+
+
+                                <FormField
+                                    label={t(
+                                        "fields.mobilePhone"
+                                    )}
+                                    name="mobilePhone"
+                                    value={
+                                        form.mobilePhone
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    error={
+                                        fieldErrors.mobilePhone
+                                    }
+                                    placeholder={t(
+                                        "fields.mobilePhonePlaceholder"
+                                    )}
+                                    autoComplete="tel"
+                                />
+                            </div>
+                        </FormSection>
+                    </div>
+                }
+            >
+                <div
                     className="
                         space-y-9
                     "
                 >
-                    <FormSection
-                        number="01"
-                        title={t(
-                            "sections.access.title"
-                        )}
-                        description={t(
-                            "sections.access.description"
-                        )}
-                    >
-                        <div
-                            className="
-                                grid
-                                gap-5
-
-                                sm:grid-cols-2
-                            "
-                        >
-                            <FormField
-                                label={t(
-                                    "fields.email"
-                                )}
-                                name="email"
-                                type="email"
-                                value={
-                                    form.email
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.email
-                                }
-                                placeholder={t(
-                                    "fields.emailPlaceholder"
-                                )}
-                                autoComplete="email"
-                                required
-                            />
-
-                            <FormField
-                                label={t(
-                                    "fields.confirmEmail"
-                                )}
-                                name="confirmEmail"
-                                type="email"
-                                value={
-                                    form.confirmEmail
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.confirmEmail
-                                }
-                                placeholder={t(
-                                    "fields.confirmEmailPlaceholder"
-                                )}
-                                autoComplete="email"
-                                required
-                            />
-                        </div>
-
-                        <div
-                            className="
-                                grid
-                                gap-5
-
-                                sm:grid-cols-2
-                            "
-                        >
-                            <FormField
-                                label={t(
-                                    "fields.password"
-                                )}
-                                name="password"
-                                type="password"
-                                value={
-                                    form.password
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.password
-                                }
-                                placeholder={t(
-                                    "fields.passwordPlaceholder"
-                                )}
-                                autoComplete="new-password"
-                                required
-                            />
-
-                            <FormField
-                                label={t(
-                                    "fields.confirmPassword"
-                                )}
-                                name="confirmPassword"
-                                type="password"
-                                value={
-                                    form.confirmPassword
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.confirmPassword
-                                }
-                                placeholder={t(
-                                    "fields.confirmPasswordPlaceholder"
-                                )}
-                                autoComplete="new-password"
-                                required
-                            />
-                        </div>
-                    </FormSection>
-
-
-                    <FormSection
-                        number="02"
-                        title={t(
-                            "sections.personal.title"
-                        )}
-                    >
-                        <div
-                            className="
-                                grid
-                                gap-5
-
-                                sm:grid-cols-2
-                            "
-                        >
-                            <FormField
-                                label={t(
-                                    "fields.firstName"
-                                )}
-                                name="firstName"
-                                value={
-                                    form.firstName
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.firstName
-                                }
-                                placeholder={t(
-                                    "fields.firstNamePlaceholder"
-                                )}
-                                autoComplete="given-name"
-                                required
-                            />
-
-                            <FormField
-                                label={t(
-                                    "fields.lastName"
-                                )}
-                                name="lastName"
-                                value={
-                                    form.lastName
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.lastName
-                                }
-                                placeholder={t(
-                                    "fields.lastNamePlaceholder"
-                                )}
-                                autoComplete="family-name"
-                                required
-                            />
-                        </div>
-
-                        <div
-                            className="
-                                grid
-                                gap-5
-
-                                sm:grid-cols-2
-                            "
-                        >
-                            <FormField
-                                label={t(
-                                    "fields.phone"
-                                )}
-                                name="phone"
-                                value={
-                                    form.phone
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.phone
-                                }
-                                placeholder={t(
-                                    "fields.phonePlaceholder"
-                                )}
-                                autoComplete="tel"
-                            />
-
-                            <FormField
-                                label={t(
-                                    "fields.mobilePhone"
-                                )}
-                                name="mobilePhone"
-                                value={
-                                    form.mobilePhone
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                error={
-                                    fieldErrors.mobilePhone
-                                }
-                                placeholder={t(
-                                    "fields.mobilePhonePlaceholder"
-                                )}
-                                autoComplete="tel"
-                            />
-                        </div>
-                    </FormSection>
-
-
+                    {/* DIRECCIÓN */}
                     <FormSection
                         number="03"
                         title={t(
                             "sections.address.title"
                         )}
                     >
-                        <FormField
-                            label={t(
-                                "fields.streetAddress"
-                            )}
-                            name="streetAddress"
-                            value={
-                                form.streetAddress
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            error={
-                                fieldErrors.streetAddress
-                            }
-                            placeholder={t(
-                                "fields.streetAddressPlaceholder"
-                            )}
-                            autoComplete="street-address"
-                        />
-
-                        <FormField
-                            label={t(
-                                "fields.addressLine2"
-                            )}
-                            name="addressLine2"
-                            value={
-                                form.addressLine2
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            error={
-                                fieldErrors.addressLine2
-                            }
-                            placeholder={t(
-                                "fields.addressLine2Placeholder"
-                            )}
-                        />
-
                         <div
                             className="
                                 grid
-                                gap-5
+                                gap-x-7
+                                gap-y-5
 
                                 sm:grid-cols-2
                             "
                         >
+                            <FormField
+                                label={t(
+                                    "fields.streetAddress"
+                                )}
+                                name="streetAddress"
+                                value={
+                                    form.streetAddress
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.streetAddress
+                                }
+                                placeholder={t(
+                                    "fields.streetAddressPlaceholder"
+                                )}
+                                autoComplete="street-address"
+                            />
+
+
+                            <FormField
+                                label={t(
+                                    "fields.addressLine2"
+                                )}
+                                name="addressLine2"
+                                value={
+                                    form.addressLine2
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                error={
+                                    fieldErrors.addressLine2
+                                }
+                                placeholder={t(
+                                    "fields.addressLine2Placeholder"
+                                )}
+                            />
+
+
                             <FormField
                                 label={t(
                                     "fields.city"
@@ -714,6 +755,7 @@ export default function RegisterForm() {
                                 autoComplete="address-level2"
                             />
 
+
                             <FormField
                                 label={t(
                                     "fields.stateProvince"
@@ -733,16 +775,8 @@ export default function RegisterForm() {
                                 )}
                                 autoComplete="address-level1"
                             />
-                        </div>
 
-                        <div
-                            className="
-                                grid
-                                gap-5
 
-                                sm:grid-cols-2
-                            "
-                        >
                             <FormField
                                 label={t(
                                     "fields.postcode"
@@ -762,6 +796,7 @@ export default function RegisterForm() {
                                 )}
                                 autoComplete="postal-code"
                             />
+
 
                             <FormField
                                 label={t(
@@ -786,6 +821,7 @@ export default function RegisterForm() {
                     </FormSection>
 
 
+                    {/* DATOS DE CLIENTE */}
                     <FormSection
                         number="04"
                         title={t(
@@ -817,6 +853,7 @@ export default function RegisterForm() {
                     </FormSection>
 
 
+                    {/* ERROR GENERAL */}
                     {serverError ? (
                         <div
                             role="alert"
@@ -838,6 +875,7 @@ export default function RegisterForm() {
                     ) : null}
 
 
+                    {/* ENVÍO */}
                     <button
                         type="submit"
                         disabled={
@@ -873,11 +911,13 @@ export default function RegisterForm() {
                                 )}
                         </span>
 
+
                         <ArrowRight
                             className="
                                 h-4
                                 w-4
                                 transition-transform
+
                                 group-hover:translate-x-1
                             "
                         />
@@ -894,6 +934,7 @@ export default function RegisterForm() {
                         {t(
                             "form.haveAccess"
                         )}{" "}
+
                         <Link
                             to="/login"
                             className="
@@ -912,9 +953,9 @@ export default function RegisterForm() {
                             )}
                         </Link>
                     </p>
-                </form>
-            )}
-        </AuthCard>
+                </div>
+            </AuthCard>
+        </form>
     );
 }
 
@@ -947,8 +988,11 @@ function FormSection({
                         text-stone-350
                     "
                 >
-                    {number}
+                    {
+                        number
+                    }
                 </span>
+
 
                 <div>
                     <h3
@@ -958,8 +1002,11 @@ function FormSection({
                             text-stone-950
                         "
                     >
-                        {title}
+                        {
+                            title
+                        }
                     </h3>
+
 
                     {description ? (
                         <p
@@ -979,13 +1026,10 @@ function FormSection({
                 </div>
             </div>
 
-            <div
-                className="
-                    space-y-5
-                "
-            >
-                {children}
-            </div>
+
+            {
+                children
+            }
         </section>
     );
 }
@@ -1003,7 +1047,11 @@ function FormField({
     required = false,
 }) {
     return (
-        <div>
+        <div
+            className="
+                min-w-0
+            "
+        >
             <label
                 htmlFor={
                     name
@@ -1018,8 +1066,11 @@ function FormField({
                     text-stone-500
                 "
             >
-                {label}
+                {
+                    label
+                }
             </label>
+
 
             <input
                 id={
@@ -1058,13 +1109,21 @@ function FormField({
 
                     placeholder:text-stone-350
 
-                    ${
-                        error
-                            ? "border-red-400 focus:border-red-500"
-                            : "border-stone-300 focus:border-stone-950"
+                    ${error
+                        ? `
+                                border-red-400
+
+                                focus:border-red-500
+                            `
+                        : `
+                                border-stone-300
+
+                                focus:border-stone-950
+                            `
                     }
                 `}
             />
+
 
             {error ? (
                 <p
@@ -1075,7 +1134,9 @@ function FormField({
                         text-red-600
                     "
                 >
-                    {error}
+                    {
+                        error
+                    }
                 </p>
             ) : null}
         </div>
@@ -1092,7 +1153,8 @@ function validateForm(
 
 
     if (
-        !form.email.trim()
+        !form.email
+            .trim()
     ) {
         errors.email =
             t(
@@ -1164,7 +1226,8 @@ function validateForm(
             );
     } else if (
         form.password
-            .length < 8
+            .length <
+        8
     ) {
         errors.password =
             t(

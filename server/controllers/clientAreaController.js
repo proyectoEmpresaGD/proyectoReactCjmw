@@ -7,31 +7,127 @@ export function createClientAreaController({ pool }) {
     const model = new ClientAreaModel(pool);
 
     return {
-        getInvoices: async (req, res, next) => {
+        getInvoices: async (
+            req,
+            res,
+            next
+        ) => {
             try {
-                const { ejercicio } = req.query;
+                const {
+                    ejercicio,
+                    mode = 'orders',
+                    search = '',
+                    limit = 20,
+                    offset = 0,
+                } = req.query;
+
 
                 const codclien =
                     req.customer?.codclien ||
                     req.user?.codclien;
 
+
                 if (!codclien) {
-                    return res.status(401).json({
-                        message: 'Cliente no autenticado',
-                    });
+                    return res
+                        .status(401)
+                        .json({
+                            message:
+                                'Cliente no autenticado',
+                        });
                 }
 
-                const invoices =
-                    await model.getInvoicesByCustomerCode({
-                        codclien,
-                        ejercicio,
-                    });
 
-                return res.json({
-                    invoices,
-                });
-            } catch (error) {
-                return next(error);
+                const result =
+                    await model
+                        .getInvoicesByCustomerCode({
+                            codclien,
+
+                            ejercicio,
+
+                            mode,
+
+                            search,
+
+                            limit:
+                                Number(
+                                    limit
+                                ),
+
+                            offset:
+                                Number(
+                                    offset
+                                ),
+                        });
+
+
+                return res.json(
+                    result
+                );
+            } catch (
+            error
+            ) {
+                return next(
+                    error
+                );
+            }
+        },
+
+        getLibrary: async (
+            req,
+            res,
+            next
+        ) => {
+            try {
+                const codclien =
+                    req.customer?.codclien ||
+                    req.user?.codclien;
+
+
+                if (!codclien) {
+                    return res
+                        .status(401)
+                        .json({
+                            message:
+                                'Cliente no autenticado',
+                        });
+                }
+
+
+                const {
+                    tipo,
+                    limit = 20,
+                    offset = 0,
+                } = req.query;
+
+
+                const result =
+                    await model
+                        .getLibraryByCustomerCode({
+                            codclien,
+
+                            tipo,
+
+                            limit:
+                                Number(
+                                    limit
+                                ),
+
+                            offset:
+                                Number(
+                                    offset
+                                ),
+                        });
+
+
+                return res.json(
+                    result
+                );
+            } catch (
+            error
+            ) {
+                return next(
+                    error
+                );
             }
         },
 

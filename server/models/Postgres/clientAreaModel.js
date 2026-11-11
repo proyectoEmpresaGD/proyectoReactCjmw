@@ -3,52 +3,729 @@ export class ClientAreaModel {
         this.pool = pool;
     }
 
+    async getLibraryByCustomerCode({
+        codclien,
+        tipo,
+        limit = 20,
+        offset = 0,
+    }) {
+        const safeLimit =
+            Math.min(
+                Math.max(
+                    Number.parseInt(
+                        limit,
+                        10
+                    ) || 20,
+                    1
+                ),
+                50
+            );
+
+        const safeOffset =
+            Math.max(
+                Number.parseInt(
+                    offset,
+                    10
+                ) || 0,
+                0
+            );
+
+
+        const normalizedTipo =
+            tipo === 'LIBRO' ||
+                tipo === 'PERCHA'
+                ? tipo
+                : null;
+
+
+        /*
+         * Pedimos uno adicional para
+         * detectar si existe otra página.
+         */
+        const queryLimit =
+            safeLimit + 1;
+
+
+        const query = `
+        WITH library_base AS (
+            SELECT
+                l.codprodu,
+
+                COALESCE(
+                    NULLIF(
+                        TRIM(
+                            l.desprodu
+                        ),
+                        ''
+                    ),
+                    p.desprodu,
+                    l.codprodu
+                ) AS desprodu,
+
+                p.codmarca,
+
+                p.codtipo,
+
+                COALESCE(
+                    l.cantidad,
+                    0
+                ) AS cantidad,
+
+                COALESCE(
+                    a.fecha,
+                    l.fecha
+                ) AS fecha,
+
+                CASE
+                    WHEN
+                        TRIM(
+                            p.codtipo::text
+                        ) = '105'
+                    THEN 'PERCHA'
+
+                    WHEN
+                        TRIM(
+                            p.codtipo::text
+                        ) IN (
+                            '106',
+                            '109'
+                        )
+                    THEN 'LIBRO'
+
+                    ELSE NULL
+                END AS tipo
+
+            FROM albventa a
+
+            INNER JOIN albventa_linea l
+                ON l.ejercicio =
+                    a.ejercicio
+
+                AND l.canal =
+                    a.canal
+
+                AND l.codseralbventa =
+                    a.codseralbventa
+
+                AND l.nalbventa =
+                    a.nalbventa
+
+                AND l.codclien =
+                    a.codclien
+
+            INNER JOIN productos p
+                ON p.codprodu =
+                    l.codprodu
+
+            WHERE
+                a.codclien = $1
+
+                AND l.codprodu
+                    IS NOT NULL
+
+                AND TRIM(
+                    l.codprodu
+                ) <> ''
+
+                AND TRIM(
+                    p.codtipo::text
+                ) IN (
+                    '105',
+                    '106',
+                    '109'
+                )
+
+                AND COALESCE(
+                    UPPER(
+                        TRIM(
+                            p.obsoleto
+                        )
+                    ),
+                    'N'
+                ) <> 'S'
+        ),
+
+
+        library_grouped AS (
+            SELECT
+                codprodu,
+
+                MAX(
+                    desprodu
+                ) AS desprodu,
+
+                MAX(
+                    codmarca
+                ) AS codmarca,
+
+                MAX(
+                    codtipo
+                ) AS codtipo,
+
+                tipo,
+
+                SUM(
+                    cantidad
+                ) AS cantidad_total,
+
+                MAX(
+                    fecha
+                ) AS ultima_fecha,
+
+                COUNT(*)::int
+                    AS movimientos
+
+            FROM library_base
+
+            WHERE
+                tipo IS NOT NULL
+
+            GROUP BY
+                codprodu,
+                tipo
+
+            HAVING
+                SUM(
+                    cantidad
+                ) > 0
+        ),
+
+
+        library_stats AS (
+            SELECT
+                COUNT(*)::int
+                    AS total_catalogos,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        tipo = 'LIBRO'
+                )::int
+                    AS total_libros,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        tipo = 'PERCHA'
+                )::int
+                    AS total_perchas
+
+            FROM library_grouped
+        ),
+
+
+        library_filtered AS (
+            SELECT
+                lg.*
+
+            FROM library_grouped lg
+
+            WHERE
+                (
+                    $2::text IS NULL
+
+                    OR lg.tipo =
+                        $2::text
+                )
+        ),
+
+
+        library_filtered_with_total AS (
+            SELECT
+                lf.*,
+
+                COUNT(*) OVER ()::int
+                    AS filtered_total
+
+            FROM library_filtered lf
+        )
+
+
+        SELECT
+            l.codprodu,
+
+            l.desprodu,
+
+            l.codmarca,
+
+            l.codtipo,
+
+            l.tipo,
+
+            l.cantidad_total,
+
+            l.ultima_fecha,
+
+            l.movimientos,
+
+            l.filtered_total,
+
+            stats.total_catalogos,
+
+            stats.total_libros,
+
+            stats.total_perchas,
+
+            img.ficadjunto
+                AS imagen
+
+        FROM library_filtered_with_total l
+
+        CROSS JOIN library_stats stats
+
+
+        LEFT JOIN LATERAL (
+            SELECT
+                i.ficadjunto
+
+            FROM imagenesproductoswebp i
+
+            WHERE
+                i.codprodu =
+                    l.codprodu
+
+            ORDER BY
+                CASE
+                    WHEN
+                        i.codclaarchivo =
+                            'PRODUCTO_BAJA'
+                    THEN 0
+
+                    WHEN
+                        i.codclaarchivo
+                            ILIKE '%BAJA%'
+                    THEN 1
+
+                    WHEN
+                        i.codclaarchivo
+                            ILIKE '%WEB%'
+                    THEN 2
+
+                    ELSE 3
+                END
+
+            LIMIT 1
+
+        ) img ON TRUE
+
+
+        ORDER BY
+            CASE
+                WHEN
+                    l.tipo = 'LIBRO'
+                THEN 0
+
+                WHEN
+                    l.tipo = 'PERCHA'
+                THEN 1
+
+                ELSE 2
+            END,
+
+            l.desprodu,
+
+            l.codprodu
+
+
+        LIMIT $3
+        OFFSET $4
+    `;
+
+
+        const {
+            rows,
+        } =
+            await this.pool.query(
+                query,
+                [
+                    codclien,
+                    normalizedTipo,
+                    queryLimit,
+                    safeOffset,
+                ]
+            );
+
+
+        const hasMore =
+            rows.length >
+            safeLimit;
+
+
+        const pageRows =
+            hasMore
+                ? rows.slice(
+                    0,
+                    safeLimit
+                )
+                : rows;
+
+
+        const firstRow =
+            pageRows[0] ||
+            rows[0];
+
+
+        const total =
+            Number(
+                firstRow?.total_catalogos ||
+                0
+            );
+
+        const totalBooks =
+            Number(
+                firstRow?.total_libros ||
+                0
+            );
+
+        const totalHangers =
+            Number(
+                firstRow?.total_perchas ||
+                0
+            );
+
+        const filteredTotal =
+            Number(
+                firstRow?.filtered_total ||
+                0
+            );
+
+
+        const library =
+            pageRows.map(
+                item => {
+                    const {
+                        total_catalogos,
+                        total_libros,
+                        total_perchas,
+                        filtered_total,
+                        ...product
+                    } = item;
+
+
+                    return {
+                        ...product,
+
+                        cantidad_total:
+                            Number(
+                                product.cantidad_total ||
+                                0
+                            ),
+
+                        movimientos:
+                            Number(
+                                product.movimientos ||
+                                0
+                            ),
+                    };
+                }
+            );
+
+
+        return {
+            library,
+
+            total,
+
+            totalBooks,
+
+            totalHangers,
+
+            filteredTotal,
+
+            hasMore,
+
+            nextOffset:
+                safeOffset +
+                library.length,
+        };
+    }
+
     async getInvoicesByCustomerCode({
         codclien,
         ejercicio,
+        mode = 'orders',
+        search = '',
+        limit = 20,
+        offset = 0,
     }) {
-        const params = [codclien];
+        const safeLimit =
+            Math.min(
+                Math.max(
+                    Number.parseInt(
+                        limit,
+                        10
+                    ) || 20,
+                    1
+                ),
+                50
+            );
 
-        let ejercicioFilter = '';
+        const safeOffset =
+            Math.max(
+                Number.parseInt(
+                    offset,
+                    10
+                ) || 0,
+                0
+            );
+
+        const resolvedMode =
+            mode === 'returns'
+                ? 'returns'
+                : 'orders';
+
+        const normalizedSearch =
+            String(
+                search || ''
+            ).trim();
+
+
+        const returnCondition = `
+        BTRIM(
+            COALESCE(
+                codserfacventa::text,
+                ''
+            )
+        ) ~ '^[A-Za-z]{2}$'
+    `;
+
+
+        const modeCondition =
+            resolvedMode ===
+                'returns'
+                ? returnCondition
+                : `
+                NOT (
+                    ${returnCondition}
+                )
+            `;
+
+
+        const params = [
+            codclien,
+        ];
+
+
+        const filters = [
+            `codclien = $1`,
+            modeCondition,
+        ];
+
 
         if (ejercicio) {
-            params.push(Number(ejercicio));
+            params.push(
+                Number(
+                    ejercicio
+                )
+            );
 
-            ejercicioFilter = `
-                AND ejercicio = $${params.length}
-            `;
+            filters.push(
+                `ejercicio = $${params.length}`
+            );
         }
 
-        const query = `
-            SELECT
-                ejercicio,
-                fecha,
-                sfactura,
-                codserfacventa,
-                nfacventa,
-                referencia,
-                codforpago,
-                impbase,
-                impiva,
-                imptotal,
-                comentario,
-                estadoverifactu
-            FROM facventa
-            WHERE codclien = $1
-                ${ejercicioFilter}
-            ORDER BY
-                fecha DESC,
-                ejercicio DESC,
-                nfacventa DESC
-        `;
 
-        const { rows } =
+        if (normalizedSearch) {
+            params.push(
+                `%${normalizedSearch}%`
+            );
+
+            const searchIndex =
+                params.length;
+
+
+            filters.push(`
+            (
+                COALESCE(
+                    ejercicio::text,
+                    ''
+                ) ILIKE $${searchIndex}
+
+                OR COALESCE(
+                    codserfacventa::text,
+                    ''
+                ) ILIKE $${searchIndex}
+
+                OR COALESCE(
+                    nfacventa::text,
+                    ''
+                ) ILIKE $${searchIndex}
+
+                OR COALESCE(
+                    sfactura::text,
+                    ''
+                ) ILIKE $${searchIndex}
+
+                OR COALESCE(
+                    referencia::text,
+                    ''
+                ) ILIKE $${searchIndex}
+
+                OR COALESCE(
+                    fecha::text,
+                    ''
+                ) ILIKE $${searchIndex}
+
+                OR COALESCE(
+                    imptotal::text,
+                    ''
+                ) ILIKE $${searchIndex}
+            )
+        `);
+        }
+
+
+        const limitIndex =
+            params.length + 1;
+
+        const offsetIndex =
+            params.length + 2;
+
+
+        params.push(
+            safeLimit,
+            safeOffset
+        );
+
+
+        const query = `
+        SELECT
+            ejercicio,
+            fecha,
+            sfactura,
+            codserfacventa,
+            nfacventa,
+            referencia,
+            codforpago,
+            impbase,
+            impiva,
+            imptotal,
+            comentario,
+            estadoverifactu,
+
+            COUNT(*) OVER ()
+                AS total_count
+
+        FROM facventa
+
+        WHERE
+            ${filters.join(
+            '\nAND '
+        )}
+
+        ORDER BY
+            fecha DESC,
+            ejercicio DESC,
+            nfacventa DESC
+
+        LIMIT $${limitIndex}
+        OFFSET $${offsetIndex}
+    `;
+
+
+        const {
+            rows,
+        } =
             await this.pool.query(
                 query,
                 params
             );
 
-        return rows;
+
+        const total =
+            Number(
+                rows[0]?.total_count ||
+                0
+            );
+
+
+        const invoices =
+            rows.map(
+                row => {
+                    const {
+                        total_count,
+                        ...invoice
+                    } = row;
+
+
+                    return invoice;
+                }
+            );
+
+
+        const hasMore =
+            safeOffset +
+            invoices.length <
+            total;
+
+
+        /*
+         * Los años son una consulta muy pequeña.
+         *
+         * Solo la hacemos en la primera página
+         * para no descargar todas las facturas
+         * simplemente para construir el select.
+         */
+        let availableYears;
+
+
+        if (
+            safeOffset ===
+            0
+        ) {
+            const yearsQuery = `
+            SELECT DISTINCT
+                ejercicio
+
+            FROM facventa
+
+            WHERE
+                codclien = $1
+
+                AND ${modeCondition}
+
+                AND ejercicio
+                    IS NOT NULL
+
+            ORDER BY
+                ejercicio DESC
+        `;
+
+
+            const {
+                rows: yearRows,
+            } =
+                await this.pool.query(
+                    yearsQuery,
+                    [
+                        codclien,
+                    ]
+                );
+
+
+            availableYears =
+                yearRows
+                    .map(
+                        item =>
+                            item.ejercicio
+                    )
+                    .filter(
+                        Boolean
+                    );
+        }
+
+
+        return {
+            invoices,
+
+            total,
+
+            hasMore,
+
+            nextOffset:
+                safeOffset +
+                invoices.length,
+
+            availableYears,
+        };
     }
 
     async getUninvoicedDeliveryNotesByCustomerCode({

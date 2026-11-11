@@ -32,6 +32,58 @@ export async function getInvoiceOrders({
 
     return parseResponse(response);
 }
+export async function getLibrary({
+    tipo,
+    limit = 20,
+    offset = 0,
+} = {}) {
+    const params =
+        new URLSearchParams();
+
+
+    if (
+        tipo === 'LIBRO' ||
+        tipo === 'PERCHA'
+    ) {
+        params.set(
+            'tipo',
+            tipo
+        );
+    }
+
+
+    params.set(
+        'limit',
+        String(
+            limit
+        )
+    );
+
+    params.set(
+        'offset',
+        String(
+            offset
+        )
+    );
+
+
+    const response =
+        await fetch(
+            `${API_BASE}/library?${params.toString()}`,
+            {
+                method:
+                    'GET',
+
+                credentials:
+                    'include',
+            }
+        );
+
+
+    return parseResponse(
+        response
+    );
+}
 
 export function getInvoicePdfUrl({
     ejercicio,
@@ -105,18 +157,78 @@ export async function getOrderDetail({
     );
 }
 
-export async function getInvoices(ejercicio) {
-    const query = ejercicio ? `?ejercicio=${encodeURIComponent(ejercicio)}` : '';
-    const url = `${API_BASE}/invoices${query}`;
+export async function getInvoices({
+    ejercicio,
+    mode = 'orders',
+    search = '',
+    limit = 20,
+    offset = 0,
+} = {}) {
+    const params =
+        new URLSearchParams();
 
-    // console.log('DEBUG getInvoices URL:', url);
 
-    const response = await fetch(url, {
-        method: 'GET',
-        credentials: 'include',
-    });
+    if (ejercicio) {
+        params.set(
+            'ejercicio',
+            String(
+                ejercicio
+            )
+        );
+    }
 
-    return parseResponse(response);
+
+    params.set(
+        'mode',
+        mode
+    );
+
+
+    if (
+        String(
+            search
+        ).trim()
+    ) {
+        params.set(
+            'search',
+            String(
+                search
+            ).trim()
+        );
+    }
+
+
+    params.set(
+        'limit',
+        String(
+            limit
+        )
+    );
+
+    params.set(
+        'offset',
+        String(
+            offset
+        )
+    );
+
+
+    const response =
+        await fetch(
+            `${API_BASE}/invoices?${params.toString()}`,
+            {
+                method:
+                    'GET',
+
+                credentials:
+                    'include',
+            }
+        );
+
+
+    return parseResponse(
+        response
+    );
 }
 
 export async function getInvoiceDetail({

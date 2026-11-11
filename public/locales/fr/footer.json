@@ -5,5 +5,15 @@
     "cookiePolicy": "Politique de Cookies",
     "privacyPolicy": "Politique de Confidentialité",
     "contactUs": "Contactez-nous",
-    "copyright": "© 2025 CJM Group. Tous droits réservés."
+    "copyright": "© 2026 CJM Group. Tous droits réservés.",
+    "claimLine1": "Des textiles pour des espaces",
+    "claimLine2": "qui traversent le temps.",
+    "description": "Une sélection de marques textiles pour l’architecture intérieure, la décoration et les projets professionnels.",
+    "sections": {
+        "brands": "Marques",
+        "company": "Entreprise",
+        "legal": "Mentions légales"
+    },
+    "ourBrands": "Nos marques",
+    "locationLine": "Textiles d’intérieur · Madrid"
 }

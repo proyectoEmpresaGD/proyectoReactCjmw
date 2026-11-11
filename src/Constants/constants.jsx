@@ -67,7 +67,7 @@ export const CURTAIN_CONFIG = {
 
 
 // Constantes de URLs para logos
-export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/Logotipo%20CJM%20Group%20oto%C3%B1al.png";
+export const LOGO_URL = "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOTIPOS%20AMBIENTADOS/NAVIDAD/Logotipo%20CJM%20Group%20con%20nieve%20navide%C3%B1a.png";
 
 // Redes Sociales
 export const SOCIAL_MEDIA_LINKS = {
@@ -257,7 +257,7 @@ export const brandLogos = {
 };
 
 // Logo predeterminado
-export const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/Logotipo%20CJM%20Group%20oto%C3%B1al.png';
+export const defaultLogo = 'https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOTIPOS%20AMBIENTADOS/NAVIDAD/Logotipo%20CJM%20Group%20con%20nieve%20navide%C3%B1a.png';
 
 // Íconos de redes sociales
 export const socialMediaIcons = [

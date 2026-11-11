@@ -1,108 +1,269 @@
-import { useEffect, useRef, useState } from "react";
-import { Instagram } from "lucide-react";
+import {
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 
-function openInstagramWeb({ username, webUrl }) {
-    // Si ya tienes href bien, úsala. Si no, construimos desde username.
-    if (webUrl) {
-        window.open(webUrl, "_blank", "noopener,noreferrer");
-        return;
-    }
+import {
+    Instagram,
+    ExternalLink,
+} from "lucide-react";
 
-    const cleanUsername = String(username || "").replace(/^@/, "").trim();
-    if (!cleanUsername) return;
 
-    const profileUrl = `https://www.instagram.com/${encodeURIComponent(cleanUsername)}/`;
-    window.open(profileUrl, "_blank", "noopener,noreferrer");
-}
+export default function InstagramDropdown({
+    items = [],
+    buttonClassName = "",
+}) {
+    const [
+        isOpen,
+        setIsOpen,
+    ] = useState(
+        false
+    );
 
-export default function InstagramDropdown({ items = [], buttonClassName = "" }) {
-    const [open, setOpen] = useState(false);
-    const wrapperRef = useRef(null);
 
-    useEffect(() => {
-        function onClickOutside(e) {
-            if (!wrapperRef.current) return;
-            if (wrapperRef.current.contains(e.target)) return;
-            setOpen(false);
-        }
-
-        function onKeyDown(e) {
-            if (e.key === "Escape") setOpen(false);
-        }
-
-        document.addEventListener("mousedown", onClickOutside);
-        document.addEventListener("keydown", onKeyDown);
-
-        return () => {
-            document.removeEventListener("mousedown", onClickOutside);
-            document.removeEventListener("keydown", onKeyDown);
-        };
-    }, []);
-
-    const toggle = () => setOpen((v) => !v);
-
-    if (!items?.length) {
-        return (
-            <button
-                type="button"
-                className={buttonClassName}
-                aria-label="Instagram"
-                onClick={(e) => e.preventDefault()}
-            >
-                <Instagram size={18} className="text-white" />
-            </button>
+    const dropdownRef =
+        useRef(
+            null
         );
+
+
+    useEffect(
+        () => {
+            const handlePointerDown =
+                event => {
+                    if (
+                        !dropdownRef.current?.contains(
+                            event.target
+                        )
+                    ) {
+                        setIsOpen(
+                            false
+                        );
+                    }
+                };
+
+
+            const handleKeyDown =
+                event => {
+                    if (
+                        event.key ===
+                        "Escape"
+                    ) {
+                        setIsOpen(
+                            false
+                        );
+                    }
+                };
+
+
+            document.addEventListener(
+                "pointerdown",
+                handlePointerDown
+            );
+
+            document.addEventListener(
+                "keydown",
+                handleKeyDown
+            );
+
+
+            return () => {
+                document.removeEventListener(
+                    "pointerdown",
+                    handlePointerDown
+                );
+
+                document.removeEventListener(
+                    "keydown",
+                    handleKeyDown
+                );
+            };
+        },
+        []
+    );
+
+
+    if (
+        !items?.length
+    ) {
+        return null;
     }
+
 
     return (
-        <div ref={wrapperRef} className="relative">
+        <div
+            ref={
+                dropdownRef
+            }
+            className="
+                relative
+                inline-flex
+            "
+        >
             <button
                 type="button"
-                onClick={toggle}
-                className={buttonClassName}
                 aria-label="Instagram"
-                aria-haspopup="menu"
-                aria-expanded={open}
+                aria-expanded={
+                    isOpen
+                }
+                onClick={() =>
+                    setIsOpen(
+                        current =>
+                            !current
+                    )
+                }
+                className={
+                    buttonClassName
+                }
             >
-                <Instagram size={18} className="text-white" />
+                <Instagram
+                    className="
+                        h-[17px]
+                        w-[17px]
+                        text-white
+                    "
+                />
             </button>
 
-            <div
-                role="menu"
-                className={[
-                    "absolute z-50 mt-2 rounded-xl border border-black/10 bg-white p-2 shadow-lg",
-                    "left-1/2 -translate-x-1/2 w-[min(320px,calc(100vw-24px))]",
-                    "sm:left-auto sm:translate-x-0 sm:right-0 sm:w-[320px]",
-                    "origin-top transition-all duration-200 ease-out",
-                    open
-                        ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-                        : "opacity-0 scale-95 -translate-y-2 pointer-events-none",
-                ].join(" ")}
-                aria-hidden={!open}
-            >
-                <div className="flex items-center justify-center gap-3">
-                    {items.map((item) => (
-                        <button
-                            key={item.key}
-                            type="button"
-                            role="menuitem"
-                            className="flex items-center justify-center rounded-lg hover:bg-black/5"
-                            title={item.alt}
-                            onClick={() => {
-                                openInstagramWeb({ username: item.username, webUrl: item.href });
-                                setOpen(false);
-                            }}
+
+            {isOpen && (
+                <div
+                    className="
+                        absolute
+                        bottom-full
+                        left-0
+                        z-[100]
+                        mb-3
+
+                        w-[min(280px,calc(100vw-2rem))]
+                        max-w-[calc(100vw-2rem)]
+
+                        overflow-hidden
+                        rounded-2xl
+                        border
+                        border-stone-200
+                        bg-white
+                        p-2
+                        text-stone-950
+
+                        shadow-[0_20px_60px_-25px_rgba(0,0,0,0.4)]
+
+                        sm:w-[280px]
+                    "
+                >
+                    <div
+                        className="
+                            px-3
+                            pb-2
+                            pt-1
+                        "
+                    >
+                        <p
+                            className="
+                                text-[9px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.22em]
+                                text-stone-400
+                            "
                         >
-                            <img
-                                src={item.img}
-                                alt={item.alt}
-                                className="max-h-9 max-w-20 object-contain"
-                                loading="lazy"
-                            />
-                        </button>
-                    ))}
+                            Instagram
+                        </p>
+                    </div>
+
+
+                    <div
+                        className="
+                            flex
+                            flex-col
+                            gap-1
+                        "
+                    >
+                        {items.map(
+                            item => (
+                                <a
+                                    key={
+                                        item.href ||
+                                        item.label
+                                    }
+                                    href={
+                                        item.href
+                                    }
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() =>
+                                        setIsOpen(
+                                            false
+                                        )
+                                    }
+                                    className="
+                                        group
+                                        flex
+                                        items-center
+                                        justify-between
+                                        gap-4
+                                        rounded-xl
+                                        px-3
+                                        py-3
+                                        transition-colors
+
+                                        hover:bg-stone-100
+                                    "
+                                >
+                                    <div
+                                        className="
+                                            min-w-0
+                                        "
+                                    >
+                                        <p
+                                            className="
+                                                truncate
+                                                text-sm
+                                                font-medium
+                                                text-stone-900
+                                            "
+                                        >
+                                            {
+                                                item.label
+                                            }
+                                        </p>
+
+
+                                        {item.username && (
+                                            <p
+                                                className="
+                                                    mt-0.5
+                                                    truncate
+                                                    text-[10px]
+                                                    text-stone-400
+                                                "
+                                            >
+                                                {
+                                                    item.username
+                                                }
+                                            </p>
+                                        )}
+                                    </div>
+
+
+                                    <ExternalLink
+                                        className="
+                                            h-3.5
+                                            w-3.5
+                                            shrink-0
+                                            text-stone-400
+                                            transition-colors
+
+                                            group-hover:text-stone-950
+                                        "
+                                    />
+                                </a>
+                            )
+                        )}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

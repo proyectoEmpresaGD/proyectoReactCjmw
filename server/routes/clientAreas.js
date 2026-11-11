@@ -24,16 +24,19 @@ export function createClientAreaRouter({
         controller.getOrders
     );
 
+    /*
+     * Biblioteca del cliente
+     */
+    router.get(
+        '/library',
+        requireCustomerAuth,
+        controller.getLibrary
+    );
+
     router.get(
         '/orders/:ejercicio/:canal/:codserpedventa/:npedventa',
         requireCustomerAuth,
         controller.getOrderDetail
-    );
-
-    router.get(
-        '/delivery-notes/uninvoiced',
-        requireCustomerAuth,
-        controller.getUninvoicedDeliveryNotes
     );
 
     router.get(

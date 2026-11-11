@@ -7,6 +7,7 @@ import HarbourHome from "./app/harbour/pageHarbour.jsx";
 import ArenaHome from "./app/arena/pageArena.jsx";
 import CjmHome from "./app/cjm/pageCjm.jsx";
 import BassariHome from "./app/bassari/pageBassari.jsx";
+import AccountLibraryPage from "./components/account/AccountLibraryPage.jsx";
 import FlamencoHome from "./app/flamenco/pageFlamenco.jsx";
 import BlogHome from "./app/blog/pageBlog.jsx";
 import Products from "./app/products/products.jsx";
@@ -27,6 +28,7 @@ import AdminRequestsPage from "./app/admin/AdminRequestsPage.jsx";
 import VerifyEmailPage from "./app/auth/VerifyEmailPage.jsx";
 import ResetPasswordPage from "./app/auth/ResetPasswordPage";
 import ProtectedRoute from "./app/auth/ProtectedRoute.jsx";
+import LoadingScreen from "./components/LoadingScreen/LoadingScreen.jsx";
 import { useEffect } from "react";
 import { initGA, trackPage } from "./services/analytics";
 import AccountInvoiceDetailPage from "./components/account/AccountInvoiceDetailPage.jsx"
@@ -49,6 +51,8 @@ function App() {
   }, [location]);
   return (
     <>
+      {/*Activar para que aparezca la animacion de navidad al entrar a la web */}
+      {/* <LoadingScreen /> */}
       <ScrollToTop />
       <CookieConsent />
       <Routes>
@@ -61,6 +65,8 @@ function App() {
           path="/account/invoices/:ejercicio/:codserfacventa/:nfacventa/orders"
           element={<AccountInvoiceOrdersPage />}
         />
+
+
         <Route
           path="/account/orders/:ejercicio/:canal/:codserpedventa/:npedventa"
           element={<AccountOrderDetailPage />}
@@ -78,9 +84,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route path="/products" element={<Products />} />
         <Route path="/usages" element={<Usages />} />
         <Route path="/mis-datos" element={<AccountProfilePage />} />
+        <Route
+          path="/mi-biblioteca"
+          element={
+            <AccountLibraryPage />
+          }
+        />
         <Route path="/mis-facturas" element={<AccountInvoicesPage />} />
         <Route path="/map/:direccion" element={<GeocodingService />} />
         <Route path="/Contract" element={<Contract />} />

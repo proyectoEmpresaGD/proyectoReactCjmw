@@ -32,8 +32,6 @@ function StoreLocator({
 
   const {
     mapContainerRef,
-    cityName,
-    setCityName,
     mapReady,
     origin,
     nearbyStores,
@@ -46,11 +44,9 @@ function StoreLocator({
     routeErrorCode,
     searchErrorKey,
     googleMapsUrl,
-    isGeocodeLoading,
     isLocationLoading,
     isRouteLoading,
     isBusy,
-    handleSearchSubmit,
     handleUseMyLocation,
     handleStoreSelection,
     resizeMap,
@@ -92,10 +88,15 @@ function StoreLocator({
   // Es especialmente importante al redimensionar la modal en escritorio.
   useEffect(() => {
     if (typeof ResizeObserver === "undefined") return undefined;
+
     const container = mapContainerRef.current;
+
     if (!container) return undefined;
+
     const observer = new ResizeObserver(() => resizeMap());
+
     observer.observe(container);
+
     return () => observer.disconnect();
   }, [resizeMap, mapContainerRef]);
 
@@ -126,10 +127,6 @@ function StoreLocator({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isExpanded]);
-
-  const searchButtonText = isGeocodeLoading
-    ? t("searchLoading")
-    : t("searchButton");
 
   const locationButtonText = isLocationLoading
     ? t("locationLoading")
@@ -165,15 +162,27 @@ function StoreLocator({
   };
 
   useEffect(() => {
-    if (selectedCountry && !countries.some((country) => country.value === selectedCountry)) {
+    if (
+      selectedCountry &&
+      !countries.some((country) => country.value === selectedCountry)
+    ) {
       clearStoreSelection();
       setSelectedCountry("");
       setSelectedProvince("");
-    } else if (selectedProvince && !provinces.some((province) => province.value === selectedProvince)) {
+    } else if (
+      selectedProvince &&
+      !provinces.some((province) => province.value === selectedProvince)
+    ) {
       clearStoreSelection();
       setSelectedProvince("");
     }
-  }, [countries, provinces, selectedCountry, selectedProvince, clearStoreSelection]);
+  }, [
+    countries,
+    provinces,
+    selectedCountry,
+    selectedProvince,
+    clearStoreSelection,
+  ]);
 
   /*
    * Vista normal:
@@ -208,8 +217,13 @@ function StoreLocator({
 
   return (
     <section
-      className={`cjmw-store-locator ${showAllStoresOnLoad ? "cjmw-store-locator--modal" : ""} ${isExpanded ? "cjmw-store-locator--expanded" : ""} ${
-        isExpanded
+      className={`cjmw-store-locator ${showAllStoresOnLoad
+        ? "cjmw-store-locator--modal"
+        : ""
+        } ${isExpanded
+          ? "cjmw-store-locator--expanded"
+          : ""
+        } ${isExpanded
           ? `
               fixed inset-0 z-[9999]
               overflow-hidden
@@ -220,14 +234,15 @@ function StoreLocator({
             `
           : showAllStoresOnLoad
             ? `
-      w-full
-      bg-white
-      lg:h-full
-      lg:overflow-hidden
-    `
+                w-full
+                bg-white
+                lg:h-full
+                lg:overflow-hidden
+              `
             : embedded
               ? `
-                  w-full overflow-hidden
+                  w-full
+                  overflow-hidden
                   rounded-2xl
                   border border-neutral-200
                   bg-white
@@ -242,7 +257,7 @@ function StoreLocator({
                   lg:px-[5%]
                   xl:pb-[5%]
                 `
-      }`}
+        }`}
     >
       {!embedded && !isExpanded && (
         <div className="mx-auto max-w-2xl py-[5%] text-center xl:pb-[5%]">
@@ -253,89 +268,110 @@ function StoreLocator({
       )}
 
       <div
-        className={`cjmw-store-layout ${
-          isExpanded
-            ? `
+        className={`cjmw-store-layout ${isExpanded
+          ? `
                 grid h-full min-h-0
                 grid-cols-1 gap-4
                 lg:grid-cols-[350px_minmax(0,1fr)]
               `
-            : showAllStoresOnLoad
-              ? `
-              grid
-              grid-cols-1
-              gap-4
-              bg-white
-              lg:h-full
-              lg:min-h-0
-              lg:grid-cols-[350px_minmax(0,1fr)]
-              lg:overflow-hidden
-    `
-              : embedded
-                ? "w-full"
-                : `
+          : showAllStoresOnLoad
+            ? `
+                  grid
+                  grid-cols-1
+                  gap-4
+                  bg-white
+                  lg:h-full
+                  lg:min-h-0
+                  lg:grid-cols-[350px_minmax(0,1fr)]
+                  lg:overflow-hidden
+                `
+            : embedded
+              ? "w-full"
+              : `
                     grid grid-cols-4
                     gap-4
                     lg:grid-cols-4
                     xl:grid-cols-4
                   `
-        }`}
+          }`}
       >
         {/* MAPA */}
         <div
-          className={`cjmw-store-map-column ${
-            showAllStoresOnLoad && !isExpanded
-              ? `
-                order-1
-                min-w-0
-                bg-white
-                lg:order-2
-                lg:flex
-                lg:h-full
-                lg:min-h-0
-                lg:flex-col
-                lg:overflow-y-auto
-              `
-              : isExpanded
-                ? "min-h-0 min-w-0 lg:order-2"
-                : embedded
-                  ? "w-full"
-                  : `
+          className={`cjmw-store-map-column ${showAllStoresOnLoad && !isExpanded
+            ? `
+                  order-1
+                  min-w-0
+                  bg-white
+                  lg:order-2
+                  lg:flex
+                  lg:h-full
+                  lg:min-h-0
+                  lg:flex-col
+                  lg:overflow-y-auto
+                `
+            : isExpanded
+              ? "min-h-0 min-w-0 lg:order-2"
+              : embedded
+                ? "w-full"
+                : `
                       col-span-4
                       lg:col-span-3
                       xl:col-span-3
                     `
-          }`}
+            }`}
         >
           {/* FILTROS DE PAÍS / PROVINCIA, GENERADOS DE LA API */}
           <div className="cjmw-store-filters mb-3 grid grid-cols-1 items-end gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2 lg:mb-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:p-2">
             <label className="flex min-w-0 flex-col gap-1 text-xs font-semibold text-slate-700">
               {t("countryFilterLabel")}
+
               <select
                 value={selectedCountry}
                 onChange={onCountryChange}
                 className="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 lg:h-9 lg:py-1.5 focus:border-[#26659E] focus:outline-none focus:ring-2 focus:ring-[#26659E]/20"
               >
-                <option value="">{t("allCountries")}</option>
+                <option value="">
+                  {t("allCountries")}
+                </option>
+
                 {countries.map((country) => (
-                  <option value={country.value} key={country.value}>{country.label}</option>
+                  <option
+                    value={country.value}
+                    key={country.value}
+                  >
+                    {country.label}
+                  </option>
                 ))}
               </select>
             </label>
+
             <label className="flex min-w-0 flex-col gap-1 text-xs font-semibold text-slate-700">
               {t("provinceFilterLabel")}
+
               <select
                 value={selectedProvince}
                 onChange={onProvinceChange}
-                disabled={!selectedCountry || provinces.length === 0}
+                disabled={
+                  !selectedCountry ||
+                  provinces.length === 0
+                }
                 className="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 lg:h-9 lg:py-1.5 focus:border-[#26659E] focus:outline-none focus:ring-2 focus:ring-[#26659E]/20 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
               >
-                <option value="">{t("allProvinces")}</option>
+                <option value="">
+                  {t("allProvinces")}
+                </option>
+
                 {provinces.map((province) => (
-                  <option value={province.value} key={province.value}>{province.label}</option>
+                  <option
+                    value={province.value}
+                    key={province.value}
+                  >
+                    {province.label}
+                  </option>
                 ))}
               </select>
             </label>
+
             <button
               type="button"
               onClick={clearRegionFilters}
@@ -344,196 +380,97 @@ function StoreLocator({
             >
               {t("clearRegionFilters")}
             </button>
+
             {hasRegionFilter && (
-              <p className="text-xs text-slate-600 sm:col-span-2 lg:col-span-3" aria-live="polite">
-                {t("filteredStoresCount", { count: filteredStores.length })}
+              <p
+                className="text-xs text-slate-600 sm:col-span-2 lg:col-span-3"
+                aria-live="polite"
+              >
+                {t("filteredStoresCount", {
+                  count: filteredStores.length,
+                })}
               </p>
             )}
+
             {countries.length === 0 && (
               <p className="text-xs text-slate-500 sm:col-span-2 lg:col-span-3">
                 {t("countryFilterUnavailable")}
               </p>
             )}
-            {selectedCountry && provinces.length === 0 && (
-              <p className="text-xs text-slate-500 sm:col-span-2 lg:col-span-3">
-                {t("provinceFilterUnavailable")}
-              </p>
-            )}
+
+            {selectedCountry &&
+              provinces.length === 0 && (
+                <p className="text-xs text-slate-500 sm:col-span-2 lg:col-span-3">
+                  {t("provinceFilterUnavailable")}
+                </p>
+              )}
           </div>
 
-          {/* BUSCADOR */}
-          <form
-            onSubmit={handleSearchSubmit}
-            className={`cjmw-store-search ${
-              showAllStoresOnLoad && !isExpanded
-                ? `
-                  mx-auto
-                  mb-4
-                  flex
-                  w-full
-                  flex-col
-                  gap-2
-                  bg-white
-                  px-1
-                  sm:px-2
-                  md:flex-row
-                  md:items-stretch
-                  md:justify-center
-                  lg:mb-2 lg:justify-start lg:gap-2 lg:px-0
-                `
-                : embedded && !isExpanded
-                  ? `
-                      mx-auto mb-0
-                      flex w-full
-                      flex-col gap-2
-                      bg-white
-                      p-3 sm:p-4
-                    `
-                  : `
-                      mx-auto mb-4
-                      flex w-full
-                      max-w-4xl
-                      flex-col gap-2
-                      px-2
-                      text-center
-                      sm:flex-row
-                      sm:items-stretch
-                      sm:justify-center
-                    `
-            }`}
-          >
-            <label
-              htmlFor="store-locator-search"
-              className="sr-only"
-            >
-              {t("inputPlaceholder")}
-            </label>
+          {/* UBICACIÓN */}
+          <div
+            className={`
+              flex
+              justify-center
 
-            <input
-              id="store-locator-search"
-              type="text"
-              value={cityName}
-              onChange={(event) =>
-                setCityName(event.target.value)
+              ${showAllStoresOnLoad &&
+                !isExpanded
+                ? `
+                      mb-4
+                      w-full
+                      bg-white
+                      px-1
+                      sm:px-2
+                      lg:mb-2
+                      lg:justify-start
+                      lg:px-0
+                    `
+                : embedded &&
+                  !isExpanded
+                  ? `
+                        w-full
+                        bg-white
+                        p-3
+                        sm:p-4
+                      `
+                  : `
+                        mx-auto
+                        mb-4
+                        w-full
+                        max-w-4xl
+                        px-2
+                      `
               }
-              placeholder={t("inputPlaceholder")}
-              maxLength={160}
+            `}
+          >
+            <button
+              type="button"
+              onClick={handleUseMyLocation}
               disabled={isBusy}
               className="
-                input-clase
-                w-full min-w-0
                 rounded-xl
-                border border-neutral-300
-                bg-white
-                px-4 py-3
-                lg:h-10 lg:py-2 lg:text-sm
-                text-neutral-900
-                outline-none
+                bg-[#26659E]
+                px-5
+                py-3
+                text-sm
+                font-semibold
+                text-white
+                shadow-sm
                 transition
-                focus:border-[#26659E]
-                focus:ring-2
-                focus:ring-[#26659E]/20
+
+                hover:bg-[#1f527f]
+
                 disabled:cursor-not-allowed
-                disabled:opacity-70
+                disabled:opacity-50
+
+                lg:h-10
+                lg:px-4
+                lg:py-2
+                lg:whitespace-nowrap
               "
-            />
-
-            {embedded && !isExpanded ? (
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <button
-                  type="submit"
-                  disabled={
-                    isBusy ||
-                    cityName.trim().length < 2
-                  }
-                  className="
-                    btn-clase
-                    w-full
-                    rounded-xl
-                    bg-[#26659E]
-                    px-5 py-3
-                    font-semibold
-                    text-white
-                    transition
-                    hover:bg-[#1f527f]
-                    disabled:cursor-not-allowed
-                    disabled:opacity-50
-                  "
-                >
-                  {searchButtonText}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleUseMyLocation}
-                  disabled={isBusy}
-                  className="
-                    w-full
-                    rounded-xl
-                    border border-neutral-300
-                    bg-neutral-100
-                    px-5 py-3
-                    font-semibold
-                    text-neutral-900
-                    transition
-                    hover:bg-neutral-200
-                    disabled:cursor-not-allowed
-                    disabled:opacity-50
-                  "
-                >
-                  {locationButtonText}
-                </button>
-              </div>
-            ) : (
-              <>
-                <button
-                  type="submit"
-                  disabled={
-                    isBusy ||
-                    cityName.trim().length < 2
-                  }
-                  className="
-                    btn-clase
-                    rounded-xl
-                    bg-[#26659E]
-                    px-5 py-3
-                    lg:h-10 lg:px-4 lg:py-2 lg:text-sm lg:whitespace-nowrap
-                    font-semibold
-                    text-white
-                    shadow-sm
-                    transition
-                    hover:bg-[#1f527f]
-                    disabled:cursor-not-allowed
-                    disabled:opacity-50
-                  "
-                >
-                  {searchButtonText}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleUseMyLocation}
-                  disabled={isBusy}
-                  className="
-                    rounded-xl
-                    border border-white
-                    bg-white/95
-                    px-5 py-3
-                    lg:h-10 lg:px-4 lg:py-2 lg:text-sm lg:whitespace-nowrap
-                    font-semibold
-                    text-neutral-900
-                    shadow-sm
-                    transition
-                    hover:bg-white
-                    disabled:cursor-not-allowed
-                    disabled:opacity-50
-                  "
-                >
-                  {locationButtonText}
-                </button>
-              </>
-            )}
-          </form>
+            >
+              {locationButtonText}
+            </button>
+          </div>
 
           {/* ERROR DE BÚSQUEDA */}
           {searchErrorKey && (
@@ -576,11 +513,14 @@ function StoreLocator({
             </div>
           )}
 
-          {/* CONTENEDOR MAPA: flexibilidad vertical dentro de la modal */}
-          <div className={`cjmw-store-map-shell ${showAllStoresOnLoad && !isExpanded
-            ? "relative lg:min-h-[260px] lg:flex-1"
-            : "relative"
-          }`}>
+          {/* CONTENEDOR MAPA */}
+          <div
+            className={`cjmw-store-map-shell ${showAllStoresOnLoad &&
+              !isExpanded
+              ? "relative lg:min-h-[260px] lg:flex-1"
+              : "relative"
+              }`}
+          >
             {!showAllStoresOnLoad && (
               <button
                 type="button"
@@ -621,7 +561,9 @@ function StoreLocator({
                 w-full
                 overflow-hidden
                 shadow-sm
-                ${showAllStoresOnLoad && !isExpanded
+
+                ${showAllStoresOnLoad &&
+                  !isExpanded
                   ? "h-[clamp(340px,55dvh,620px)] lg:h-full"
                   : ""
                 }
@@ -634,6 +576,7 @@ function StoreLocator({
                     : embedded
                       ? "420px"
                       : "65vh",
+
                 minHeight: isExpanded
                   ? "420px"
                   : showAllStoresOnLoad
@@ -679,6 +622,7 @@ function StoreLocator({
                   {
                     store:
                       nearestStoreOutsideRadius.title,
+
                     distance:
                       nearestStoreOutsideRadius.distanceKm.toFixed(
                         1
@@ -745,23 +689,23 @@ function StoreLocator({
                   selectedStore.correo) && (
                     <div
                       className="
-                      mt-3
-                      flex flex-wrap
-                      gap-x-4 gap-y-1
-                      border-t
-                      border-neutral-100
-                      pt-3
-                    "
+                        mt-3
+                        flex flex-wrap
+                        gap-x-4 gap-y-1
+                        border-t
+                        border-neutral-100
+                        pt-3
+                      "
                     >
                       {selectedStore.telefono && (
                         <a
                           href={`tel:${selectedStore.telefono}`}
                           className="
-                          font-medium
-                          text-neutral-600
-                          transition
-                          hover:text-[#26659E]
-                        "
+                            font-medium
+                            text-neutral-600
+                            transition
+                            hover:text-[#26659E]
+                          "
                         >
                           {selectedStore.telefono}
                         </a>
@@ -771,12 +715,12 @@ function StoreLocator({
                         <a
                           href={`mailto:${selectedStore.correo}`}
                           className="
-                          break-all
-                          font-medium
-                          text-neutral-600
-                          transition
-                          hover:text-[#26659E]
-                        "
+                            break-all
+                            font-medium
+                            text-neutral-600
+                            transition
+                            hover:text-[#26659E]
+                          "
                         >
                           {selectedStore.correo}
                         </a>
@@ -886,19 +830,21 @@ function StoreLocator({
         {/* PUNTOS DE VENTA */}
         {showStoresPanel && (
           <div
-            className={`cjmw-store-panel-container ${
-              showAllStoresOnLoad && !isExpanded
-                ? `
-            order-1
-            h-full
-            min-h-0
-            overflow-y-auto
-            overflow-x-hidden
-            bg-white
-            pr-2
-          `
-                : isExpanded ? "min-h-0 lg:order-1" : "min-h-0"
-            }`}
+            className={`cjmw-store-panel-container ${showAllStoresOnLoad &&
+              !isExpanded
+              ? `
+                    order-1
+                    h-full
+                    min-h-0
+                    overflow-y-auto
+                    overflow-x-hidden
+                    bg-white
+                    pr-2
+                  `
+              : isExpanded
+                ? "min-h-0 lg:order-1"
+                : "min-h-0"
+              }`}
           >
             <StorePanel
               stores={panelStores}

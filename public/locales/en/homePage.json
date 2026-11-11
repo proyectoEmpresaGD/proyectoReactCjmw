@@ -1,0 +1,125 @@
+{
+    "brands": {
+        "arena": {
+            "eyebrow": "Material · Nature · Balance",
+            "description": "Serene textures, natural materials and a balanced approach to contemporary interiors."
+        },
+        "bassari": {
+            "eyebrow": "Travel · Colour · Expression",
+            "description": "A sophisticated vision of colour, travel and decoration with a deeply expressive identity."
+        },
+        "cjm": {
+            "eyebrow": "Design · Versatility · Projects",
+            "description": "Versatile contemporary design created for projects, spaces and interior professionals."
+        },
+        "flamenco": {
+            "eyebrow": "Art · Heritage · Character",
+            "description": "Art, heritage and character come together in fabrics and prints with an unmistakable personality."
+        },
+        "harbour": {
+            "eyebrow": "Light · Freshness · Mediterranean",
+            "description": "Light, freshness and Mediterranean spirit in natural, relaxed collections full of colour."
+        }
+    },
+    "hero": {
+        "discoverBrand": "Discover the brand",
+        "viewCollections": "View collections",
+        "discoverFiveBrands": "Discover the five brands"
+    },
+    "group": {
+        "label": "CJM Group",
+        "titleLine1": "We design spaces",
+        "titleLine2": "through textiles.",
+        "description": "Five brands, five ways of understanding interiors. From the serenity of natural materials to colour, pattern and texture, CJM Group brings distinct worlds together under one design culture.",
+        "pillars": {
+            "design": {
+                "title": "Design",
+                "description": "Collections with their own identity, created to transform spaces through detail."
+            },
+            "matter": {
+                "title": "Material",
+                "description": "Textures, weaves and finishes that make fabric the starting point of the project."
+            },
+            "color": {
+                "title": "Colour",
+                "description": "Palettes ranging from natural and sophisticated to expressive across our brands."
+            }
+        }
+    },
+    "collections": {
+        "kicker": "Latest launches",
+        "titleLine1": "New",
+        "titleLine2": "collections.",
+        "description": "A selection of our latest launches, created to discover new combinations of colour, material and pattern.",
+        "viewAll": "View all collections",
+        "dragToExplore": "Drag to explore",
+        "previous": "Previous collections",
+        "next": "Next collections"
+    },
+    "spaces": {
+        "kicker": "Inspiration for every space",
+        "titleLine1": "Explore by",
+        "titleLine2": "setting.",
+        "description": "Different spaces, different ways of working with materials. Discover inspiring settings and step directly into each brand's world.",
+        "items": {
+            "living": {
+                "title": "Living",
+                "description": "Characterful spaces where pattern, colour and texture live alongside the architecture."
+            },
+            "natural": {
+                "title": "Natural",
+                "description": "A serene approach to interiors through mineral tones, fibres and balanced textures."
+            },
+            "outdoor": {
+                "title": "Outdoor",
+                "description": "Colour, freshness and a relaxed attitude for bright spaces and open-air settings."
+            }
+        }
+    },
+    "materials": {
+        "kicker": "Material & texture",
+        "titleLine1": "The detail",
+        "titleLine2": "matters.",
+        "description": "Fabric reveals itself up close: in the weave, the relief, the pattern and the way it responds to light.",
+        "exploreFabrics": "Explore fabrics",
+        "items": {
+            "naturalWeaves": {
+                "title": "Natural weaves",
+                "description": "Serene surfaces and visual tactility for interiors where material takes centre stage."
+            },
+            "prints": {
+                "title": "Prints",
+                "description": "Pattern, scale and colour as tools for creating a distinctive atmosphere."
+            },
+            "textures": {
+                "title": "Textures",
+                "description": "Relief, depth and blended yarns that add dimension to a project."
+            }
+        }
+    },
+    "moodboards": {
+        "kicker": "Inspiration",
+        "titleLine1": "Palettes, layers",
+        "titleLine2": "and combinations.",
+        "intro": "An editorial look at how to combine colour, texture and material within the same space.",
+        "items": {
+            "palettes": {
+                "title": "Palettes",
+                "description": "Colour combinations designed to create balanced, expressive interiors full of personality."
+            },
+            "layers": {
+                "title": "Layers",
+                "description": "Fabrics, textures and patterns layered together to bring depth and visual richness to a space."
+            },
+            "combinations": {
+                "title": "Combinations",
+                "description": "Mixes of material, pattern and colour that reveal new ways to combine our collections."
+            }
+        }
+    },
+    "closing": {
+        "title": "Find the fabric that transforms your next space.",
+        "description": "Explore our collections and discover new combinations of material, colour and design.",
+        "cta": "Explore collections"
+    }
+}

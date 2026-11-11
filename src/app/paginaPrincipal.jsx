@@ -1,133 +1,304 @@
-// src/app/paginaPrincipal.jsx
-import CarruselHome from "../components/ComponentesHome/carruselHome";
-import { Header } from "../components/header";
-import { CartProvider } from "../components/CartContext.jsx";
+import {
+    lazy,
+    Suspense,
+} from "react";
 
-const imagesDesktop = [
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_HORIZONTAL_ESSENCES%20DU%20NIL%20Y%20LE%20KHAYMA.webp",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_HORIZONTAL_ESSENCES%20DU%20NIL%20Y%20LE%20KHAYMA.webp",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_INDIENNE%20OCEAN.webp",
-    "https://bassari.eu/ImagenesTelasCjmw/Carruseles/HARBOUR/HAR01933%20CARIBBEAN%20PARTY%20LONG%20BEACH%20INDIGO_%20TEJIDO%20RAYA%20ANCHA(1).jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/01_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINA%20HOME/ARENA/KANNAT_GURU_AMBIENTE_1920X1080.jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_Marcas/CJM%20AMBIENTE/SALT%20AND%20PEPPER/edicion-salt-and-pepper-3.jpg",
-];
+import {
+    Header,
+} from "../components/header";
 
-const imagesMobile = [
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_BERBERE6.webp",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_BERBERE6.webp",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_FUENTECLARAOCEAN.webp",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_MarcasNueva/HARBOUR%20AMBIENTE/CARIBBEAN%20PARTY/HAR01894%20CARIBBEAN%20PARTY%20ICE%20CREAM%20INDIGO_%20TEJIDO%20LISO(1).jpg",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/LIGHTHOUSE/_26A5050_OK%2035x35.webp",
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20PAGINA%20WEB%20CJMW/CARRUSELES_Colecciones_MarcasNueva/CJM%20AMBIENTE/MOODBOARDS/MOODBOARD%20SET%20OF%20THREADS%2072px.jpg",
-];
+import Footer
+    from "../components/footer";
 
-const videos = [
-    "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/01_AMBIENTES%20PARA%20CARRUSEL%20PRINCIPAL%20PAGINA%20HOME/VIDEOS/HOME%20VIDEO.mp4",
-];
+import {
+    CartProvider,
+} from "../components/CartContext.jsx";
 
-const texts = [
-    "",
-    "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/LOGOBASSARI_BLANCO.png",
-    "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/Flamenco%20blanco%20gris%20transparente%20BLANCO.png",
-    "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/Harbour%20transparente%20BLANCO.png",
-    "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/Arena%20blanco%20transparente.png",
-    "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS%20BLANCOS/CJM%20marca%20blanco.png",
-];
+import InicioCarruselMarcas
+    from "../components/ComponentesHome/InicioCarruselMarcas.jsx";
 
-const names = ["", "BASSARI", "FLAMENCO", "HARBOUR", "ARENA", "CJM"];
-const rutas = ["", "bassariHome", "flamencoHome", "harbourHome", "arenaHome", "cjmHome"];
+import InicioPresentacionGrupo
+    from "../components/ComponentesHome/InicioPresentacionGrupo.jsx";
 
-const newCollectionsByBrand = {
-    BASSARI: ["ESSENCES DU NIL", "LE VOYAGE DES WOLOF"],
-    FLAMENCO: ["INDIENNE STRIPES", "PALACIO DE LAS DUEÑAS"],
-    ARENA: ["KANNATURA VOL III"],
-};
+import DeferredSection
+    from "../components/ComponentesHome/DeferredSection";
 
-// ✅ Añadimos heroCollections para el hero en 2 imágenes
-const heroCollections = [
-    {
-        brand: "BASSARI",
-        collection: "ESSENCES DU NIL",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_HORIZONTAL_ESSENCES%20DU%20NIL%20Y%20LE%20KHAYMA.webp",
-        route: "bassariHome",
-    },
-    {
-        brand: "BASSARI",
-        collection: "ESSENCES DU NIL",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASSA_ESSENCESDUNIL_YUBA4.webp",
-        route: "bassariHome",
-    },
-    {
-        brand: "BASSARI",
-        collection: "LE VOYAGE DES WOLOF",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASSARI%20LE%20VOYAGE%20DES%20WOLOF%20ZOSER%202.webp",
-        route: "bassariHome",
-    }, {
-        brand: "BASSARI",
-        collection: "LE VOYAGE DES WOLOF",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_YUBA1.webp",
-        route: "bassariHome",
-    },
-    {
-        brand: "FLAMENCO",
-        collection: "INDIENNE STRIPES",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS%20Y%20INDIENNE%20STRIPES/CJM_FLAMENCO_2026_INDIENNE%20OCEAN.webp",
-        route: "flamencoHome",
-    },
-    {
-        brand: "FLAMENCO",
-        collection: "INDIENNE STRIPES",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/INDIENNE%20STRIPES/CJM_FLAMENCO_2026-TRESTELAS.webp",
-        route: "flamencoHome",
-    },
-    {
-        brand: "FLAMENCO",
-        collection: "PALACIO DE LAS DUEÑAS",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS/CJM_FLAMENCO_PINEDA_IBORY.webp",
-        route: "flamencoHome",
-    },
-    {
-        brand: "FLAMENCO",
-        collection: "PALACIO DE LAS DUEÑAS",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/FLAMENCO%20AMBIENTE/PALACIO%20DE%20DUE%C3%91AS/CJM_FLAMENCO_2026_SALON%20DE%20LA%20GITANA%20MUSTARD_1.webp",
-        route: "flamencoHome",
-    },
-    {
-        brand: "ARENA",
-        collection: "KANNATURA VOL III",
-        image:
-            "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/ARENA%20AMBIENTE/KANNATURA%20VOL%20III/KANN_III_BLUM_1920X1080.webp",
-        route: "arenaHome",
-    },
-];
+import useHomeBrandsController
+    from "../components/ComponentesHome/controllers/useHomeBrandsController";
+
+import useHomeViewport
+    from "../components/ComponentesHome/controllers/useHomeViewport";
 
 
-function Home() {
+const InicioMovilLegacy =
+    lazy(
+        () =>
+            import(
+                "../components/ComponentesHome/InicioMovilLegacy.jsx"
+            )
+    );
+
+
+const InicioNuevasColecciones =
+    lazy(
+        () =>
+            import(
+                "../components/ComponentesHome/InicioNuevasColecciones.jsx"
+            )
+    );
+
+
+const InicioExplorarAmbientes =
+    lazy(
+        () =>
+            import(
+                "../components/ComponentesHome/InicioExplorarAmbientes.jsx"
+            )
+    );
+
+
+const InicioMaterialesTexturas =
+    lazy(
+        () =>
+            import(
+                "../components/ComponentesHome/InicioMaterialesTexturas.jsx"
+            )
+    );
+
+
+const InicioInspiracionColecciones =
+    lazy(
+        () =>
+            import(
+                "../components/ComponentesHome/InicioInspiracionColecciones.jsx"
+            )
+    );
+
+
+const InicioCierreVisual =
+    lazy(
+        () =>
+            import(
+                "../components/ComponentesHome/InicioCierreVisual.jsx"
+            )
+    );
+
+
+export default function Home() {
+    const {
+        isMobileHome,
+    } =
+        useHomeViewport();
+
+
+    const {
+        brands,
+
+        newCollections,
+
+        groupPillars,
+
+        spaces,
+
+        materials,
+
+        moodboards,
+
+        closingVisual,
+
+        activeBrand,
+
+        activeIndex,
+
+        selectBrand,
+
+        openBrand,
+
+        openCollections,
+
+        openCollection,
+
+        openAllCollections,
+
+        openProducts,
+
+        openRoute,
+
+        openFilteredCollections,
+    } =
+        useHomeBrandsController();
+
+
     return (
         <CartProvider>
             <Header />
-            <CarruselHome
-                imagesMobile={imagesMobile}
-                imagesDesktop={imagesDesktop}
-                texts={texts}
-                names={names}
-                routes={rutas}
-                heroCollections={heroCollections}
-                newCollectionsByBrand={newCollectionsByBrand}
-                videos={videos}
-            />
+
+
+            {isMobileHome ? (
+                <Suspense
+                    fallback={
+                        <div
+                            className="
+                                min-h-screen
+                                bg-stone-950
+                            "
+                        />
+                    }
+                >
+                    <InicioMovilLegacy />
+                </Suspense>
+            ) : (
+                <>
+                    <main
+                        className="
+                            min-h-screen
+                            bg-[#f7f5f1]
+                        "
+                    >
+                        {/* 01 · CARRUSEL DE MARCAS */}
+                        <InicioCarruselMarcas
+                            brands={
+                                brands
+                            }
+                            activeBrand={
+                                activeBrand
+                            }
+                            activeIndex={
+                                activeIndex
+                            }
+                            onSelectBrand={
+                                selectBrand
+                            }
+                            onOpenBrand={
+                                openBrand
+                            }
+                            onOpenCollections={
+                                openCollections
+                            }
+                        />
+
+
+                        {/* 02 · PRESENTACIÓN CJM GROUP */}
+                        <InicioPresentacionGrupo
+                            pillars={
+                                groupPillars
+                            }
+                        />
+
+
+                        {/* 03 · NUEVAS COLECCIONES */}
+                        <DeferredSection
+                            minHeight="900px"
+                        >
+                            <Suspense
+                                fallback={
+                                    null
+                                }
+                            >
+                                <InicioNuevasColecciones
+                                    collections={
+                                        newCollections
+                                    }
+                                    onOpenCollection={
+                                        openCollection
+                                    }
+                                    onOpenAllCollections={
+                                        openAllCollections
+                                    }
+                                />
+                            </Suspense>
+                        </DeferredSection>
+
+
+                        {/* 04 · EXPLORAR POR AMBIENTES
+                        <DeferredSection
+                            minHeight="850px"
+                        >
+                            <Suspense
+                                fallback={
+                                    null
+                                }
+                            >
+                                <InicioExplorarAmbientes
+                                    spaces={
+                                        spaces
+                                    }
+                                    onOpenRoute={
+                                        openRoute
+                                    }
+                                />
+                            </Suspense>
+                        </DeferredSection>
+                        */}
+
+
+                        {/* 05 · MATERIALES Y TEXTURAS */}
+                        <DeferredSection
+                            minHeight="800px"
+                        >
+                            <Suspense
+                                fallback={
+                                    null
+                                }
+                            >
+                                <InicioMaterialesTexturas
+                                    materials={
+                                        materials
+                                    }
+                                    onOpenProducts={
+                                        openProducts
+                                    }
+                                />
+                            </Suspense>
+                        </DeferredSection>
+
+
+                        {/* 06 · INSPIRACIÓN DE COLECCIONES */}
+                        <DeferredSection
+                            minHeight="850px"
+                        >
+                            <Suspense
+                                fallback={
+                                    null
+                                }
+                            >
+                                <InicioInspiracionColecciones
+                                    moodboards={
+                                        moodboards
+                                    }
+                                    onOpenCollections={
+                                        openFilteredCollections
+                                    }
+                                />
+                            </Suspense>
+                        </DeferredSection>
+
+
+                        {/* 07 · CIERRE VISUAL */}
+                        <DeferredSection
+                            minHeight="750px"
+                        >
+                            <Suspense
+                                fallback={
+                                    null
+                                }
+                            >
+                                <InicioCierreVisual
+                                    content={
+                                        closingVisual
+                                    }
+                                    onOpenCollections={
+                                        openAllCollections
+                                    }
+                                />
+                            </Suspense>
+                        </DeferredSection>
+                    </main>
+
+
+                    <Footer />
+                </>
+            )}
         </CartProvider>
     );
 }
-
-export default Home;
-
-

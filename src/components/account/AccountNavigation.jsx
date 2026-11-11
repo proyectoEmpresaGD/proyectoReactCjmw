@@ -9,6 +9,7 @@ import {
     History,
     PackageCheck,
     UserRound,
+    BookOpen,
 } from "lucide-react";
 
 
@@ -22,6 +23,17 @@ const accountItems = [
 
         icon:
             UserRound,
+    },
+
+    {
+        label:
+            "Mi biblioteca",
+
+        path:
+            "/mi-biblioteca",
+
+        icon:
+            BookOpen,
     },
 
     {

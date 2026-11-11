@@ -1,26 +1,38 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import {
-    ArrowUpRight,
+    useNavigate,
+} from 'react-router-dom';
+
+import {
+    motion,
+} from 'framer-motion';
+
+import {
     CheckCircle2,
     ChevronDown,
     FileText,
     Filter,
-    ImageOff,
-    ReceiptText,
     Search,
     ShoppingBag,
 } from 'lucide-react';
 
 import {
-    getInvoiceDetail,
     getInvoices,
     getInvoicePdfUrl,
 } from '../../services/clientAreaClient';
 
-const MAX_PREVIEW_IMAGES = 4;
+
+const ITEMS_PER_PAGE = 20;
+
+const SEARCH_DEBOUNCE_MS =
+    350;
+
 
 const SECTION_CONFIG = {
     orders: {
@@ -38,6 +50,9 @@ const SECTION_CONFIG = {
 
         cardTitle:
             'Factura disponible',
+
+        itemLabel:
+            'facturas',
     },
 
     returns: {
@@ -55,67 +70,106 @@ const SECTION_CONFIG = {
 
         cardTitle:
             'Devolución disponible',
+
+        itemLabel:
+            'devoluciones',
     },
 };
 
-function formatCurrency(value) {
+
+function formatCurrency(
+    value
+) {
     return new Intl.NumberFormat(
         'es-ES',
         {
-            style: 'currency',
-            currency: 'EUR',
+            style:
+                'currency',
+
+            currency:
+                'EUR',
         }
     ).format(
-        Number(value || 0)
+        Number(
+            value ||
+            0
+        )
     );
 }
 
-function formatDate(value) {
+
+function formatDate(
+    value
+) {
     if (!value) {
         return '-';
     }
 
+
     const date =
-        new Date(value);
+        new Date(
+            value
+        );
+
 
     if (
         Number.isNaN(
             date.getTime()
         )
     ) {
-        return String(value);
+        return String(
+            value
+        );
     }
+
 
     return date.toLocaleDateString(
         'es-ES',
         {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
+            day:
+                'numeric',
+
+            month:
+                'long',
+
+            year:
+                'numeric',
         }
     );
 }
 
-function getInvoiceKey(invoice) {
+
+function getInvoiceKey(
+    invoice
+) {
     return [
         invoice.ejercicio,
         invoice.codserfacventa,
         invoice.nfacventa,
-    ].join('-');
+    ].join(
+        '-'
+    );
 }
 
-function getInvoiceLabel(invoice) {
+
+function getInvoiceLabel(
+    invoice
+) {
     if (
         invoice.sfactura
     ) {
         return invoice.sfactura;
     }
 
+
     const series =
-        invoice.codserfacventa || '';
+        invoice.codserfacventa ||
+        '';
 
     const number =
-        invoice.nfacventa || '';
+        invoice.nfacventa ||
+        '';
+
 
     return (
         `${series}${number}` ||
@@ -123,20 +177,6 @@ function getInvoiceLabel(invoice) {
     );
 }
 
-function getInvoiceDetailParams(
-    invoice
-) {
-    return {
-        ejercicio:
-            invoice.ejercicio,
-
-        codserfacventa:
-            invoice.codserfacventa,
-
-        nfacventa:
-            invoice.nfacventa,
-    };
-}
 
 function getInvoiceOrdersPath(
     invoice
@@ -155,138 +195,6 @@ function getInvoiceOrdersPath(
     );
 }
 
-function isReturnInvoice(
-    invoice
-) {
-    return /^[A-Za-z]{2}$/.test(
-        String(
-            invoice.codserfacventa ||
-            ''
-        ).trim()
-    );
-}
-
-function getInvoicePreviewImages(
-    invoiceDetail
-) {
-    const albaranes =
-        invoiceDetail?.albaranes ??
-        [];
-
-    const images = [];
-
-    const usedImages =
-        new Set();
-
-    albaranes.forEach(
-        (albaran) => {
-            const lineas =
-                albaran.lineas ??
-                [];
-
-            lineas.forEach(
-                (linea) => {
-                    if (
-                        !linea.imagenProducto ||
-                        usedImages.has(
-                            linea.imagenProducto
-                        )
-                    ) {
-                        return;
-                    }
-
-                    usedImages.add(
-                        linea.imagenProducto
-                    );
-
-                    images.push({
-                        src:
-                            linea.imagenProducto,
-
-                        alt:
-                            linea.imagenDescripcion ||
-                            linea.imagenNombre ||
-                            linea.desprodu ||
-                            linea.codprodu ||
-                            'Producto',
-                    });
-                }
-            );
-        }
-    );
-
-    return images.slice(
-        0,
-        MAX_PREVIEW_IMAGES
-    );
-}
-
-function invoiceMatchesSearch(
-    invoice,
-    searchTerm
-) {
-    if (
-        !searchTerm.trim()
-    ) {
-        return true;
-    }
-
-    const normalizedSearch =
-        searchTerm
-            .trim()
-            .toLowerCase();
-
-    const searchableFields = [
-        invoice.ejercicio,
-        invoice.codserfacventa,
-        invoice.nfacventa,
-        invoice.sfactura,
-        invoice.referencia,
-        invoice.fecha,
-        invoice.imptotal,
-    ];
-
-    return searchableFields
-        .filter(Boolean)
-        .some(
-            (field) =>
-                String(field)
-                    .toLowerCase()
-                    .includes(
-                        normalizedSearch
-                    )
-        );
-}
-
-async function loadInvoiceWithPreview(
-    invoice
-) {
-    try {
-        const data =
-            await getInvoiceDetail(
-                getInvoiceDetailParams(
-                    invoice
-                )
-            );
-
-        const previewImages =
-            getInvoicePreviewImages(
-                data.invoice
-            );
-
-        return {
-            ...invoice,
-            previewImages,
-        };
-    } catch {
-        return {
-            ...invoice,
-            previewImages: [],
-        };
-    }
-}
-
-
 
 function SearchInput({
     value,
@@ -297,49 +205,58 @@ function SearchInput({
             className="
                 flex
                 h-12
-                min-w-0
-                flex-1
+                w-full
                 items-center
                 gap-3
-                border-b
-                border-stone-300
-                px-1
+                rounded-xl
+                border
+                border-stone-200
+                bg-white
+                px-4
                 text-sm
                 text-stone-500
+                shadow-sm
                 transition
 
-                focus-within:border-stone-950
+                focus-within:border-stone-400
+                focus-within:ring-2
+                focus-within:ring-stone-100
 
-                md:min-w-[260px]
+                md:max-w-[305px]
             "
         >
-            <Search
-                className="
-                    h-4
-                    w-4
-                    shrink-0
-                    text-stone-400
-                "
-            />
-
             <input
                 type="search"
-                value={value}
-                onChange={event =>
+                value={
+                    value
+                }
+                onChange={(
+                    event
+                ) =>
                     onChange(
-                        event.target.value
+                        event
+                            .target
+                            .value
                     )
                 }
-                placeholder="Buscar por factura, referencia o año"
+                placeholder="Buscar"
                 className="
                     min-w-0
                     flex-1
                     bg-transparent
-                    text-sm
-                    text-stone-900
+                    text-stone-800
                     outline-none
 
                     placeholder:text-stone-400
+                "
+            />
+
+            <Search
+                className="
+                    h-5
+                    w-5
+                    shrink-0
+                    text-stone-700
                 "
             />
         </label>
@@ -348,11 +265,11 @@ function SearchInput({
 
 
 function SelectFilter({
+    icon: Icon,
     value,
     onChange,
     children,
     ariaLabel,
-    icon: Icon = Filter,
 }) {
     return (
         <label
@@ -360,43 +277,59 @@ function SelectFilter({
                 relative
                 flex
                 h-12
-                min-w-[190px]
+                w-full
                 items-center
-                gap-2
-                border-b
-                border-stone-300
-                px-1
+                rounded-xl
+                border
+                border-stone-200
+                bg-white
+                px-4
                 text-sm
                 text-stone-700
+                shadow-sm
                 transition
 
-                focus-within:border-stone-950
+                focus-within:border-stone-400
+                focus-within:ring-2
+                focus-within:ring-stone-100
+
+                md:max-w-[305px]
             "
         >
-            <Icon
-                className="
-                    h-4
-                    w-4
-                    shrink-0
-                    text-stone-400
-                "
-            />
+            {Icon && (
+                <Icon
+                    className="
+                        mr-3
+                        h-4
+                        w-4
+                        shrink-0
+                        text-stone-500
+                    "
+                />
+            )}
 
             <select
-                value={value}
-                onChange={event =>
+                value={
+                    value
+                }
+                onChange={(
+                    event
+                ) =>
                     onChange(
-                        event.target.value
+                        event
+                            .target
+                            .value
                     )
                 }
-                aria-label={ariaLabel}
+                aria-label={
+                    ariaLabel
+                }
                 className="
                     w-full
                     cursor-pointer
                     appearance-none
                     bg-transparent
-                    pr-7
-                    text-sm
+                    pr-8
                     font-medium
                     outline-none
                 "
@@ -408,147 +341,13 @@ function SelectFilter({
                 className="
                     pointer-events-none
                     absolute
-                    right-1
+                    right-4
                     h-4
                     w-4
-                    text-stone-400
+                    text-stone-700
                 "
             />
         </label>
-    );
-}
-
-
-function InvoiceProductPreview({
-    images = [],
-}) {
-    if (!images.length) {
-        return (
-            <div
-                className="
-                    flex
-                    aspect-square
-                    w-full
-                    items-center
-                    justify-center
-                    overflow-hidden
-                    rounded-[20px]
-                    bg-[#f1eee8]
-
-                    sm:w-[132px]
-                "
-            >
-                <div
-                    className="
-                        flex
-                        flex-col
-                        items-center
-                        gap-2
-                        text-stone-400
-                    "
-                >
-                    <ImageOff
-                        className="
-                            h-6
-                            w-6
-                        "
-                    />
-
-                    <span
-                        className="
-                            text-[9px]
-                            font-semibold
-                            uppercase
-                            tracking-[0.14em]
-                        "
-                    >
-                        Sin imagen
-                    </span>
-                </div>
-            </div>
-        );
-    }
-
-
-    if (
-        images.length ===
-        1
-    ) {
-        return (
-            <div
-                className="
-                    aspect-square
-                    w-full
-                    overflow-hidden
-                    rounded-[20px]
-                    bg-stone-100
-
-                    sm:w-[132px]
-                "
-            >
-                <img
-                    src={images[0].src}
-                    alt={images[0].alt}
-                    loading="lazy"
-                    className="
-                        h-full
-                        w-full
-                        object-cover
-                        transition-transform
-                        duration-700
-
-                        group-hover:scale-[1.03]
-                    "
-                />
-            </div>
-        );
-    }
-
-
-    return (
-        <div
-            className="
-                grid
-                aspect-square
-                w-full
-                grid-cols-2
-                gap-1
-                overflow-hidden
-                rounded-[20px]
-                bg-stone-100
-                p-1
-
-                sm:w-[132px]
-            "
-        >
-            {images.map(
-                image => (
-                    <div
-                        key={image.src}
-                        className="
-                            overflow-hidden
-                            rounded-[8px]
-                            bg-white
-                        "
-                    >
-                        <img
-                            src={image.src}
-                            alt={image.alt}
-                            loading="lazy"
-                            className="
-                                h-full
-                                w-full
-                                object-cover
-                                transition-transform
-                                duration-700
-
-                                group-hover:scale-[1.04]
-                            "
-                        />
-                    </div>
-                )
-            )}
-        </div>
     );
 }
 
@@ -563,326 +362,345 @@ function InvoiceCard({
     return (
         <motion.article
             initial={{
-                opacity: 0,
-                y: 10,
+                opacity:
+                    0,
+
+                y:
+                    12,
             }}
             animate={{
-                opacity: 1,
-                y: 0,
+                opacity:
+                    1,
+
+                y:
+                    0,
             }}
             transition={{
                 delay:
-                    index *
-                    0.025,
+                    Math.min(
+                        index,
+                        8
+                    ) *
+                    0.03,
+
                 duration:
                     0.25,
             }}
             className="
-                group
-                overflow-hidden
-                rounded-[26px]
+                rounded-xl
                 border
-                border-stone-300/80
+                border-stone-200
                 bg-white
+                shadow-sm
                 transition
 
-                hover:border-stone-400
-                hover:shadow-[0_18px_50px_rgba(28,25,23,0.07)]
+                hover:border-stone-300
+                hover:shadow-md
             "
         >
             <div
                 className="
-                    grid
-                    gap-5
                     p-5
 
-                    sm:grid-cols-[132px_minmax(0,1fr)]
-                    sm:p-6
-
-                    xl:grid-cols-[132px_minmax(0,1fr)_190px]
-                    xl:items-center
+                    lg:px-6
+                    lg:py-5
                 "
             >
-                <InvoiceProductPreview
-                    images={
-                        invoice.previewImages
-                    }
-                />
-
-
                 <div
                     className="
-                        min-w-0
+                        flex
+                        items-center
+                        gap-2
                     "
                 >
-                    <div
+                    <CheckCircle2
                         className="
-                            flex
-                            flex-wrap
-                            items-center
-                            gap-2
+                            h-5
+                            w-5
+                            shrink-0
+                            text-stone-900
                         "
-                    >
-                        <span
-                            className="
-                                inline-flex
-                                items-center
-                                gap-1.5
-                                rounded-full
-                                bg-[#f1eee8]
-                                px-3
-                                py-1
-                                text-[10px]
-                                font-semibold
-                                uppercase
-                                tracking-[0.14em]
-                                text-stone-600
-                            "
-                        >
-                            <CheckCircle2
-                                className="
-                                    h-3.5
-                                    w-3.5
-                                "
-                            />
-
-                            {cardTitle}
-                        </span>
-
-                        <span
-                            className="
-                                text-xs
-                                text-stone-400
-                            "
-                        >
-                            {invoice.ejercicio ||
-                                "-"}
-                        </span>
-                    </div>
+                    />
 
                     <h3
                         className="
-                            mt-4
-                            break-words
-                            text-xl
-                            font-light
-                            tracking-[-0.03em]
-                            text-stone-950
-
-                            sm:text-2xl
+                            text-lg
+                            font-bold
+                            tracking-tight
+                            text-stone-900
                         "
                     >
-                        {getInvoiceLabel(
-                            invoice
-                        )}
+                        {cardTitle}
                     </h3>
-
-                    <div
-                        className="
-                            mt-4
-                            grid
-                            gap-x-8
-                            gap-y-3
-                            text-sm
-
-                            md:grid-cols-2
-                        "
-                    >
-                        <MetaItem
-                            label="Fecha"
-                            value={formatDate(
-                                invoice.fecha
-                            )}
-                        />
-
-                        <MetaItem
-                            label="Referencia"
-                            value={
-                                invoice.referencia ||
-                                "-"
-                            }
-                        />
-                    </div>
                 </div>
 
 
                 <div
                     className="
-                        border-t
-                        border-stone-200
-                        pt-4
+                        mt-5
+                        grid
+                        gap-6
 
-                        sm:col-start-2
-
-                        xl:col-start-auto
-                        xl:border-l
-                        xl:border-t-0
-                        xl:pl-7
-                        xl:pt-0
+                        lg:grid-cols-[1fr_0.8fr_1fr_230px]
+                        lg:items-start
                     "
                 >
-                    <p
+                    <div
                         className="
-                            text-[10px]
-                            font-semibold
-                            uppercase
-                            tracking-[0.18em]
-                            text-stone-400
+                            grid
+                            gap-4
                         "
                     >
-                        Importe total
-                    </p>
+                        <div>
+                            <p
+                                className="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-stone-400
+                                "
+                            >
+                                Nº de factura
+                            </p>
 
-                    <p
+                            <p
+                                className="
+                                    mt-1
+                                    text-base
+                                    font-semibold
+                                    leading-6
+                                    text-stone-900
+                                "
+                            >
+                                {getInvoiceLabel(
+                                    invoice
+                                )}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <p
+                                className="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-stone-400
+                                "
+                            >
+                                Fecha factura
+                            </p>
+
+                            <p
+                                className="
+                                    mt-1
+                                    text-sm
+                                    font-medium
+                                    leading-6
+                                    text-stone-700
+                                "
+                            >
+                                {formatDate(
+                                    invoice.fecha
+                                )}
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div
                         className="
-                            mt-2
-                            text-2xl
-                            font-light
-                            tracking-[-0.03em]
-                            text-stone-950
+                            grid
+                            gap-4
                         "
                     >
-                        {formatCurrency(
-                            invoice.imptotal
-                        )}
-                    </p>
+                        <div>
+                            <p
+                                className="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-stone-400
+                                "
+                            >
+                                Importe
+                            </p>
+
+                            <p
+                                className="
+                                    mt-1
+                                    text-base
+                                    font-bold
+                                    leading-6
+                                    text-stone-900
+                                "
+                            >
+                                {formatCurrency(
+                                    invoice.imptotal
+                                )}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <p
+                                className="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-stone-400
+                                "
+                            >
+                                Año
+                            </p>
+
+                            <p
+                                className="
+                                    mt-1
+                                    text-sm
+                                    font-medium
+                                    leading-6
+                                    text-stone-700
+                                "
+                            >
+                                {invoice.ejercicio ||
+                                    '-'}
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div
+                        className="
+                            grid
+                            gap-4
+                        "
+                    >
+                        <div>
+                            <p
+                                className="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-stone-400
+                                "
+                            >
+                                Referencia
+                            </p>
+
+                            <p
+                                className="
+                                    mt-1
+                                    break-words
+                                    text-sm
+                                    font-medium
+                                    leading-6
+                                    text-stone-800
+                                "
+                            >
+                                {invoice.referencia ||
+                                    '-'}
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div
+                        className="
+                            flex
+                            flex-col
+                            gap-2
+
+                            lg:min-w-[230px]
+                        "
+                    >
+                        <button
+                            type="button"
+                            onClick={
+                                onViewInvoice
+                            }
+                            className="
+                                inline-flex
+                                h-10
+                                w-full
+                                items-center
+                                justify-center
+                                gap-2
+                                rounded-md
+                                bg-stone-900
+                                px-5
+                                text-sm
+                                font-semibold
+                                text-white
+                                shadow-sm
+                                transition
+
+                                hover:bg-stone-700
+
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-stone-300
+                            "
+                        >
+                            <FileText
+                                className="
+                                    h-4
+                                    w-4
+                                "
+                            />
+
+                            Ver factura
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onClick={
+                                onViewOrders
+                            }
+                            className="
+                                inline-flex
+                                h-10
+                                w-full
+                                items-center
+                                justify-center
+                                gap-2
+                                rounded-md
+                                border
+                                border-stone-300
+                                bg-white
+                                px-5
+                                text-sm
+                                font-semibold
+                                text-stone-800
+                                shadow-sm
+                                transition
+
+                                hover:bg-stone-50
+
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-stone-200
+                            "
+                        >
+                            <ShoppingBag
+                                className="
+                                    h-4
+                                    w-4
+                                "
+                            />
+
+                            Ver pedidos asociados
+                        </button>
+                    </div>
                 </div>
             </div>
-
-
-            <div
-                className="
-                    flex
-                    flex-col
-                    gap-2
-                    border-t
-                    border-stone-200
-                    bg-[#fbfaf8]
-                    px-5
-                    py-4
-
-                    sm:flex-row
-                    sm:items-center
-                    sm:justify-end
-                    sm:px-6
-                "
-            >
-                <button
-                    type="button"
-                    onClick={
-                        onViewOrders
-                    }
-                    className="
-                        inline-flex
-                        h-10
-                        items-center
-                        justify-center
-                        gap-2
-                        px-4
-                        text-sm
-                        font-medium
-                        text-stone-600
-                        transition
-
-                        hover:text-stone-950
-                    "
-                >
-                    <ShoppingBag
-                        className="
-                            h-4
-                            w-4
-                        "
-                    />
-
-                    Ver pedidos asociados
-                </button>
-
-                <button
-                    type="button"
-                    onClick={
-                        onViewInvoice
-                    }
-                    className="
-                        group/button
-                        inline-flex
-                        h-10
-                        items-center
-                        justify-center
-                        gap-2
-                        rounded-full
-                        bg-stone-950
-                        px-5
-                        text-sm
-                        font-medium
-                        text-white
-                        transition
-
-                        hover:bg-stone-800
-                    "
-                >
-                    <FileText
-                        className="
-                            h-4
-                            w-4
-                        "
-                    />
-
-                    Ver factura
-
-                    <ArrowUpRight
-                        className="
-                            h-3.5
-                            w-3.5
-                            transition-transform
-
-                            group-hover/button:-translate-y-0.5
-                            group-hover/button:translate-x-0.5
-                        "
-                    />
-                </button>
-            </div>
         </motion.article>
-    );
-}
-
-
-function MetaItem({
-    label,
-    value,
-}) {
-    return (
-        <div
-            className="
-                min-w-0
-            "
-        >
-            <p
-                className="
-                    text-[10px]
-                    font-semibold
-                    uppercase
-                    tracking-[0.16em]
-                    text-stone-400
-                "
-            >
-                {label}
-            </p>
-
-            <p
-                className="
-                    mt-1
-                    truncate
-                    text-sm
-                    font-medium
-                    text-stone-700
-                "
-                title={
-                    value
-                }
-            >
-                {value}
-            </p>
-        </div>
     );
 }
 
@@ -893,114 +711,121 @@ export default function InvoicesSection({
     const navigate =
         useNavigate();
 
+
     const config =
         SECTION_CONFIG[mode] ??
         SECTION_CONFIG.orders;
+
 
     const [
         invoices,
         setInvoices,
     ] = useState([]);
 
+
+    const [
+        total,
+        setTotal,
+    ] = useState(0);
+
+
     const [
         ejercicio,
         setEjercicio,
     ] = useState('');
 
-    const [
-        invoiceType,
-        setInvoiceType,
-    ] = useState('all');
 
     const [
         searchTerm,
         setSearchTerm,
     ] = useState('');
 
+
+    const [
+        debouncedSearchTerm,
+        setDebouncedSearchTerm,
+    ] = useState('');
+
+
     const [
         loading,
         setLoading,
     ] = useState(true);
+
+
+    const [
+        loadingMore,
+        setLoadingMore,
+    ] = useState(false);
+
 
     const [
         error,
         setError,
     ] = useState('');
 
+
     const [
         availableYears,
         setAvailableYears,
     ] = useState([]);
 
+
+    const [
+        offset,
+        setOffset,
+    ] = useState(0);
+
+
+    const [
+        hasMore,
+        setHasMore,
+    ] = useState(true);
+
+
+    const loadingMoreRef =
+        useRef(false);
+
+
+    /*
+     * Evitamos consultar el backend
+     * en cada pulsación del teclado.
+     */
     useEffect(() => {
-        let cancelled =
-            false;
-
-        async function loadInitialYears() {
-            try {
-                const data =
-                    await getInvoices();
-
-                const allInvoices =
-                    data.invoices ??
-                    [];
-
-                const years =
-                    new Set(
-                        allInvoices
-                            .map(
-                                (
-                                    invoice
-                                ) =>
-                                    invoice.ejercicio
-                            )
-                            .filter(
-                                Boolean
-                            )
+        const timeout =
+            window.setTimeout(
+                () => {
+                    setDebouncedSearchTerm(
+                        searchTerm.trim()
                     );
+                },
+                SEARCH_DEBOUNCE_MS
+            );
 
-                if (
-                    !cancelled
-                ) {
-                    setAvailableYears(
-                        Array.from(
-                            years
-                        ).sort(
-                            (
-                                a,
-                                b
-                            ) =>
-                                Number(
-                                    b
-                                ) -
-                                Number(
-                                    a
-                                )
-                        )
-                    );
-                }
-            } catch {
-                if (
-                    !cancelled
-                ) {
-                    setAvailableYears(
-                        []
-                    );
-                }
-            }
-        }
-
-        loadInitialYears();
 
         return () => {
-            cancelled =
-                true;
+            window.clearTimeout(
+                timeout
+            );
         };
-    }, []);
+    }, [
+        searchTerm,
+    ]);
 
+
+    /*
+     * Primera página.
+     *
+     * También se reinicia cuando:
+     *
+     * - cambia el año
+     * - cambia Facturas / Devoluciones
+     * - cambia la búsqueda
+     */
     useEffect(() => {
         let cancelled =
             false;
+
 
         async function loadInvoices() {
             try {
@@ -1010,69 +835,133 @@ export default function InvoicesSection({
 
                 setError('');
 
+                setInvoices([]);
+
+                setTotal(0);
+
+                setOffset(0);
+
+                setHasMore(
+                    true
+                );
+
+
                 const data =
-                    await getInvoices(
-                        ejercicio ||
-                        undefined
-                    );
+                    await getInvoices({
+                        ejercicio:
+                            ejercicio ||
+                            undefined,
 
-                const baseInvoices =
-                    data.invoices ??
-                    [];
+                        mode,
 
-                const invoicesByMode =
-                    baseInvoices.filter(
-                        (
-                            invoice
-                        ) => {
-                            const isReturn =
-                                isReturnInvoice(
-                                    invoice
-                                );
+                        search:
+                            debouncedSearchTerm,
 
-                            if (
-                                mode ===
-                                'returns'
-                            ) {
-                                return isReturn;
-                            }
+                        limit:
+                            ITEMS_PER_PAGE,
 
-                            return !isReturn;
-                        }
-                    );
+                        offset:
+                            0,
+                    });
 
-                const invoicesWithPreviews =
-                    await Promise.all(
-                        invoicesByMode.map(
-                            (
-                                invoice
-                            ) =>
-                                loadInvoiceWithPreview(
-                                    invoice
-                                )
-                        )
-                    );
 
                 if (
-                    !cancelled
+                    cancelled
                 ) {
-                    setInvoices(
-                        invoicesWithPreviews
-                    );
+                    return;
                 }
-            } catch (err) {
-                if (
-                    !cancelled
-                ) {
-                    setError(
-                        err.message ||
-                        'No se pudieron cargar las facturas'
-                    );
 
-                    setInvoices(
-                        []
+
+                const firstPage =
+                    Array.isArray(
+                        data?.invoices
+                    )
+                        ? data.invoices
+                        : [];
+
+
+                setInvoices(
+                    firstPage
+                );
+
+
+                setTotal(
+                    Number(
+                        data?.total
+                    ) ||
+                    0
+                );
+
+
+                setHasMore(
+                    data?.hasMore ===
+                    true
+                );
+
+
+                setOffset(
+                    Number(
+                        data?.nextOffset
+                    ) ||
+                    firstPage.length
+                );
+
+
+                if (
+                    Array.isArray(
+                        data?.availableYears
+                    )
+                ) {
+                    setAvailableYears(
+                        data.availableYears
                     );
                 }
+
+
+                console.log(
+                    '[Facturas] carga inicial',
+                    {
+                        received:
+                            firstPage.length,
+
+                        total:
+                            data?.total,
+
+                        hasMore:
+                            data?.hasMore,
+
+                        nextOffset:
+                            data?.nextOffset,
+                    }
+                );
+            } catch (
+            requestError
+            ) {
+                if (
+                    cancelled
+                ) {
+                    return;
+                }
+
+
+                console.error(
+                    '[Facturas] error carga inicial',
+                    requestError
+                );
+
+
+                setError(
+                    requestError?.message ||
+                    'No se pudieron cargar las facturas'
+                );
+
+                setInvoices([]);
+
+                setTotal(0);
+
+                setHasMore(
+                    false
+                );
             } finally {
                 if (
                     !cancelled
@@ -1084,7 +973,9 @@ export default function InvoicesSection({
             }
         }
 
+
         loadInvoices();
+
 
         return () => {
             cancelled =
@@ -1093,37 +984,254 @@ export default function InvoicesSection({
     }, [
         ejercicio,
         mode,
+        debouncedSearchTerm,
     ]);
 
-    const filteredInvoices =
-        useMemo(() => {
-            return invoices.filter(
-                (
-                    invoice
-                ) => {
-                    const matchesSearch =
-                        invoiceMatchesSearch(
-                            invoice,
-                            searchTerm
+
+    /*
+     * Siguientes 20.
+     */
+    const loadMore =
+        useCallback(
+            async () => {
+                if (
+                    loadingMoreRef.current ||
+                    !hasMore
+                ) {
+                    return;
+                }
+
+
+                loadingMoreRef.current =
+                    true;
+
+                setLoadingMore(
+                    true
+                );
+
+
+                try {
+                    const data =
+                        await getInvoices({
+                            ejercicio:
+                                ejercicio ||
+                                undefined,
+
+                            mode,
+
+                            search:
+                                debouncedSearchTerm,
+
+                            limit:
+                                ITEMS_PER_PAGE,
+
+                            offset,
+                        });
+
+
+                    const newInvoices =
+                        Array.isArray(
+                            data?.invoices
+                        )
+                            ? data.invoices
+                            : [];
+
+
+                    setInvoices(
+                        previous => {
+                            const invoiceMap =
+                                new Map();
+
+
+                            previous.forEach(
+                                invoice => {
+                                    invoiceMap.set(
+                                        getInvoiceKey(
+                                            invoice
+                                        ),
+                                        invoice
+                                    );
+                                }
+                            );
+
+
+                            newInvoices.forEach(
+                                invoice => {
+                                    invoiceMap.set(
+                                        getInvoiceKey(
+                                            invoice
+                                        ),
+                                        invoice
+                                    );
+                                }
+                            );
+
+
+                            return [
+                                ...invoiceMap.values(),
+                            ];
+                        }
+                    );
+
+
+                    if (
+                        data?.total != null
+                    ) {
+                        setTotal(
+                            Number(
+                                data.total
+                            ) ||
+                            0
+                        );
+                    }
+
+
+                    const nextHasMore =
+                        data?.hasMore ===
+                        true &&
+                        newInvoices.length >
+                        0;
+
+
+                    setHasMore(
+                        nextHasMore
+                    );
+
+
+                    const nextOffset =
+                        Number(
+                            data?.nextOffset
                         );
 
-                    const matchesType =
-                        invoiceType ===
-                        'all' ||
-                        invoiceType ===
-                        'invoices';
 
-                    return (
-                        matchesSearch &&
-                        matchesType
+                    setOffset(
+                        Number.isFinite(
+                            nextOffset
+                        )
+                            ? nextOffset
+                            : (
+                                offset +
+                                newInvoices.length
+                            )
+                    );
+
+
+                    console.log(
+                        '[Facturas] página cargada',
+                        {
+                            received:
+                                newInvoices.length,
+
+                            total:
+                                data?.total,
+
+                            hasMore:
+                                nextHasMore,
+
+                            nextOffset:
+                                data?.nextOffset,
+                        }
+                    );
+                } catch (
+                requestError
+                ) {
+                    console.error(
+                        '[Facturas] error cargando más',
+                        requestError
+                    );
+
+
+                    setError(
+                        requestError?.message ||
+                        'No se pudieron cargar más facturas'
+                    );
+                } finally {
+                    loadingMoreRef.current =
+                        false;
+
+                    setLoadingMore(
+                        false
                     );
                 }
+            },
+            [
+                offset,
+                hasMore,
+                ejercicio,
+                mode,
+                debouncedSearchTerm,
+            ]
+        );
+
+
+    /*
+     * Scroll infinito.
+     *
+     * Pedimos otros 20 cuando quedan
+     * aproximadamente 300px para
+     * llegar al final.
+     */
+    useEffect(() => {
+        if (
+            loading ||
+            !hasMore
+        ) {
+            return undefined;
+        }
+
+
+        const handleScroll =
+            () => {
+                const documentHeight =
+                    document
+                        .documentElement
+                        .scrollHeight;
+
+
+                const currentPosition =
+                    window.scrollY +
+                    window.innerHeight;
+
+
+                const distanceToBottom =
+                    documentHeight -
+                    currentPosition;
+
+
+                if (
+                    distanceToBottom >
+                    300
+                ) {
+                    return;
+                }
+
+
+                loadMore();
+            };
+
+
+        window.addEventListener(
+            'scroll',
+            handleScroll,
+            {
+                passive:
+                    true,
+            }
+        );
+
+
+        return () => {
+            window.removeEventListener(
+                'scroll',
+                handleScroll
             );
-        }, [
-            invoices,
-            invoiceType,
-            searchTerm,
-        ]);
+        };
+    }, [
+        loading,
+        hasMore,
+        loadMore,
+    ]);
+
 
     function handleViewInvoice(
         invoice
@@ -1140,12 +1248,14 @@ export default function InvoicesSection({
                     invoice.nfacventa,
             });
 
+
         window.open(
             pdfUrl,
             '_blank',
             'noopener,noreferrer'
         );
     }
+
 
     function handleViewOrders(
         invoice
@@ -1157,170 +1267,115 @@ export default function InvoicesSection({
         );
     }
 
+
     return (
         <section
             className="
                 grid
-                gap-5
+                gap-6
             "
         >
+            <div>
+                <h1
+                    className="
+                        text-2xl
+                        font-bold
+                        tracking-tight
+                        text-stone-900
+
+                        md:text-3xl
+                    "
+                >
+                    {config.title}
+                </h1>
+
+
+                <p
+                    className="
+                        mt-2
+                        max-w-2xl
+                        text-sm
+                        leading-6
+                        text-stone-500
+                    "
+                >
+                    {config.description}
+                </p>
+
+
+                {!loading &&
+                    total >
+                    0 && (
+                        <p
+                            className="
+                                mt-2
+                                text-xs
+                                text-stone-400
+                            "
+                        >
+                            {invoices.length}
+                            {' de '}
+                            {total}
+                            {' '}
+                            {config.itemLabel}
+                            {' cargadas'}
+                        </p>
+                    )}
+            </div>
+
+
             <div
                 className="
                     flex
                     flex-col
-                    gap-4
-                    rounded-[24px]
-                    border
-                    border-stone-300/80
-                    bg-white
-                    p-4
+                    gap-3
 
-                    sm:p-5
-
-                    xl:flex-row
-                    xl:items-center
-                    xl:justify-between
+                    md:flex-row
+                    md:flex-wrap
                 "
             >
-                <div
-                    className="
-                        min-w-0
-                    "
+                <SearchInput
+                    value={
+                        searchTerm
+                    }
+                    onChange={
+                        setSearchTerm
+                    }
+                />
+
+
+                <SelectFilter
+                    value={
+                        ejercicio
+                    }
+                    onChange={
+                        setEjercicio
+                    }
+                    ariaLabel="Filtrar por periodo"
+                    icon={
+                        Filter
+                    }
                 >
-                    <div
-                        className="
-                            flex
-                            items-center
-                            gap-2
-                        "
-                    >
-                        <span
-                            className="
-                                flex
-                                h-9
-                                w-9
-                                items-center
-                                justify-center
-                                rounded-full
-                                bg-[#f1eee8]
-                                text-stone-700
-                            "
-                        >
-                            <ReceiptText
-                                className="
-                                    h-4
-                                    w-4
-                                "
-                            />
-                        </span>
+                    <option value="">
+                        Periodo: Todo el historial
+                    </option>
 
-                        <div>
-                            <p
-                                className="
-                                    text-sm
-                                    font-medium
-                                    text-stone-900
-                                "
+                    {availableYears.map(
+                        year => (
+                            <option
+                                key={
+                                    year
+                                }
+                                value={
+                                    year
+                                }
                             >
-                                {config.title}
-                            </p>
-
-                            <p
-                                className="
-                                    mt-0.5
-                                    text-xs
-                                    text-stone-400
-                                "
-                            >
-                                {filteredInvoices.length}{" "}
-                                {filteredInvoices.length ===
-                                1
-                                    ? "documento"
-                                    : "documentos"}{" "}
-                                visibles
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div
-                    className="
-                        flex
-                        flex-1
-                        flex-col
-                        gap-3
-
-                        md:flex-row
-                        md:flex-wrap
-
-                        xl:max-w-[760px]
-                        xl:justify-end
-                    "
-                >
-                    <SearchInput
-                        value={
-                            searchTerm
-                        }
-                        onChange={
-                            setSearchTerm
-                        }
-                    />
-
-                    <SelectFilter
-                        value={
-                            ejercicio
-                        }
-                        onChange={
-                            setEjercicio
-                        }
-                        ariaLabel="Filtrar por periodo"
-                        icon={
-                            Filter
-                        }
-                    >
-                        <option value="">
-                            Todo el historial
-                        </option>
-
-                        {availableYears.map(
-                            year => (
-                                <option
-                                    key={
-                                        year
-                                    }
-                                    value={
-                                        year
-                                    }
-                                >
-                                    Año{" "}
-                                    {year}
-                                </option>
-                            )
-                        )}
-                    </SelectFilter>
-
-                    <SelectFilter
-                        value={
-                            invoiceType
-                        }
-                        onChange={
-                            setInvoiceType
-                        }
-                        ariaLabel="Filtrar por tipo"
-                        icon={
-                            FileText
-                        }
-                    >
-                        <option value="all">
-                            Todos
-                        </option>
-
-                        <option value="invoices">
-                            Facturas
-                        </option>
-                    </SelectFilter>
-                </div>
+                                Periodo:{' '}
+                                {year}
+                            </option>
+                        )
+                    )}
+                </SelectFilter>
             </div>
 
 
@@ -1328,11 +1383,13 @@ export default function InvoicesSection({
                 <div
                     className="
                         grid
-                        gap-4
+                        gap-8
+                        pt-6
                     "
                 >
                     {Array.from({
-                        length: 3,
+                        length:
+                            3,
                     }).map(
                         (
                             _,
@@ -1343,14 +1400,12 @@ export default function InvoicesSection({
                                     index
                                 }
                                 className="
-                                    h-56
+                                    h-40
                                     animate-pulse
-                                    rounded-[26px]
+                                    rounded-lg
                                     border
                                     border-stone-200
-                                    bg-white/70
-
-                                    sm:h-48
+                                    bg-stone-100
                                 "
                             />
                         )
@@ -1359,99 +1414,86 @@ export default function InvoicesSection({
             )}
 
 
-            {error && (
-                <div
-                    className="
-                        border-l-2
-                        border-red-400
-                        bg-red-50
-                        px-5
-                        py-4
-                        text-sm
-                        leading-6
-                        text-red-700
-                    "
-                >
-                    {error}
-                </div>
-            )}
-
-
-            {!loading &&
-                !error &&
-                filteredInvoices.length ===
-                    0 && (
+            {error &&
+                invoices.length ===
+                0 && (
                     <div
                         className="
-                            rounded-[26px]
+                            rounded-lg
                             border
-                            border-dashed
-                            border-stone-300
-                            bg-white/60
-                            px-6
-                            py-14
-                            text-center
+                            border-rose-200
+                            bg-rose-50
+                            px-4
+                            py-3
+                            text-sm
+                            text-rose-700
                         "
                     >
-                        <ReceiptText
-                            className="
-                                mx-auto
-                                h-7
-                                w-7
-                                text-stone-300
-                            "
-                        />
-
-                        <p
-                            className="
-                                mt-4
-                                text-sm
-                                font-medium
-                                text-stone-800
-                            "
-                        >
-                            {
-                                config.emptyTitle
-                            }
-                        </p>
-
-                        <p
-                            className="
-                                mx-auto
-                                mt-2
-                                max-w-md
-                                text-sm
-                                leading-6
-                                text-stone-500
-                            "
-                        >
-                            {
-                                config.emptyDescription
-                            }
-                        </p>
+                        {error}
                     </div>
                 )}
 
 
             {!loading &&
                 !error &&
-                filteredInvoices.length >
-                    0 && (
+                invoices.length ===
+                0 && (
+                    <div
+                        className="
+                            rounded-lg
+                            border
+                            border-dashed
+                            border-stone-300
+                            bg-white
+                            px-5
+                            py-12
+                            text-center
+                            shadow-sm
+                        "
+                    >
+                        <p
+                            className="
+                                text-sm
+                                font-semibold
+                                text-stone-800
+                            "
+                        >
+                            {config.emptyTitle}
+                        </p>
+
+                        <p
+                            className="
+                                mt-2
+                                text-sm
+                                text-stone-500
+                            "
+                        >
+                            {config.emptyDescription}
+                        </p>
+                    </div>
+                )}
+
+
+            {!loading &&
+                invoices.length >
+                0 && (
                     <div
                         className="
                             grid
-                            gap-4
+                            gap-8
                         "
                     >
-                        {filteredInvoices.map(
+                        {invoices.map(
                             (
                                 invoice,
                                 index
                             ) => (
                                 <InvoiceCard
-                                    key={getInvoiceKey(
-                                        invoice
-                                    )}
+                                    key={
+                                        getInvoiceKey(
+                                            invoice
+                                        )
+                                    }
                                     invoice={
                                         invoice
                                     }
@@ -1474,6 +1516,94 @@ export default function InvoicesSection({
                                 />
                             )
                         )}
+                    </div>
+                )}
+
+
+            {error &&
+                invoices.length >
+                0 && (
+                    <div
+                        className="
+                            rounded-lg
+                            border
+                            border-rose-200
+                            bg-rose-50
+                            px-4
+                            py-3
+                            text-sm
+                            text-rose-700
+                        "
+                    >
+                        {error}
+                    </div>
+                )}
+
+
+            {!loading &&
+                invoices.length >
+                0 && (
+                    <div
+                        className="
+                            flex
+                            min-h-20
+                            items-center
+                            justify-center
+                            border-t
+                            border-stone-100
+                        "
+                    >
+                        {loadingMore && (
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                    text-xs
+                                    text-stone-400
+                                "
+                            >
+                                <span
+                                    className="
+                                        h-4
+                                        w-4
+                                        animate-spin
+                                        rounded-full
+                                        border
+                                        border-stone-300
+                                        border-t-stone-950
+                                    "
+                                />
+
+                                Cargando otras 20...
+                            </div>
+                        )}
+
+
+                        {!loadingMore &&
+                            hasMore && (
+                                <p
+                                    className="
+                                        text-xs
+                                        text-stone-400
+                                    "
+                                >
+                                    Sigue bajando para ver más
+                                </p>
+                            )}
+
+
+                        {!loadingMore &&
+                            !hasMore && (
+                                <p
+                                    className="
+                                        text-xs
+                                        text-stone-400
+                                    "
+                                >
+                                    Has llegado al final
+                                </p>
+                            )}
                     </div>
                 )}
         </section>
