@@ -1,4 +1,4 @@
-import { LOGO_URL } from "../../Constants/constants";
+import { LOGO_URL_DARK } from "../../Constants/constants";
 
 import useLoadingScreenController
     from "./controllers/useLoadingScreenController";
@@ -177,7 +177,7 @@ export default function LoadingScreen() {
                 <div className="cjm-loading-logo-frame">
                     <div className="cjm-loading-logo-wrapper">
                         <img
-                            src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOTIPOS%20AMBIENTADOS/NAVIDAD/LOGO%20NAVIDAD%20BLANCO.webp"
+                            src={LOGO_URL_DARK}
                             alt="CJM Group"
                             className="
                                 h-auto

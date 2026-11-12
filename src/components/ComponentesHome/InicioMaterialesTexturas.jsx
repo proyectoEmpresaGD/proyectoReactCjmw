@@ -234,23 +234,12 @@ export default function HomeMaterialsTextures({
                                             pt-5
                                         "
                                     >
-                                        <span
-                                            className="
-                                                text-[9px]
-                                                font-semibold
-                                                tracking-[0.2em]
-                                                text-white/35
-                                            "
-                                        >
-                                            {
-                                                material.number
-                                            }
-                                        </span>
+
 
 
                                         <h3
                                             className="
-                                                mt-3
+                                                mt-1
                                                 text-xl
                                                 font-light
                                                 tracking-[-0.03em]

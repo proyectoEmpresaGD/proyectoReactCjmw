@@ -24,7 +24,13 @@
     "hero": {
         "discoverBrand": "Découvrir la marque",
         "viewCollections": "Voir les collections",
-        "discoverFiveBrands": "Découvrir les cinq marques"
+        "discoverFiveBrands": "Découvrir les cinq marques",
+        "selectBrand": "Choisir une marque",
+        "activeBrand": "À découvrir",
+        "exploreBrand": "Explorer la marque",
+        "pauseCarousel": "Mettre le carrousel en pause",
+        "playCarousel": "Relancer le carrousel",
+        "scrollToNextSection": "Aller à la section suivante"
     },
     "group": {
         "label": "CJM Group",

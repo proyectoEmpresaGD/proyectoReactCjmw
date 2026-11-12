@@ -9,7 +9,7 @@ import {
 
 import {
     BRAND_INSTAGRAM_LINKS,
-    LOGO_URL,
+    LOGO_URL_DARK,
     NAVIGATION_LINKS,
     PDF_LINKS,
     SOCIAL_MEDIA_LINKS,
@@ -26,40 +26,37 @@ import {
 import InstagramDropdown
     from "./InstagramDropdown";
 
+import MarcaLogo from "./ComponentesHome/MarcaLogo";
+
 
 const brandLinks = [
     {
         key: "arena",
         to: "/arenaHome",
-        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoArena.png",
         alt: "Arena",
     },
 
     {
         key: "bassari",
         to: "/bassariHome",
-        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/LOGO%20BASSARI%20negro.png",
         alt: "Bassari",
     },
 
     {
         key: "flamenco",
         to: "/flamencoHome",
-        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoFlamenco.png",
         alt: "Flamenco",
     },
 
     {
         key: "harbour",
         to: "/harbourHome",
-        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoHarbour.png",
         alt: "Harbour",
     },
 
     {
         key: "cjm",
         to: "/cjmHome",
-        img: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOS%20MARCAS/logoCJM-sintexto.png",
         alt: "CJM",
     },
 ];
@@ -115,7 +112,7 @@ const Footer = () => {
                         grid
                         gap-10
                         border-b
-                        border-white/10
+                        border-white/6
                         pb-12
 
                         sm:gap-12
@@ -137,11 +134,15 @@ const Footer = () => {
                                 resetBrand
                             }
                             className="
-                                inline-block
+                                inline-flex
+                                items-center
+                                justify-center
+                                px-1
+                                py-1
                             "
                         >
                             <img
-                                src="https://bassari.eu/ImagenesTelasCjmw/ICONOS/01_LOGOTIPOS/LOGOTIPOS%20AMBIENTADOS/NAVIDAD/LOGO%20NAVIDAD%20BLANCO.webp"
+                                src={LOGO_URL_DARK}
 
                                 alt={
                                     t(
@@ -439,8 +440,8 @@ const Footer = () => {
                 <div
                     className="
                         border-b
-                        border-white/10
-                        py-9
+                        border-white/6
+                        py-10
 
                         sm:py-10
 
@@ -449,7 +450,7 @@ const Footer = () => {
                 >
                     <div
                         className="
-                            mb-7
+                            mb-8
                             flex
                             items-center
                             justify-between
@@ -458,31 +459,17 @@ const Footer = () => {
                     >
                         <p
                             className="
-                                text-[9px]
+                                text-[10px]
                                 font-semibold
                                 uppercase
                                 tracking-[0.28em]
-                                text-stone-500
+                                text-stone-400
                             "
                         >
                             {t(
                                 "ourBrands"
                             )}
                         </p>
-
-
-                        <span
-                            className="
-                                hidden
-                                text-[9px]
-                                tracking-[0.2em]
-                                text-stone-600
-
-                                sm:block
-                            "
-                        >
-                            CJM Group
-                        </span>
                     </div>
 
 
@@ -490,14 +477,14 @@ const Footer = () => {
                         className="
                             grid
                             grid-cols-2
-                            items-center
-                            gap-x-8
-                            gap-y-8
+                            items-stretch
+                            gap-x-4
+                            gap-y-4
 
                             sm:grid-cols-3
 
                             lg:grid-cols-5
-                            lg:gap-x-12
+                            lg:gap-x-5
                         "
                     >
                         {brandLinks.map(
@@ -515,39 +502,33 @@ const Footer = () => {
                                     className="
                                         group
                                         flex
-                                        min-h-12
+                                        min-h-[86px]
                                         items-center
                                         justify-center
-                                        px-2
+                                        rounded-2xl
+                                        border
+                                        border-white/10
+                                        bg-white/[0.04]
+                                        px-4
+                                        py-4
+                                        transition-all
+                                        duration-300
+
+                                        hover:border-white/20
+                                        hover:bg-white/[0.08]
+                                        hover:shadow-[0_14px_30px_rgba(0,0,0,0.22)]
                                     "
                                 >
-                                    <img
-                                        src={
-                                            brand.img
-                                        }
-                                        alt={
-                                            brand.alt
-                                        }
-                                        loading="lazy"
-                                        decoding="async"
-                                        className={`
-                                            max-w-full
-                                            object-contain
-                                            grayscale
-                                            brightness-0
-                                            invert
-                                            opacity-45
-                                            transition-all
-                                            duration-300
-
-                                            group-hover:scale-[1.03]
-                                            group-hover:opacity-100
-
-                                            ${brand.alt === "CJM"
-                                                ? "h-7 sm:h-8"
-                                                : "h-8 sm:h-10"
-                                            }
-                                        `}
+                                    <MarcaLogo
+                                        brand={brand.key}
+                                        light
+                                        className={`max-h-[48px] max-w-full opacity-80 transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-100 sm:max-h-[52px] ${
+                                            brand.key === "bassari"
+                                                ? "w-[112px] sm:w-[122px] lg:w-[144px] lg:max-h-[58px]"
+                                                : brand.key === "cjm"
+                                                    ? "w-[92px] sm:w-[102px] lg:w-[132px] lg:max-h-[53px]"
+                                                    : "w-[min(205px,26vw)] sm:w-[min(215px,18vw)] lg:w-[min(158px,14vw)] lg:max-h-[39px]"
+                                        }`}
                                     />
                                 </Link>
                             )

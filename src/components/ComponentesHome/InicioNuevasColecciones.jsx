@@ -1,3 +1,4 @@
+import MarcaLogo from "./MarcaLogo";
 import {
     useState,
 } from "react";
@@ -386,19 +387,9 @@ function FeaturedCollection({
                 "
             >
                 <div>
-                    <p
-                        className="
-                            text-[9px]
-                            font-semibold
-                            uppercase
-                            tracking-[0.25em]
-                            text-[#8a603d]
-                        "
-                    >
-                        {
-                            collection.brand
-                        }
-                    </p>
+                    <div className="flex min-h-9 items-center">
+                        <MarcaLogo brand={collection.brand} className="w-[135px] max-h-10" />
+                    </div>
 
 
                     <button

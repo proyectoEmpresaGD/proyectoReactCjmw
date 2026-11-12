@@ -1,3 +1,4 @@
+import MarcaLogo from "./MarcaLogo";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -283,19 +284,9 @@ function SpaceCard({
                     lg:p-8
                 "
             >
-                <p
-                    className="
-                        text-[9px]
-                        font-semibold
-                        uppercase
-                        tracking-[0.24em]
-                        text-white/65
-                    "
-                >
-                    {
-                        space.eyebrow
-                    }
-                </p>
+                <div className="flex min-h-9 items-center">
+                    <MarcaLogo brand={space.eyebrow} light className="w-[145px] max-h-10" />
+                </div>
 
 
                 <div

@@ -1,3 +1,4 @@
+import MarcaLogo from "./MarcaLogo";
 import {
     useTranslation,
 } from "react-i18next";
@@ -87,18 +88,7 @@ export default function InicioPresentacionGrupo({
                                 "
                             />
 
-                            <p
-                                className="
-                                    text-[10px]
-                                    font-semibold
-                                    tracking-[0.26em]
-                                    text-stone-500
-                                "
-                            >
-                                {t(
-                                    "group.label"
-                                )}
-                            </p>
+                            <MarcaLogo brand="cjm-group" className="w-[156px] sm:w-[172px]" />
                         </div>
 
 
@@ -232,18 +222,7 @@ export default function InicioPresentacionGrupo({
                                     md:last:pr-0
                                 "
                             >
-                                <span
-                                    className="
-                                        text-[10px]
-                                        font-semibold
-                                        tracking-[0.2em]
-                                        text-stone-400
-                                    "
-                                >
-                                    {
-                                        pillar.number
-                                    }
-                                </span>
+                                <span className="block h-px w-10 bg-stone-400" aria-hidden="true" />
 
 
                                 <h3

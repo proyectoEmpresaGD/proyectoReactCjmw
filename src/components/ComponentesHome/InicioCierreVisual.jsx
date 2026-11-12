@@ -1,3 +1,4 @@
+import MarcaLogo from "./MarcaLogo";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -122,19 +123,9 @@ export default function HomeClosingVisual({
                         max-w-4xl
                     "
                 >
-                    <p
-                        className="
-                            text-[10px]
-                            font-semibold
-                            uppercase
-                            tracking-[0.26em]
-                            text-white/60
-                        "
-                    >
-                        {
-                            content.eyebrow
-                        }
-                    </p>
+                    <div className="inline-flex">
+                        <MarcaLogo brand="cjm-group" light className="w-[168px] sm:w-[188px]" />
+                    </div>
 
 
                     <h2

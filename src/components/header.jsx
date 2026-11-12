@@ -1625,7 +1625,6 @@ export const Header = () => {
             }
         );
 
-
     /* ──────────────────────────────
        CLOSE HELPERS
        ────────────────────────────── */
@@ -2266,7 +2265,7 @@ export const Header = () => {
                         showLanguageDropdown ||
                         showMenu
                         ? "shadow-md"
-                        : "bg-transparent"
+                        : ""
                     }
             `}
             >
