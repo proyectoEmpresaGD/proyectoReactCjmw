@@ -437,34 +437,6 @@ function FeaturedCollection({
                         />
                     </button>
                 </div>
-
-
-                <span
-                    className="
-                        shrink-0
-                        text-[9px]
-                        font-medium
-                        tracking-[0.18em]
-                        text-stone-400
-                    "
-                >
-                    {String(
-                        activeIndex +
-                        1
-                    ).padStart(
-                        2,
-                        "0"
-                    )}
-
-                    {" / "}
-
-                    {String(
-                        total
-                    ).padStart(
-                        2,
-                        "0"
-                    )}
-                </span>
             </div>
 
 

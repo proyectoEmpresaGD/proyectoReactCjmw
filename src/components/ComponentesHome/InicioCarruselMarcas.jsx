@@ -194,8 +194,8 @@ export default function InicioCarruselMarcas({
                                 aria-pressed={isActive}
                                 title={brand.title}
                                 className={`group relative flex h-[84px] min-w-[118px] flex-1 cursor-pointer items-center justify-center rounded-2xl border px-3 text-center transition-all duration-300 focus-visible:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:h-[90px] sm:min-w-[132px] lg:h-[80px] lg:min-w-[160px] lg:rounded-xl xl:h-[84px] ${isActive
-                                        ? "border-white/30 bg-white/12 text-white shadow-[0_14px_34px_rgba(0,0,0,0.22)] lg:border-stone-500/60 lg:bg-white/[0.07] lg:shadow-none"
-                                        : "border-white/8 bg-white/[0.03] text-white/75 hover:border-white/20 hover:bg-white/[0.08] hover:text-white lg:border-stone-600/50 lg:bg-white/[0.025] lg:hover:border-stone-400/45 lg:hover:bg-white/[0.065]"
+                                    ? "border-white/30 bg-white/12 text-white shadow-[0_14px_34px_rgba(0,0,0,0.22)] lg:border-stone-500/60 lg:bg-white/[0.07] lg:shadow-none"
+                                    : "border-white/8 bg-white/[0.03] text-white/75 hover:border-white/20 hover:bg-white/[0.08] hover:text-white lg:border-stone-600/50 lg:bg-white/[0.025] lg:hover:border-stone-400/45 lg:hover:bg-white/[0.065]"
                                     }`}
                             >
                                 <MarcaLogo
