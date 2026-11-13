@@ -153,7 +153,7 @@ export default function InicioCarruselMarcas({
                             <button
                                 type="button"
                                 onClick={() => onOpenBrand(activeBrand)}
-                                className="group inline-flex items-center gap-4 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-stone-950 shadow-lg shadow-black/10 transition hover:bg-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                                className="group inline-flex items-center gap-3 rounded-full border border-white/50 bg-black/20 px-6 py-3.5 text-sm font-medium text-white backdrop-blur-md transition hover:border-white hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                             >
                                 {t("hero.discoverBrand")}
                                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
