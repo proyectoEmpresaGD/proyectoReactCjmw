@@ -27,6 +27,7 @@ import InstagramDropdown
     from "./InstagramDropdown";
 
 import MarcaLogo from "./ComponentesHome/MarcaLogo";
+import { getBrandNavigationLogoClasses } from "../Constants/brandLogoStyles";
 
 
 const brandLinks = [
@@ -522,13 +523,7 @@ const Footer = () => {
                                     <MarcaLogo
                                         brand={brand.key}
                                         light
-                                        className={`max-h-[48px] max-w-full opacity-80 transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-100 sm:max-h-[52px] ${
-                                            brand.key === "bassari"
-                                                ? "w-[112px] sm:w-[122px] lg:w-[144px] lg:max-h-[58px]"
-                                                : brand.key === "cjm"
-                                                    ? "w-[92px] sm:w-[102px] lg:w-[132px] lg:max-h-[53px]"
-                                                    : "w-[min(205px,26vw)] sm:w-[min(215px,18vw)] lg:w-[min(158px,14vw)] lg:max-h-[39px]"
-                                        }`}
+                                        className={`max-h-[48px] max-w-full opacity-80 transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-100 sm:max-h-[52px] ${getBrandNavigationLogoClasses(brand.key)}`}
                                     />
                                 </Link>
                             )

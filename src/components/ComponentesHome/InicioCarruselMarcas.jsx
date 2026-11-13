@@ -3,29 +3,16 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
 import MarcaLogo from "./MarcaLogo";
+import { getBrandNavigationLogoClasses } from "../../Constants/brandLogoStyles";
 
 const SLIDE_DURATION_MS = 7000;
 
 const getHeroLogoWidth = (brand) => {
-    if (brand === "bassari") return "w-[min(350px,78vw)] lg:w-[260px]";
-    if (brand === "cjm") return "w-[min(310px,74vw)] lg:w-[208px]";
-    return "w-[min(700px,90vw)] lg:w-[min(530px,65vw)]";
+    if (brand === "bassari") return "w-[min(280px,62vw)] lg:w-[208px]";
+    if (brand === "cjm") return "w-[min(248px,59vw)] lg:w-[166px]";
+    return "w-[min(560px,72vw)] lg:w-[min(424px,52vw)]";
 };
 
-const getNavigationLogoWidth = (brand) => {
-    // Mantener intactas las dimensiones de móvil y tablet.
-    // La reducción editorial se aplica exclusivamente en escritorio (lg+).
-    if (brand === "bassari") return "w-[112px] sm:w-[122px] lg:w-[144px]";
-    if (brand === "cjm") return "w-[92px] sm:w-[102px] lg:w-[132px]";
-    return "w-[min(205px,26vw)] sm:w-[min(215px,18vw)] lg:w-[min(158px,14vw)]";
-};
-
-const getNavigationLogoHeight = (brand) => {
-    // El diseño de móvil y tablet mantiene exactamente las alturas previas.
-    if (brand === "bassari") return "lg:max-h-[58px]";
-    if (brand === "cjm") return "lg:max-h-[53px]";
-    return "lg:max-h-[39px]";
-};
 
 export default function InicioCarruselMarcas({
     brands = [],
@@ -154,7 +141,7 @@ export default function InicioCarruselMarcas({
                                 brand={activeBrand.key}
                                 light
                                 loading="eager"
-                                className={`${getHeroLogoWidth(activeBrand.key)} max-h-[145px] drop-shadow-sm lg:max-h-[106px]`}
+                                className={`${getHeroLogoWidth(activeBrand.key)} max-h-[116px] drop-shadow-sm lg:max-h-[84.8px]`}
                             />
                         </h1>
 
@@ -206,18 +193,17 @@ export default function InicioCarruselMarcas({
                                 aria-label={`${t("hero.selectBrand")}: ${brand.title}`}
                                 aria-pressed={isActive}
                                 title={brand.title}
-                                className={`group relative flex h-[84px] min-w-[118px] flex-1 cursor-pointer items-center justify-center rounded-2xl border px-3 text-center transition-all duration-300 focus-visible:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:h-[90px] sm:min-w-[132px] lg:h-[80px] lg:min-w-[160px] lg:rounded-xl xl:h-[84px] ${
-                                    isActive
+                                className={`group relative flex h-[84px] min-w-[118px] flex-1 cursor-pointer items-center justify-center rounded-2xl border px-3 text-center transition-all duration-300 focus-visible:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:h-[90px] sm:min-w-[132px] lg:h-[80px] lg:min-w-[160px] lg:rounded-xl xl:h-[84px] ${isActive
                                         ? "border-white/30 bg-white/12 text-white shadow-[0_14px_34px_rgba(0,0,0,0.22)] lg:border-stone-500/60 lg:bg-white/[0.07] lg:shadow-none"
                                         : "border-white/8 bg-white/[0.03] text-white/75 hover:border-white/20 hover:bg-white/[0.08] hover:text-white lg:border-stone-600/50 lg:bg-white/[0.025] lg:hover:border-stone-400/45 lg:hover:bg-white/[0.065]"
-                                }`}
+                                    }`}
                             >
                                 <MarcaLogo
                                     brand={brand.key}
                                     light
                                     decorative
                                     loading="eager"
-                                    className={`${getNavigationLogoWidth(brand.key)} max-h-[48px] opacity-80 transition duration-300 group-hover:scale-[1.02] group-hover:opacity-100 sm:max-h-[52px] ${getNavigationLogoHeight(brand.key)} ${isActive ? "opacity-100" : ""}`}
+                                    className={`max-h-[48px] max-w-full opacity-80 transition duration-300 group-hover:scale-[1.02] group-hover:opacity-100 sm:max-h-[52px] ${getBrandNavigationLogoClasses(brand.key)} ${isActive ? "opacity-100" : ""}`}
                                 />
                                 {isActive && (
                                     <span className="absolute inset-x-0 bottom-0 h-[3px] overflow-hidden bg-white/25 lg:h-[2px] lg:bg-stone-500/30">
