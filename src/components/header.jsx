@@ -2371,6 +2371,7 @@ export const Header = () => {
                         </Link>
 
 
+                        <Link to="/eventos" onClick={closeAllDropdowns} className="flex items-center rounded-full px-2 py-2.5 font-semibold text-gray-800 transition hover:bg-gray-200 hover:text-gray-900 xl:px-4">{t("events")}</Link>
                         {/* PRODUCTOS */}
                         <div
                             ref={
@@ -3347,6 +3348,9 @@ export const Header = () => {
                         </div>
 
 
+                        <div className="border-b border-stone-200 py-4">
+                            <Link to="/eventos" onClick={closeMobileMenu} className="block w-full text-left font-semibold text-gray-800">{t("events")}</Link>
+                        </div>
                         {/* PRODUCTOS MOBILE */}
                         <div className="border-b border-stone-200 py-4">
                             <button

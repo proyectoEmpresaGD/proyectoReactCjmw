@@ -1,0 +1,60 @@
+{
+  "title": "Événements",
+  "eyebrow": "L’univers CJM Group",
+  "intro": "Rencontres, design et nouvelles collections. Découvrez les prochains rendez-vous de nos marques.",
+  "readMore": "Découvrir l’événement",
+  "back": "Retour aux événements",
+  "gallery": "Galerie d’images",
+  "previousImage": "Image précédente",
+  "nextImage": "Image suivante",
+  "selectImage": "Voir l’image {{number}}",
+  "newTab": " (s’ouvre dans un nouvel onglet)",
+  "contact": "Contactez-nous",
+  "notFoundTitle": "Événement introuvable",
+  "notFoundMessage": "Cet événement n’est pas disponible. Découvrez nos autres actualités.",
+  "items": {
+    "parisDecoOff2027": {
+      "title": "CJM Group à Paris Déco Off 2027",
+      "category": "Salons · BASSARI",
+      "dateLabel": "Du 13 au 16 janvier 2027",
+      "location": "Paris, France",
+      "excerpt": "Rendez-vous à Paris. Du 13 au 16 janvier, CJM Group participera à Paris Déco Off 2027 pour présenter les nouvelles collections BASSARI.",
+      "fairLabel": "Notre prochain rendez-vous",
+      "fairTitle": "Paris Déco Off 2027",
+      "linkLabel": "PARIS DECO OFF 2027",
+      "visitNote": "Notre showroom : 19 Rue de Seine, 75006, Paris.",
+      "imageAlts": [
+        "Ambiance textile BASSARI, collection Essences du Nil",
+        "Tissus BASSARI dans un intérieur"
+      ],
+      "imageNote": "Images de l’univers BASSARI déjà présentes sur notre site ; il ne s’agit pas de photographies de l’édition 2027.",
+      "closing": "Nous vous attendons à Paris pour partager les nouveautés BASSARI.",
+      "sections": [
+        {
+          "title": "Un rendez-vous avec le design à Paris",
+          "paragraphs": [
+            "Du 13 au 16 janvier 2027, Paris Déco Off réunira à Paris des maisons internationales et des professionnels de la décoration. Une rencontre pour découvrir des propositions, échanger des idées et explorer l’univers des tissus et du design d’intérieur."
+          ]
+        },
+        {
+          "title": "Les nouveautés BASSARI à découvrir",
+          "paragraphs": [
+            "CJM Group participera à cette nouvelle édition avec les nouvelles collections BASSARI. L’occasion de les découvrir de près et de partager avec notre équipe des idées pour vos projets de décoration.",
+            "Nous souhaitons faire de cette rencontre un espace d’échange et d’inspiration : découvrir ensemble les collections et explorer leurs possibilités dans chaque intérieur."
+          ]
+        },
+        {
+          "title": "Préparez votre visite",
+          "paragraphs": [
+            "Retenez les dates : du 13 au 16 janvier 2027. Consultez le site officiel de Paris Déco Off pour les informations pratiques et les actualités de l’événement.",
+            "Retrouvez-nous dans notre showroom au 19 Rue de Seine, 75006, Paris. Contactez-nous pour convenir d’un rendez-vous avec notre équipe."
+          ]
+        }
+      ],
+      "address": "19 Rue de Seine, 75006, Paris",
+      "mapsUrl": "https://www.google.com/maps/place/19+Rue+de+Seine,+75006+Paris,+Francia/@48.8564971,2.3340275,17z/data=!4m6!3m5!1s0x47e66e2762c54edb:0x236d93599947e1ea!8m2!3d48.8564875!4d2.3368043!16s%2Fg%2F11b8v7y2p7?entry=ttu&g_ep=EgoyMDI2MTExMC4wIKXMDSoASAFQAw%3D%3D"
+    }
+  },
+  "pauseGallery": "Mettre le carrousel en pause",
+  "playGallery": "Reprendre le carrousel"
+}

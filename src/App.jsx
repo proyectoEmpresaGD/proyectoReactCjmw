@@ -74,6 +74,8 @@ function App() {
         <Route path="/arenaHome" element={<ArenaHome />} />
         <Route path="/flamencoHome" element={<FlamencoHome />} />
         <Route path="/bassariHome" element={<BassariHome />} />
+        <Route path="/eventos" element={<BlogHome />} />
+        <Route path="/eventos/:newsId" element={<BlogHome />} />
         <Route path="/BlogHome/:newsId" element={<BlogHome />} />
         <Route path="/confeccion" element={<Confeccion />} />
         <Route

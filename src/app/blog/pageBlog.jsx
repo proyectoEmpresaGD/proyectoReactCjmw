@@ -1,12 +1,13 @@
+import Events from "../../components/eventos/Events.jsx";
 // src/pages/BlogHome.jsx
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { Header } from '../../components/header';
 import Footer from '../../components/footer';
 import { CartProvider } from '../../components/CartContext';
 import { useTranslation } from 'react-i18next';
 import { newsData } from '../../data/newsData';
 
-const BlogHome = () => {
+const LegacyBlog = () => {
     const { t } = useTranslation('blog');
     const { newsId } = useParams();
     const newsItem = newsData.find((n) => n.id.toString() === newsId);
@@ -55,4 +56,7 @@ const BlogHome = () => {
     );
 };
 
-export default BlogHome;
+export default function BlogHome() {
+    const { pathname } = useLocation();
+    return pathname.startsWith('/eventos') ? <Events /> : <LegacyBlog />;
+}

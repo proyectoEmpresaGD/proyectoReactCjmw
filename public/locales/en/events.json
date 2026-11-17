@@ -1,0 +1,60 @@
+{
+  "title": "Events",
+  "eyebrow": "The world of CJM Group",
+  "intro": "Meetings, design and new collections. Discover the upcoming events for our brands.",
+  "readMore": "Discover the event",
+  "back": "Back to Events",
+  "gallery": "Image gallery",
+  "previousImage": "Previous image",
+  "nextImage": "Next image",
+  "selectImage": "View image {{number}}",
+  "newTab": " (opens in a new tab)",
+  "contact": "Contact us",
+  "notFoundTitle": "Event not found",
+  "notFoundMessage": "This event is unavailable. Explore our other news.",
+  "items": {
+    "parisDecoOff2027": {
+      "title": "CJM Group at Paris Déco Off 2027",
+      "category": "Trade events · BASSARI",
+      "dateLabel": "13–16 January 2027",
+      "location": "Paris, France",
+      "excerpt": "See you in Paris. From 13 to 16 January, CJM Group will take part in Paris Déco Off 2027 to present the new BASSARI collections.",
+      "fairLabel": "Our next meeting",
+      "fairTitle": "Paris Déco Off 2027",
+      "linkLabel": "PARIS DECO OFF 2027",
+      "visitNote": "Our showroom: 19 Rue de Seine, 75006, Paris.",
+      "imageAlts": [
+        "BASSARI textile interior, Essences du Nil collection",
+        "BASSARI fabrics in an interior setting"
+      ],
+      "imageNote": "Images from the BASSARI world already featured on our website; these are not photographs of the 2027 event.",
+      "closing": "We look forward to sharing what is new at BASSARI with you in Paris.",
+      "sections": [
+        {
+          "title": "A meeting with design in Paris",
+          "paragraphs": [
+            "From 13 to 16 January 2027, Paris Déco Off will bring international design houses and decorating professionals together in Paris. An opportunity to discover ideas, exchange perspectives and explore the world of fabrics and interior design."
+          ]
+        },
+        {
+          "title": "Discover the new BASSARI collections",
+          "paragraphs": [
+            "CJM Group will attend this new edition with the latest BASSARI collections. Discover them up close and discuss fresh ideas for your interior projects with our team.",
+            "We want this meeting to be a space for conversation and inspiration: a chance to explore the collections together and consider their possibilities in every interior."
+          ]
+        },
+        {
+          "title": "Plan your visit",
+          "paragraphs": [
+            "Save the dates: 13 to 16 January 2027. Visit the official Paris Déco Off website for event information and updates.",
+            "Visit our showroom at 19 Rue de Seine, 75006, Paris. Contact us if you would like to arrange a meeting with our team."
+          ]
+        }
+      ],
+      "address": "19 Rue de Seine, 75006, Paris",
+      "mapsUrl": "https://www.google.com/maps/place/19+Rue+de+Seine,+75006+Paris,+Francia/@48.8564971,2.3340275,17z/data=!4m6!3m5!1s0x47e66e2762c54edb:0x236d93599947e1ea!8m2!3d48.8564875!4d2.3368043!16s%2Fg%2F11b8v7y2p7?entry=ttu&g_ep=EgoyMDI2MTExMC4wIKXMDSoASAFQAw%3D%3D"
+    }
+  },
+  "pauseGallery": "Pause carousel",
+  "playGallery": "Resume carousel"
+}

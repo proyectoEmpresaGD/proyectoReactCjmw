@@ -48,3 +48,27 @@ Estas redacciones están diseñadas para ser ricas en información, atractivas p
 ];
 
 export default newsData;
+// Content and image descriptions live in public/locales/{es,en,fr}/events.json.
+// Styles: deco-off | editorial | gallery. First image is always the cover.
+export const eventsData = [{
+    id: "paris-deco-off-2027",
+    style: "deco-off",
+    translationKey: "parisDecoOff2027",
+    startDate: "2027-01-13",
+    endDate: "2027-01-16",
+    externalUrl: "https://www.parisdeco-off.com/en",
+    logo: "https://bassari.eu/ImagenesTelasCjmw/ICONOS/07%20ICONOS%20FERIAS%20/DECO%20OFF.png",
+    images: [
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASS_ESSENCESDUNIL_HORIZONTAL_ESSENCES%20DU%20NIL%20Y%20LE%20KHAYMA.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/ESSENCES%20DU%20NIL/BASSA_ESSENCESDUNIL_YUBA4.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASS_ESSENCESDUNIL_LEVOYAGEDESWOLOFS%20LA%20CROIX.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/LE%20VOYAGE%20DES%20WOLOFS/BASSARI%20LE%20VOYAGE%20DES%20WOLOF%20ZOSER%202.webp",
+        "https://bassari.eu/ImagenesTelasCjmw/FOTOS%20WEB%20CJMW%20AMBIENTE%20Y%20CARRUSELES/00_AMBIENTES_PARA_CARRUSELES_PAGINAS_MARCAS_COLECCIONES_WEBP/BASSARI%20AMBIENTE/KASSUMAY/BASSARI%20KASSUMAY%20IWOL%20ARGILE_5_11zon_5_11zon.webp"
+
+
+
+
+
+
+    ]
+}];
