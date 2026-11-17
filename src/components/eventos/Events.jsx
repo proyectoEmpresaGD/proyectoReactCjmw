@@ -437,9 +437,9 @@ export default function Events() {
                     )}
                 </div>
 
-                {copy?.imageNote && (
+                {/* {copy?.imageNote && (
                     <p className="event-caption">{copy.imageNote}</p>
-                )}
+                )} */}
             </section>
         );
 
