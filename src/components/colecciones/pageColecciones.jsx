@@ -71,30 +71,90 @@ const BRANDS = [
     },
 ];
 
+const COLLECTIONS_CACHE_KEY = "cjmw-collection-previews-v2";
+const COLLECTIONS_CACHE_TTL = 10 * 60 * 1000;
+const normalizeKey = (value) => String(value || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, "AND").replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const normalizeKey = (value) =>
-    String(value || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/&/g, "AND")
-        .replace(/[^A-Za-z0-9]/g, "")
-        .toUpperCase();
+// Solo direcciones y fechas en localStorage, nunca fotos en Base64.
+const getCachedCollectionImages = () => {
+    try {
+        const parsed = JSON.parse(localStorage.getItem(COLLECTIONS_CACHE_KEY));
+        return parsed && typeof parsed === "object" ? parsed : {};
+    } catch { return {}; }
+};
+const setCachedCollectionImages = (brandCode, images) => {
+    if (!Object.values(images).some((url) => typeof url === "string" && url)) return;
+    try {
+        const current = getCachedCollectionImages();
+        current[brandCode] = { timestamp: Date.now(), images };
+        localStorage.setItem(COLLECTIONS_CACHE_KEY, JSON.stringify(current));
+    } catch { /* La web funciona aunque el almacenamiento esté bloqueado. */ }
+};
 
-
-const wait = (ms) =>
-    new Promise((resolve) => {
-        setTimeout(
-            resolve,
-            ms
-        );
-    });
-
+// Cache Storage conserva los bytes de las fotos entre visitas (HTTPS).
+const PHOTO_CACHE = "cjmw-collection-photos-v1";
+const PHOTO_TTL = 7 * 24 * 60 * 60 * 1000;
+const PHOTO_LIMIT = 120;
+const photoRequests = new Map();
+const getPhotoBlob = (src) => {
+    if (photoRequests.has(src)) return photoRequests.get(src);
+    const request = (async () => {
+        if (!window.isSecureContext || !("caches" in window)) return null;
+        let cache;
+        try {
+            cache = await caches.open(PHOTO_CACHE);
+            const saved = await cache.match(src);
+            if (saved && Date.now() - Number(saved.headers.get("x-cjmw-saved")) < PHOTO_TTL) {
+                return await saved.blob();
+            }
+        } catch { return null; }
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 7000);
+        try {
+            const response = await fetch(src, {
+                mode: "cors", cache: "default", signal: controller.signal,
+            });
+            if (!response.ok) return null;
+            const blob = await response.blob();
+            if (!blob.size || !blob.type.startsWith("image/")) return null;
+            // No persistir archivos que no se puedan decodificar como imagen.
+            const probe = new Image();
+            const probeUrl = URL.createObjectURL(blob);
+            try {
+                await new Promise((resolve, reject) => {
+                    probe.onload = resolve;
+                    probe.onerror = reject;
+                    probe.src = probeUrl;
+                });
+            } finally { URL.revokeObjectURL(probeUrl); }
+            try {
+                await cache.put(src, new Response(blob, {
+                    headers: {
+                        "Content-Type": blob.type, "x-cjmw-saved": String(Date.now()),
+                    }
+                }));
+                const keys = await cache.keys();
+                for (const key of keys.slice(0, Math.max(0, keys.length - PHOTO_LIMIT))) {
+                    await cache.delete(key);
+                }
+            } catch { /* Cuota o modo privado: mostrar igualmente la imagen. */ }
+            return blob;
+        } catch { return null; }
+        finally { clearTimeout(timeout); }
+    })().finally(() => photoRequests.delete(src));
+    photoRequests.set(src, request);
+    return request;
+};
 
 const fetchJsonWithRetry = async (
     url,
     {
         signal,
         retries = 2,
+        timeout = 10000,
     } = {}
 ) => {
     let lastError = null;
@@ -104,12 +164,45 @@ const fetchJsonWithRetry = async (
         attempt <= retries;
         attempt += 1
     ) {
+        if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+        const controller = new AbortController();
+
+        const timeoutId =
+            window.setTimeout(
+                () => {
+                    controller.abort();
+                },
+                timeout
+            );
+
+        const handleParentAbort =
+            () => {
+                controller.abort();
+            };
+
+        signal?.addEventListener(
+            "abort",
+            handleParentAbort,
+            {
+                once: true,
+            }
+        );
+
         try {
             const response =
                 await fetch(
                     url,
                     {
-                        signal,
+                        signal:
+                            controller.signal,
+
+                        cache:
+                            "default",
+
+                        headers: {
+                            Accept:
+                                "application/json",
+                        },
                     }
                 );
 
@@ -122,13 +215,13 @@ const fetchJsonWithRetry = async (
             return await response.json();
         } catch (error) {
             if (
-                error?.name ===
-                "AbortError"
+                signal?.aborted
             ) {
                 throw error;
             }
 
-            lastError = error;
+            lastError =
+                error;
 
             if (
                 attempt === retries
@@ -140,6 +233,15 @@ const fetchJsonWithRetry = async (
                 400 *
                 (attempt + 1)
             );
+        } finally {
+            window.clearTimeout(
+                timeoutId
+            );
+
+            signal?.removeEventListener(
+                "abort",
+                handleParentAbort
+            );
         }
     }
 
@@ -147,194 +249,83 @@ const fetchJsonWithRetry = async (
 };
 
 
-const ReliableImage = ({
-    src,
-    alt,
-    priority = false,
-    isLoading = false,
-    t,
-}) => {
-    const [
-        retry,
-        setRetry,
-    ] = useState(0);
-
-    const [
-        imageLoaded,
-        setImageLoaded,
-    ] = useState(false);
-
-    const [
-        failed,
-        setFailed,
-    ] = useState(false);
-
+const ReliableImage = ({ src, alt, priority = false, isLoading = false, t }) => {
+    const containerRef = useRef(null);
+    const imgRef = useRef(null);
+    const [visible, setVisible] = useState(priority);
+    const [resolved, setResolved] = useState(null);
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [failed, setFailed] = useState(false);
+    const [retry, setRetry] = useState(0);
 
     useEffect(() => {
-        setRetry(0);
+        if (priority || !("IntersectionObserver" in window)) {
+            setVisible(true);
+            return;
+        }
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) { setVisible(true); observer.disconnect(); }
+        }, { rootMargin: "250px" });
+        if (containerRef.current) observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, [priority]);
+
+    useEffect(() => {
+        let active = true;
+        let objectUrl;
+        setResolved(null);
         setImageLoaded(false);
         setFailed(false);
-    }, [src]);
+        setRetry(0);
+        if (src && visible) {
+            getPhotoBlob(src).then((blob) => {
+                if (!active) return;
+                if (blob) objectUrl = URL.createObjectURL(blob);
+                setResolved({ source: src, url: objectUrl || src });
+            }).catch(() => {
+                if (active) setResolved({ source: src, url: src });
+            });
+        }
+        return () => {
+            active = false;
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
+        };
+    }, [src, visible]);
 
-
-    const imageSrc =
-        useMemo(() => {
-            if (!src) {
-                return null;
-            }
-
-            if (retry === 0) {
-                return src;
-            }
-
-            const separator =
-                src.includes("?")
-                    ? "&"
-                    : "?";
-
-            return `${src}${separator}retry=${retry}`;
-        }, [
-            src,
-            retry,
-        ]);
-
-
-    if (!imageSrc) {
-        return (
-            <div
-                className="
-                    flex
-                    h-full
-                    w-full
-                    items-center
-                    justify-center
-                    bg-stone-100
-                    px-4
-                    text-center
-                    text-sm
-                    text-stone-400
-                "
-            >
-                {isLoading
-                    ? t(
-                        "image.loading"
-                    )
-                    : t(
-                        "image.unavailable"
-                    )
-                }
-            </div>
-        );
-    }
-
-
-    if (failed) {
-        return (
-            <div
-                className="
-                    flex
-                    h-full
-                    w-full
-                    items-center
-                    justify-center
-                    bg-stone-100
-                    px-4
-                    text-center
-                    text-sm
-                    text-stone-400
-                "
-            >
-                {t(
-                    "image.unavailable"
-                )}
-            </div>
-        );
-    }
-
+    const imageSrc = resolved?.source === src ? resolved.url : null;
+    // Una imagen servida desde caché puede estar completa antes del efecto.
+    useEffect(() => {
+        const image = imgRef.current;
+        if (image?.complete && image.naturalWidth > 0) setImageLoaded(true);
+    }, [imageSrc, retry]);
 
     return (
-        <div
-            className="
-                relative
-                h-full
-                w-full
-            "
-        >
-            {!imageLoaded && (
-                <div
-                    className="
-                        absolute
-                        inset-0
-                        z-10
-                        flex
-                        items-center
-                        justify-center
-                        bg-stone-100
-                        text-sm
-                        text-stone-400
-                    "
-                >
-                    {t(
-                        "image.loading"
-                    )}
+        <div ref={containerRef} className="relative h-full w-full">
+            {(!imageLoaded || failed) && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-stone-100 px-4 text-center text-sm text-stone-400">
+                    {failed || (!src && !isLoading)
+                        ? t("image.unavailable") : t("image.loading")}
                 </div>
             )}
-
-            <img
-                key={imageSrc}
-                src={imageSrc}
-                alt={alt}
-                loading={
-                    priority
-                        ? "eager"
-                        : "lazy"
-                }
-                fetchPriority={
-                    priority
-                        ? "high"
-                        : "auto"
-                }
-                decoding="async"
-                onLoad={() => {
-                    setImageLoaded(
-                        true
-                    );
-                }}
-                onError={() => {
-                    setImageLoaded(
-                        false
-                    );
-
-                    if (retry < 2) {
-                        setRetry(
-                            (
-                                current
-                            ) =>
-                                current +
-                                1
-                        );
-
-                        return;
-                    }
-
-                    setFailed(
-                        true
-                    );
-                }}
-                className="
-                    h-full
-                    w-full
-                    object-cover
-                    transition
-                    duration-700
-                    ease-out
-                    group-hover:scale-105
-                "
-            />
+            {imageSrc && !failed && (
+                <img ref={imgRef} key={`${imageSrc}-${retry}`} src={imageSrc}
+                    alt={alt} loading={priority ? "eager" : "lazy"} decoding="async"
+                    onLoad={() => { setImageLoaded(true); setFailed(false); }}
+                    onError={() => {
+                        setImageLoaded(false);
+                        if (imageSrc.startsWith("blob:")) {
+                            // Descartar una copia ilegible y volver a la URL original.
+                            caches.open(PHOTO_CACHE).then((cache) => cache.delete(src)).catch(() => { });
+                            setResolved({ source: src, url: src });
+                        } else if (retry < 1) setRetry((value) => value + 1);
+                        else setFailed(true);
+                    }}
+                    className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+                />
+            )}
         </div>
     );
 };
-
 
 const CollectionCard = ({
     brand,
@@ -599,9 +590,7 @@ const BrandColumn = ({
                                 ] ||
                                 null
                             }
-                            priority={
-                                index < 3
-                            }
+                            priority={false}
                             isLoading={
                                 loading
                             }
@@ -986,7 +975,7 @@ const MobileCollections = ({
                                 null
                             }
                             priority={
-                                index < 6
+                                index === 0
                             }
                             isLoading={
                                 loading
@@ -1084,204 +1073,55 @@ export default function ColeccionesPage() {
 
 
     useEffect(() => {
-        const controller =
-            new AbortController();
+        const controller = new AbortController();
+        const cached = getCachedCollectionImages();
+        const initial = {};
+        for (const brand of brands) {
+            const entry = cached[brand.code];
+            if (entry?.images && typeof entry.images === "object") initial[brand.code] = entry.images;
+        }
+        setImagesByBrand(initial);
+        setLoading(true);
 
-
-        const loadCollections =
-            async () => {
-                setLoading(
-                    true
-                );
-
-                try {
-                    const results =
-                        await Promise.all(
-                            brands.map(
-                                async (
-                                    brand
-                                ) => {
-                                    try {
-                                        const data =
-                                            await fetchJsonWithRetry(
-                                                `${import.meta
-                                                    .env
-                                                    .VITE_API_BASE_URL
-                                                }/api/collections/previews/${encodeURIComponent(
-                                                    brand.code
-                                                )}`,
-                                                {
-                                                    signal:
-                                                        controller
-                                                            .signal,
-
-                                                    retries:
-                                                        2,
-                                                }
-                                            );
-
-
-                                        const backendCollections =
-                                            data?.collections ||
-                                            {};
-
-
-                                        const imagesByNormalizedName =
-                                            {};
-
-
-                                        Object.entries(
-                                            backendCollections
-                                        ).forEach(
-                                            ([
-                                                collectionName,
-                                                imageUrl,
-                                            ]) => {
-                                                imagesByNormalizedName[
-                                                    normalizeKey(
-                                                        collectionName
-                                                    )
-                                                ] =
-                                                    typeof imageUrl ===
-                                                        "string" &&
-                                                        imageUrl.trim()
-                                                        ? imageUrl.trim()
-                                                        : null;
-                                            }
-                                        );
-
-
-                                        const collectionImages =
-                                            {};
-
-
-                                        brand.collections.forEach(
-                                            (
-                                                collection
-                                            ) => {
-                                                const imageUrl =
-                                                    imagesByNormalizedName[
-                                                    normalizeKey(
-                                                        collection
-                                                    )
-                                                    ] ||
-                                                    null;
-
-
-                                                collectionImages[
-                                                    collection
-                                                ] =
-                                                    imageUrl
-                                                        ? cdnUrl(
-                                                            imageUrl
-                                                        )
-                                                        : null;
-                                            }
-                                        );
-
-
-                                        return {
-                                            code:
-                                                brand.code,
-
-                                            images:
-                                                collectionImages,
-                                        };
-                                    } catch (
-                                    error
-                                    ) {
-                                        if (
-                                            error?.name ===
-                                            "AbortError"
-                                        ) {
-                                            throw error;
-                                        }
-
-
-                                        console.warn(
-                                            `No se pudieron cargar las imágenes de ${brand.code}:`,
-                                            error
-                                        );
-
-
-                                        return {
-                                            code:
-                                                brand.code,
-
-                                            images:
-                                                {},
-                                        };
-                                    }
-                                }
-                            )
-                        );
-
-
-                    if (
-                        controller
-                            .signal
-                            .aborted
-                    ) {
-                        return;
-                    }
-
-
-                    const nextImages =
-                        {};
-
-
-                    results.forEach(
-                        ({
-                            code,
-                            images,
-                        }) => {
-                            nextImages[
-                                code
-                            ] =
-                                images;
-                        }
-                    );
-
-
-                    setImagesByBrand(
-                        nextImages
-                    );
-                } catch (
-                error
-                ) {
-                    if (
-                        error?.name !==
-                        "AbortError"
-                    ) {
-                        console.error(
-                            "Error cargando la página de colecciones:",
-                            error
-                        );
-                    }
-                } finally {
-                    if (
-                        !controller
-                            .signal
-                            .aborted
-                    ) {
-                        setLoading(
-                            false
-                        );
-                    }
+        const loadBrand = async (brand) => {
+            const entry = cached[brand.code];
+            const complete = brand.collections.every((name) =>
+                typeof entry?.images?.[name] === "string" && entry.images[name]);
+            if (complete && Date.now() - entry.timestamp < COLLECTIONS_CACHE_TTL) return;
+            try {
+                const base = import.meta.env.VITE_API_BASE_URL?.trim();
+                const url = new URL(`/api/collections/previews/${encodeURIComponent(brand.code)}`,
+                    base || window.location.origin);
+                const data = await fetchJsonWithRetry(url.toString(), {
+                    signal: controller.signal, retries: 1, timeout: 10000,
+                });
+                if (!data?.collections || typeof data.collections !== "object" || Array.isArray(data.collections)) {
+                    throw new Error("Respuesta de colecciones no válida");
                 }
-            };
-
-
-        loadCollections();
-
-
-        return () => {
-            controller.abort();
+                const normalized = {};
+                for (const [name, url] of Object.entries(data.collections)) {
+                    if (typeof url === "string" && url.trim()) normalized[normalizeKey(name)] = url.trim();
+                }
+                const images = { ...entry?.images };
+                for (const name of brand.collections) {
+                    const url = normalized[normalizeKey(name)];
+                    if (url) images[name] = cdnUrl(url);
+                }
+                if (controller.signal.aborted) return;
+                setImagesByBrand((current) => ({ ...current, [brand.code]: images }));
+                setCachedCollectionImages(brand.code, images);
+            } catch (error) {
+                if (!controller.signal.aborted) {
+                    console.warn(`No se pudieron actualizar las imágenes de ${brand.code}:`, error);
+                }
+                // Conservar las direcciones anteriores y reintentar en la siguiente visita.
+            }
         };
-    }, [
-        brands,
-    ]);
-
+        Promise.allSettled(brands.map(loadBrand)).then(() => {
+            if (!controller.signal.aborted) setLoading(false);
+        });
+        return () => controller.abort();
+    }, [brands]);
 
     useEffect(() => {
         const handleScroll =
@@ -1389,7 +1229,6 @@ export default function ColeccionesPage() {
                             max-w-[1800px]
                         "
                     >
-                        {/* CABECERA */}
                         <header
                             className="
                                 mb-10
@@ -1446,7 +1285,6 @@ export default function ColeccionesPage() {
                         </header>
 
 
-                        {/* LOADING */}
                         {loading && (
                             <div
                                 className="
@@ -1477,7 +1315,6 @@ export default function ColeccionesPage() {
                         )}
 
 
-                        {/* MÓVIL / TABLET */}
                         <div
                             ref={
                                 brandSelectorRef
@@ -1527,7 +1364,6 @@ export default function ColeccionesPage() {
                         />
 
 
-                        {/* ESCRITORIO */}
                         <div
                             className="
                                 hidden
@@ -1583,7 +1419,6 @@ export default function ColeccionesPage() {
             </main>
 
 
-            {/* VOLVER ARRIBA - SOLO MÓVIL/TABLET */}
             <button
                 type="button"
                 onClick={
